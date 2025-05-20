@@ -17,7 +17,13 @@ JavaScript: suncalc
 - [x] basic 3D rendering scene
 - [x] shadows
 - [x] typescript
-- [ ] allow moving and placing items
+- [x] render on demand
+- [ ] allow moving cube
+    - [ ] select and deselect
+    - [ ] drag
+    - [ ] rotate
+    - [ ] scale
+
 - [ ] use signals/commands
 - [ ] add UI for transform controls
 - [ ] add UI for placing and removing objects

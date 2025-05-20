@@ -1,32 +1,9 @@
 import * as THREE from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
+import { TransformControls } from 'three/addons/controls/TransformControls.js';
 
-export class ThreeInstance {
-    /**
-     * Container for all the components of Three.js that allow us to render and control the scene.
-     */
-    canvas: HTMLCanvasElement;
-    renderer: THREE.WebGLRenderer;
-    scene: THREE.Scene;
-    camera: THREE.PerspectiveCamera;
-    controls: MapControls;
-    directionalLight: THREE.DirectionalLight;
 
-    constructor(
-        canvas: HTMLCanvasElement,
-        renderer: THREE.WebGLRenderer,
-        scene: THREE.Scene,
-        camera: THREE.PerspectiveCamera,
-        controls: MapControls,
-        directionalLight: THREE.DirectionalLight) {
-        this.canvas = canvas;
-        this.renderer = renderer;
-        this.scene = scene;
-        this.camera = camera;
-        this.controls = controls;
-        this.directionalLight = directionalLight;
-    }
-}
+let canvas, renderer, scene, camera, orbit, directionalLight, control
 
 const SHADOWMAP_WIDTH = 32;
 const SHADOWMAP_RESOLUTION = 512;
@@ -70,15 +47,15 @@ function createMoveableTorus(scene: THREE.Scene): THREE.Mesh {
 }
 
 
-function initThree(): ThreeInstance {
+function initThree() {
 
     // renderer
-    let renderer = new THREE.WebGLRenderer({
+    renderer = new THREE.WebGLRenderer({
         logarithmicDepthBuffer: true,
         antialias: ANTI_ALIASING
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    let canvas = document.body.appendChild(renderer.domElement);
+    canvas = document.body.appendChild(renderer.domElement);
 
     // renderer.outputEncoding = THREE.sRGBEncoding;
     // renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -86,29 +63,30 @@ function initThree(): ThreeInstance {
     renderer.shadowMap.enabled = true;
 
     // scene
-    const scene = new THREE.Scene();
+    scene = new THREE.Scene();
     scene.fog = new THREE.FogExp2(0xEBE2DB, 0.00003);
 
 
     // camera
-    let camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 5, 2000000);
+    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 5, 2000000);
     camera.position.set(0, 20, 20);
     camera.up.set(0, 0, 1);
     camera.lookAt(0, 0, 0);
 
     // map orbit
-    let orbit = new MapControls(camera, canvas)
+    orbit = new MapControls(camera, canvas)
     orbit.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
     orbit.dampingFactor = 0.05;
     orbit.screenSpacePanning = false;
     orbit.minDistance = 10;
     orbit.maxDistance = 16384;
     orbit.maxPolarAngle = (Math.PI / 2) - (Math.PI / 360)
+    orbit.addEventListener('change', requestRenderIfNotRequested)
 
     // lighting
     const white = 0xFFFFFF;
     const intensity = 1.0;
-    const directionalLight = new THREE.DirectionalLight(white, intensity);
+    directionalLight = new THREE.DirectionalLight(white, intensity);
     directionalLight.position.set(-20, 20, 20);
     directionalLight.castShadow = true;
     scene.add(directionalLight);
@@ -140,7 +118,15 @@ function initThree(): ThreeInstance {
 
     scene.background = new THREE.Color(white);
 
-    return new ThreeInstance(canvas, renderer, scene, camera, orbit, directionalLight);
+    control = new TransformControls( camera, renderer.domElement );
+    control.addEventListener( 'change', requestRenderIfNotRequested );
+    control.addEventListener( 'dragging-changed', function ( event ) {
+
+        orbit.enabled = ! event.value;
+
+    } );
+
+    window.addEventListener('resize', requestRenderIfNotRequested)
 
 }
 
@@ -155,16 +141,11 @@ function resizeRendererToDisplaySize(renderer) {
     return needResize;
 }
 
-let time = 0;
+let renderRequested = false;
 
-async function render(threeInstance: ThreeInstance) {
+async function render() {
 
-    time *= 0.001;  // convert to seconds;
-
-    const renderer = threeInstance.renderer;
-    const scene = threeInstance.scene;
-    const camera = threeInstance.camera;
-    const controls = threeInstance.controls;
+    renderRequested = false;
 
     // pickHelper.pick(pickPosition, scene, camera, time);
 
@@ -176,9 +157,9 @@ async function render(threeInstance: ThreeInstance) {
     // directionalLight.position.x = Math.sin(time * 0.7) * 20;
     // directionalLight.position.z = Math.abs(Math.cos(time * 0.7) * 20);
 
-    controls.update()
+    orbit.update()
 
-    pickHelper.pick(pickPosition, scene, camera, time);
+    // pickHelper.pick(pickPosition, scene, camera, time);
 
     // fix buffer size
     if (resizeRendererToDisplaySize(renderer)) {
@@ -192,89 +173,94 @@ async function render(threeInstance: ThreeInstance) {
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
 
-
     renderer.render(scene, camera);
-    requestAnimationFrame(() => render(threeInstance))
-
 }
 
-class PickHelper {
-
-    raycaster: THREE.Raycaster
-    pickedObject?: THREE.Mesh
-    pickedObjectSavedColor: number
-
-    constructor() {
-        this.raycaster = new THREE.Raycaster();
-        this.pickedObject = null;
-        this.pickedObjectSavedColor = 0;
-    }
-    pick(normalizedPosition, scene, camera, time) {
-        // restore the color if there is a picked object
-        if (this.pickedObject) {
-            this.pickedObject.material.emissive.setHex(this.pickedObjectSavedColor);
-            this.pickedObject = undefined;
-        }
-
-        // cast a ray through the frustum
-        this.raycaster.setFromCamera(normalizedPosition, camera);
-        // get the list of objects the ray intersected
-        const intersectedObjects = this.raycaster.intersectObjects(scene.children);
-        if (intersectedObjects.length) {
-            // pick the first object. It's the closest one
-            this.pickedObject = intersectedObjects[0].object;
-
-            if (this.pickedObject.material.emissive === undefined) {
-                this.pickedObject = undefined;
-                return
-            }
-
-            // save its color
-            this.pickedObjectSavedColor = this.pickedObject.material.emissive.getHex();
-            // set its emissive color to flashing red/yellow
-            this.pickedObject.material.emissive.setHex((time * 8) % 2 > 1 ? 0xFFFF00 : 0xFF0000);
-        }
-    }
+function requestRenderIfNotRequested() {
+  if (!renderRequested) {
+    renderRequested = true;
+    requestAnimationFrame(render);
+  }
 }
 
-const pickPosition = { x: 0, y: 0 };
-clearPickPosition();
+// class PickHelper {
 
-function getCanvasRelativePosition(event, canvas) {
-    const rect = canvas.getBoundingClientRect();
-    return {
-        x: (event.clientX - rect.left) * canvas.width / rect.width,
-        y: (event.clientY - rect.top) * canvas.height / rect.height,
-    };
-}
+//     raycaster: THREE.Raycaster
+//     pickedObject?: THREE.Mesh
+//     pickedObjectSavedColor: number
 
-function setPickPosition(event, canvas) {
-    const pos = getCanvasRelativePosition(event, canvas);
-    pickPosition.x = (pos.x / canvas.width) * 2 - 1;
-    pickPosition.y = (pos.y / canvas.height) * -2 + 1;  // note we flip Y
-}
+//     constructor() {
+//         this.raycaster = new THREE.Raycaster();
+//         this.pickedObject = null;
+//         this.pickedObjectSavedColor = 0;
+//     }
+//     pick(normalizedPosition, scene, camera, time) {
+//         // restore the color if there is a picked object
+//         if (this.pickedObject) {
+//             this.pickedObject.material.emissive.setHex(this.pickedObjectSavedColor);
+//             this.pickedObject = undefined;
+//         }
 
-function clearPickPosition() {
-    // unlike the mouse which always has a position
-    // if the user stops touching the screen we want
-    // to stop picking. For now we just pick a value
-    // unlikely to pick something
-    pickPosition.x = -100000;
-    pickPosition.y = -100000;
-}
+//         // cast a ray through the frustum
+//         this.raycaster.setFromCamera(normalizedPosition, camera);
+//         // get the list of objects the ray intersected
+//         const intersectedObjects = this.raycaster.intersectObjects(scene.children);
+//         if (intersectedObjects.length) {
+//             // pick the first object. It's the closest one
+//             this.pickedObject = intersectedObjects[0].object;
 
-const threeInstance = initThree()
-const pickHelper = new PickHelper();
+//             if (this.pickedObject.material.emissive === undefined) {
+//                 this.pickedObject = undefined;
+//                 return
+//             }
 
-window.addEventListener('mousemove', (event) => setPickPosition(event, threeInstance.canvas));
-window.addEventListener('mouseout', clearPickPosition);
-window.addEventListener('mouseleave', clearPickPosition);
+//             // save its color
+//             this.pickedObjectSavedColor = this.pickedObject.material.emissive.getHex();
+//             // set its emissive color to flashing red/yellow
+//             this.pickedObject.material.emissive.setHex((time * 8) % 2 > 1 ? 0xFFFF00 : 0xFF0000);
+//         }
+//     }
+// }
 
-createGround(threeInstance.scene)
-let box = createMoveableCube(threeInstance.scene)
+// const pickPosition = { x: 0, y: 0 };
+// clearPickPosition();
+
+// function getCanvasRelativePosition(event, canvas) {
+//     const rect = canvas.getBoundingClientRect();
+//     return {
+//         x: (event.clientX - rect.left) * canvas.width / rect.width,
+//         y: (event.clientY - rect.top) * canvas.height / rect.height,
+//     };
+// }
+
+// function setPickPosition(event, canvas) {
+//     const pos = getCanvasRelativePosition(event, canvas);
+//     pickPosition.x = (pos.x / canvas.width) * 2 - 1;
+//     pickPosition.y = (pos.y / canvas.height) * -2 + 1;  // note we flip Y
+// }
+
+// function clearPickPosition() {
+//     // unlike the mouse which always has a position
+//     // if the user stops touching the screen we want
+//     // to stop picking. For now we just pick a value
+//     // unlikely to pick something
+//     pickPosition.x = -100000;
+//     pickPosition.y = -100000;
+// }
+
+initThree()
+// const pickHelper = new PickHelper();
+
+// window.addEventListener('mousemove', (event) => setPickPosition(event, canvas));
+// window.addEventListener('mouseout', clearPickPosition);
+// window.addEventListener('mouseleave', clearPickPosition);
+
+createGround(scene)
+let box = createMoveableCube(scene)
 box.position.set(0, 0, 2)
+control.attach(box);
+const gizmo = control.getHelper();
+scene.add( gizmo );
 
-let torus = createMoveableTorus(threeInstance.scene)
+let torus = createMoveableTorus(scene)
 torus.position.set(3, 3, 2)
-
-requestAnimationFrame(() => render(threeInstance))
