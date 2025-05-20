@@ -4,36 +4,42 @@ Python: astral, pyephem, or skyfield
 
 C++: NOAA SPA or PSA algorithms
 
-Rust: sun or astro-rust
-
 JavaScript: suncalc
 
-https://github.com/mourner/suncalc
+[Rust: sun or astro-rust](https://github.com/mourner/suncalc)
 
+
+[Three.js editor](https://github.com/mrdoob/three.js/tree/master/editor)
+[Transform Controls](https://threejs.org/docs/#examples/en/controls/TransformControls)
+[Signals](https://github.com/millermedeiros/js-signals)
 
 ## TODO:
 - [x] basic 3D rendering scene
 - [x] shadows
-- [ ] typescript
+- [x] typescript
 - [ ] allow moving and placing items
+- [ ] use signals/commands
+- [ ] add UI for transform controls
+- [ ] add UI for placing and removing objects
+- [ ] allow CTRL+Z
+
 - [ ] measurements tool
     - [ ] grid lines
     - [ ] placeable ruler
     - [ ] pen tool for area calculation
     - [ ] toggle metric/imperial
+
 - [ ] panel UI with pre-built models for drag and drop
 - [ ] lat/lon entry
 - [ ] absolute time entry
 - [ ] suncalc
-- [ ] refactor
-    - [ ] state json object
-    - [ ] sun visibility engine Rust
-    - [ ] sun visibility engine wasm
-    - [ ] output format (average hrs sun per day organized by month)
-    - [ ] cool loading visualization while run engine is calculating 
+- [ ] position sun based on time
+
 - [ ] saving configurations as json
     - [ ] export
     - [ ] load
+    
+- [ ] on-demand rendering
 - [ ] in-browser sqlite engine for plants and stuff
 - [ ] allow users to create their own plants
 - [ ] basic geometric drawing utilities
@@ -46,3 +52,42 @@ MVP finished!
 
 What other features should we add?
 - [ ] 
+
+# Stateful representation
+```json
+{
+    "12345": {
+        "three_object": null,
+        "name": "Bhut Jolokia",
+        "type": "PLANT",
+        "mesh": {
+            "material": {},
+            "geometry": {}
+        },
+        "transform": {
+            "x_scale": 1,
+            "y_scale": 1,
+            "z_scale": 1,
+            "x_rotation": 0,
+            "y_rotation": 0,
+            "z_rotation": 0
+        },
+        "plant_info": {
+            "growth_stages": {
+                "0": {
+                    "radius": 0.25,
+                    "height": 0.25
+                },
+                "1": {
+                    "radius": 0.5,
+                    "height": 0.5
+                },
+                "2": {
+                    "radius": 0.5,
+                    "height": 1.0
+                }
+            }
+        }
+    }
+}
+```
