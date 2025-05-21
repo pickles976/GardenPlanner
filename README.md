@@ -13,6 +13,11 @@ JavaScript: suncalc
 [Transform Controls](https://threejs.org/docs/#examples/en/controls/TransformControls)
 [Signals](https://github.com/millermedeiros/js-signals)
 
+
+- timeline?
+- ECS?
+- animations?
+
 ## TODO:
 - [x] basic 3D rendering scene
 - [x] shadows

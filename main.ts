@@ -1,13 +1,7 @@
 import * as THREE from 'three';
-import { MapControls } from 'three/addons/controls/MapControls.js';
-import { TransformControls } from 'three/addons/controls/TransformControls.js';
+import { Editor } from './Editor';
+import { requestRenderIfNotRequested, render } from './Rendering';
 
-
-let canvas, renderer, scene, camera, orbit, directionalLight, control
-
-const SHADOWMAP_WIDTH = 32;
-const SHADOWMAP_RESOLUTION = 512;
-const ANTI_ALIASING = true;
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
 
@@ -46,221 +40,70 @@ function createMoveableTorus(scene: THREE.Scene): THREE.Mesh {
     return torusMesh
 }
 
-
-function initThree() {
-
-    // renderer
-    renderer = new THREE.WebGLRenderer({
-        logarithmicDepthBuffer: true,
-        antialias: ANTI_ALIASING
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    canvas = document.body.appendChild(renderer.domElement);
-
-    // renderer.outputEncoding = THREE.sRGBEncoding;
-    // renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    // renderer.toneMappingExposure = 1.0;
-    renderer.shadowMap.enabled = true;
-
-    // scene
-    scene = new THREE.Scene();
-    scene.fog = new THREE.FogExp2(0xEBE2DB, 0.00003);
-
-
-    // camera
-    camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 5, 2000000);
-    camera.position.set(0, 20, 20);
-    camera.up.set(0, 0, 1);
-    camera.lookAt(0, 0, 0);
-
-    // map orbit
-    orbit = new MapControls(camera, canvas)
-    orbit.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    orbit.dampingFactor = 0.05;
-    orbit.screenSpacePanning = false;
-    orbit.minDistance = 10;
-    orbit.maxDistance = 16384;
-    orbit.maxPolarAngle = (Math.PI / 2) - (Math.PI / 360)
-    orbit.addEventListener('change', requestRenderIfNotRequested)
-
-    // lighting
-    const white = 0xFFFFFF;
-    const intensity = 1.0;
-    directionalLight = new THREE.DirectionalLight(white, intensity);
-    directionalLight.position.set(-20, 20, 20);
-    directionalLight.castShadow = true;
-    scene.add(directionalLight);
-
-    // Shadow properties
-    // https://threejs.org/docs/index.html#api/en/lights/shadows/DirectionalLightShadow
-    directionalLight.shadow.mapSize.width = SHADOWMAP_RESOLUTION; // default
-    directionalLight.shadow.mapSize.height = SHADOWMAP_RESOLUTION; // default
-    directionalLight.shadow.camera.near = 0.5; // default
-    directionalLight.shadow.camera.far = 500; // default
-    // directionalLight.shadow.camera.bottom = -1;
-
-    directionalLight.shadow.camera.left = -SHADOWMAP_WIDTH;
-    directionalLight.shadow.camera.right = SHADOWMAP_WIDTH;
-
-    const ambient = new THREE.AmbientLight(white, 0.5);
-    scene.add(ambient);
-
-    const axesHelper = new THREE.AxesHelper(10);
-    axesHelper.position.set(0, 0, 0.003)
-    scene.add(axesHelper);
-
-    // Grid Helper
-    const size = 64
-    const gridHelper = new THREE.GridHelper(size, size, 0x444444, 0x999999);
-    gridHelper.rotateX(Math.PI / 2)
-    gridHelper.position.set(0, 0, 0.001)
-    scene.add(gridHelper);
-
-    scene.background = new THREE.Color(white);
-
-    control = new TransformControls( camera, renderer.domElement );
-    control.addEventListener( 'change', requestRenderIfNotRequested );
-    control.addEventListener( 'dragging-changed', function ( event ) {
-
-        orbit.enabled = ! event.value;
-
-    } );
-
-    window.addEventListener('resize', requestRenderIfNotRequested)
-
+function getCanvasRelativePosition(event, editor: Editor) {
+  const rect = editor.canvas.getBoundingClientRect();
+  return {
+    x: (event.clientX - rect.left) * editor.canvas.width  / rect.width,
+    y: (event.clientY - rect.top ) * editor.canvas.height / rect.height,
+  };
 }
 
-function resizeRendererToDisplaySize(renderer) {
-    const canvas = renderer.domElement;
-    const width = canvas.clientWidth;
-    const height = canvas.clientHeight;
-    const needResize = canvas.width !== width || canvas.height !== height;
-    if (needResize) {
-        renderer.setSize(width, height, false);
-    }
-    return needResize;
-}
+function handleMouseMove(event, editor: Editor) {
 
-let renderRequested = false;
+    const pos = getCanvasRelativePosition(event, editor);
+    const pickPosition = new THREE.Vector2();
+    pickPosition.x = (pos.x / editor.canvas.width ) *  2 - 1;
+    pickPosition.y = (pos.y / editor.canvas.height) * -2 + 1;  // note we flip Y
 
-async function render() {
+    editor.raycaster.setFromCamera( pickPosition, editor.camera );
 
-    renderRequested = false;
+    // const intersects = raycaster.intersectObjects( interactiveObjects );
+    const intersects = editor.raycaster.intersectObjects(editor.scene.children);
 
-    // pickHelper.pick(pickPosition, scene, camera, time);
+    if ( intersects.length > 0 ) {
 
+        const intersection = intersects[ 0 ];
+        const object = intersection.object;
+        console.log(object)
 
-    // TODO: move this elsewhere
-    // const directionalLight = threeInstance.directionalLight;
+        // prepareAnimationData( object, this.center );
+        if (object.material.emissive === undefined) {
+            return false;
+        }
+        object.material.emissive.setHex(0xFFFF00);
+        // animating = true;
 
-    // const time = Date.now() * 0.0005;
-    // directionalLight.position.x = Math.sin(time * 0.7) * 20;
-    // directionalLight.position.z = Math.abs(Math.cos(time * 0.7) * 20);
+        return true;
 
-    orbit.update()
+    } else {
 
-    // pickHelper.pick(pickPosition, scene, camera, time);
+        return false;
 
-    // fix buffer size
-    if (resizeRendererToDisplaySize(renderer)) {
-        const canvas = renderer.domElement;
-        camera.aspect = canvas.clientWidth / canvas.clientHeight;
-        camera.updateProjectionMatrix();
     }
 
-    // fix aspect ratio
-    const canvas = renderer.domElement;
-    camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    camera.updateProjectionMatrix();
-
-    renderer.render(scene, camera);
 }
 
-function requestRenderIfNotRequested() {
-  if (!renderRequested) {
-    renderRequested = true;
-    requestAnimationFrame(render);
-  }
-}
+const editor = new Editor();
+editor.initThree();
 
-// class PickHelper {
+window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
+window.addEventListener('mousemove', () => requestRenderIfNotRequested(editor));
+window.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
+window.addEventListener('mouseleave', () => requestRenderIfNotRequested(editor));
 
-//     raycaster: THREE.Raycaster
-//     pickedObject?: THREE.Mesh
-//     pickedObjectSavedColor: number
+window.addEventListener('mousemove', (event) => handleMouseMove(event, editor));
+window.addEventListener('mouseout', (event) => handleMouseMove(event, editor));
+window.addEventListener('mouseleave', (event) => handleMouseMove(event, editor));
 
-//     constructor() {
-//         this.raycaster = new THREE.Raycaster();
-//         this.pickedObject = null;
-//         this.pickedObjectSavedColor = 0;
-//     }
-//     pick(normalizedPosition, scene, camera, time) {
-//         // restore the color if there is a picked object
-//         if (this.pickedObject) {
-//             this.pickedObject.material.emissive.setHex(this.pickedObjectSavedColor);
-//             this.pickedObject = undefined;
-//         }
 
-//         // cast a ray through the frustum
-//         this.raycaster.setFromCamera(normalizedPosition, camera);
-//         // get the list of objects the ray intersected
-//         const intersectedObjects = this.raycaster.intersectObjects(scene.children);
-//         if (intersectedObjects.length) {
-//             // pick the first object. It's the closest one
-//             this.pickedObject = intersectedObjects[0].object;
 
-//             if (this.pickedObject.material.emissive === undefined) {
-//                 this.pickedObject = undefined;
-//                 return
-//             }
 
-//             // save its color
-//             this.pickedObjectSavedColor = this.pickedObject.material.emissive.getHex();
-//             // set its emissive color to flashing red/yellow
-//             this.pickedObject.material.emissive.setHex((time * 8) % 2 > 1 ? 0xFFFF00 : 0xFF0000);
-//         }
-//     }
-// }
-
-// const pickPosition = { x: 0, y: 0 };
-// clearPickPosition();
-
-// function getCanvasRelativePosition(event, canvas) {
-//     const rect = canvas.getBoundingClientRect();
-//     return {
-//         x: (event.clientX - rect.left) * canvas.width / rect.width,
-//         y: (event.clientY - rect.top) * canvas.height / rect.height,
-//     };
-// }
-
-// function setPickPosition(event, canvas) {
-//     const pos = getCanvasRelativePosition(event, canvas);
-//     pickPosition.x = (pos.x / canvas.width) * 2 - 1;
-//     pickPosition.y = (pos.y / canvas.height) * -2 + 1;  // note we flip Y
-// }
-
-// function clearPickPosition() {
-//     // unlike the mouse which always has a position
-//     // if the user stops touching the screen we want
-//     // to stop picking. For now we just pick a value
-//     // unlikely to pick something
-//     pickPosition.x = -100000;
-//     pickPosition.y = -100000;
-// }
-
-initThree()
-// const pickHelper = new PickHelper();
-
-// window.addEventListener('mousemove', (event) => setPickPosition(event, canvas));
-// window.addEventListener('mouseout', clearPickPosition);
-// window.addEventListener('mouseleave', clearPickPosition);
-
-createGround(scene)
-let box = createMoveableCube(scene)
+createGround(editor.scene)
+let box = createMoveableCube(editor.scene)
 box.position.set(0, 0, 2)
-control.attach(box);
-const gizmo = control.getHelper();
-scene.add( gizmo );
+editor.transformControls.attach(editor.directionalLight);
+const gizmo = editor.transformControls.getHelper();
+editor.scene.add( gizmo );
 
-let torus = createMoveableTorus(scene)
+let torus = createMoveableTorus(editor.scene)
 torus.position.set(3, 3, 2)
