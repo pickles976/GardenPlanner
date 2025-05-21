@@ -11,14 +11,14 @@ JavaScript: suncalc
 
 [Three.js editor](https://github.com/mrdoob/three.js/tree/master/editor)
 [Transform Controls](https://threejs.org/docs/#examples/en/controls/TransformControls)
-[Signals](https://github.com/millermedeiros/js-signals)
+[Mitt](https://www.npmjs.com/package/mitt)
 
 
 - timeline?
 - ECS?
 - animations?
 
-## TODO:
+## EDITING FEATURES:
 - [x] basic 3D rendering scene
 - [x] shadows
 - [x] typescript
@@ -37,13 +37,15 @@ JavaScript: suncalc
 - [x] add message bus
 
 - [ ] add UI for transform controls
-    - [ ] create UI
+    - [ ] create UI (copy from editor)
+    - [ ] add UI for viewing and selecting items from scene heirarchy like in editor program
     - [ ] create sliders
     - [ ] connect signals to editor
-    - [ ] ???
+
+- [ ] TODO: RENAME COMMANDS TO SetPositionCommand/SetRotationCommand/SetScaleCommand
 
 - [ ] add UI for placing and removing objects
-- [ ] allow CTRL+Z
+- [ ] add commands for placing and removing objects
 
 - [ ] measurements tool
     - [ ] grid lines
@@ -51,29 +53,48 @@ JavaScript: suncalc
     - [ ] pen tool for area calculation
     - [ ] toggle metric/imperial
 
+- [ ] bed creation
+    - [ ] draw polylines
+    - [ ] create 3D walls of bed
+    - [ ] control bed height
+    - [ ] auto-fill bed
+
+- [ ] parent objects to mouse and clamp to ground with raycast (no transform controls mode)
+- [ ] toggle between transform controls and free move mode
+
 - [ ] panel UI with pre-built models for drag and drop
+- [ ] load mesh resources, create thumbnails for them
+
+## SUN CONTROLS
 - [ ] lat/lon entry
 - [ ] absolute time entry
 - [ ] suncalc
 - [ ] position sun based on time
 
+## SAVING
 - [ ] saving configurations as json
+    - [ ] autosave feature
     - [ ] export
     - [ ] load
     
-- [ ] on-demand rendering
+## DATA AND STUFF
 - [ ] in-browser sqlite engine for plants and stuff
 - [ ] allow users to create their own plants
-- [ ] basic geometric drawing utilities
 
-- [ ] garden concept browser?
-- [ ] web client
-- [ ] local client with electron
+- [ ] complete web client
 
 MVP finished!
 
-What other features should we add?
-- [ ] 
+## USER FEEDBACK
+- [ ] friends and family
+- [ ] community gardens network in Austin
+- [ ] r/austingardens
+
+
+- [ ] user login backend
+- [ ] garden concept browser?
+- [ ] batch processing for sun location
+- [ ] payment system and stuff
 
 # Stateful representation
 ```json

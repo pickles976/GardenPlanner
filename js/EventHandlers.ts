@@ -1,10 +1,7 @@
 import * as THREE from 'three';
 import { Editor } from './Editor';
 import { Selector } from './Selector';
-import { MoveObjectCommand } from './commands/MoveObjectCommand';
 import { render } from './Rendering';
-import { Command } from './commands/Command';
-import { RotateObjectCommand } from './commands/RotateObjectCommand';
 
 export function handleMouseMove(editor: Editor, selector: Selector, object?: THREE.Mesh) {
     /**

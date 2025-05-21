@@ -1,3 +1,4 @@
+import mitt from 'mitt'
 
-
-export const eventBus = new EventTarget();
+const eventBus = mitt();
+export default eventBus;
