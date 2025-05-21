@@ -3,6 +3,10 @@ import { Editor } from './js/Editor';
 import { requestRenderIfNotRequested, render } from './js/Rendering';
 import { Selector } from './js/Selector';
 import { handleMouseMove, handleMouseClick, handleKeyDown } from './js/EventHandlers';
+import { Command } from './js/commands/Command';
+import { MoveObjectCommand } from './js/commands/MoveObjectCommand';
+import { RotateObjectCommand } from './js/commands/RotateObjectCommand';
+import { ScaleObjectCommand } from './js/commands/ScaleObjectCommand';
 
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
@@ -63,6 +67,53 @@ window.addEventListener('mouseleave', (event) => selector.performRaycast(event, 
 window.addEventListener('mousedown', (event) => selector.performRaycast(event, handleMouseClick));
 
 window.addEventListener('keydown', (event) => handleKeyDown(event, editor, selector));
+
+editor.transformControls.addEventListener('mouseDown', function (event) {
+    editor.cameraControls.enabled = false;
+    selector.isUsingTransformControls = true;
+});
+
+editor.transformControls.addEventListener('mouseUp', function (event) {
+    editor.cameraControls.enabled = true;
+    selector.isUsingTransformControls = false;
+
+    if (selector.currentSelectedObject === undefined) {
+        return;
+    }
+
+    let command: Command | undefined = undefined;
+    switch (editor.transformControls.getMode()) {
+        case "translate":
+            command = new MoveObjectCommand(
+                selector.currentSelectedObject, 
+                editor.transformControls._positionStart.clone(), 
+                selector.currentSelectedObject.position.clone());
+            break;
+        case "rotate": 
+            command = new RotateObjectCommand(
+                selector.currentSelectedObject, 
+                editor.transformControls._quaternionStart.clone(), 
+                selector.currentSelectedObject.quaternion.clone());
+            break;
+        case "scale":
+            command = new ScaleObjectCommand(
+                selector.currentSelectedObject,
+                editor.transformControls._scaleStart.clone(),
+                selector.currentSelectedObject.scale.clone()
+            )
+            break;
+        default:
+            break;
+    }
+
+    if (command === undefined) {
+        return;
+    }
+
+    console.log("Mouse UP")
+    command.execute();
+    editor.commandStack.push(command);
+});
 
 createGround(editor.scene)
 let box = createCube(editor.scene)

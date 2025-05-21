@@ -3,6 +3,8 @@ import { Editor } from './Editor';
 import { Selector } from './Selector';
 import { MoveObjectCommand } from './commands/MoveObjectCommand';
 import { render } from './Rendering';
+import { Command } from './commands/Command';
+import { RotateObjectCommand } from './commands/RotateObjectCommand';
 
 export function handleMouseMove(editor: Editor, selector: Selector, object?: THREE.Mesh) {
     /**
@@ -66,24 +68,7 @@ export function handleMouseClick(editor: Editor, selector: Selector, object?: TH
         editor.scene.add(selector.transformControlsGizmo);
     }
 
-    editor.transformControls.addEventListener('mouseDown', function (event) {
-        editor.cameraControls.enabled = false;
-        selector.isUsingTransformControls = true;
-        // TODO: save inital location
-    });
 
-    editor.transformControls.addEventListener('mouseUp', function (event) {
-        editor.cameraControls.enabled = true;
-        selector.isUsingTransformControls = false;
-
-        const command = new MoveObjectCommand(
-            selector.currentSelectedObject, 
-            editor.transformControls._positionStart.clone(), 
-            selector.currentSelectedObject.position.clone());
-        command.execute();
-        editor.commandStack.push(command);
-        console.log(editor.commandStack.length)
-    });
 }
 
 

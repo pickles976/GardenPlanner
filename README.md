@@ -30,7 +30,12 @@ JavaScript: suncalc
     - [x] scale
 - [x] debug shadowmap
 
-- [ ] use signals/commands
+- [x] add commands 
+    - [x] rotation
+    - [x] scaling
+
+- [x] add message bus
+
 - [ ] add UI for transform controls
     - [ ] create UI
     - [ ] create sliders
