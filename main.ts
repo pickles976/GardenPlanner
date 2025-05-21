@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { Editor } from './Editor';
 import { requestRenderIfNotRequested, render } from './Rendering';
+import { Selector } from './Selector';
+import { handleMouseMove } from './MouseEventHandlers';
 
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
@@ -16,7 +18,7 @@ function createGround(scene: THREE.Scene): THREE.Mesh {
     return groundMesh
 }
 
-function createMoveableCube(scene: THREE.Scene): THREE.Mesh {
+function createCube(scene: THREE.Scene): THREE.Mesh {
     const boxMat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
     })
@@ -28,7 +30,7 @@ function createMoveableCube(scene: THREE.Scene): THREE.Mesh {
     return boxMesh
 }
 
-function createMoveableTorus(scene: THREE.Scene): THREE.Mesh {
+function createTorus(scene: THREE.Scene): THREE.Mesh {
     const torusMat = new THREE.MeshPhongMaterial({
         color: 0x2A7AB0,
     })
@@ -40,70 +42,33 @@ function createMoveableTorus(scene: THREE.Scene): THREE.Mesh {
     return torusMesh
 }
 
-function getCanvasRelativePosition(event, editor: Editor) {
-  const rect = editor.canvas.getBoundingClientRect();
-  return {
-    x: (event.clientX - rect.left) * editor.canvas.width  / rect.width,
-    y: (event.clientY - rect.top ) * editor.canvas.height / rect.height,
-  };
-}
 
-function handleMouseMove(event, editor: Editor) {
-
-    const pos = getCanvasRelativePosition(event, editor);
-    const pickPosition = new THREE.Vector2();
-    pickPosition.x = (pos.x / editor.canvas.width ) *  2 - 1;
-    pickPosition.y = (pos.y / editor.canvas.height) * -2 + 1;  // note we flip Y
-
-    editor.raycaster.setFromCamera( pickPosition, editor.camera );
-
-    // const intersects = raycaster.intersectObjects( interactiveObjects );
-    const intersects = editor.raycaster.intersectObjects(editor.scene.children);
-
-    if ( intersects.length > 0 ) {
-
-        const intersection = intersects[ 0 ];
-        const object = intersection.object;
-        console.log(object)
-
-        // prepareAnimationData( object, this.center );
-        if (object.material.emissive === undefined) {
-            return false;
-        }
-        object.material.emissive.setHex(0xFFFF00);
-        // animating = true;
-
-        return true;
-
-    } else {
-
-        return false;
-
-    }
-
-}
 
 const editor = new Editor();
 editor.initThree();
+
+const selector = new Selector(editor);
 
 window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
 window.addEventListener('mousemove', () => requestRenderIfNotRequested(editor));
 window.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
 window.addEventListener('mouseleave', () => requestRenderIfNotRequested(editor));
 
-window.addEventListener('mousemove', (event) => handleMouseMove(event, editor));
-window.addEventListener('mouseout', (event) => handleMouseMove(event, editor));
-window.addEventListener('mouseleave', (event) => handleMouseMove(event, editor));
+window.addEventListener('mousemove', (event) => selector.performRaycast(event, handleMouseMove));
+window.addEventListener('mouseout', (event) => selector.performRaycast(event, handleMouseMove));
+window.addEventListener('mouseleave', (event) => selector.performRaycast(event, handleMouseMove));
 
 
 
+
+
+// editor.transformControls.attach(editor.directionalLight);
+// const gizmo = editor.transformControls.getHelper();
+// editor.scene.add( gizmo );
 
 createGround(editor.scene)
-let box = createMoveableCube(editor.scene)
+let box = createCube(editor.scene)
 box.position.set(0, 0, 2)
-editor.transformControls.attach(editor.directionalLight);
-const gizmo = editor.transformControls.getHelper();
-editor.scene.add( gizmo );
 
-let torus = createMoveableTorus(editor.scene)
+let torus = createTorus(editor.scene)
 torus.position.set(3, 3, 2)
