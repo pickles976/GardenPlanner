@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "gizmos": "^0.0.0",
     "three": "^0.176.0",
     "three-orbitcontrols": "^2.110.3",
     "three-transform-controls": "^1.0.4"

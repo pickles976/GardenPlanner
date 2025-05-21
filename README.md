@@ -28,7 +28,7 @@ JavaScript: suncalc
     - [x] drag
     - [x] rotate
     - [x] scale
-- [ ] debug shadowmap
+- [x] debug shadowmap
 
 - [ ] use signals/commands
 - [ ] add UI for transform controls

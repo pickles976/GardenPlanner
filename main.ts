@@ -1,8 +1,8 @@
 import * as THREE from 'three';
-import { Editor } from './Editor';
-import { requestRenderIfNotRequested, render } from './Rendering';
-import { Selector } from './Selector';
-import { handleMouseMove, handleMouseClick, handleKeyDown } from './EventHandlers';
+import { Editor } from './js/Editor';
+import { requestRenderIfNotRequested, render } from './js/Rendering';
+import { Selector } from './js/Selector';
+import { handleMouseMove, handleMouseClick, handleKeyDown } from './js/EventHandlers';
 
 
 function createGround(scene: THREE.Scene): THREE.Mesh {

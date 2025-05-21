@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { Editor } from './Editor';
 import { Selector } from './Selector';
+import { MoveObjectCommand } from './commands/MoveObjectCommand';
+import { render } from './Rendering';
 
 export function handleMouseMove(editor: Editor, selector: Selector, object?: THREE.Mesh) {
     /**
@@ -64,11 +66,24 @@ export function handleMouseClick(editor: Editor, selector: Selector, object?: TH
         editor.scene.add(selector.transformControlsGizmo);
     }
 
-    // Update TransformControls
-    editor.transformControls.addEventListener( 'dragging-changed', function ( event ) {
-        editor.cameraControls.enabled = ! event.value;
-        selector.isUsingTransformControls = event.value;
-    } );
+    editor.transformControls.addEventListener('mouseDown', function (event) {
+        editor.cameraControls.enabled = false;
+        selector.isUsingTransformControls = true;
+        // TODO: save inital location
+    });
+
+    editor.transformControls.addEventListener('mouseUp', function (event) {
+        editor.cameraControls.enabled = true;
+        selector.isUsingTransformControls = false;
+
+        const command = new MoveObjectCommand(
+            selector.currentSelectedObject, 
+            editor.transformControls._positionStart.clone(), 
+            selector.currentSelectedObject.position.clone());
+        command.execute();
+        editor.commandStack.push(command);
+        console.log(editor.commandStack.length)
+    });
 }
 
 
@@ -106,7 +121,15 @@ export function handleKeyDown(event, editor: Editor, selector: Selector) {
             break;
 
         case 'z':
-            editor.transformControls.showZ = ! editor.transformControls.showZ;
+
+            if (event.ctrlKey) {
+                const command = editor.commandStack.pop();
+                command?.undo();
+                render(editor);
+            } else {
+                editor.transformControls.showZ = ! editor.transformControls.showZ;
+            }
+
             break;
 
         case ' ':

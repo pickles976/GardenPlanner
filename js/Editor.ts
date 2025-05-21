@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { requestRenderIfNotRequested } from './Rendering';
+import { Command } from './commands/Command';
 
 const SHADOWMAP_WIDTH = 32;
 const SHADOWMAP_RESOLUTION = 1024;
@@ -17,11 +18,17 @@ class Editor {
     renderer: THREE.WebGLRenderer
     scene: THREE.Scene
     camera: THREE.PerspectiveCamera
-    cameraControls: THREE.MapControls
-    transformControls: THREE.TransformControls
+    cameraControls: MapControls
+    transformControls: TransformControls
     raycaster: THREE.Raycaster
 
     directionalLight: THREE.DirectionalLight
+
+    commandStack: Command[];
+
+    constructor () {
+        this.commandStack = [];
+    }
 
     public initThree() {
     
