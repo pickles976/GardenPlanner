@@ -24,8 +24,8 @@ JavaScript: suncalc
 - [x] typescript
 - [x] render on demand
 - [ ] allow moving cube
-    - [ ] select and deselect
-    - [ ] drag
+    - [x] select and deselect
+    - [x] drag
     - [ ] rotate
     - [ ] scale
 

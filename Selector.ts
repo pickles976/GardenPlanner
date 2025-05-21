@@ -4,13 +4,12 @@ import { Editor } from "./Editor";
 class Selector {
 
     editor: Editor
-    oldColor?: THREE.Color;
     currentMousedOverObject?: THREE.Object3D;
     currentSelectedObject?: THREE.Object3D;
+    transformControlsGizmo?: THREE.Object3D;
 
     constructor (editor: Editor) {
         this.editor = editor;
-        this.oldColor = undefined;
         this.currentMousedOverObject = undefined;
         this.currentSelectedObject = undefined;
     }
@@ -23,7 +22,7 @@ class Selector {
         };
     }
 
-    public performRaycast(event, callback: (editor: Editor, selector: Selector, object?: THREE.Object3D) => void) : boolean {
+    public performRaycast(event, callback: (editor: Editor, selector: Selector, object?: THREE.Mesh) => void) : boolean {
 
         const pos = this.getCanvasRelativePosition(event);
         const pickPosition = new THREE.Vector2();
@@ -39,8 +38,13 @@ class Selector {
 
             const intersection = intersects[ 0 ];
             const object = intersection.object;
+            
+            if (object.userData.selectable === true) {
+                callback(this.editor, this, object);
+            } else {
+                callback(this.editor, this, undefined);
+            }
 
-            callback(this.editor, this, object);
 
             return true;
 

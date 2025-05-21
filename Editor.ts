@@ -95,15 +95,10 @@ class Editor {
     
         this.scene.background = new THREE.Color(white);
     
-        this.transformControls = new TransformControls( this.camera, this.renderer.domElement );
+        this.transformControls = new TransformControls( this.camera, this.canvas );
 
         this.cameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
         this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );
-        this.transformControls.addEventListener( 'dragging-changed', function ( event ) {
-    
-            this.cameraControls.enabled = ! event.value;
-    
-        } );
     
     }
 
