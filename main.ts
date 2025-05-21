@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Editor } from './Editor';
 import { requestRenderIfNotRequested, render } from './Rendering';
 import { Selector } from './Selector';
-import { handleMouseMove, handleMouseClick } from './MouseEventHandlers';
+import { handleMouseMove, handleMouseClick, handleKeyDown } from './EventHandlers';
 
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
@@ -60,7 +60,9 @@ window.addEventListener('mousemove', (event) => selector.performRaycast(event, h
 window.addEventListener('mouseout', (event) => selector.performRaycast(event, handleMouseMove));
 window.addEventListener('mouseleave', (event) => selector.performRaycast(event, handleMouseMove));
 
-window.addEventListener('click', (event) => selector.performRaycast(event, handleMouseClick));
+window.addEventListener('mousedown', (event) => selector.performRaycast(event, handleMouseClick));
+
+window.addEventListener('keydown', (event) => handleKeyDown(event, editor, selector));
 
 createGround(editor.scene)
 let box = createCube(editor.scene)

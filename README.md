@@ -23,14 +23,20 @@ JavaScript: suncalc
 - [x] shadows
 - [x] typescript
 - [x] render on demand
-- [ ] allow moving cube
+- [x] allow moving cube
     - [x] select and deselect
     - [x] drag
-    - [ ] rotate
-    - [ ] scale
+    - [x] rotate
+    - [x] scale
+- [ ] debug shadowmap
 
 - [ ] use signals/commands
 - [ ] add UI for transform controls
+    - [ ] create UI
+    - [ ] create sliders
+    - [ ] connect signals to editor
+    - [ ] ???
+
 - [ ] add UI for placing and removing objects
 - [ ] allow CTRL+Z
 

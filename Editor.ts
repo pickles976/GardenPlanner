@@ -8,6 +8,10 @@ const SHADOWMAP_RESOLUTION = 1024;
 const ANTI_ALIASING = true;
 
 class Editor {
+    /**
+     * Holds all of our important Three.js instance stuff. We should try to move as much out of here as possible to avoid creating a 
+     * "God" object
+     */
 
     canvas: HTMLCanvasElement
     renderer: THREE.WebGLRenderer
@@ -71,6 +75,10 @@ class Editor {
     
         // Shadow properties
         // https://threejs.org/docs/index.html#api/en/lights/shadows/DirectionalLightShadow
+
+        // Prevent shadow acne artifacts
+        // https://mofu-dev.com/en/blog/threejs-shadow-map/
+        this.directionalLight.shadow.bias = -0.001;
         this.directionalLight.shadow.mapSize.width = SHADOWMAP_RESOLUTION; // default
         this.directionalLight.shadow.mapSize.height = SHADOWMAP_RESOLUTION; // default
         this.directionalLight.shadow.camera.near = 0.5; // default
@@ -78,6 +86,8 @@ class Editor {
     
         this.directionalLight.shadow.camera.left = -SHADOWMAP_WIDTH;
         this.directionalLight.shadow.camera.right = SHADOWMAP_WIDTH;
+        this.directionalLight.shadow.camera.top = -SHADOWMAP_WIDTH;
+        this.directionalLight.shadow.camera.bottom = SHADOWMAP_WIDTH;
     
         const ambient = new THREE.AmbientLight(white, 0.5);
         this.scene.add(ambient);
@@ -95,9 +105,11 @@ class Editor {
     
         this.scene.background = new THREE.Color(white);
     
-        this.transformControls = new TransformControls( this.camera, this.canvas );
 
         this.cameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
+
+        // TODO: move transform controls from editor to Selector
+        this.transformControls = new TransformControls( this.camera, this.canvas );
         this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );
     
     }

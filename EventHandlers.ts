@@ -38,6 +38,11 @@ export function handleMouseClick(editor: Editor, selector: Selector, object?: TH
      * Function that attaches transform controls to an object when clicked.
      */
 
+    // Don't do anything if we are actively using the transform controls
+    if (selector.isUsingTransformControls === true) {
+        return
+    }
+
     console.log(object);
 
     // TODO: check if the object is the same and do nothing
@@ -62,5 +67,55 @@ export function handleMouseClick(editor: Editor, selector: Selector, object?: TH
     // Update TransformControls
     editor.transformControls.addEventListener( 'dragging-changed', function ( event ) {
         editor.cameraControls.enabled = ! event.value;
+        selector.isUsingTransformControls = event.value;
     } );
+}
+
+
+export function handleKeyDown(event, editor: Editor, selector: Selector) {
+    switch ( event.key ) {
+
+        case 't':
+            editor.transformControls.setMode( 'translate' );
+            break;
+
+        case 'r':
+            editor.transformControls.setMode( 'rotate' );
+            break;
+
+        case 's':
+            editor.transformControls.setMode( 'scale' );
+            break;
+
+        case '+':
+        case '=':
+            editor.transformControls.setSize( editor.transformControls.size + 0.1 );
+            break;
+
+        case '-':
+        case '_':
+            editor.transformControls.setSize( Math.max( editor.transformControls.size - 0.1, 0.1 ) );
+            break;
+
+        case 'x':
+            editor.transformControls.showX = ! editor.transformControls.showX;
+            break;
+
+        case 'y':
+            editor.transformControls.showY = ! editor.transformControls.showY;
+            break;
+
+        case 'z':
+            editor.transformControls.showZ = ! editor.transformControls.showZ;
+            break;
+
+        case ' ':
+            editor.transformControls.enabled = ! editor.transformControls.enabled;
+            break;
+
+        // case 'Escape':
+        //     editor.transformControls.reset();
+        //     break;
+
+    }
 }

@@ -7,11 +7,14 @@ class Selector {
     currentMousedOverObject?: THREE.Object3D;
     currentSelectedObject?: THREE.Object3D;
     transformControlsGizmo?: THREE.Object3D;
+    isUsingTransformControls: boolean
 
     constructor (editor: Editor) {
         this.editor = editor;
         this.currentMousedOverObject = undefined;
         this.currentSelectedObject = undefined;
+        this.transformControlsGizmo = undefined;
+        this.isUsingTransformControls = false;
     }
 
     private getCanvasRelativePosition(event) {
@@ -22,7 +25,7 @@ class Selector {
         };
     }
 
-    public performRaycast(event, callback: (editor: Editor, selector: Selector, object?: THREE.Mesh) => void) : boolean {
+    public performRaycast(event: Event, callback: (editor: Editor, selector: Selector, object?: THREE.Mesh) => void) : boolean {
 
         const pos = this.getCanvasRelativePosition(event);
         const pickPosition = new THREE.Vector2();
