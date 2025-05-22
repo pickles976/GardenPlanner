@@ -4,9 +4,10 @@ import { requestRenderIfNotRequested, render } from './js/Rendering';
 import { Selector } from './js/Selector';
 import { handleMouseMove, handleMouseClick, handleKeyDown } from './js/EventHandlers';
 import { Command } from './js/commands/Command';
-import { MoveObjectCommand } from './js/commands/MoveObjectCommand';
-import { RotateObjectCommand } from './js/commands/RotateObjectCommand';
-import { ScaleObjectCommand } from './js/commands/ScaleObjectCommand';
+import { SetPositionCommand } from './js/commands/SetPositionCommand';
+import { SetRotationCommand } from './js/commands/SetRotationCommand';
+import { SetScaleCommand } from './js/commands/SetScaleCommand';
+import { Sidebar } from './js/sidebar/Sidebar';
 
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
@@ -84,19 +85,19 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
     let command: Command | undefined = undefined;
     switch (editor.transformControls.getMode()) {
         case "translate":
-            command = new MoveObjectCommand(
+            command = new SetPositionCommand(
                 selector.currentSelectedObject, 
                 editor.transformControls._positionStart.clone(), 
                 selector.currentSelectedObject.position.clone());
             break;
         case "rotate": 
-            command = new RotateObjectCommand(
+            command = new SetRotationCommand(
                 selector.currentSelectedObject, 
                 editor.transformControls._quaternionStart.clone(), 
                 selector.currentSelectedObject.quaternion.clone());
             break;
         case "scale":
-            command = new ScaleObjectCommand(
+            command = new SetScaleCommand(
                 selector.currentSelectedObject,
                 editor.transformControls._scaleStart.clone(),
                 selector.currentSelectedObject.scale.clone()
@@ -123,3 +124,6 @@ let torus = createTorus(editor.scene)
 torus.position.set(3, 3, 2)
 
 render(editor);
+
+const sidebar = Sidebar( editor );
+document.body.appendChild( sidebar.dom );

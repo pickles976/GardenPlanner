@@ -37,7 +37,8 @@ JavaScript: suncalc
 - [x] add message bus
 
 - [ ] add UI for transform controls
-    - [ ] create UI (copy from editor)
+    - [x] create UI (copy from editor)
+    - [ ] add UI that shows property of currently selected item
     - [ ] add UI for viewing and selecting items from scene heirarchy like in editor program
     - [ ] create sliders
     - [ ] connect signals to editor

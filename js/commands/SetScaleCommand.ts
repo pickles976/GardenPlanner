@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Command } from './Command';
 
-class ScaleObjectCommand extends Command {
+class SetScaleCommand extends Command {
 
     object: THREE.Object3D
     startScale: THREE.Vector3
@@ -24,4 +24,4 @@ class ScaleObjectCommand extends Command {
 
 }
 
-export { ScaleObjectCommand };
+export { SetScaleCommand };

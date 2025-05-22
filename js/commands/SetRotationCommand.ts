@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Command } from './Command';
 
-class RotateObjectCommand extends Command {
+class SetRotationCommand extends Command {
 
     object: THREE.Object3D
     startQuaternion: THREE.Quaternion
@@ -24,4 +24,4 @@ class RotateObjectCommand extends Command {
 
 }
 
-export { RotateObjectCommand };
+export { SetRotationCommand };

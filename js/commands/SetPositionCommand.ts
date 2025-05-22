@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Command } from './Command';
 
-class MoveObjectCommand extends Command {
+class SetPositionCommand extends Command {
 
     object: THREE.Object3D
     startPosition: THREE.Vector3
@@ -24,4 +24,4 @@ class MoveObjectCommand extends Command {
 
 }
 
-export { MoveObjectCommand };
+export { SetPositionCommand };
