@@ -43,8 +43,8 @@ JavaScript: suncalc
     - [x] create sliders
     - [x] connect signals to editor
     - [x] why aren't the names of objects populating the scene heirarchy?
+    - [x] disable raycasting stuff when mouse is over editor panel
     - [ ] refactor selector
-    - [ ] disable raycasting stuff when mouse is over editor panel
     - [ ] configure 2-way binding between editor panel and object
     - [ ] filter certain things out of the scene panel view
 

@@ -62,17 +62,17 @@ editor.initThree();
 const selector = new Selector(editor);
 
 window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
-window.addEventListener('mousemove', () => requestRenderIfNotRequested(editor));
-window.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
-window.addEventListener('mouseleave', () => requestRenderIfNotRequested(editor));
+editor.canvas.addEventListener('mousemove', () => requestRenderIfNotRequested(editor));
+editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
+editor.canvas.addEventListener('mouseleave', () => requestRenderIfNotRequested(editor));
 
-window.addEventListener('mousemove', (event) => selector.performRaycast(event, handleMouseMove));
-window.addEventListener('mouseout', (event) => selector.performRaycast(event, handleMouseMove));
-window.addEventListener('mouseleave', (event) => selector.performRaycast(event, handleMouseMove));
+editor.canvas.addEventListener('mousemove', (event) => selector.performRaycast(event, handleMouseMove));
+editor.canvas.addEventListener('mouseout', (event) => selector.performRaycast(event, handleMouseMove));
+editor.canvas.addEventListener('mouseleave', (event) => selector.performRaycast(event, handleMouseMove));
 
-window.addEventListener('mousedown', (event) => selector.performRaycast(event, handleMouseClick));
+editor.canvas.addEventListener('mousedown', (event) => selector.performRaycast(event, handleMouseClick));
 
-window.addEventListener('keydown', (event) => handleKeyDown(event, editor, selector));
+editor.canvas.addEventListener('keydown', (event) => handleKeyDown(event, editor, selector));
 
 editor.transformControls.addEventListener('mouseDown', function (event) {
     editor.cameraControls.enabled = false;
