@@ -732,13 +732,11 @@ function SidebarObject( editor ) {
 
 	} );
 
-	// signals.objectChanged.add( function ( object ) {
+	eventBus.on('objectChanged', ( object ) => {
 
-	// 	if ( object !== editor.selected ) return;
+		updateUI( object );
 
-	// 	updateUI( object );
-
-	// } );
+	} );
 
 	// signals.refreshSidebarObject3D.add( function ( object ) {
 

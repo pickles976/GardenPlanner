@@ -8,6 +8,7 @@ import { SetPositionCommand } from './js/commands/SetPositionCommand';
 import { SetRotationCommand } from './js/commands/SetRotationCommand';
 import { SetScaleCommand } from './js/commands/SetScaleCommand';
 import { Sidebar } from './js/sidebar/Sidebar';
+import { eventBus } from './js/EventBus';
 
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
@@ -115,9 +116,9 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
         return;
     }
 
-    console.log("Mouse UP")
     command.execute();
     editor.commandStack.push(command);
+    eventBus.emit('objectChanged', selector.currentSelectedObject);
 });
 
 createGround(editor.scene)

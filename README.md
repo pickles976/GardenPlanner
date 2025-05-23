@@ -40,11 +40,16 @@ JavaScript: suncalc
     - [x] create UI (copy from editor)
     - [x] add UI that shows property of currently selected item
     - [x] add UI for viewing and selecting items from scene heirarchy like in editor program
-    - [ ] create sliders
-    - [ ] connect signals to editor
-    - [ ] why aren't the names of objects populating the scene heirarchy?
+    - [x] create sliders
+    - [x] connect signals to editor
+    - [x] why aren't the names of objects populating the scene heirarchy?
+    - [ ] refactor selector
+    - [ ] disable raycasting stuff when mouse is over editor panel
+    - [ ] configure 2-way binding between editor panel and object
     - [ ] filter certain things out of the scene panel view
 
+- [ ] create command for adding/removing objects that goes through the editor class
+- [ ] track objects? (how do we wanna do this?)
 
 - [ ] add UI for placing and removing objects
 - [ ] add commands for placing and removing objects
