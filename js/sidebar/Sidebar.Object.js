@@ -10,14 +10,16 @@ import { SetRotationCommand } from '../commands/SetRotationCommand.js';
 import { SetScaleCommand } from '../commands/SetScaleCommand.js';
 // import { SetColorCommand } from './commands/SetColorCommand.js';
 // import { SetShadowValueCommand } from './commands/SetShadowValueCommand.js';
+import { Strings } from './Strings';
+import {eventBus} from '../EventBus.js';
+
+const strings = Strings({'language': 'en'});
 
 // import { SidebarObjectAnimation } from './Sidebar.Object.Animation.js';
 
 function SidebarObject( editor ) {
 
-	const strings = editor.strings;
-
-	const signals = editor.signals;
+	// const strings = editor.strings;
 
 	const container = new UIPanel();
 	container.setBorderTop( '0' );
@@ -429,7 +431,7 @@ function SidebarObject( editor ) {
 
 	// Animations
 
-	container.add( new SidebarObjectAnimation( editor ) );
+	// container.add( new SidebarObjectAnimation( editor ) );
 
 	//
 
@@ -711,11 +713,11 @@ function SidebarObject( editor ) {
 
 	}
 
-	// events
+	// // events
 
-	signals.objectSelected.add( function ( object ) {
-
-		if ( object !== null ) {
+	eventBus.on('objectSelected', (object) => {
+		console.log(object)
+		if ( object !== null && object !== undefined) {
 
 			container.setDisplay( 'block' );
 
@@ -730,21 +732,21 @@ function SidebarObject( editor ) {
 
 	} );
 
-	signals.objectChanged.add( function ( object ) {
+	// signals.objectChanged.add( function ( object ) {
 
-		if ( object !== editor.selected ) return;
+	// 	if ( object !== editor.selected ) return;
 
-		updateUI( object );
+	// 	updateUI( object );
 
-	} );
+	// } );
 
-	signals.refreshSidebarObject3D.add( function ( object ) {
+	// signals.refreshSidebarObject3D.add( function ( object ) {
 
-		if ( object !== editor.selected ) return;
+	// 	if ( object !== editor.selected ) return;
 
-		updateUI( object );
+	// 	updateUI( object );
 
-	} );
+	// } );
 
 	function updateUI( object ) {
 

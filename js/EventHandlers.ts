@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Editor } from './Editor';
 import { Selector } from './Selector';
 import { render } from './Rendering';
+import { eventBus } from './EventBus';
 
 export function handleMouseMove(editor: Editor, selector: Selector, object?: THREE.Mesh) {
     /**
@@ -11,8 +12,6 @@ export function handleMouseMove(editor: Editor, selector: Selector, object?: THR
     if (selector.currentMousedOverObject === object) {
         return
     }
-
-    console.log(object)
 
     // If object is unselectable
     if (object === undefined) {
@@ -44,8 +43,6 @@ export function handleMouseClick(editor: Editor, selector: Selector, object?: TH
         return
     }
 
-    console.log(object);
-
     // TODO: check if the object is the same and do nothing
 
     editor.transformControls.detach();
@@ -64,6 +61,8 @@ export function handleMouseClick(editor: Editor, selector: Selector, object?: TH
         selector.transformControlsGizmo = editor.transformControls.getHelper();
         editor.scene.add(selector.transformControlsGizmo);
     }
+
+    eventBus.emit('objectSelected', object);
 
 
 }

@@ -1,3 +1,4 @@
+import { contain } from 'three/src/extras/TextureUtils.js';
 import { UITabbedPanel } from '../libs/ui.js';
 
 import { SidebarObject } from './Sidebar.Object.js';
@@ -8,8 +9,10 @@ function SidebarProperties( editor ) {
 
 	// const strings = editor.strings;
 
-	// const container = new UITabbedPanel();
-	// container.setId( 'properties' );
+	const container = new UITabbedPanel();
+	container.setId( 'properties' );
+
+	container.addTab('objectTab', 'sidebar/properties/object', new SidebarObject(editor));
 
 	// // container.addTab( 'objectTab', strings.getKey( 'sidebar/properties/object' ), new SidebarObject( editor ) );
 	// // container.addTab( 'geometryTab', strings.getKey( 'sidebar/properties/geometry' ), new SidebarGeometry( editor ) );
@@ -64,7 +67,7 @@ function SidebarProperties( editor ) {
 
 	// toggleTabs( editor.selected );
 
-	// return container;
+	return container;
 
 }
 
