@@ -3,6 +3,7 @@ import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { requestRenderIfNotRequested } from './Rendering';
 import { Command } from './commands/Command';
+import { Selector } from './Selector';
 
 const SHADOWMAP_WIDTH = 32;
 const SHADOWMAP_RESOLUTION = 1024;
@@ -20,7 +21,6 @@ class Editor {
     camera: THREE.PerspectiveCamera
     cameraControls: MapControls
     transformControls: TransformControls
-    raycaster: THREE.Raycaster
 
     directionalLight: THREE.DirectionalLight
 
@@ -28,9 +28,12 @@ class Editor {
 
     objectMap: { [key: string]: THREE.Object3D };
 
+    selector: Selector
+
     constructor () {
         this.commandStack = [];
         this.objectMap = {};
+        this.selector = new Selector(this);
     }
 
     public initThree() {
@@ -45,8 +48,6 @@ class Editor {
 
         // TODO: only one canvas?
         this.canvas = document.body.appendChild(this.renderer.domElement);
-    
-        this.raycaster = new THREE.Raycaster();
     
         // renderer.outputEncoding = THREE.sRGBEncoding;
         // renderer.toneMapping = THREE.ACESFilmicToneMapping;

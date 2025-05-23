@@ -64,33 +64,56 @@ function createTorus(editor: Editor): THREE.Mesh {
     return torusMesh
 }
 
-
-
 const editor = new Editor();
 editor.initThree();
 
-const selector = new Selector(editor);
-
 window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
-window.addEventListener('keydown', (event) => handleKeyDown(event, editor, selector));
+window.addEventListener('keydown', (event) => handleKeyDown(event, editor));
 
 editor.canvas.addEventListener('mousemove', () => requestRenderIfNotRequested(editor));
 editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
 editor.canvas.addEventListener('mouseleave', () => requestRenderIfNotRequested(editor));
 
-editor.canvas.addEventListener('mousemove', (event) => selector.performRaycast(event, handleMouseMove));
-editor.canvas.addEventListener('mouseout', (event) => selector.performRaycast(event, handleMouseMove));
-editor.canvas.addEventListener('mouseleave', (event) => selector.performRaycast(event, handleMouseMove));
+function performRaycast(event, editor, callback){
+    const selector = editor.selector;
+    let intersections = selector.performRaycast(event);
+    if ( intersections.length > 0 ) {
 
-editor.canvas.addEventListener('mousedown', (event) => selector.performRaycast(event, handleMouseClick));
+        const intersection = intersections[ 0 ];
+        const object = intersection.object;
+        
+        if (object.userData.selectable === true) {
+            callback(editor, object);
+        } else {
+            callback(editor, undefined);
+        }
+
+        return true;
+
+    } else {
+
+        callback(editor, undefined);
+
+        return false;
+
+    }
+}
+
+editor.canvas.addEventListener('mousemove', (event) => performRaycast(event, editor, handleMouseMove));
+editor.canvas.addEventListener('mouseout', (event) => performRaycast(event, editor, handleMouseMove));
+editor.canvas.addEventListener('mouseleave', (event) => performRaycast(event, editor, handleMouseMove));
+editor.canvas.addEventListener('mousedown', (event) => performRaycast(event, editor, handleMouseClick));
 
 
 editor.transformControls.addEventListener('mouseDown', function (event) {
+    const selector = editor.selector;
     editor.cameraControls.enabled = false;
     selector.isUsingTransformControls = true;
 });
 
 editor.transformControls.addEventListener('mouseUp', function (event) {
+    const selector = editor.selector;
+    
     editor.cameraControls.enabled = true;
     selector.isUsingTransformControls = false;
 

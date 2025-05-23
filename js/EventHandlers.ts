@@ -4,10 +4,12 @@ import { Selector } from './Selector';
 import { render } from './Rendering';
 import { eventBus } from './EventBus';
 
-export function handleMouseMove(editor: Editor, selector: Selector, object?: THREE.Mesh) {
+export function handleMouseMove(editor: Editor, object?: THREE.Mesh) {
     /**
      * Function that highlights objects when the mouse is over them, and returns them to their original color once the mouse has left.
      */
+
+    const selector = editor.selector;
 
     if (selector.currentMousedOverObject === object) {
         return
@@ -33,10 +35,12 @@ export function handleMouseMove(editor: Editor, selector: Selector, object?: THR
     }
 }
 
-export function handleMouseClick(editor: Editor, selector: Selector, object?: THREE.Mesh) {
+export function handleMouseClick(editor: Editor, object?: THREE.Mesh) {
     /**
      * Function that attaches transform controls to an object when clicked.
      */
+
+    const selector = editor.selector;
 
     // Don't do anything if we are actively using the transform controls
     if (selector.isUsingTransformControls === true) {
@@ -68,7 +72,7 @@ export function handleMouseClick(editor: Editor, selector: Selector, object?: TH
 }
 
 
-export function handleKeyDown(event, editor: Editor, selector: Selector) {
+export function handleKeyDown(event, editor: Editor) {
     switch ( event.key ) {
 
         case 't':

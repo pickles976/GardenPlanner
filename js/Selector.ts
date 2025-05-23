@@ -1,6 +1,8 @@
 import * as THREE from 'three';
 import { Editor } from "./Editor";
 
+const raycaster = new THREE.Raycaster();
+
 class Selector {
 
     editor: Editor
@@ -25,39 +27,16 @@ class Selector {
         };
     }
 
-    public performRaycast(event: Event, callback: (editor: Editor, selector: Selector, object?: THREE.Mesh) => void) : boolean {
+    public performRaycast(event: Event) : THREE.Object3D[] {
 
         const pos = this.getCanvasRelativePosition(event);
         const pickPosition = new THREE.Vector2();
         pickPosition.x = (pos.x / this.editor.canvas.width ) *  2 - 1;
         pickPosition.y = (pos.y / this.editor.canvas.height) * -2 + 1;  // note we flip Y
 
-        this.editor.raycaster.setFromCamera( pickPosition, this.editor.camera );
+        raycaster.setFromCamera( pickPosition, this.editor.camera );
 
-        // const intersects = raycaster.intersectObjects( interactiveObjects );
-        const intersects = this.editor.raycaster.intersectObjects(this.editor.scene.children);
-
-        if ( intersects.length > 0 ) {
-
-            const intersection = intersects[ 0 ];
-            const object = intersection.object;
-            
-            if (object.userData.selectable === true) {
-                callback(this.editor, this, object);
-            } else {
-                callback(this.editor, this, undefined);
-            }
-
-
-            return true;
-
-        } else {
-
-            callback(this.editor, this, undefined);
-
-            return false;
-
-        }
+        return raycaster.intersectObjects(this.editor.scene.children);
 
     }
 
