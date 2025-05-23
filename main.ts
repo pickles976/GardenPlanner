@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { Editor } from './js/Editor';
 import { requestRenderIfNotRequested, render } from './js/Rendering';
-import { Selector } from './js/Selector';
 import { handleMouseMove, handleMouseClick, handleKeyDown } from './js/EventHandlers';
 import { Command } from './js/commands/Command';
 import { SetPositionCommand } from './js/commands/SetPositionCommand';
@@ -38,9 +37,7 @@ function createCube(editor: Editor): THREE.Mesh {
     // TODO: make this dynamic
     boxMesh.name = "Box";
 
-    const command = new CreateObjectCommand(boxMesh, editor);
-    command.execute();
-    editor.commandStack.push(command);
+    editor.execute(new CreateObjectCommand(boxMesh, editor));
 
     return boxMesh
 }
@@ -57,9 +54,7 @@ function createTorus(editor: Editor): THREE.Mesh {
     // TODO: make this dynamic
     torusMesh.name = "Torus"
 
-    const command = new CreateObjectCommand(torusMesh, editor);
-    command.execute();
-    editor.commandStack.push(command);
+    editor.execute(new CreateObjectCommand(torusMesh, editor));
 
     return torusMesh
 }
@@ -160,10 +155,12 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
         return;
     }
 
-    command.execute();
-    editor.commandStack.push(command);
-    eventBus.emit('objectChanged', selector.currentSelectedObject);
+    editor.execute(command);
 });
+
+eventBus.on('requestRender', () => render(editor));
+eventBus.on('objectChanged', () => render(editor));
+
 
 createGround(editor.scene)
 let box = createCube(editor)

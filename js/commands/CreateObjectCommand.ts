@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { Command } from './Command';
 import { Editor } from '../Editor';
+import { eventBus } from '../EventBus';
 
 class CreateObjectCommand extends Command {
 
@@ -9,16 +10,20 @@ class CreateObjectCommand extends Command {
 
     constructor (object: THREE.Object3D, editor: Editor) {
         super();
+        this.name = "CreateObjectCommand"
+        this.updateable = false
         this.object = object;
         this.editor = editor;
     }
 
     public execute() {
         this.editor.add(this.object);
+        eventBus.emit('requestRender', this.object);
     }
 
     public undo() {
         this.editor.remove(this.object);
+        eventBus.emit('requestRender', this.object);
     }
 
 }

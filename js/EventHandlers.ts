@@ -86,9 +86,7 @@ export function handleKeyDown(event, editor: Editor) {
         case 'z':
 
             if (event.ctrlKey) {
-                const command = editor.commandStack.pop();
-                command?.undo();
-                render(editor);
+                editor.undo();
             } else {
                 editor.transformControls.showZ = ! editor.transformControls.showZ;
             }

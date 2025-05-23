@@ -4,6 +4,7 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { requestRenderIfNotRequested } from './Rendering';
 import { Command } from './commands/Command';
 import { Selector } from './Selector';
+import { eventBus } from './EventBus';
 
 const SHADOWMAP_WIDTH = 32;
 const SHADOWMAP_RESOLUTION = 1024;
@@ -128,8 +129,7 @@ class Editor {
 
         // TODO: move transform controls from editor to Selector
         this.transformControls = new TransformControls( this.camera, this.canvas );
-        this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );
-    
+        this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );    
     }
 
     public add(object: THREE.Object3D) {
@@ -147,6 +147,33 @@ class Editor {
         if (this.objectMap.hasOwnProperty(uuid)) {
             this.selector.select(this.objectMap[uuid]);
         }
+    }
+
+    public execute(command: Command) {
+
+        if (this.commandStack.length == 0) {
+            command.execute();
+            this.commandStack.push(command)
+        } else {
+            let lastCommand = this.commandStack[this.commandStack.length - 1];
+            // Update if same type of command
+            if (command.updateable && command.name === lastCommand.name) {
+                lastCommand.update(command);
+                lastCommand.execute()
+            } else { // else just push
+                command.execute()
+                this.commandStack.push(command)
+            }
+        }
+
+        console.log(this.commandStack.length)
+    }
+
+    public undo() {
+        const command = this.commandStack.pop();
+        console.log(command)
+        command?.undo();
+        console.log(this.commandStack.length)
     }
 
 }

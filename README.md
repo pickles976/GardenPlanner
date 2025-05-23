@@ -53,7 +53,8 @@ JavaScript: suncalc
 
     - [x] disable deselct when camera pan w/ right mouse
 
-    - [ ] configure 2-way binding between editor panel and object
+    - [x] configure 2-way binding between editor panel and object
+    - [x] configure non-janky undo for actions initiated from UI controls
     - [ ] filter certain things out of the scene panel view
 
 viewport.js line 99 copy
