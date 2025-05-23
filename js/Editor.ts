@@ -157,7 +157,7 @@ class Editor {
         } else {
             let lastCommand = this.commandStack[this.commandStack.length - 1];
             // Update if same type of command
-            if (command.updateable && command.name === lastCommand.name) {
+            if (lastCommand.canUpdate(command)) {
                 lastCommand.update(command);
                 lastCommand.execute()
             } else { // else just push
@@ -166,14 +166,11 @@ class Editor {
             }
         }
 
-        console.log(this.commandStack.length)
     }
 
     public undo() {
         const command = this.commandStack.pop();
-        console.log(command)
         command?.undo();
-        console.log(this.commandStack.length)
     }
 
 }

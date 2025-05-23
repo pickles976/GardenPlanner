@@ -2,8 +2,11 @@ import { contain } from 'three/src/extras/TextureUtils.js';
 import { UITabbedPanel } from '../libs/ui.js';
 
 import { SidebarObject } from './Sidebar.Object.js';
+import { Strings } from './Strings.js';
 // import { SidebarGeometry } from './Sidebar.Geometry.js';
 // import { SidebarMaterial } from './Sidebar.Material.js';
+
+const strings = new Strings({});
 
 function SidebarProperties( editor ) {
 
@@ -12,7 +15,7 @@ function SidebarProperties( editor ) {
 	const container = new UITabbedPanel();
 	container.setId( 'properties' );
 
-	container.addTab('objectTab', 'sidebar/properties/object', new SidebarObject(editor));
+	container.addTab('objectTab', strings.getKey( 'sidebar/properties/object' ), new SidebarObject(editor));
 
 	// // container.addTab( 'objectTab', strings.getKey( 'sidebar/properties/object' ), new SidebarObject( editor ) );
 	// // container.addTab( 'geometryTab', strings.getKey( 'sidebar/properties/geometry' ), new SidebarGeometry( editor ) );

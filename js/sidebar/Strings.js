@@ -1,7 +1,8 @@
 function Strings( config ) {
 
 	// const language = config.getKey( 'language' );
-	const language = config["language"];
+	// const language = config["language"];
+	const language = 'en';
 
 	const values = {
 		fa: {

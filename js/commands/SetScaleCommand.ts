@@ -17,6 +17,10 @@ class SetScaleCommand extends Command {
         this.endScale = endScale;
     }
 
+    public canUpdate(newCommand: Command): boolean {
+        return this.name === newCommand.name && this.updateable && this.object.uuid === newCommand.object.uuid;
+    }
+
     public update(newCommand: SetScaleCommand) {
         this.endScale = newCommand.endScale;
     }

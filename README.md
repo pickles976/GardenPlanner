@@ -29,14 +29,11 @@ JavaScript: suncalc
     - [x] rotate
     - [x] scale
 - [x] debug shadowmap
-
 - [x] add commands 
     - [x] rotation
     - [x] scaling
-
 - [x] add message bus
-
-- [ ] add UI for transform controls
+- [x] add UI for transform controls
     - [x] create UI (copy from editor)
     - [x] add UI that shows property of currently selected item
     - [x] add UI for viewing and selecting items from scene heirarchy like in editor program
@@ -44,28 +41,29 @@ JavaScript: suncalc
     - [x] connect signals to editor
     - [x] why aren't the names of objects populating the scene heirarchy?
     - [x] disable raycasting stuff when mouse is over editor panel
-
     - [x] create command for adding/removing objects that goes through the editor class
     - [x] track objects? (how do we wanna do this?)
-
     - [x] add ability to select items from the scene panel
     - [x] refactor selector
-
     - [x] disable deselct when camera pan w/ right mouse
-
     - [x] configure 2-way binding between editor panel and object
     - [x] configure non-janky undo for actions initiated from UI controls
-    - [ ] filter certain things out of the scene panel view
+    - [x] selecting object should update scene panel selection
+    - [x] filter certain things out of the scene panel view
+    - [x] only include selectable items
+
 
 viewport.js line 99 copy
 
-    - [ ] reset transform controls when objects are deleted
+- [ ] reset transform controls when objects are deleted
 
 - [ ] add UI for placing and removing objects
 - [ ] add commands for placing and removing objects
 
 - [ ] parent objects to mouse and clamp to ground with raycast (no transform controls mode)
 - [ ] toggle between transform controls and free move mode
+
+- [ ] do ghosting when adding in a new object in raycast pose mode
 
 - [ ] save basic editor
 - [ ] get feedback from Erika, give her a task like "design a house" and watch her interaction with the software

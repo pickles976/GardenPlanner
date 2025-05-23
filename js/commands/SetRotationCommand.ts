@@ -17,6 +17,10 @@ class SetRotationCommand extends Command {
         this.endQuaternion = endQuaternion;
     }
 
+    public canUpdate(newCommand: Command): boolean {
+        return this.name === newCommand.name && this.updateable && this.object.uuid === newCommand.object.uuid;
+    }
+
     public update(newCommand: SetRotationCommand) {
         this.endQuaternion = newCommand.endQuaternion;
     }

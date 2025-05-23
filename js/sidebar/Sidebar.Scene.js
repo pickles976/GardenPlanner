@@ -2,6 +2,7 @@ import * as THREE from 'three';
 
 import { UIPanel, UIBreak, UIRow, UIColor, UISelect, UIText, UINumber } from '../libs/ui.js';
 import { UIOutliner, UITexture } from '../libs/ui.three.js';
+import { eventBus } from '../EventBus.js';
 
 function SidebarScene( editor ) {
 
@@ -39,7 +40,6 @@ function SidebarScene( editor ) {
 			}
 
 			opener.addEventListener( 'click', function () {
-				console.log(object)
 				nodeStates.set( object, nodeStates.get( object ) === false ); // toggle
 				refreshUI();
 
@@ -111,19 +111,7 @@ function SidebarScene( editor ) {
 
 		}
 
-		// html += getScript( object.uuid );
-
 		return html;
-
-	}
-
-	function getScript( uuid ) {
-
-		if ( editor.scripts[ uuid ] === undefined ) return '';
-
-		if ( editor.scripts[ uuid ].length === 0 ) return '';
-
-		return ' <span class="type Script"></span>';
 
 	}
 
@@ -134,17 +122,15 @@ function SidebarScene( editor ) {
 	outliner.onChange( function () {
 
 		ignoreObjectSelectedSignal = true;
-		console.log(outliner.getValue())
 		editor.selectByUUID( outliner.getValue() );
-
 		ignoreObjectSelectedSignal = false;
 
 	} );
-	outliner.onDblClick( function () {
+	// outliner.onDblClick( function () {
 
-		editor.focusById( parseInt( outliner.getValue() ) );
+	// 	editor.focusById( parseInt( outliner.getValue() ) );
 
-	} );
+	// } );
 	container.add( outliner );
 	container.add( new UIBreak() );
 
@@ -155,7 +141,7 @@ function SidebarScene( editor ) {
 
 		const options = [];
 
-		options.push( buildOption( camera, false ) );
+		// options.push( buildOption( camera, false ) );
 		options.push( buildOption( scene, false ) );
 
 		( function addObjects( objects, pad ) {
@@ -163,6 +149,10 @@ function SidebarScene( editor ) {
 			for ( let i = 0, l = objects.length; i < l; i ++ ) {
 
 				const object = objects[ i ];
+
+				if (!object.userData.hasOwnProperty("selectable")) {
+					continue;
+				}
 
 				if ( nodeStates.has( object ) === false ) {
 
@@ -186,15 +176,17 @@ function SidebarScene( editor ) {
 
 		outliner.setOptions( options );
 
-		if ( editor.selected !== null && editor.selected !== undefined ) {
+		if ( editor.selector.currentSelectedObject !== null && editor.selector.currentSelectedObject !== undefined ) {
 
-			outliner.setValue( editor.selected.id );
+			outliner.setValue( editor.selector.currentSelectedObject.uuid );
 
 		}
 
 	}
 
 	refreshUI();
+
+	eventBus.on('objectSelected', refreshUI);
 
 	return container;
 

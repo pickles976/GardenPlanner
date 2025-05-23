@@ -17,6 +17,10 @@ class SetPositionCommand extends Command {
         this.endPosition = endPosition;
     }
 
+    public canUpdate(newCommand: Command): boolean {
+        return this.name === newCommand.name && this.updateable && this.object.uuid === newCommand.object.uuid;
+    }
+
     public update(newCommand: SetPositionCommand) {
         this.endPosition = newCommand.endPosition.clone();
     }

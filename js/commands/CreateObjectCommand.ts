@@ -16,6 +16,10 @@ class CreateObjectCommand extends Command {
         this.editor = editor;
     }
 
+    public canUpdate(newCommand: Command) : boolean {
+        return this.name === newCommand.name && this.updateable
+    }
+
     public execute() {
         this.editor.add(this.object);
         eventBus.emit('requestRender', this.object);
