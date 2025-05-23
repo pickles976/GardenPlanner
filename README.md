@@ -39,11 +39,12 @@ JavaScript: suncalc
 - [ ] add UI for transform controls
     - [x] create UI (copy from editor)
     - [x] add UI that shows property of currently selected item
-    - [ ] add UI for viewing and selecting items from scene heirarchy like in editor program
+    - [x] add UI for viewing and selecting items from scene heirarchy like in editor program
     - [ ] create sliders
     - [ ] connect signals to editor
+    - [ ] why aren't the names of objects populating the scene heirarchy?
+    - [ ] filter certain things out of the scene panel view
 
-- [ ] TODO: RENAME COMMANDS TO SetPositionCommand/SetRotationCommand/SetScaleCommand
 
 - [ ] add UI for placing and removing objects
 - [ ] add commands for placing and removing objects

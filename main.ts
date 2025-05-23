@@ -32,6 +32,8 @@ function createCube(scene: THREE.Scene): THREE.Mesh {
     boxMesh.castShadow = true;
     boxMesh.receiveShadow = true;
     boxMesh.userData = {selectable: true}
+    // TODO: make this dynamic
+    boxMesh.name = "Box";
     scene.add(boxMesh)
     return boxMesh
 }
@@ -45,6 +47,8 @@ function createTorus(scene: THREE.Scene): THREE.Mesh {
     torusMesh.castShadow = true;
     torusMesh.receiveShadow = true;
     torusMesh.userData = {selectable: true}
+    // TODO: make this dynamic
+    torusMesh.name = "Torus"
     scene.add(torusMesh)
     return torusMesh
 }
