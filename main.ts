@@ -75,6 +75,12 @@ editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(edi
 editor.canvas.addEventListener('mouseleave', () => requestRenderIfNotRequested(editor));
 
 function performRaycast(event, editor, callback){
+    
+    // Only do a raycast if the LMB was used
+    if (event.button !== 0) {
+        return
+    }
+
     const selector = editor.selector;
     let intersections = selector.performRaycast(event);
     if ( intersections.length > 0 ) {
@@ -110,6 +116,10 @@ editor.transformControls.addEventListener('mouseDown', function (event) {
     editor.cameraControls.enabled = false;
     selector.isUsingTransformControls = true;
 });
+
+editor.transformControls.addEventListener('change', function(event) {
+    eventBus.emit('objectChanged', editor.selector.currentSelectedObject);
+})
 
 editor.transformControls.addEventListener('mouseUp', function (event) {
     const selector = editor.selector;

@@ -51,13 +51,25 @@ JavaScript: suncalc
     - [x] add ability to select items from the scene panel
     - [x] refactor selector
 
+    - [x] disable deselct when camera pan w/ right mouse
+
     - [ ] configure 2-way binding between editor panel and object
     - [ ] filter certain things out of the scene panel view
 
 viewport.js line 99 copy
 
+    - [ ] reset transform controls when objects are deleted
+
 - [ ] add UI for placing and removing objects
 - [ ] add commands for placing and removing objects
+
+- [ ] parent objects to mouse and clamp to ground with raycast (no transform controls mode)
+- [ ] toggle between transform controls and free move mode
+
+- [ ] save basic editor
+- [ ] get feedback from Erika, give her a task like "design a house" and watch her interaction with the software
+
+# Garden Design Utilities
 
 - [ ] measurements tool
     - [ ] grid lines
@@ -70,9 +82,6 @@ viewport.js line 99 copy
     - [ ] create 3D walls of bed
     - [ ] control bed height
     - [ ] auto-fill bed
-
-- [ ] parent objects to mouse and clamp to ground with raycast (no transform controls mode)
-- [ ] toggle between transform controls and free move mode
 
 - [ ] panel UI with pre-built models for drag and drop
 - [ ] load mesh resources, create thumbnails for them
