@@ -21,7 +21,7 @@ function SidebarScene( editor ) {
 		const option = document.createElement( 'div' );
 		option.draggable = draggable;
 		option.innerHTML = buildHTML( object );
-		option.value = object.id;
+		option.value = object.uuid;
 
 		// opener
 
@@ -134,8 +134,8 @@ function SidebarScene( editor ) {
 	outliner.onChange( function () {
 
 		ignoreObjectSelectedSignal = true;
-
-		editor.selectById( parseInt( outliner.getValue() ) );
+		console.log(outliner.getValue())
+		editor.selectByUUID( outliner.getValue() );
 
 		ignoreObjectSelectedSignal = false;
 

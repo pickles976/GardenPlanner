@@ -40,34 +40,12 @@ export function handleMouseClick(editor: Editor, object?: THREE.Mesh) {
      * Function that attaches transform controls to an object when clicked.
      */
 
-    const selector = editor.selector;
-
     // Don't do anything if we are actively using the transform controls
-    if (selector.isUsingTransformControls === true) {
+    if (editor.selector.isUsingTransformControls === true) {
         return
     }
 
-    // TODO: check if the object is the same and do nothing
-
-    editor.transformControls.detach();
-    editor.scene.remove(selector.transformControlsGizmo);
-    selector.transformControlsGizmo = undefined;
-
-    if (object === undefined) {
-        editor.transformControls.visible = false;
-        selector.currentSelectedObject = undefined
-    } else {
-        editor.transformControls.visible = true;
-        selector.currentSelectedObject = object;
-
-        // TODO: dont attach the gizmo every time this is very intensive
-        editor.transformControls.attach(object);
-        selector.transformControlsGizmo = editor.transformControls.getHelper();
-        editor.scene.add(selector.transformControlsGizmo);
-    }
-
-    eventBus.emit('objectSelected', object);
-
+    editor.selector.select(object)
 
 }
 

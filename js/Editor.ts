@@ -143,5 +143,11 @@ class Editor {
         delete this.objectMap[object.uuid];
     }
 
+    public selectByUUID(uuid: string) {
+        if (this.objectMap.hasOwnProperty(uuid)) {
+            this.selector.select(this.objectMap[uuid]);
+        }
+    }
+
 }
 export {Editor};

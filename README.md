@@ -48,8 +48,8 @@ JavaScript: suncalc
     - [x] create command for adding/removing objects that goes through the editor class
     - [x] track objects? (how do we wanna do this?)
 
-    - [ ] add ability to select items from the scene panel
-    - [ ] refactor selector
+    - [x] add ability to select items from the scene panel
+    - [x] refactor selector
 
     - [ ] configure 2-way binding between editor panel and object
     - [ ] filter certain things out of the scene panel view

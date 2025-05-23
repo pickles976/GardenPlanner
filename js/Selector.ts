@@ -1,9 +1,13 @@
 import * as THREE from 'three';
 import { Editor } from "./Editor";
+import { Object3D } from 'three';
+import { eventBus } from './EventBus';
 
 const raycaster = new THREE.Raycaster();
 
 class Selector {
+
+    // TODO: move the TransformControls to here!
 
     editor: Editor
     currentMousedOverObject?: THREE.Object3D;
@@ -38,6 +42,32 @@ class Selector {
 
         return raycaster.intersectObjects(this.editor.scene.children);
 
+    }
+
+    public select(object: Object3D) {
+
+        if (object === this.currentSelectedObject) {
+            return;
+        }
+
+        this.editor.transformControls.detach();
+        this.editor.scene.remove(this.transformControlsGizmo);
+        this.transformControlsGizmo = undefined;
+
+        if (object === undefined) {
+            this.editor.transformControls.visible = false;
+            this.currentSelectedObject = undefined
+        } else {
+            this.editor.transformControls.visible = true;
+            this.currentSelectedObject = object;
+
+            // TODO: dont attach the gizmo every time this is very intensive
+            this.editor.transformControls.attach(object);
+            this.transformControlsGizmo = this.editor.transformControls.getHelper();
+            this.editor.scene.add(this.transformControlsGizmo);
+        }
+
+        eventBus.emit('objectSelected', object);
     }
 
 }
