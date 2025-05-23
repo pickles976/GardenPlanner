@@ -39,7 +39,7 @@ function SidebarScene( editor ) {
 			}
 
 			opener.addEventListener( 'click', function () {
-
+				console.log(object)
 				nodeStates.set( object, nodeStates.get( object ) === false ); // toggle
 				refreshUI();
 

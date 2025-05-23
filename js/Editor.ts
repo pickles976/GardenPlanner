@@ -26,8 +26,11 @@ class Editor {
 
     commandStack: Command[];
 
+    objectMap: { [key: string]: THREE.Object3D };
+
     constructor () {
         this.commandStack = [];
+        this.objectMap = {};
     }
 
     public initThree() {
@@ -57,6 +60,7 @@ class Editor {
     
         // camera
         this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 5, 2000000);
+        this.camera.name = "Camera"
         this.camera.position.set(0, 20, 20);
         this.camera.up.set(0, 0, 1);
         this.camera.lookAt(0, 0, 0);
@@ -79,6 +83,7 @@ class Editor {
         this.directionalLight.position.set(-20, 20, 20);
         this.directionalLight.castShadow = true;
         this.scene.add(this.directionalLight);
+        this.scene.name = "Scene"
     
         // Shadow properties
         // https://threejs.org/docs/index.html#api/en/lights/shadows/DirectionalLightShadow
@@ -95,12 +100,16 @@ class Editor {
         this.directionalLight.shadow.camera.right = SHADOWMAP_WIDTH;
         this.directionalLight.shadow.camera.top = -SHADOWMAP_WIDTH;
         this.directionalLight.shadow.camera.bottom = SHADOWMAP_WIDTH;
+
+        this.directionalLight.name = "Directional Light";
     
         const ambient = new THREE.AmbientLight(white, 0.5);
+        ambient.name = "Ambient Light"
         this.scene.add(ambient);
     
         const axesHelper = new THREE.AxesHelper(10);
         axesHelper.position.set(0, 0, 0.003)
+        axesHelper.name = "Axes Helper"
         this.scene.add(axesHelper);
     
         // Grid Helper
@@ -108,6 +117,7 @@ class Editor {
         const gridHelper = new THREE.GridHelper(size, size, 0x444444, 0x999999);
         gridHelper.rotateX(Math.PI / 2)
         gridHelper.position.set(0, 0, 0.001)
+        gridHelper.name = "Grid Helper"
         this.scene.add(gridHelper);
     
         this.scene.background = new THREE.Color(white);
@@ -119,6 +129,17 @@ class Editor {
         this.transformControls = new TransformControls( this.camera, this.canvas );
         this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );
     
+    }
+
+    public add(object: THREE.Object3D) {
+        this.objectMap[object.uuid] = object;
+        this.scene.add(object)
+        // TODO: properly update the rest of the application
+    }
+
+    public remove(object: THREE.Object3D) {
+        this.scene.remove(object);
+        delete this.objectMap[object.uuid];
     }
 
 }

@@ -9,6 +9,7 @@ import { SetRotationCommand } from './js/commands/SetRotationCommand';
 import { SetScaleCommand } from './js/commands/SetScaleCommand';
 import { Sidebar } from './js/sidebar/Sidebar';
 import { eventBus } from './js/EventBus';
+import { CreateObjectCommand } from './js/commands/CreateObjectCommand';
 
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
@@ -20,11 +21,12 @@ function createGround(scene: THREE.Scene): THREE.Mesh {
     const groundMesh = new THREE.Mesh(groundGeo, groundMat)
     groundMesh.castShadow = false;
     groundMesh.receiveShadow = true;
+    groundMesh.name = "Ground";
     scene.add(groundMesh)
     return groundMesh
 }
 
-function createCube(scene: THREE.Scene): THREE.Mesh {
+function createCube(editor: Editor): THREE.Mesh {
     const boxMat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
     })
@@ -35,11 +37,15 @@ function createCube(scene: THREE.Scene): THREE.Mesh {
     boxMesh.userData = {selectable: true}
     // TODO: make this dynamic
     boxMesh.name = "Box";
-    scene.add(boxMesh)
+
+    const command = new CreateObjectCommand(boxMesh, editor);
+    command.execute();
+    editor.commandStack.push(command);
+
     return boxMesh
 }
 
-function createTorus(scene: THREE.Scene): THREE.Mesh {
+function createTorus(editor: Editor): THREE.Mesh {
     const torusMat = new THREE.MeshPhongMaterial({
         color: 0x2A7AB0,
     })
@@ -50,7 +56,11 @@ function createTorus(scene: THREE.Scene): THREE.Mesh {
     torusMesh.userData = {selectable: true}
     // TODO: make this dynamic
     torusMesh.name = "Torus"
-    scene.add(torusMesh)
+
+    const command = new CreateObjectCommand(torusMesh, editor);
+    command.execute();
+    editor.commandStack.push(command);
+
     return torusMesh
 }
 
@@ -62,6 +72,8 @@ editor.initThree();
 const selector = new Selector(editor);
 
 window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
+window.addEventListener('keydown', (event) => handleKeyDown(event, editor, selector));
+
 editor.canvas.addEventListener('mousemove', () => requestRenderIfNotRequested(editor));
 editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
 editor.canvas.addEventListener('mouseleave', () => requestRenderIfNotRequested(editor));
@@ -72,7 +84,6 @@ editor.canvas.addEventListener('mouseleave', (event) => selector.performRaycast(
 
 editor.canvas.addEventListener('mousedown', (event) => selector.performRaycast(event, handleMouseClick));
 
-editor.canvas.addEventListener('keydown', (event) => handleKeyDown(event, editor, selector));
 
 editor.transformControls.addEventListener('mouseDown', function (event) {
     editor.cameraControls.enabled = false;
@@ -122,10 +133,10 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
 });
 
 createGround(editor.scene)
-let box = createCube(editor.scene)
+let box = createCube(editor)
 box.position.set(0, 0, 2)
 
-let torus = createTorus(editor.scene)
+let torus = createTorus(editor)
 torus.position.set(3, 3, 2)
 
 render(editor);

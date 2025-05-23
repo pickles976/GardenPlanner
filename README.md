@@ -44,12 +44,17 @@ JavaScript: suncalc
     - [x] connect signals to editor
     - [x] why aren't the names of objects populating the scene heirarchy?
     - [x] disable raycasting stuff when mouse is over editor panel
+
+    - [x] create command for adding/removing objects that goes through the editor class
+    - [x] track objects? (how do we wanna do this?)
+
+    - [ ] add ability to select items from the scene panel
     - [ ] refactor selector
+
     - [ ] configure 2-way binding between editor panel and object
     - [ ] filter certain things out of the scene panel view
 
-- [ ] create command for adding/removing objects that goes through the editor class
-- [ ] track objects? (how do we wanna do this?)
+viewport.js line 99 copy
 
 - [ ] add UI for placing and removing objects
 - [ ] add commands for placing and removing objects
