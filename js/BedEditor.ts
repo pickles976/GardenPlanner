@@ -24,6 +24,7 @@ class BedEditor {
     bedPoints: Vector3[];
     bedVertices: Object3D[];
     polyline?: Line;
+    drawline?: Line;
 
 
     constructor(editor: Editor) {
@@ -31,6 +32,7 @@ class BedEditor {
         this.bedPoints = [];
         this.bedVertices = [];
         this.polyline = undefined;
+        this.drawline = undefined
     }
 
     public createNewBed() {
@@ -151,6 +153,32 @@ class BedEditor {
         this.drawPolyline(this.bedPoints)
 
         eventBus.emit('requestRender')
+    }
+
+    public updateMousePosition(point: Vector3) {
+        if (this.bedPoints.length == 0) {
+            return
+        }
+
+        if (this.drawline !== undefined) {
+            this.editor.remove(this.drawline)
+            this.drawline = undefined;
+        }
+
+        const lastPoint = this.bedPoints[this.bedPoints.length - 1]
+        const geometry = new BufferGeometry().setFromPoints([lastPoint, point]);
+        const material = new LineBasicMaterial({ color: 0xffff00 });
+        this.drawline = new Line(geometry, material);
+        this.editor.add(this.drawline)
+
+        const distance = lastPoint.distanceTo(point);
+
+        // TODO: change this to angle between north
+        // const angle = lastPoint.angleTo(point) * 180 / Math.PI;
+        const angle = 0.0;
+
+        console.log(`Distance: ${distance}\nAngle: ${angle}`);
+
     }
 }
 

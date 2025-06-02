@@ -68,9 +68,9 @@ class Editor {
     
     
         // camera
-        this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 5, 2000000);
+        this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000000);
         this.camera.name = "Camera"
-        this.camera.position.set(0, 20, 20);
+        this.camera.position.set(0, 5, 5);
         this.camera.up.set(0, 0, 1);
         this.camera.lookAt(0, 0, 0);
         this.camera.layers.enableAll();
@@ -80,7 +80,7 @@ class Editor {
         this.cameraControls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
         this.cameraControls.dampingFactor = 0.05;
         this.cameraControls.screenSpacePanning = false;
-        this.cameraControls.minDistance = 10;
+        this.cameraControls.minDistance = 1;
         this.cameraControls.maxDistance = 16384;
         this.cameraControls.maxPolarAngle = (Math.PI / 2) - (Math.PI / 360)
 
@@ -124,13 +124,21 @@ class Editor {
         this.scene.add(axesHelper);
     
         // Grid Helper
-        const size = 64
-        const gridHelper = new THREE.GridHelper(size, size, 0x444444, 0x999999);
-        gridHelper.layers.set(LayerEnums.NoRaycast)
-        gridHelper.rotateX(Math.PI / 2)
-        gridHelper.position.set(0, 0, 0.001)
-        gridHelper.name = "Grid Helper"
-        this.scene.add(gridHelper);
+        let size = 64
+        const meterGrid = new THREE.GridHelper(size, size, 0xFFFFFF, 0xFFFFFF);
+        meterGrid.layers.set(LayerEnums.NoRaycast)
+        meterGrid.rotateX(Math.PI / 2)
+        meterGrid.position.set(0, 0, 0.002)
+        meterGrid.name = "Grid Helper"
+        this.scene.add(meterGrid);
+
+        size = 64
+        const decimeterGrid = new THREE.GridHelper(size, size * 10, 0x555555, 0xAAAAAA);
+        decimeterGrid.layers.set(LayerEnums.NoRaycast)
+        decimeterGrid.rotateX(Math.PI / 2)
+        decimeterGrid.position.set(0, 0, 0.001)
+        decimeterGrid.name = "Grid Helper"
+        this.scene.add(decimeterGrid);
     
         this.scene.background = new THREE.Color(white);
     

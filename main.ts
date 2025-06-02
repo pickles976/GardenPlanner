@@ -30,7 +30,7 @@ function createCube(editor: Editor): THREE.Mesh {
     const boxMat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
     })
-    const boxGeo = new THREE.BoxGeometry(2, 2, 2);
+    const boxGeo = new THREE.BoxGeometry(0.75, 0.75, 0.75);
     const boxMesh = new THREE.Mesh(boxGeo, boxMat)
     boxMesh.castShadow = true;
     boxMesh.receiveShadow = true;
@@ -48,7 +48,7 @@ function createTorus(editor: Editor): THREE.Mesh {
     const torusMat = new THREE.MeshPhongMaterial({
         color: 0x2A7AB0,
     })
-    const torusGeo = new THREE.TorusGeometry(2, 0.5, 64, 64);
+    const torusGeo = new THREE.TorusGeometry(1, 0.25, 64, 64);
     const torusMesh = new THREE.Mesh(torusGeo, torusMat)
     torusMesh.castShadow = true;
     torusMesh.receiveShadow = true;

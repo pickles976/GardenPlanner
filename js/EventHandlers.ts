@@ -5,11 +5,7 @@ import { render } from './Rendering';
 import { eventBus } from './EventBus';
 import { EditorMode } from './Constants';
 
-export function handleMouseMove(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
-    /**
-     * Function that highlights objects when the mouse is over them, and returns them to their original color once the mouse has left.
-     */
-
+function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3){
     const selector = editor.selector;
 
     if (selector.currentMousedOverObject === object) {
@@ -34,6 +30,36 @@ export function handleMouseMove(editor: Editor, object?: THREE.Mesh, point?: THR
         object.material.emissive.setHex(0xFFFF00);
 
     }
+}
+
+function handleMouseMoveBedEditorMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
+    if (point === undefined) {
+        return
+    }
+    editor.bedEditor.updateMousePosition(point);
+}
+
+export function handleMouseMove(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
+    /**
+     * Function that highlights objects when the mouse is over them, and returns them to their original color once the mouse has left.
+     */
+
+    let callback;
+    switch(editor.mode) {
+        case EditorMode.OBJECT:
+            callback = handleMouseMoveObjectMode;
+            break;
+        case EditorMode.BED:
+            callback = handleMouseMoveBedEditorMode;
+            break;
+        default:
+            break
+    }
+    if (callback !== undefined) {
+        callback(editor, object, point)
+    }
+
+
 }
 
 function handleMouseClickObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
