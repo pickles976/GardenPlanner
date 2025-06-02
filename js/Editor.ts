@@ -173,5 +173,10 @@ class Editor {
         command?.undo();
     }
 
+    // TODO: move this out to its own component
+    public createNewBed() {
+        document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
+    }
+
 }
 export {Editor};

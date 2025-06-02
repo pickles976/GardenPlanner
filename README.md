@@ -57,7 +57,20 @@ viewport.js line 99 copy
 
 - [x] reset transform controls when objects are deleted
 
+- [ ] add UI for bed creation
+    - [ ] panel with button
+    - [ ] change cursor
+    - [ ] place bed vertices
+    - [ ] create bed object
+    - [ ] undo vertices
+    - [ ] make bed selectable + undo bed creation
+
+- [ ] add delete object command with undo
+
 - [ ] add UI for placing and removing objects
+    - [ ] button for creating new plant
+    - [ ] plant browser UI with image preview
+
 - [ ] add commands for placing and removing objects
 
 - [ ] parent objects to mouse and clamp to ground with raycast (no transform controls mode)

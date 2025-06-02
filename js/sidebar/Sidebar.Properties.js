@@ -3,6 +3,7 @@ import { UITabbedPanel } from '../libs/ui.js';
 
 import { SidebarObject } from './Sidebar.Object.js';
 import { Strings } from './Strings.js';
+import { SidebarBed } from './Sidebar.Bed.js'
 // import { SidebarGeometry } from './Sidebar.Geometry.js';
 // import { SidebarMaterial } from './Sidebar.Material.js';
 
@@ -17,7 +18,8 @@ function SidebarProperties( editor ) {
 
 	container.addTab('objectTab', strings.getKey( 'sidebar/properties/object' ), new SidebarObject(editor));
 
-	// // container.addTab( 'objectTab', strings.getKey( 'sidebar/properties/object' ), new SidebarObject( editor ) );
+	container.addTab( 'bedCreationTab', "Beds", new SidebarBed( editor ) );
+
 	// // container.addTab( 'geometryTab', strings.getKey( 'sidebar/properties/geometry' ), new SidebarGeometry( editor ) );
 	// // container.addTab( 'materialTab', strings.getKey( 'sidebar/properties/material' ), new SidebarMaterial( editor ) );
 	// container.select( 'objectTab' );
