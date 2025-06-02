@@ -194,6 +194,11 @@ class Editor {
         this.mode = EditorMode.BED;
     }
 
+    public setObjectMode() {
+        this.selector.deselect();
+        this.mode = EditorMode.OBJECT;
+    }
+
 
 }
 export {Editor};

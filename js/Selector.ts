@@ -37,7 +37,7 @@ class Selector {
         if (this.editor.mode === EditorMode.BED) {
             raycaster.layers.disableAll();
             raycaster.layers.enable(LayerEnums.Objects);
-            raycaster.layers.enable(LayerEnums.BedVertices);
+            // raycaster.layers.enable(LayerEnums.BedVertices);
         }
 
         if (this.editor.mode === EditorMode.OBJECT) {

@@ -50,10 +50,10 @@ function handleMouseClickBedEditorMode(editor: Editor, object?: THREE.Mesh, poin
         return
     }
 
-    console.log(object)
-
     if (object === undefined) {
-        editor.bedEditor.createBedVertex(point);
+        if (editor.selector.currentSelectedObject === undefined) {
+            editor.bedEditor.createBedVertex(point);
+        }
     } else {
         editor.selector.select(object)
     }

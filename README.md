@@ -57,21 +57,29 @@ viewport.js line 99 copy
 
 - [x] reset transform controls when objects are deleted
 
-- [ ] add UI for bed creation
+- [x] add UI for bed creation
     - [x] panel with button
     - [x] change cursor
     - [x] place bed vertices
     - [x] draw polyline
     - [x] split out bedEditor
 
-- [ ] add Layers
-- [ ] update raycast layers based off of editor mode
-- [ ] document how this works
+- [x] add Layers
+- [x] update raycast layers based off of editor mode
 
-    - [ ] close the loop
-    - [ ] disable raycasting on axes helper
-    - [ ] allow drag and moving of vertices
-    - [ ] draw distance and angle of current mouse position
+- [x] disable raycasting on axes helper
+- [x] allow drag and moving of vertices
+
+- [x] close the loop
+- [ ] create a mesh geometry from the loop
+- [ ] draw distance and angle of current mouse position
+- [ ] get vertex drawing working
+
+- [ ] change camera view
+- [ ] isometric
+- [ ] top-down
+- [ ] WASD controls
+- [ ] draw north
 
     - [ ] create bed object
     - [ ] create command

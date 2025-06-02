@@ -10,6 +10,8 @@ import { MeshPhongMaterial } from "three";
 import { BoxGeometry } from "three";
 import { Mesh } from "three";
 
+const CLOSE_THRESH = 0.5;
+
 class BedEditor {
 
     editor: Editor;
@@ -31,32 +33,83 @@ class BedEditor {
         document.getElementsByTagName("body")[0].style.cursor = "url('/cross_cursor.cur'), auto";
     }
 
-    public createBedVertex(point: Vector3) {
+    private closeLoop() {
+        // TODO: create an object from these points
+        this.bedPoints.push(this.bedPoints[0]);
+        const geometry = new BufferGeometry().setFromPoints(this.bedPoints);
+        const material = new LineBasicMaterial({ color: 0xffff00 });
+        this.polyline = new Line(geometry, material);
+        this.editor.add(this.polyline)
+        this.editor.setObjectMode()
+    }
+
+    private tryCloseLoop(point: Vector3) : boolean {
+
+        for (const vertex of this.bedPoints) {
+            if (vertex.distanceTo(point) < CLOSE_THRESH) {
+                this.closeLoop()
+                return true;
+            }
+        }
+        return false
+    }
+
+    private clearVertices() {
+        for (const vertex of this.bedVertices) {
+            this.editor.remove(vertex)
+        }
+        this.bedVertices = [];
+    }
+
+    private clearPolyline() {
+        if (this.polyline !== undefined) {
+            this.editor.remove(this.polyline)
+        }
+        this.polyline = undefined;
+
+    }
+
+    private drawVertices(points: Vector3[]) {
+        // TODO: why this no work?
+
         const boxMat = new MeshPhongMaterial({
             color: 0xDDDDDD,
         })
         const boxGeo = new BoxGeometry(0.5, 0.5, 0.5);
-        const vertex = new Mesh(boxGeo, boxMat)
-        vertex.layers.set(LayerEnums.BedVertices);
-        vertex.userData = {selectable: true}
 
-        //
-        vertex.position.set(...point)
-        this.editor.add(vertex);
+        for (const point in points) {
+            const vertex = new Mesh(boxGeo, boxMat)
+            vertex.layers.set(LayerEnums.BedVertices);
+            vertex.userData = {selectable: true}
 
-        this.bedVertices.push(vertex);
+            vertex.position.set(...point)
+            this.editor.add(vertex);
 
+            this.bedVertices.push(vertex);
+        }
 
-        this.bedPoints.push(point)
+    }
 
-        this.editor.remove(this.polyline)
-        this.polyline = undefined;
-
-        const geometry = new BufferGeometry().setFromPoints(this.bedPoints);
+    private drawPolyline(points: Vector3[]) {
+        const geometry = new BufferGeometry().setFromPoints(points);
         const material = new LineBasicMaterial({ color: 0x00ff00 });
         this.polyline = new Line(geometry, material);
-
         this.editor.add(this.polyline)
+    }
+
+    public createBedVertex(point: Vector3) {
+
+        this.clearVertices();
+        this.clearPolyline();
+
+        if (this.tryCloseLoop(point)) {
+            eventBus.emit('requestRender')
+            return
+        }
+
+        this.bedPoints.push(point)
+        this.drawVertices(this.bedPoints)
+        this.drawPolyline(this.bedPoints)
 
         eventBus.emit('requestRender')
     }
