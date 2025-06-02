@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Editor } from "./Editor";
 import { Object3D } from 'three';
 import { eventBus } from './EventBus';
+import { EditorMode, LayerEnums } from './Constants';
 
 const raycaster = new THREE.Raycaster();
 
@@ -32,6 +33,16 @@ class Selector {
     }
 
     public performRaycast(event: Event) : THREE.Object3D[] {
+
+        if (this.editor.mode === EditorMode.BED) {
+            raycaster.layers.disableAll();
+            raycaster.layers.enable(LayerEnums.Objects);
+            raycaster.layers.enable(LayerEnums.BedVertices);
+        }
+
+        if (this.editor.mode === EditorMode.OBJECT) {
+            raycaster.layers.enableAll();
+        }
 
         const pos = this.getCanvasRelativePosition(event);
         const pickPosition = new THREE.Vector2();

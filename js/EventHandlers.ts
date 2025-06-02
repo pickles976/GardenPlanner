@@ -1,8 +1,9 @@
 import * as THREE from 'three';
-import { Editor, EditorMode } from './Editor';
+import { Editor } from './Editor';
 import { Selector } from './Selector';
 import { render } from './Rendering';
 import { eventBus } from './EventBus';
+import { EditorMode } from './Constants';
 
 export function handleMouseMove(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
     /**
@@ -35,30 +36,46 @@ export function handleMouseMove(editor: Editor, object?: THREE.Mesh, point?: THR
     }
 }
 
+function handleMouseClickObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
+    // Don't do anything if we are actively using the transform controls
+    if (editor.selector.isUsingTransformControls === true) {
+        return
+    }
+
+    editor.selector.select(object)
+}
+
+function handleMouseClickBedEditorMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
+    if (point === undefined) {
+        return
+    }
+
+    console.log(object)
+
+    if (object === undefined) {
+        editor.bedEditor.createBedVertex(point);
+    } else {
+        editor.selector.select(object)
+    }
+
+}
+
 export function handleMouseClick(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
 
-    console.log(editor.mode)
-
-    if (editor.mode === EditorMode.OBJECT) {
-        // Don't do anything if we are actively using the transform controls
-        if (editor.selector.isUsingTransformControls === true) {
-            return
-        }
-
-        editor.selector.select(object)
-        return
+    let callback;
+    switch(editor.mode) {
+        case EditorMode.OBJECT:
+            callback = handleMouseClickObjectMode;
+            break;
+        case EditorMode.BED:
+            callback = handleMouseClickBedEditorMode;
+            break;
+        default:
+            break
     }
-    
-    if (editor.mode === EditorMode.BED) {
-        if (point === undefined) {
-            return
-        }
-        editor.createBedVertex(point);
-        return
+    if (callback !== undefined) {
+        callback(editor, object, point)
     }
-
-
-
 }
 
 

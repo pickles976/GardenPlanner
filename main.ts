@@ -9,6 +9,7 @@ import { SetScaleCommand } from './js/commands/SetScaleCommand';
 import { Sidebar } from './js/sidebar/Sidebar';
 import { eventBus } from './js/EventBus';
 import { CreateObjectCommand } from './js/commands/CreateObjectCommand';
+import { LayerEnums } from './js/Constants';
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
 
@@ -17,6 +18,7 @@ function createGround(scene: THREE.Scene): THREE.Mesh {
     });
     const groundGeo = new THREE.PlaneGeometry(64, 64, 4, 4)
     const groundMesh = new THREE.Mesh(groundGeo, groundMat)
+    groundMesh.layers.set(LayerEnums.Objects)
     groundMesh.castShadow = false;
     groundMesh.receiveShadow = true;
     groundMesh.name = "Ground";
@@ -33,6 +35,7 @@ function createCube(editor: Editor): THREE.Mesh {
     boxMesh.castShadow = true;
     boxMesh.receiveShadow = true;
     boxMesh.userData = {selectable: true}
+    boxMesh.layers.set(LayerEnums.Plants)
     // TODO: make this dynamic
     boxMesh.name = "Box";
 
@@ -50,6 +53,7 @@ function createTorus(editor: Editor): THREE.Mesh {
     torusMesh.castShadow = true;
     torusMesh.receiveShadow = true;
     torusMesh.userData = {selectable: true}
+    torusMesh.layers.set(LayerEnums.Plants)
     // TODO: make this dynamic
     torusMesh.name = "Torus"
 

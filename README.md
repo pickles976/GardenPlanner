@@ -61,8 +61,17 @@ viewport.js line 99 copy
     - [x] panel with button
     - [x] change cursor
     - [x] place bed vertices
-    - [ ] draw polyline
+    - [x] draw polyline
+    - [x] split out bedEditor
+
+- [ ] add Layers
+- [ ] update raycast layers based off of editor mode
+- [ ] document how this works
+
     - [ ] close the loop
+    - [ ] disable raycasting on axes helper
+    - [ ] allow drag and moving of vertices
+    - [ ] draw distance and angle of current mouse position
 
     - [ ] create bed object
     - [ ] create command

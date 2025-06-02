@@ -24,7 +24,7 @@ function SidebarBed( editor ) {
 	container.add(createNewButton)
 	container.setDisplay("Block")
 
-	createNewButton.onClick(() => editor.createNewBed())
+	createNewButton.onClick(() => editor.setBedMode())
 
 	// const objectTypeRow = new UIRow();
 	// const objectType = new UIText();

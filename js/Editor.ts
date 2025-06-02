@@ -4,18 +4,12 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { requestRenderIfNotRequested } from './Rendering';
 import { Command } from './commands/Command';
 import { Selector } from './Selector';
-import { eventBus } from './EventBus';
-import { Object3D } from 'three';
-import { Vector3 } from 'three';
+import { EditorMode, LayerEnums} from './Constants';
+import { BedEditor } from './BedEditor';
 
 const SHADOWMAP_WIDTH = 32;
 const SHADOWMAP_RESOLUTION = 1024;
 const ANTI_ALIASING = true;
-
-enum EditorMode {
-    OBJECT = "OBJECT",
-    BED = "BED"
-}
 
 class Editor {
     /**
@@ -36,16 +30,18 @@ class Editor {
 
     objectMap: { [key: string]: THREE.Object3D };
 
-    selector: Selector
-    mode: EditorMode
-    bedVertices: Object3D[]
+    selector: Selector;
+    bedEditor: BedEditor;
+
+    mode: EditorMode;
+
 
     constructor () {
         this.commandStack = [];
         this.objectMap = {};
         this.selector = new Selector(this);
+        this.bedEditor = new BedEditor(this);
         this.mode = EditorMode.OBJECT;
-        this.bedVertices = [];
     }
 
     public initThree() {
@@ -77,6 +73,7 @@ class Editor {
         this.camera.position.set(0, 20, 20);
         this.camera.up.set(0, 0, 1);
         this.camera.lookAt(0, 0, 0);
+        this.camera.layers.enableAll();
     
         // map orbit
         this.cameraControls = new MapControls(this.camera, this.canvas)
@@ -121,6 +118,7 @@ class Editor {
         this.scene.add(ambient);
     
         const axesHelper = new THREE.AxesHelper(10);
+        axesHelper.layers.set(LayerEnums.NoRaycast)
         axesHelper.position.set(0, 0, 0.003)
         axesHelper.name = "Axes Helper"
         this.scene.add(axesHelper);
@@ -128,6 +126,7 @@ class Editor {
         // Grid Helper
         const size = 64
         const gridHelper = new THREE.GridHelper(size, size, 0x444444, 0x999999);
+        gridHelper.layers.set(LayerEnums.NoRaycast)
         gridHelper.rotateX(Math.PI / 2)
         gridHelper.position.set(0, 0, 0.001)
         gridHelper.name = "Grid Helper"
@@ -143,13 +142,19 @@ class Editor {
         this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );    
     }
 
-    public add(object: THREE.Object3D) {
+    public add(object?: THREE.Object3D) {
+        if (object === undefined) {
+            return
+        }
         this.objectMap[object.uuid] = object;
         this.scene.add(object)
         // TODO: properly update the rest of the application
     }
 
-    public remove(object: THREE.Object3D) {
+    public remove(object?: THREE.Object3D) {
+        if (object === undefined) {
+            return
+        }
         this.scene.remove(object);
         delete this.objectMap[object.uuid];
     }
@@ -184,22 +189,11 @@ class Editor {
         command?.undo();
     }
 
-    // TODO: move this out to its own component
-    public createNewBed() {
+    public setBedMode() {
+        this.selector.deselect();
         this.mode = EditorMode.BED;
-        document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
     }
 
-    public createBedVertex(point: Vector3) {
-        const boxMat = new THREE.MeshPhongMaterial({
-            color: 0xDDDDDD,
-        })
-        const boxGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5);
-        const boxMesh = new THREE.Mesh(boxGeo, boxMat)
-        boxMesh.position.set(...point)
-        this.scene.add(boxMesh)
-        this.bedVertices.push(boxMesh)
-    }
 
 }
-export {Editor, EditorMode};
+export {Editor};
