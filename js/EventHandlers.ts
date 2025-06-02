@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { Editor } from './Editor';
+import { Editor, EditorMode } from './Editor';
 import { Selector } from './Selector';
 import { render } from './Rendering';
 import { eventBus } from './EventBus';
 
-export function handleMouseMove(editor: Editor, object?: THREE.Mesh) {
+export function handleMouseMove(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
     /**
      * Function that highlights objects when the mouse is over them, and returns them to their original color once the mouse has left.
      */
@@ -35,17 +35,29 @@ export function handleMouseMove(editor: Editor, object?: THREE.Mesh) {
     }
 }
 
-export function handleMouseClick(editor: Editor, object?: THREE.Mesh) {
-    /**
-     * Function that attaches transform controls to an object when clicked.
-     */
+export function handleMouseClick(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
 
-    // Don't do anything if we are actively using the transform controls
-    if (editor.selector.isUsingTransformControls === true) {
+    console.log(editor.mode)
+
+    if (editor.mode === EditorMode.OBJECT) {
+        // Don't do anything if we are actively using the transform controls
+        if (editor.selector.isUsingTransformControls === true) {
+            return
+        }
+
+        editor.selector.select(object)
+        return
+    }
+    
+    if (editor.mode === EditorMode.BED) {
+        if (point === undefined) {
+            return
+        }
+        editor.createBedVertex(point);
         return
     }
 
-    editor.selector.select(object)
+
 
 }
 

@@ -58,12 +58,18 @@ viewport.js line 99 copy
 - [x] reset transform controls when objects are deleted
 
 - [ ] add UI for bed creation
-    - [ ] panel with button
-    - [ ] change cursor
-    - [ ] place bed vertices
+    - [x] panel with button
+    - [x] change cursor
+    - [x] place bed vertices
+    - [ ] draw polyline
+    - [ ] close the loop
+
     - [ ] create bed object
+    - [ ] create command
     - [ ] undo vertices
     - [ ] make bed selectable + undo bed creation
+
+    - [ ] Draw vertices in UI
 
 - [ ] add delete object command with undo
 

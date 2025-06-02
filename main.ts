@@ -10,7 +10,6 @@ import { Sidebar } from './js/sidebar/Sidebar';
 import { eventBus } from './js/EventBus';
 import { CreateObjectCommand } from './js/commands/CreateObjectCommand';
 
-
 function createGround(scene: THREE.Scene): THREE.Mesh {
 
     const groundMat = new THREE.MeshPhongMaterial({
@@ -69,6 +68,7 @@ editor.canvas.addEventListener('mousemove', () => requestRenderIfNotRequested(ed
 editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
 editor.canvas.addEventListener('mouseleave', () => requestRenderIfNotRequested(editor));
 
+// TODO: CLEAN THIS UP
 function performRaycast(event, editor, callback){
     
     // Only do a raycast if the LMB was used
@@ -82,24 +82,26 @@ function performRaycast(event, editor, callback){
 
         const intersection = intersections[ 0 ];
         const object = intersection.object;
+        const point = intersection.point;
         
         if (object.userData.selectable === true) {
-            callback(editor, object);
+            callback(editor, object, point);
         } else {
-            callback(editor, undefined);
+            callback(editor, undefined, point);
         }
 
         return true;
 
     } else {
 
-        callback(editor, undefined);
+        callback(editor, undefined, undefined);
 
         return false;
 
     }
 }
 
+// TODO: CLEAN THIS UP, TOO CONVOLUTED!!!
 editor.canvas.addEventListener('mousemove', (event) => performRaycast(event, editor, handleMouseMove));
 editor.canvas.addEventListener('mouseout', (event) => performRaycast(event, editor, handleMouseMove));
 editor.canvas.addEventListener('mouseleave', (event) => performRaycast(event, editor, handleMouseMove));

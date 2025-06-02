@@ -5,10 +5,17 @@ import { requestRenderIfNotRequested } from './Rendering';
 import { Command } from './commands/Command';
 import { Selector } from './Selector';
 import { eventBus } from './EventBus';
+import { Object3D } from 'three';
+import { Vector3 } from 'three';
 
 const SHADOWMAP_WIDTH = 32;
 const SHADOWMAP_RESOLUTION = 1024;
 const ANTI_ALIASING = true;
+
+enum EditorMode {
+    OBJECT = "OBJECT",
+    BED = "BED"
+}
 
 class Editor {
     /**
@@ -30,11 +37,15 @@ class Editor {
     objectMap: { [key: string]: THREE.Object3D };
 
     selector: Selector
+    mode: EditorMode
+    bedVertices: Object3D[]
 
     constructor () {
         this.commandStack = [];
         this.objectMap = {};
         this.selector = new Selector(this);
+        this.mode = EditorMode.OBJECT;
+        this.bedVertices = [];
     }
 
     public initThree() {
@@ -175,8 +186,20 @@ class Editor {
 
     // TODO: move this out to its own component
     public createNewBed() {
+        this.mode = EditorMode.BED;
         document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
     }
 
+    public createBedVertex(point: Vector3) {
+        const boxMat = new THREE.MeshPhongMaterial({
+            color: 0xDDDDDD,
+        })
+        const boxGeo = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+        const boxMesh = new THREE.Mesh(boxGeo, boxMat)
+        boxMesh.position.set(...point)
+        this.scene.add(boxMesh)
+        this.bedVertices.push(boxMesh)
+    }
+
 }
-export {Editor};
+export {Editor, EditorMode};
