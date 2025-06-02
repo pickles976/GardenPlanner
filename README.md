@@ -53,9 +53,10 @@ JavaScript: suncalc
     - [x] only include selectable items
 
 
-viewport.js line 99 copy
 
 - [x] reset transform controls when objects are deleted
+
+#### BED EDITOR
 
 - [x] add UI for bed creation
     - [x] panel with button
@@ -71,7 +72,7 @@ viewport.js line 99 copy
 - [x] allow drag and moving of vertices
 
 - [x] close the loop
-- [ ] create a mesh geometry from the loop
+- [x] create a mesh geometry from the loop
 - [ ] draw distance and angle of current mouse position
 - [ ] get vertex drawing working
 
@@ -81,15 +82,19 @@ viewport.js line 99 copy
 - [ ] WASD controls
 - [ ] draw north
 
-    - [ ] create bed object
-    - [ ] create command
-    - [ ] undo vertices
-    - [ ] make bed selectable + undo bed creation
+- [ ] create bed object
+- [ ] create command
+- [ ] undo vertices
+- [ ] make bed selectable + undo bed creation
 
-    - [ ] Draw vertices in UI
+- [ ] Draw vertices in UI
 
 - [ ] add delete object command with undo
 
+viewport.js line 99 copy
+
+
+#### PLANT EDITOR
 - [ ] add UI for placing and removing objects
     - [ ] button for creating new plant
     - [ ] plant browser UI with image preview
@@ -100,6 +105,8 @@ viewport.js line 99 copy
 - [ ] toggle between transform controls and free move mode
 
 - [ ] do ghosting when adding in a new object in raycast pose mode
+
+- [ ] Azimuth and angle sun editor
 
 - [ ] save basic editor
 - [ ] get feedback from Erika, give her a task like "design a house" and watch her interaction with the software

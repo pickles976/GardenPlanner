@@ -9,6 +9,12 @@ import { Object3D } from "three";
 import { MeshPhongMaterial } from "three";
 import { BoxGeometry } from "three";
 import { Mesh } from "three";
+import { Float32BufferAttribute } from "three";
+import { DoubleSide } from "three";
+import { CreateObjectCommand } from "./commands/CreateObjectCommand";
+import { getCentroid } from "./Utils";
+import * as THREE from "three"
+import { Vector2 } from "three";
 
 const CLOSE_THRESH = 0.5;
 
@@ -34,12 +40,45 @@ class BedEditor {
     }
 
     private closeLoop() {
-        // TODO: create an object from these points
+        // TODO: clean this up and make it dynamic
+
+        const height = 1;
+
+        // get the centroid of the points
+        const centroid = getCentroid(this.bedPoints);
+
         this.bedPoints.push(this.bedPoints[0]);
-        const geometry = new BufferGeometry().setFromPoints(this.bedPoints);
-        const material = new LineBasicMaterial({ color: 0xffff00 });
-        this.polyline = new Line(geometry, material);
-        this.editor.add(this.polyline)
+        const points = this.bedPoints.map(p => {
+            const temp = p.clone().sub(centroid);
+            return new Vector2(temp.x, temp.y);
+        });
+
+        const shape = new THREE.Shape(points);
+
+        const extrudeSettings = { 
+            depth: height, 
+            bevelEnabled: false, 
+            bevelSegments: 2, 
+            steps: 2, 
+            bevelSize: 1, 
+            bevelThickness: 1 
+        };
+
+        const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+        const mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial() );
+
+        mesh.userData = {"selectable": true}
+        mesh.layers.set(LayerEnums.Objects)
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.name = "New Bed"
+
+        // Move the mesh to the centroid so that it doesn't spawn at the origin
+        mesh.position.set(...centroid);
+
+        this.editor.execute(new CreateObjectCommand(mesh, this.editor));
+
         this.editor.setObjectMode()
     }
 
