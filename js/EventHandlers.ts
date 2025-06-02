@@ -97,9 +97,9 @@ export function handleKeyDown(event, editor: Editor) {
             editor.transformControls.enabled = ! editor.transformControls.enabled;
             break;
 
-        // case 'Escape':
-        //     editor.transformControls.reset();
-        //     break;
+        case 'Escape':
+            editor.selector.deselect();
+            break;
 
     }
 }

@@ -55,7 +55,7 @@ JavaScript: suncalc
 
 viewport.js line 99 copy
 
-- [ ] reset transform controls when objects are deleted
+- [x] reset transform controls when objects are deleted
 
 - [ ] add UI for placing and removing objects
 - [ ] add commands for placing and removing objects
@@ -90,6 +90,7 @@ viewport.js line 99 copy
 - [ ] absolute time entry
 - [ ] suncalc
 - [ ] position sun based on time
+- [ ] ~~steal~~ copy shademap timeline widget
 
 ## SAVING
 - [ ] saving configurations as json

@@ -26,6 +26,11 @@ class CreateObjectCommand extends Command {
     }
 
     public undo() {
+
+        // Deselect object before deleting
+        if (this.object === this.editor.selector.currentSelectedObject) {
+            this.editor.selector.deselect();
+        }
         this.editor.remove(this.object);
         eventBus.emit('requestRender', this.object);
     }

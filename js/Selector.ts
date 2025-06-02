@@ -70,6 +70,23 @@ class Selector {
         eventBus.emit('objectSelected', object);
     }
 
+    public deselect() {
+
+        if(this.currentSelectedObject === undefined) {
+            return
+        }
+
+        this.editor.transformControls.detach();
+        this.editor.transformControls.visible = false;
+
+        this.editor.scene.remove(this.transformControlsGizmo);
+        this.transformControlsGizmo = undefined;
+
+        this.currentSelectedObject = undefined;
+
+        eventBus.emit('objectSelected', undefined);
+    }
+
 }
 
 export { Selector };
