@@ -16,6 +16,7 @@ import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { CommandStack } from "./CommandStack";
+import { handleMouseMoveObjectMode } from "./EventHandlers";
 
 enum BedEditorMode {
     NONE = "NONE",
@@ -30,32 +31,38 @@ class BedEditor {
 
     editor: Editor;
     commandStack: CommandStack;
+    mode: BedEditorMode;
 
     vertices: Vector3[];
 
-    // bedPoints: Vector3[];
-    // bedVertices: Object3D[];
-    // lineLabels: Object3D[];
-
-    // polyline?: Line;
+    // Placement mode
+    lastPoint?: Vector3;
     linePreview?: Line;
     angleText?: TextGeometry;
     distanceText?: TextGeometry;
 
-    mode: BedEditorMode;
+    // Edit mode
+    vertexHandles: Object3D[];
+    lineSegments: Object3D[];
+    selectedHandle?: Object3D;
 
     constructor(editor: Editor) {
 
         this.editor = editor;
         this.commandStack = new CommandStack();
-
         this.mode = BedEditorMode.NONE;
 
+        // Placement mode
         this.vertices = []
-
+        this.lastPoint = undefined;
         this.linePreview = undefined;
         this.angleText = undefined;
         this.distanceText = undefined;
+
+        // Edit mode
+        this.vertexHandles = []
+        this.lineSegments = []
+        this.selectedHandle = undefined;
     }
 
     private cleanUp() {
@@ -73,6 +80,7 @@ class BedEditor {
 
     }
 
+    // TODO: rename this method it is confusin
     public createNewBed() {
         this.cleanUp()
         this.mode = BedEditorMode.PLACE_VERTICES;
@@ -81,7 +89,7 @@ class BedEditor {
         document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
     }
 
-    private closeLoop() {
+    private createMesh() {
         // TODO: clean this up and make it dynamic
 
         const height = 1;
@@ -126,6 +134,13 @@ class BedEditor {
         // Reset cursor
         document.getElementsByTagName("body")[0].style.cursor = "auto";
         this.cleanUp()
+    }
+
+    private closeLoop() {
+        // Reset cursor
+        document.getElementsByTagName("body")[0].style.cursor = "auto";
+        // this.cleanUp()
+        this.createVertexHandles();
         this.mode = BedEditorMode.EDIT_VERTICES;
     }
 
@@ -140,26 +155,21 @@ class BedEditor {
         return false
     }
 
-    // private drawVertices(points: Vector3[]) {
-    //     // TODO: why this no work?
+    private createVertexHandles() {
 
-    //     const boxMat = new MeshPhongMaterial({
-    //         color: 0xDDDDDD,
-    //     })
-    //     const boxGeo = new BoxGeometry(0.5, 0.5, 0.5);
+        for (const point of this.vertices) {
+            const vertex = new Mesh(
+                new BoxGeometry(0.1, 0.1, 0.1), 
+                new MeshPhongMaterial({color: 0xDDDDDD}))
+            vertex.layers.set(LayerEnums.BedVertices);
+            vertex.userData = {selectable: true}
 
-    //     for (const point in points) {
-    //         const vertex = new Mesh(boxGeo, boxMat)
-    //         vertex.layers.set(LayerEnums.BedVertices);
-    //         vertex.userData = {selectable: true}
+            this.editor.add(vertex);
+            vertex.position.set(...point)
+            this.vertexHandles.push(vertex)
+        }
 
-    //         vertex.position.set(...point)
-    //         this.editor.add(vertex);
-
-    //         this.bedVertices.push(vertex);
-    //     }
-
-    // }
+    }
 
     private createLineSegment(points: Vector3) : Object3D{
         if (points.length < 2) {
@@ -191,10 +201,7 @@ class BedEditor {
 
     }
 
-    public handleMouseClick(point: Vector3) {
-
-        // TODO: change functionality based on mode
-
+    private handleMouseClickPlaceVerticesMode(point: Vector3) {
         if (this.tryCloseLoop(point)) {
             eventBus.emit('requestRender')
             return
@@ -214,24 +221,57 @@ class BedEditor {
         eventBus.emit('requestRender')
     }
 
-    public undo() {
+    private handleMouseClickEditVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
+
+        if (this.selectedHandle === undefined) {
+            for (const handle of this.vertexHandles) {
+                if (object === handle) {
+                    this.selectedHandle = object;
+                }
+            }
+        } else {
+            this.selectedHandle = undefined;
+        }
+
+
+    }
+
+    public handleMouseClick(editor: Editor, object: Object3D, point: Vector3) {
+
         switch (this.mode) {
             case BedEditorMode.PLACE_VERTICES:
-                this.vertices.pop();
-                this.commandStack.undo();
+                this.handleMouseClickPlaceVerticesMode(point)
                 break;
             default:
+                this.handleMouseClickEditVerticesMode(editor, object, point)
                 break;
         }
     }
 
+    public undo() {
+        switch (this.mode) {
+            case BedEditorMode.PLACE_VERTICES:
+                this.vertices.pop();
+                break;
+            default:
+                break;
+        }
+        this.commandStack.undo();
+        this.handleMouseMove(this.editor, undefined, this.lastPoint);
+        eventBus.emit('requestRender')
+    }
+
     private handleMouseMovePlaceVerticesMode(point: Vector3) {
-                // TODO: draw line
+
+        this.lastPoint = point;
+
+        this.editor.remove(this.linePreview)
+        this.editor.remove(this.angleText)
+        this.editor.remove(this.distanceText)
+
         if (this.vertices.length == 0) {
             return
         }
-
-        this.editor.remove(this.linePreview)
 
         const lastPoint = this.vertices[this.vertices.length - 1]
         const geometry = new LineGeometry();
@@ -246,7 +286,6 @@ class BedEditor {
         const segment = lastPoint.clone().sub(point)
         let angle = segment.angleTo(new Vector3(0,-1,0)) * 180 / Math.PI;
 
-        this.editor.remove(this.angleText)
         this.angleText = getTextGeometry(`${angle.toFixed(2)}°`)
 
         let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
@@ -259,7 +298,6 @@ class BedEditor {
         // Distance Label
         const distance = lastPoint.distanceTo(point);
 
-        this.editor.remove(this.distanceText)
 
         this.distanceText = getTextGeometry(`${distance.toFixed(2)}m`)
 
@@ -270,19 +308,29 @@ class BedEditor {
         this.editor.add(this.distanceText)
     }
 
-    public handleMouseMove(point: Vector3) {
-
+    private handleMouseMoveEditVerticesMode(editor, object, point) {
         if (point === undefined) {
             return
         }
 
-        console.log(this.mode)
+        if (this.selectedHandle !== undefined) {
+            this.selectedHandle.position.set(...point)
+        }
+    }
+
+    public handleMouseMove(editor: Editor, object: Object3D, point: Vector3) {
+
+        if (point === undefined) {
+            return
+        }
 
         switch (this.mode) {
             case BedEditorMode.PLACE_VERTICES:
                 this.handleMouseMovePlaceVerticesMode(point)
                 break;
             case BedEditorMode.EDIT_VERTICES:
+                handleMouseMoveObjectMode(editor, object, point)
+                this.handleMouseMoveEditVerticesMode(editor, object, point)
                 break;
             default:
                 break;
@@ -292,4 +340,4 @@ class BedEditor {
     }
 }
 
-export { BedEditor };
+export { BedEditor, BedEditorMode };

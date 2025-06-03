@@ -5,7 +5,7 @@ import { render } from './Rendering';
 import { eventBus } from './EventBus';
 import { EditorMode } from './Constants';
 
-function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3){
+export function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3){
     const selector = editor.selector;
 
     if (selector.currentMousedOverObject === object) {
@@ -43,7 +43,7 @@ export function handleMouseMove(editor: Editor, object?: THREE.Mesh, point?: THR
             handleMouseMoveObjectMode(editor, object, point);
             break;
         case EditorMode.BED:
-            editor.bedEditor.handleMouseMove(point);;
+            editor.bedEditor.handleMouseMove(editor, object, point);
             break;
         default:
             break
@@ -52,7 +52,7 @@ export function handleMouseMove(editor: Editor, object?: THREE.Mesh, point?: THR
 
 }
 
-function handleMouseClickObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
+export function handleMouseClickObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
     // Don't do anything if we are actively using the transform controls
     if (editor.selector.isUsingTransformControls === true) {
         return
@@ -69,7 +69,7 @@ export function handleMouseClick(editor: Editor, object?: THREE.Mesh, point?: TH
             handleMouseClickObjectMode(editor, object, point);
             break;
         case EditorMode.BED:
-            editor.bedEditor.handleMouseClick(point);
+            editor.bedEditor.handleMouseClick(editor, object, point);
             break;
         default:
             break

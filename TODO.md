@@ -81,12 +81,27 @@
 - [x] undo place vertices
     - [x] this is gonna require statefulness which breaks some assumptions about our current thingy
 - [x] add a dedicated command stack for the bed editor
+- [x] update line preview when CTRL+Z
+
 
 #### vertex edit mode
-- [ ] highlight vertices on mouse over
+- [x] highlight vertices on mouse over
+- [ ] get vertex handles working
+    - [x] movement with mouse
+    - [ ] update line segments when vertices are updated (redraw each frame?)
+        - [ ] stop using vertices, start using the vertex handles
+        - [ ] write a function to draw the line segments given the vertex handle locations
+        - [ ] call this function every time the vertex handle location is updated
 - [ ] change cursor on mouse over line
 - [ ] insert vertices
 - [ ] delete vertex with delete key
+- [ ] improve vertex appearance
+
+Write up about 
+- design philosophy
+- event flow/propagation
+- modularity
+- what else?
 
 #### Create Bed config mode
 - [ ] mesh extrusion
@@ -103,8 +118,11 @@
 
 viewport.js line 99 copy
 
+### Minor Improvements
+- [ ] move more with WASD
+
 ### BUGS
-- [ ] get vertex drawing working
+- [x] get vertex drawing working
 - [x] mouse cursor not changing
 - [ ] finished beds are difficult to select?
 
@@ -112,6 +130,8 @@ viewport.js line 99 copy
 - [ ] try out the bed editor mode for garden beds I designed
 - [ ] write down what worked well, what didn't
 - [ ] make Erika repeat the same task
+- [ ] get feedback on appearance
+- [ ] get feedback on interactions
 
 #### PLANT EDITOR
 - [ ] add UI for placing and removing objects
