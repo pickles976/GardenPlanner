@@ -214,34 +214,43 @@ class BedEditor {
             this.lineLabels.push(lineLabel)
             this.editor.add(lineLabel)
         }
+
+
     }
 
-    public createBedVertex(point: Vector3) {
+    public handleMouseClick(point: Vector3) {
+
+        // TODO: change functionality based on mode
 
         // TODO: draw the entire thing just from points
-        this.clearVertices();
-        this.clearPolyline();
-        this.clearLineLabels();
+        // this.clearVertices();
+        // this.clearPolyline();
+        // this.clearLineLabels();
 
-        if (this.tryCloseLoop(point)) {
-            eventBus.emit('requestRender')
-            return
-        }
+        // if (this.tryCloseLoop(point)) {
+        //     eventBus.emit('requestRender')
+        //     return
+        // }
 
-        this.bedPoints.push(point)
-        this.drawVertices(this.bedPoints)
-        this.drawPolyline(this.bedPoints)
-        this.drawLineLabels(this.bedPoints)
+        // this.bedPoints.push(point)
+        // this.drawVertices(this.bedPoints)
+        // this.drawPolyline(this.bedPoints)
+        // this.drawLineLabels(this.bedPoints)
 
-        this.editor.remove(this.angleText)
-        this.editor.remove(this.distanceText)
+        // this.editor.remove(this.angleText)
+        // this.editor.remove(this.distanceText)
+        const command = new CreateVertexCommand(point)
+        this.execute(command);
 
         eventBus.emit('requestRender')
     }
 
-    public updateMousePosition(point: Vector3) {
+    public undo() {
 
-        // TODO: draw line
+    }
+
+    private handleMouseMovePlaceVerticesMode(point: Vector3) {
+                // TODO: draw line
         if (this.bedPoints.length == 0) {
             return
         }
@@ -283,6 +292,26 @@ class BedEditor {
 
         this.distanceText.position.set(...textPos)
         this.editor.add(this.distanceText)
+    }
+
+    public handleMouseMove(point: Vector3) {
+
+        if (point === undefined) {
+            return
+        }
+
+        console.log(this.mode)
+
+        switch (this.mode) {
+            case BedEditorMode.PLACE_VERTICES:
+                this.handleMouseMovePlaceVerticesMode(point)
+                break;
+            case BedEditorMode.EDIT_VERTICES:
+                break;
+            default:
+                break;
+        }
+
 
     }
 }

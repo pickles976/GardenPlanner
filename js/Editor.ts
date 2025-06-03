@@ -7,6 +7,7 @@ import { Selector } from './Selector';
 import { EditorMode, LayerEnums} from './Constants';
 import { BedEditor } from './BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+import { CommandStack } from './CommandStack';
 
 const SHADOWMAP_WIDTH = 32;
 const SHADOWMAP_RESOLUTION = 1024;
@@ -37,7 +38,7 @@ class Editor {
 
     directionalLight: THREE.DirectionalLight
 
-    commandStack: Command[];
+    commandStack: CommandStack;
 
     objectMap: { [key: string]: THREE.Object3D };
 
@@ -48,7 +49,7 @@ class Editor {
 
 
     constructor () {
-        this.commandStack = [];
+        this.commandStack = new CommandStack();
         this.objectMap = {};
         this.selector = new Selector(this);
         this.bedEditor = new BedEditor(this);
@@ -238,26 +239,12 @@ class Editor {
 
     public execute(command: Command) {
 
-        if (this.commandStack.length == 0) {
-            command.execute();
-            this.commandStack.push(command)
-        } else {
-            let lastCommand = this.commandStack[this.commandStack.length - 1];
-            // Update if same type of command
-            if (lastCommand.canUpdate(command)) {
-                lastCommand.update(command);
-                lastCommand.execute()
-            } else { // else just push
-                command.execute()
-                this.commandStack.push(command)
-            }
-        }
+        this.commandStack.execute(command);
 
     }
 
     public undo() {
-        const command = this.commandStack.pop();
-        command?.undo();
+        this.commandStack.undo();
     }
 
     public setBedMode() {

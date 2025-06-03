@@ -32,13 +32,6 @@ function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, point?: 
     }
 }
 
-function handleMouseMoveBedEditorMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
-    if (point === undefined) {
-        return
-    }
-    editor.bedEditor.updateMousePosition(point);
-}
-
 export function handleMouseMove(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
     /**
      * Function that highlights objects when the mouse is over them, and returns them to their original color once the mouse has left.
@@ -47,16 +40,13 @@ export function handleMouseMove(editor: Editor, object?: THREE.Mesh, point?: THR
     let callback;
     switch(editor.mode) {
         case EditorMode.OBJECT:
-            callback = handleMouseMoveObjectMode;
+            handleMouseMoveObjectMode(editor, object, point);
             break;
         case EditorMode.BED:
-            callback = handleMouseMoveBedEditorMode;
+            editor.bedEditor.handleMouseMove(point);;
             break;
         default:
             break
-    }
-    if (callback !== undefined) {
-        callback(editor, object, point)
     }
 
 
@@ -71,36 +61,18 @@ function handleMouseClickObjectMode(editor: Editor, object?: THREE.Mesh, point?:
     editor.selector.select(object)
 }
 
-function handleMouseClickBedEditorMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
-    if (point === undefined) {
-        return
-    }
-
-    if (object === undefined) {
-        if (editor.selector.currentSelectedObject === undefined) {
-            editor.bedEditor.createBedVertex(point);
-        }
-    } else {
-        editor.selector.select(object)
-    }
-
-}
-
 export function handleMouseClick(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
 
     let callback;
     switch(editor.mode) {
         case EditorMode.OBJECT:
-            callback = handleMouseClickObjectMode;
+            handleMouseClickObjectMode(editor, object, point);
             break;
         case EditorMode.BED:
-            callback = handleMouseClickBedEditorMode;
+            editor.bedEditor.handleMouseClick(point);
             break;
         default:
             break
-    }
-    if (callback !== undefined) {
-        callback(editor, object, point)
     }
 }
 
@@ -141,7 +113,16 @@ export function handleKeyDown(event, editor: Editor) {
         case 'z':
 
             if (event.ctrlKey) {
-                editor.undo();
+                switch (editor.mode) {
+                    case EditorMode.OBJECT:
+                        editor.undo();
+                        break;
+                    case EditorMode.BED:
+                        editor.bedEditor.undo();
+                        break;
+                    default:
+                        break;
+                }
             } else {
                 editor.transformControls.showZ = ! editor.transformControls.showZ;
             }
