@@ -1,9 +1,5 @@
 # Stuff
 
-Python: astral, pyephem, or skyfield
-
-C++: NOAA SPA or PSA algorithms
-
 JavaScript: suncalc
 
 [Rust: sun or astro-rust](https://github.com/mourner/suncalc)
@@ -19,7 +15,7 @@ JavaScript: suncalc
 - animations?
 
 # Week 1
-- [ ] 06/02/2025 -- Start on bed editor
+- [x] 06/02/2025 -- Start on bed editor
 - [ ] 06/03/2025 -- finished bed editor functionality
 - [ ] 06/04/2025 -- refactor and cleanup
 - [ ] 06/05/2025 -- city hall/break day

@@ -200,6 +200,7 @@ class Editor {
     public setBedMode() {
         this.selector.deselect();
         this.mode = EditorMode.BED;
+        this.bedEditor.createNewBed();
     }
 
     public setObjectMode() {

@@ -56,8 +56,9 @@
 - [x] close the loop
 - [x] create a mesh geometry from the loop
 - [ ] draw distance and angle of current mouse position
-    - [ ] text-drawing utility
-    - [ ] draw text over lines
+    - [x] text-drawing utility
+    - [x] draw text over lines
+    - [ ] leave text on the ground
 - [ ] make lines easier to see
 
 - [ ] change camera view
@@ -70,13 +71,16 @@
 - [ ] draw north
 
 - [ ] vertex place mode
+- [ ] undo vertices
 - [ ] vertex edit mode
+- [ ] 
 - [ ] mesh extrusion
+- [ ] control bed height
+- [ ] control border width
 
 
 - [ ] create bed object
 - [ ] create command
-- [ ] undo vertices
 - [ ] make bed selectable + undo bed creation
 
 - [ ] Draw vertices in UI

@@ -12,9 +12,13 @@ import { Mesh } from "three";
 import { Float32BufferAttribute } from "three";
 import { DoubleSide } from "three";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
-import { getCentroid } from "./Utils";
+import { destructureVector3Array, getCentroid, getTextGeometry } from "./Utils";
 import * as THREE from "three"
 import { Vector2 } from "three";
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 
 const CLOSE_THRESH = 0.5;
 
@@ -23,22 +27,28 @@ class BedEditor {
     editor: Editor;
     bedPoints: Vector3[];
     bedVertices: Object3D[];
+
     polyline?: Line;
     drawline?: Line;
+    text?: TextGeometry;
 
 
     constructor(editor: Editor) {
         this.editor = editor;
         this.bedPoints = [];
         this.bedVertices = [];
+
         this.polyline = undefined;
-        this.drawline = undefined
+        this.drawline = undefined;
+        this.text = undefined;
     }
 
     public createNewBed() {
         this.bedPoints = [];
         this.bedVertices = [];
-        document.getElementsByTagName("body")[0].style.cursor = "url('/cross_cursor.cur'), auto";
+
+        // TODO: move cursor changes out to function
+        document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
     }
 
     private closeLoop() {
@@ -82,6 +92,9 @@ class BedEditor {
         this.editor.execute(new CreateObjectCommand(mesh, this.editor));
 
         this.editor.setObjectMode()
+
+        // Reset cursor
+        document.getElementsByTagName("body")[0].style.cursor = "auto";
     }
 
     private tryCloseLoop(point: Vector3) : boolean {
@@ -132,9 +145,11 @@ class BedEditor {
     }
 
     private drawPolyline(points: Vector3[]) {
-        const geometry = new BufferGeometry().setFromPoints(points);
-        const material = new LineBasicMaterial({ color: 0x00ff00 });
-        this.polyline = new Line(geometry, material);
+        // const geometry = new BufferGeometry().setFromPoints(points);
+        const geometry = new LineGeometry();
+        geometry.setPositions( destructureVector3Array(points) );
+        const material = new LineMaterial({ color: 0x00ff00, linewidth: 5 });
+        this.polyline = new Line2(geometry, material);
         this.editor.add(this.polyline)
     }
 
@@ -156,6 +171,8 @@ class BedEditor {
     }
 
     public updateMousePosition(point: Vector3) {
+
+        // TODO: draw line
         if (this.bedPoints.length == 0) {
             return
         }
@@ -166,18 +183,37 @@ class BedEditor {
         }
 
         const lastPoint = this.bedPoints[this.bedPoints.length - 1]
-        const geometry = new BufferGeometry().setFromPoints([lastPoint, point]);
-        const material = new LineBasicMaterial({ color: 0xffff00 });
-        this.drawline = new Line(geometry, material);
+        // const geometry = new BufferGeometry().setFromPoints([lastPoint, point]);
+        const geometry = new LineGeometry();
+        console.log([lastPoint, point])
+        geometry.setPositions(destructureVector3Array([lastPoint, point]))
+        const material = new LineMaterial({ color: 0xffff00, linewidth: 15});
+        this.drawline = new Line2(geometry, material);
         this.editor.add(this.drawline)
 
+        // TODO: text labels
         const distance = lastPoint.distanceTo(point);
 
         // TODO: change this to angle between north
-        // const angle = lastPoint.angleTo(point) * 180 / Math.PI;
-        const angle = 0.0;
+        // let p1 = new Vector2(lastPoint.x, lastPoint.y).normalize()
+        // let p2 = new Vector2(point.x, point.y).normalize()
+        // const angle = p2.angle() * 180 / Math.PI;
+        const segment = lastPoint.clone().sub(point)
+        let angle = segment.angleTo(new Vector3(1,0,0)) * 180 / Math.PI;
 
-        console.log(`Distance: ${distance}\nAngle: ${angle}`);
+        if (this.text !== undefined) {
+            this.editor.remove(this.text)
+        }
+
+        // this.text = getTextGeometry(`${distance.toFixed(2)}m`)
+        this.text = getTextGeometry(`${angle.toFixed(2)}°`)
+
+        let textPos = point.clone();
+        textPos.z = 0.3;
+
+        this.text.position.set(...textPos)
+        this.editor.add(this.text)
+
 
     }
 }
