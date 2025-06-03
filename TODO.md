@@ -77,8 +77,9 @@
 ### Multiple Bed Editor Stages
 
 #### Vertex Place Mode
-- [ ] create bed editing mode enums
+- [x] create bed editing mode enums
 - [ ] undo place vertices
+    - [ ] this is gonna require statefulness which breaks some assumptions about our current thingy
 
 #### vertex edit mode
 - [ ] highlight vertices on mouse over

@@ -1,16 +1,12 @@
 import { Editor } from "./Editor";
 import { Vector3 } from "three";
 import { Line } from "three";
-import { EditorMode, LayerEnums } from "./Constants";
-import { BufferGeometry } from "three";
-import { LineBasicMaterial } from "three";
+import { LayerEnums } from "./Constants";
 import { eventBus } from "./EventBus";
 import { Object3D } from "three";
 import { MeshPhongMaterial } from "three";
 import { BoxGeometry } from "three";
 import { Mesh } from "three";
-import { Float32BufferAttribute } from "three";
-import { DoubleSide } from "three";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
 import { destructureVector3Array, getCentroid, getTextGeometry } from "./Utils";
 import * as THREE from "three"
@@ -19,7 +15,13 @@ import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
-import { vertex } from "three/src/renderers/shaders/ShaderLib/background.glsl.js";
+
+enum BedEditorMode {
+    NONE = "NONE",
+    PLACE_VERTICES = "PLACE_VERTICES",
+    EDIT_VERTICES = "EDIT_VERTICES",
+    CONFIGURE_MESH = "CONFIGURE_MESH"
+}
 
 const CLOSE_THRESH = 0.5;
 
@@ -35,8 +37,12 @@ class BedEditor {
     angleText?: TextGeometry;
     distanceText?: TextGeometry;
 
+    mode: BedEditorMode;
 
     constructor(editor: Editor) {
+
+        this.mode = BedEditorMode.NONE;
+
         this.editor = editor;
         this.bedPoints = [];
         this.bedVertices = [];
@@ -67,10 +73,13 @@ class BedEditor {
         this.bedVertices = []
         this.lineLabels = []
 
+        this.mode = BedEditorMode.NONE;
+
     }
 
     public createNewBed() {
         this.cleanUp()
+        this.mode = BedEditorMode.PLACE_VERTICES;
 
         // TODO: move cursor changes out to function
         document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
@@ -121,6 +130,7 @@ class BedEditor {
         // Reset cursor
         document.getElementsByTagName("body")[0].style.cursor = "auto";
         this.cleanUp()
+        this.mode = BedEditorMode.EDIT_VERTICES;
     }
 
     private tryCloseLoop(point: Vector3) : boolean {
