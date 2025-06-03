@@ -15,6 +15,7 @@ import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { CommandStack } from "./CommandStack";
 
 enum BedEditorMode {
     NONE = "NONE",
@@ -28,12 +29,16 @@ const CLOSE_THRESH = 0.5;
 class BedEditor {
 
     editor: Editor;
-    bedPoints: Vector3[];
-    bedVertices: Object3D[];
-    lineLabels: Object3D[];
+    commandStack: CommandStack;
 
-    polyline?: Line;
-    drawline?: Line;
+    vertices: Vector3[];
+
+    // bedPoints: Vector3[];
+    // bedVertices: Object3D[];
+    // lineLabels: Object3D[];
+
+    // polyline?: Line;
+    linePreview?: Line;
     angleText?: TextGeometry;
     distanceText?: TextGeometry;
 
@@ -41,37 +46,28 @@ class BedEditor {
 
     constructor(editor: Editor) {
 
+        this.editor = editor;
+        this.commandStack = new CommandStack();
+
         this.mode = BedEditorMode.NONE;
 
-        this.editor = editor;
-        this.bedPoints = [];
-        this.bedVertices = [];
-        this.lineLabels = [];
+        this.vertices = []
 
-        this.polyline = undefined;
-        this.drawline = undefined;
+        this.linePreview = undefined;
         this.angleText = undefined;
         this.distanceText = undefined;
     }
 
     private cleanUp() {
-        this.editor.remove(this.polyline)
-        this.editor.remove(this.drawline)
+        this.editor.remove(this.linePreview)
         this.editor.remove(this.angleText)
         this.editor.remove(this.distanceText)
 
+        this.vertices = []
 
-        for (const vertex of this.bedVertices) {
-            this.editor.remove(vertex)
+        while (this.commandStack.stack.length > 0) {
+            this.commandStack.undo()
         }
-
-        for (const label of this.lineLabels) {
-            this.editor.remove(label)
-        }
-
-        this.bedPoints = []
-        this.bedVertices = []
-        this.lineLabels = []
 
         this.mode = BedEditorMode.NONE;
 
@@ -91,10 +87,10 @@ class BedEditor {
         const height = 1;
 
         // get the centroid of the points
-        const centroid = getCentroid(this.bedPoints);
+        const centroid = getCentroid(this.vertices);
 
-        this.bedPoints.push(this.bedPoints[0]);
-        const points = this.bedPoints.map(p => {
+        this.vertices.push(this.vertices[0]);
+        const points = this.vertices.map(p => {
             const temp = p.clone().sub(centroid);
             return new Vector2(temp.x, temp.y);
         });
@@ -135,7 +131,7 @@ class BedEditor {
 
     private tryCloseLoop(point: Vector3) : boolean {
 
-        for (const vertex of this.bedPoints) {
+        for (const vertex of this.vertices) {
             if (vertex.distanceTo(point) < CLOSE_THRESH) {
                 this.closeLoop()
                 return true;
@@ -144,77 +140,54 @@ class BedEditor {
         return false
     }
 
-    private clearVertices() {
-        for (const vertex of this.bedVertices) {
-            this.editor.remove(vertex)
-        }
-        this.bedVertices = [];
-    }
+    // private drawVertices(points: Vector3[]) {
+    //     // TODO: why this no work?
 
-    private clearPolyline() {
-        if (this.polyline !== undefined) {
-            this.editor.remove(this.polyline)
-        }
-        this.polyline = undefined;
+    //     const boxMat = new MeshPhongMaterial({
+    //         color: 0xDDDDDD,
+    //     })
+    //     const boxGeo = new BoxGeometry(0.5, 0.5, 0.5);
 
-    }
+    //     for (const point in points) {
+    //         const vertex = new Mesh(boxGeo, boxMat)
+    //         vertex.layers.set(LayerEnums.BedVertices);
+    //         vertex.userData = {selectable: true}
 
-    private clearLineLabels() {
-        for (const label of this.lineLabels) {
-            this.editor.remove(label)
-        }
-    }
+    //         vertex.position.set(...point)
+    //         this.editor.add(vertex);
 
-    private drawVertices(points: Vector3[]) {
-        // TODO: why this no work?
+    //         this.bedVertices.push(vertex);
+    //     }
 
-        const boxMat = new MeshPhongMaterial({
-            color: 0xDDDDDD,
-        })
-        const boxGeo = new BoxGeometry(0.5, 0.5, 0.5);
+    // }
 
-        for (const point in points) {
-            const vertex = new Mesh(boxGeo, boxMat)
-            vertex.layers.set(LayerEnums.BedVertices);
-            vertex.userData = {selectable: true}
-
-            vertex.position.set(...point)
-            this.editor.add(vertex);
-
-            this.bedVertices.push(vertex);
-        }
-
-    }
-
-    private drawPolyline(points: Vector3[]) {
-        // const geometry = new BufferGeometry().setFromPoints(points);
-        const geometry = new LineGeometry();
-        geometry.setPositions( destructureVector3Array(points) );
-        const material = new LineMaterial({ color: 0x00ff00, linewidth: 5 });
-        this.polyline = new Line2(geometry, material);
-        this.editor.add(this.polyline)
-    }
-
-    private drawLineLabels(points: Vector3[]) {
-
-        if (points.length === 0) {
+    private createLineSegment(points: Vector3) : Object3D{
+        if (points.length < 2) {
             return
         }
 
-        for (let i = 1; i < points.length; i++) {
-            const point = points[i];
-            const lastPoint = this.bedPoints[i - 1]
-            const distance = lastPoint.distanceTo(point);
-            const lineLabel = getTextGeometry(`${distance.toFixed(2)}m`)
+        const index = points.length - 1;
+        const point = points[index].clone();
+        const lastPoint = points[index - 1].clone();
 
-            let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-            textPos.z = 0.3;
-            lineLabel.position.set(...textPos)
+        // Get Distance Text
+        const distance = lastPoint.distanceTo(point);
+        const lineLabel = getTextGeometry(`${distance.toFixed(2)}m`)
+        let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
+        textPos.z = 0.3;
+        lineLabel.position.set(...textPos)
 
-            this.lineLabels.push(lineLabel)
-            this.editor.add(lineLabel)
-        }
+        // Get line segment
+        const geometry = new LineGeometry();
+        geometry.setPositions( destructureVector3Array(points) );
+        const material = new LineMaterial({ color: 0x00ff00, linewidth: 5 });
+        const line = new Line2(geometry, material);
 
+        const group = new THREE.Group();
+        group.add( lineLabel );
+        group.add( line );
+
+        return group;
 
     }
 
@@ -222,47 +195,50 @@ class BedEditor {
 
         // TODO: change functionality based on mode
 
-        // TODO: draw the entire thing just from points
-        // this.clearVertices();
-        // this.clearPolyline();
-        // this.clearLineLabels();
+        if (this.tryCloseLoop(point)) {
+            eventBus.emit('requestRender')
+            return
+        }
 
-        // if (this.tryCloseLoop(point)) {
-        //     eventBus.emit('requestRender')
-        //     return
-        // }
+        this.vertices.push(point);
 
-        // this.bedPoints.push(point)
-        // this.drawVertices(this.bedPoints)
-        // this.drawPolyline(this.bedPoints)
-        // this.drawLineLabels(this.bedPoints)
+        const lineSegment = this.createLineSegment(this.vertices);
 
-        // this.editor.remove(this.angleText)
-        // this.editor.remove(this.distanceText)
-        const command = new CreateVertexCommand(point)
-        this.execute(command);
+        if (lineSegment === undefined) {
+            return
+        }
+
+        const command = new CreateObjectCommand(lineSegment, this.editor);
+        this.commandStack.execute(command);
 
         eventBus.emit('requestRender')
     }
 
     public undo() {
-
+        switch (this.mode) {
+            case BedEditorMode.PLACE_VERTICES:
+                this.vertices.pop();
+                this.commandStack.undo();
+                break;
+            default:
+                break;
+        }
     }
 
     private handleMouseMovePlaceVerticesMode(point: Vector3) {
                 // TODO: draw line
-        if (this.bedPoints.length == 0) {
+        if (this.vertices.length == 0) {
             return
         }
 
-        this.editor.remove(this.drawline)
+        this.editor.remove(this.linePreview)
 
-        const lastPoint = this.bedPoints[this.bedPoints.length - 1]
+        const lastPoint = this.vertices[this.vertices.length - 1]
         const geometry = new LineGeometry();
         geometry.setPositions(destructureVector3Array([lastPoint, point]))
         const material = new LineMaterial({ color: 0xffff00, linewidth: 5});
-        this.drawline = new Line2(geometry, material);
-        this.editor.add(this.drawline)
+        this.linePreview = new Line2(geometry, material);
+        this.editor.add(this.linePreview)
 
         // TODO: fix the 
 

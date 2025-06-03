@@ -27,7 +27,7 @@ class CommandStack {
     }
     
     public undo() {
-        const command = this.sta.pop();
+        const command = this.stack.pop();
         command?.undo();
     }
 }

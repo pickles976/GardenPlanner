@@ -78,8 +78,9 @@
 
 #### Vertex Place Mode
 - [x] create bed editing mode enums
-- [ ] undo place vertices
-    - [ ] this is gonna require statefulness which breaks some assumptions about our current thingy
+- [x] undo place vertices
+    - [x] this is gonna require statefulness which breaks some assumptions about our current thingy
+- [x] add a dedicated command stack for the bed editor
 
 #### vertex edit mode
 - [ ] highlight vertices on mouse over
