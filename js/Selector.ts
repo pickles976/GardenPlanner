@@ -49,7 +49,7 @@ class Selector {
         pickPosition.x = (pos.x / this.editor.canvas.width ) *  2 - 1;
         pickPosition.y = (pos.y / this.editor.canvas.height) * -2 + 1;  // note we flip Y
 
-        raycaster.setFromCamera( pickPosition, this.editor.camera );
+        raycaster.setFromCamera( pickPosition, this.editor.currentCamera );
 
         return raycaster.intersectObjects(this.editor.scene.children);
 

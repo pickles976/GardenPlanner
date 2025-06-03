@@ -6,10 +6,14 @@ import { Command } from './commands/Command';
 import { Selector } from './Selector';
 import { EditorMode, LayerEnums} from './Constants';
 import { BedEditor } from './BedEditor';
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 const SHADOWMAP_WIDTH = 32;
 const SHADOWMAP_RESOLUTION = 1024;
 const ANTI_ALIASING = true;
+
+const SCREEN_WIDTH = window.innerWidth;
+const SCREEN_HEIGHT = window.innerHeight;
 
 class Editor {
     /**
@@ -20,8 +24,15 @@ class Editor {
     canvas: HTMLCanvasElement
     renderer: THREE.WebGLRenderer
     scene: THREE.Scene
-    camera: THREE.PerspectiveCamera
-    cameraControls: MapControls
+
+    currentCamera: THREE.Camera
+    perspectiveCamera: THREE.PerspectiveCamera
+    orthoCamera: THREE.OrthographicCamera
+    perspectiveCameraControls: MapControls
+    orthoCameraControls: OrbitControls
+
+    currentCameraControls: Object
+
     transformControls: TransformControls
 
     directionalLight: THREE.DirectionalLight
@@ -67,22 +78,57 @@ class Editor {
         this.scene.fog = new THREE.FogExp2(0xEBE2DB, 0.00003);
     
     
-        // camera
-        this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 2000000);
-        this.camera.name = "Camera"
-        this.camera.position.set(0, 5, 5);
-        this.camera.up.set(0, 0, 1);
-        this.camera.lookAt(0, 0, 0);
-        this.camera.layers.enableAll();
+        // Perspective Camera
+        const aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
+        const frustumSize = 10;
+
+        this.perspectiveCamera = new THREE.PerspectiveCamera(60, aspect, 0.1, 2000000);
+        this.perspectiveCamera.name = "Perspective Camera"
+        this.perspectiveCamera.position.set(0, 5, 5);
+        this.perspectiveCamera.up.set(0, 0, 1);
+        this.perspectiveCamera.lookAt(0, 0, 0);
+        this.perspectiveCamera.layers.enableAll();
+
+        // Map Controls
+        this.perspectiveCameraControls = new MapControls(this.perspectiveCamera, this.canvas)
+        this.perspectiveCameraControls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+        this.perspectiveCameraControls.dampingFactor = 0.05;
+        this.perspectiveCameraControls.screenSpacePanning = false;
+        this.perspectiveCameraControls.minDistance = 1;
+        this.perspectiveCameraControls.maxDistance = 16384;
+        this.perspectiveCameraControls.maxPolarAngle = (Math.PI / 2) - (Math.PI / 360)
+
+        // Orthographic Camera https://threejs.org/docs/#api/en/cameras/OrthographicCamera
+        this.orthoCamera = new THREE.OrthographicCamera( 0.5 * frustumSize * aspect / - 2, 0.5 * frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 0.01, 1000 );
+        this.orthoCamera.name = "Ortho Camera"
+        this.orthoCamera.position.set(0, 0, 5);
+        this.orthoCamera.up.set(0, 0, 1);
+        this.orthoCamera.lookAt(0, 0, 0);
+        this.orthoCamera.rotateZ(-Math.PI / 2)
+        this.orthoCamera.layers.enableAll();
+
+        // Orbit Controls https://threejs.org/docs/#examples/en/controls/OrbitControls.keys
+        this.orthoCameraControls = new OrbitControls( this.orthoCamera, this.canvas );
+        this.orthoCameraControls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
+        this.orthoCameraControls.screenSpacePanning = false;
+        this.orthoCameraControls.minDistance = 1;
+        this.orthoCameraControls.maxDistance = 16384;
+        this.orthoCameraControls.enableRotate = false
+        this.orthoCameraControls.listenToKeyEvents( window ); // optional
+        console.log(this.orthoCameraControls.keys)
+
+        this.orthoCameraControls.keys = {
+            LEFT: 'KeyA',
+            UP: 'KeyW', 
+            RIGHT: 'KeyD', 
+            BOTTOM: 'KeyS' 
+        }
+
+
+        this.currentCamera = this.perspectiveCamera
+        this.currentCameraControls = this.perspectiveCameraControls
     
-        // map orbit
-        this.cameraControls = new MapControls(this.camera, this.canvas)
-        this.cameraControls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-        this.cameraControls.dampingFactor = 0.05;
-        this.cameraControls.screenSpacePanning = false;
-        this.cameraControls.minDistance = 1;
-        this.cameraControls.maxDistance = 16384;
-        this.cameraControls.maxPolarAngle = (Math.PI / 2) - (Math.PI / 360)
+
 
     
         // TODO: split this out into a lighting object
@@ -143,11 +189,28 @@ class Editor {
         this.scene.background = new THREE.Color(white);
     
 
-        this.cameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
+        this.perspectiveCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
+        this.orthoCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
 
         // TODO: move transform controls from editor to Selector
-        this.transformControls = new TransformControls( this.camera, this.canvas );
+        this.transformControls = new TransformControls( this.perspectiveCamera, this.canvas );
         this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );    
+    }
+
+    public setOrthoCamera() {
+        // this.orthoCamera.position.set(...this.perspectiveCamera.position)
+        this.currentCamera = this.orthoCamera;
+        this.currentCameraControls = this.orthoCameraControls
+        this.perspectiveCameraControls.enabled = false
+        this.orthoCameraControls.enabled = true
+    }
+
+    public setPerspectiveCamera() {
+        // this.perspectiveCamera.position.set(...this.orthoCamera.position)
+        this.currentCamera = this.perspectiveCamera
+        this.currentCameraControls = this.perspectiveCameraControls
+        this.perspectiveCameraControls.enabled = true
+        this.orthoCameraControls.enabled = false
     }
 
     public add(object?: THREE.Object3D) {
@@ -200,12 +263,14 @@ class Editor {
     public setBedMode() {
         this.selector.deselect();
         this.mode = EditorMode.BED;
+        this.setOrthoCamera()
         this.bedEditor.createNewBed();
     }
 
     public setObjectMode() {
         this.selector.deselect();
         this.mode = EditorMode.OBJECT;
+        this.setPerspectiveCamera()
     }
 
 

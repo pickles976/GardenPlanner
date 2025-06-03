@@ -17,7 +17,7 @@ JavaScript: suncalc
 # Week 1
 - [x] 06/02/2025 -- Start on bed editor
 - [ ] 06/03/2025 -- finished bed editor functionality
-- [ ] 06/04/2025 -- refactor and cleanup
+- [ ] 06/04/2025 -- refactor and cleanup (improve readability, improve view)
 - [ ] 06/05/2025 -- city hall/break day
 - [ ] 06/06/2025 -- Start on plant editor
 

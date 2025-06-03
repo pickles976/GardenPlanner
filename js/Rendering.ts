@@ -16,21 +16,21 @@ function resizeRendererToDisplaySize(renderer) {
 export async function render(editor: Editor) {
     renderRequested = false;
 
-    editor.cameraControls.update()
+    editor.currentCameraControls.update()
 
     // fix buffer size
     if (resizeRendererToDisplaySize(editor.renderer)) {
         const canvas = editor.renderer.domElement;
-        editor.camera.aspect = canvas.clientWidth / canvas.clientHeight;
-        editor.camera.updateProjectionMatrix();
+        editor.currentCamera.aspect = canvas.clientWidth / canvas.clientHeight;
+        editor.currentCamera.updateProjectionMatrix();
     }
 
     // fix aspect ratio
     const canvas = editor.renderer.domElement;
-    editor.camera.aspect = canvas.clientWidth / canvas.clientHeight;
-    editor.camera.updateProjectionMatrix();
+    editor.currentCamera.aspect = canvas.clientWidth / canvas.clientHeight;
+    editor.currentCamera.updateProjectionMatrix();
 
-    editor.renderer.render(editor.scene, editor.camera);
+    editor.renderer.render(editor.scene, editor.currentCamera);
 }
 
 export function requestRenderIfNotRequested(editor: Editor) {

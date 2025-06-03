@@ -1,4 +1,6 @@
 ## EDITING FEATURES:
+
+### Rendering and UI
 - [x] basic 3D rendering scene
 - [x] shadows
 - [x] typescript
@@ -59,47 +61,55 @@
     - [x] text-drawing utility
     - [x] draw text over lines
     - [x] leave text on the ground
-    - [ ] clean up a bit
+    - [x] clean up a bit
         - [x] make re-rendering a single function call
-        - [ ] make it stateless
-        - [ ] add a cleanup function
+        - [x] make it stateless
+        - [x] add a cleanup function
 - [x] make lines easier to see
 
-- [ ] change camera view
-- [ ] isometric camera
-- [ ] swap cameras
-- [ ] top-down
+- [x] add isometric camera
+- [x] swap cameras when going to vertex mode
+- [x] swap back when done with orbit controls
+- [x] top-down
+- [x] WASD controls
+- [ ] draw north in vertex mode
 
+### Multiple Bed Editor Stages
 
-- [ ] WASD controls
-- [ ] draw north
+#### Vertex Place Mode
+- [ ] create bed editing mode enums
+- [ ] undo place vertices
 
-- [ ] vertex place mode
-- [ ] undo vertices
-- [ ] vertex edit mode
-- [ ] 
+#### vertex edit mode
+- [ ] highlight vertices on mouse over
+- [ ] change cursor on mouse over line
+- [ ] insert vertices
+- [ ] delete vertex with delete key
+
+#### Create Bed config mode
 - [ ] mesh extrusion
 - [ ] control bed height
 - [ ] control border width
 
-
 - [ ] create bed object
-- [ ] create command
-- [ ] make bed selectable + undo bed creation
-
-- [ ] Draw vertices in UI
 
 - [ ] add delete object command with undo
 
 - [ ] show/hide grid
 - [ ] enable/disable snap to grid
+- [ ] toggle metric vs imperial globally
 
 viewport.js line 99 copy
 
 ### BUGS
 - [ ] get vertex drawing working
-- [ ] mouse cursor not changing
+- [x] mouse cursor not changing
 - [ ] finished beds are difficult to select?
+
+#### Feedback
+- [ ] try out the bed editor mode for garden beds I designed
+- [ ] write down what worked well, what didn't
+- [ ] make Erika repeat the same task
 
 #### PLANT EDITOR
 - [ ] add UI for placing and removing objects

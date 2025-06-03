@@ -114,7 +114,7 @@ editor.canvas.addEventListener('mousedown', (event) => performRaycast(event, edi
 
 editor.transformControls.addEventListener('mouseDown', function (event) {
     const selector = editor.selector;
-    editor.cameraControls.enabled = false;
+    editor.currentCameraControls.enabled = false;
     selector.isUsingTransformControls = true;
 });
 
@@ -125,7 +125,7 @@ editor.transformControls.addEventListener('change', function(event) {
 editor.transformControls.addEventListener('mouseUp', function (event) {
     const selector = editor.selector;
     
-    editor.cameraControls.enabled = true;
+    editor.currentCameraControls.enabled = true;
     selector.isUsingTransformControls = false;
 
     if (selector.currentSelectedObject === undefined) {
