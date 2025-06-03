@@ -19,6 +19,7 @@ import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { vertex } from "three/src/renderers/shaders/ShaderLib/background.glsl.js";
 
 const CLOSE_THRESH = 0.5;
 
@@ -27,25 +28,49 @@ class BedEditor {
     editor: Editor;
     bedPoints: Vector3[];
     bedVertices: Object3D[];
+    lineLabels: Object3D[];
 
     polyline?: Line;
     drawline?: Line;
-    text?: TextGeometry;
+    angleText?: TextGeometry;
+    distanceText?: TextGeometry;
 
 
     constructor(editor: Editor) {
         this.editor = editor;
         this.bedPoints = [];
         this.bedVertices = [];
+        this.lineLabels = [];
 
         this.polyline = undefined;
         this.drawline = undefined;
-        this.text = undefined;
+        this.angleText = undefined;
+        this.distanceText = undefined;
+    }
+
+    private cleanUp() {
+        this.editor.remove(this.polyline)
+        this.editor.remove(this.drawline)
+        this.editor.remove(this.angleText)
+        this.editor.remove(this.distanceText)
+
+
+        for (const vertex of this.bedVertices) {
+            this.editor.remove(vertex)
+        }
+
+        for (const label of this.lineLabels) {
+            this.editor.remove(label)
+        }
+
+        this.bedPoints = []
+        this.bedVertices = []
+        this.lineLabels = []
+
     }
 
     public createNewBed() {
-        this.bedPoints = [];
-        this.bedVertices = [];
+        this.cleanUp()
 
         // TODO: move cursor changes out to function
         document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
@@ -95,6 +120,7 @@ class BedEditor {
 
         // Reset cursor
         document.getElementsByTagName("body")[0].style.cursor = "auto";
+        this.cleanUp()
     }
 
     private tryCloseLoop(point: Vector3) : boolean {
@@ -121,6 +147,12 @@ class BedEditor {
         }
         this.polyline = undefined;
 
+    }
+
+    private clearLineLabels() {
+        for (const label of this.lineLabels) {
+            this.editor.remove(label)
+        }
     }
 
     private drawVertices(points: Vector3[]) {
@@ -153,10 +185,33 @@ class BedEditor {
         this.editor.add(this.polyline)
     }
 
+    private drawLineLabels(points: Vector3[]) {
+
+        if (points.length === 0) {
+            return
+        }
+
+        for (let i = 1; i < points.length; i++) {
+            const point = points[i];
+            const lastPoint = this.bedPoints[i - 1]
+            const distance = lastPoint.distanceTo(point);
+            const lineLabel = getTextGeometry(`${distance.toFixed(2)}m`)
+
+            let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
+            textPos.z = 0.3;
+            lineLabel.position.set(...textPos)
+
+            this.lineLabels.push(lineLabel)
+            this.editor.add(lineLabel)
+        }
+    }
+
     public createBedVertex(point: Vector3) {
 
+        // TODO: draw the entire thing just from points
         this.clearVertices();
         this.clearPolyline();
+        this.clearLineLabels();
 
         if (this.tryCloseLoop(point)) {
             eventBus.emit('requestRender')
@@ -166,6 +221,10 @@ class BedEditor {
         this.bedPoints.push(point)
         this.drawVertices(this.bedPoints)
         this.drawPolyline(this.bedPoints)
+        this.drawLineLabels(this.bedPoints)
+
+        this.editor.remove(this.angleText)
+        this.editor.remove(this.distanceText)
 
         eventBus.emit('requestRender')
     }
@@ -177,43 +236,43 @@ class BedEditor {
             return
         }
 
-        if (this.drawline !== undefined) {
-            this.editor.remove(this.drawline)
-            this.drawline = undefined;
-        }
+        this.editor.remove(this.drawline)
 
         const lastPoint = this.bedPoints[this.bedPoints.length - 1]
-        // const geometry = new BufferGeometry().setFromPoints([lastPoint, point]);
         const geometry = new LineGeometry();
-        console.log([lastPoint, point])
         geometry.setPositions(destructureVector3Array([lastPoint, point]))
-        const material = new LineMaterial({ color: 0xffff00, linewidth: 15});
+        const material = new LineMaterial({ color: 0xffff00, linewidth: 5});
         this.drawline = new Line2(geometry, material);
         this.editor.add(this.drawline)
 
-        // TODO: text labels
+        // TODO: fix the 
+
+        // Angle between north
+        const segment = lastPoint.clone().sub(point)
+        let angle = segment.angleTo(new Vector3(0,-1,0)) * 180 / Math.PI;
+
+        this.editor.remove(this.angleText)
+        this.angleText = getTextGeometry(`${angle.toFixed(2)}°`)
+
+        let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
+        textPos.z = 0.03;
+        textPos.y -= 0.3;
+
+        this.angleText.position.set(...textPos)
+        this.editor.add(this.angleText)
+
+        // Distance Label
         const distance = lastPoint.distanceTo(point);
 
-        // TODO: change this to angle between north
-        // let p1 = new Vector2(lastPoint.x, lastPoint.y).normalize()
-        // let p2 = new Vector2(point.x, point.y).normalize()
-        // const angle = p2.angle() * 180 / Math.PI;
-        const segment = lastPoint.clone().sub(point)
-        let angle = segment.angleTo(new Vector3(1,0,0)) * 180 / Math.PI;
+        this.editor.remove(this.distanceText)
 
-        if (this.text !== undefined) {
-            this.editor.remove(this.text)
-        }
+        this.distanceText = getTextGeometry(`${distance.toFixed(2)}m`)
 
-        // this.text = getTextGeometry(`${distance.toFixed(2)}m`)
-        this.text = getTextGeometry(`${angle.toFixed(2)}°`)
+        textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
+        textPos.z = 0.03;
 
-        let textPos = point.clone();
-        textPos.z = 0.3;
-
-        this.text.position.set(...textPos)
-        this.editor.add(this.text)
-
+        this.distanceText.position.set(...textPos)
+        this.editor.add(this.distanceText)
 
     }
 }

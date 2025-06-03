@@ -58,8 +58,12 @@
 - [ ] draw distance and angle of current mouse position
     - [x] text-drawing utility
     - [x] draw text over lines
-    - [ ] leave text on the ground
-- [ ] make lines easier to see
+    - [x] leave text on the ground
+    - [ ] clean up a bit
+        - [x] make re-rendering a single function call
+        - [ ] make it stateless
+        - [ ] add a cleanup function
+- [x] make lines easier to see
 
 - [ ] change camera view
 - [ ] isometric camera
@@ -86,6 +90,9 @@
 - [ ] Draw vertices in UI
 
 - [ ] add delete object command with undo
+
+- [ ] show/hide grid
+- [ ] enable/disable snap to grid
 
 viewport.js line 99 copy
 
