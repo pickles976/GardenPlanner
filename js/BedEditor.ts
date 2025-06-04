@@ -76,8 +76,6 @@ class BedEditor {
             this.commandStack.undo()
         }
 
-        this.mode = BedEditorMode.NONE;
-
     }
 
     // TODO: rename this method it is confusin
@@ -139,9 +137,31 @@ class BedEditor {
     private closeLoop() {
         // Reset cursor
         document.getElementsByTagName("body")[0].style.cursor = "auto";
-        // this.cleanUp()
         this.createVertexHandles();
+        this.cleanUp()
+        this.drawVertexEdges();
         this.mode = BedEditorMode.EDIT_VERTICES;
+    }
+
+    private drawVertexEdges() {
+
+        for (const segment of this.lineSegments) {
+            this.editor.remove(segment)
+        }
+
+        this.lineSegments = []
+
+        // TODO: close the loop
+        for (let i = 1; i < this.vertexHandles.length; i++) {
+            const p1 = this.vertexHandles[i - 1].position
+            const p2 = this.vertexHandles[i].position
+            const lineSegment = this.createLineSegment(p1, p2)
+            this.lineSegments.push(lineSegment)
+        }
+
+        for (const segment of this.lineSegments) {
+            this.editor.add(segment)
+        }
     }
 
     private tryCloseLoop(point: Vector3) : boolean {
@@ -171,14 +191,7 @@ class BedEditor {
 
     }
 
-    private createLineSegment(points: Vector3) : Object3D{
-        if (points.length < 2) {
-            return
-        }
-
-        const index = points.length - 1;
-        const point = points[index].clone();
-        const lastPoint = points[index - 1].clone();
+    private createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
 
         // Get Distance Text
         const distance = lastPoint.distanceTo(point);
@@ -189,7 +202,7 @@ class BedEditor {
 
         // Get line segment
         const geometry = new LineGeometry();
-        geometry.setPositions( destructureVector3Array(points) );
+        geometry.setPositions( destructureVector3Array([point, lastPoint]) );
         const material = new LineMaterial({ color: 0x00ff00, linewidth: 5 });
         const line = new Line2(geometry, material);
 
@@ -209,11 +222,11 @@ class BedEditor {
 
         this.vertices.push(point);
 
-        const lineSegment = this.createLineSegment(this.vertices);
-
-        if (lineSegment === undefined) {
+        if (this.vertices.length < 2){
             return
         }
+
+        const lineSegment = this.createLineSegment(point, this.vertices[this.vertices.length - 2].clone());
 
         const command = new CreateObjectCommand(lineSegment, this.editor);
         this.commandStack.execute(command);
@@ -315,6 +328,7 @@ class BedEditor {
 
         if (this.selectedHandle !== undefined) {
             this.selectedHandle.position.set(...point)
+            this.drawVertexEdges()
         }
     }
 
