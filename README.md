@@ -19,8 +19,9 @@ JavaScript: suncalc
 - [x] 06/03/2025 -- ~~finished bed editor functionality~~ finished bed editor place vertex mode
 - [ ] 06/04/2025 -- finish bed editor vertex edit mode, start on bed config mode
 - [ ] 06/05/2025 -- food forest/city hall/break day
-- [ ] 06/06/2025 -- refactor and cleanup (improve readability, improve view)
-- [ ] 06/07/2025 -- start on plant editor
+- [ ] 06/06/2025 -- finish bed config mode
+- [ ] 06/07/2025 -- refactor and cleanup (improve readability, improve view) (get feedback from users)
+- [ ] 06/08/2025 -- start on plant editor
 
 # Milestones
 - [ ] Garden editor -- 06/15/2025

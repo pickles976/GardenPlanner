@@ -106,6 +106,21 @@ class BedEditor {
         this.selectedHandle = undefined;
     }
 
+    public cleanUp() {
+        this.cleanUpVertexPlacementState()
+        for (const vertex of this.vertexHandles) {
+            this.editor.remove(vertex)
+        }
+
+        for (const segment of this.lineSegments) {
+            this.editor.remove(segment)
+        }
+
+        this.lineSegments = []
+        this.vertexHandles = []
+
+     }
+
     private cleanUpVertexPlacementState() {
         this.editor.remove(this.linePreview)
         this.editor.remove(this.angleText)
@@ -119,25 +134,27 @@ class BedEditor {
 
     }
 
-    // TODO: rename this method it is confusin
+    // TODO: rename this method it is confusing
     public createNewBed() {
         this.cleanUpVertexPlacementState()
         this.mode = BedEditorMode.PLACE_VERTICES;
 
         // TODO: move cursor changes out to function
         document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
+        eventBus.emit("requestRender")
     }
 
-    private createMesh() {
+    public createMesh() {
         // TODO: clean this up and make it dynamic
 
         const height = 1;
 
         // get the centroid of the points
-        const centroid = getCentroid(this.vertices);
+        const vertices = this.vertexHandles.map((item) => item.position.clone());
+        const centroid = getCentroid(vertices);
 
-        this.vertices.push(this.vertices[0]);
-        const points = this.vertices.map(p => {
+        vertices.push(vertices[0]);
+        const points = vertices.map((p) => {
             const temp = p.clone().sub(centroid);
             return new Vector2(temp.x, temp.y);
         });
@@ -168,11 +185,18 @@ class BedEditor {
 
         this.editor.execute(new CreateObjectCommand(mesh, this.editor));
 
-        this.editor.setObjectMode()
-
         // Reset cursor
         document.getElementsByTagName("body")[0].style.cursor = "auto";
-        this.cleanUpVertexPlacementState()
+        this.cleanUp()
+
+        this.editor.setObjectMode()
+
+        // Make the camera look at the newly-created bed
+        // TODO: make the camera south of the newly-created bed
+        this.editor.currentCameraControls.target.copy(centroid)
+
+        eventBus.emit("bedEditingFinished")
+        eventBus.emit("requestRender")
     }
 
     private closeLoop() {
@@ -182,6 +206,7 @@ class BedEditor {
         this.cleanUpVertexPlacementState()
         this.drawVertexEdges();
         this.mode = BedEditorMode.EDIT_VERTICES;
+        eventBus.emit("vertexEditingStarted")
     }
 
     private drawVertexEdges() {

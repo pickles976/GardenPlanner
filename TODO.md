@@ -98,23 +98,16 @@
 - [x] delete selected vertex with delete key
 - [x] refactor keyboard event propagation in event handler.ts
 
-- [ ] add cancel button that becomes visible when "create new" is clicked
-- [ ] implement cancel functionality
+- [x] add cancel button that becomes visible when "create new" is clicked
+- [x] implement cancel functionality
 
-- [ ] change "create new" button to "save vertices?" when vertices are placed
+- [x] change "create new" button to "save vertices?" when vertices are placed
 - [ ] fill in polygon with transparent thing
 - [ ] add clickable button like in manor lords to save vertices
 
 - [ ] vertex edit mode finished!
 
-Write up about 
-- design philosophy
-- event flow/propagation
-- modularity
-- what else?
-
 #### Create Bed config mode
-
 
 - [ ] go to bed config mode
 
@@ -126,14 +119,14 @@ Write up about
 
 - [ ] create bed object
 
+#### Bed Editor QOL improvements
 - [ ] add delete object command with undo
 - [ ] show/hide grid
 - [ ] enable/disable snap to grid
 - [ ] toggle metric vs imperial globally
 
-viewport.js line 99 copy
-
-### Minor Improvements
+### Minor Improvements\
+- [ ] refactor and cleanup
 - [ ] improve vertex appearance
 - [ ] add angle text to line segments
 - [ ] draw north in vertex mode
@@ -152,6 +145,16 @@ viewport.js line 99 copy
 - [ ] make Erika repeat the same task
 - [ ] get feedback on appearance
 - [ ] get feedback on interactions
+
+Write up about 
+- design philosophy
+- event flow/propagation
+- modularity
+- what else?
+
+
+
+
 
 #### PLANT EDITOR
 - [ ] add UI for placing and removing objects

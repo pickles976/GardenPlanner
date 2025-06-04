@@ -8,6 +8,7 @@ import { EditorMode, FRUSTUM_SIZE, LayerEnums} from './Constants';
 import { BedEditor } from './BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
+import { eventBus } from './EventBus';
 
 const SHADOWMAP_WIDTH = 32;
 const SHADOWMAP_RESOLUTION = 1024;
@@ -248,13 +249,16 @@ class Editor {
         this.selector.deselect();
         this.mode = EditorMode.BED;
         this.setOrthoCamera()
-        this.bedEditor.createNewBed();
+        this.bedEditor.createNewBed(); // TODO: change htis method name
+        eventBus.emit("bedEditingStarted")
     }
 
     public setObjectMode() {
         this.selector.deselect();
         this.mode = EditorMode.OBJECT;
         this.setPerspectiveCamera()
+        this.bedEditor.cleanUp();
+        eventBus.emit("bedEditingFinished")
     }
 
     public handleKeyDown(event) {

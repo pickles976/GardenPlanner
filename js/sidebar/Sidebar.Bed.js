@@ -19,12 +19,39 @@ function SidebarBed( editor ) {
 	container.setPaddingTop( '20px' );
 	container.setDisplay( 'none' );
 
+	// Create
 	const createNewButton = new UIButton("+ Create New");
 
+	// Save
+	const saveButton = new UIButton("Save Polygon")
+	saveButton.setDisplay("none")
+
+	// Cancel
+	const cancelButton = new UIButton("Cancel");
+	cancelButton.setDisplay("none")
+
 	container.add(createNewButton)
+	container.add(saveButton)
+	container.add(cancelButton)
 	container.setDisplay("Block")
 
 	createNewButton.onClick(() => editor.setBedMode())
+	saveButton.onClick(() => editor.bedEditor.createMesh())
+	cancelButton.onClick(() => editor.setObjectMode())
+
+	eventBus.on("bedEditingStarted", () => {
+		cancelButton.setDisplay("Block")
+		createNewButton.setDisplay("none")
+	})
+
+	eventBus.on("vertexEditingStarted", () => {
+		saveButton.setDisplay("Block")
+	})
+
+	eventBus.on("bedEditingFinished", () => {
+		cancelButton.setDisplay("none")
+		createNewButton.setDisplay("Block")
+	})
 
 	// const objectTypeRow = new UIRow();
 	// const objectType = new UIText();
