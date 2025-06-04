@@ -1,23 +1,18 @@
-import { Editor } from "./Editor";
-import { Vector3 } from "three";
-import { Line } from "three";
-import { LayerEnums } from "./Constants";
-import { eventBus } from "./EventBus";
-import { Object3D } from "three";
-import { MeshPhongMaterial } from "three";
-import { BoxGeometry } from "three";
-import { Mesh } from "three";
-import { CreateObjectCommand } from "./commands/CreateObjectCommand";
-import { destructureVector3Array, getCentroid, getTextGeometry } from "./Utils";
+import { Vector2, Object3D, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh } from "three";
 import * as THREE from "three"
-import { Vector2 } from "three";
+
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
-import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
-import { CommandStack } from "./CommandStack";
 import { handleMouseMoveObjectMode } from "./EventHandlers";
+import { Line2 } from 'three/addons/lines/Line2.js';
 
+import { destructureVector3Array, getCentroid, getTextGeometry } from "./Utils";
+import { CreateObjectCommand } from "./commands/CreateObjectCommand";
+import { CommandStack } from "./CommandStack";
+import { LayerEnums } from "./Constants";
+import { eventBus } from "./EventBus";
+import { Editor } from "./Editor";
 
 function createVertexHandle() : Mesh {
     const vertex = new Mesh(
@@ -168,6 +163,13 @@ class BedEditor {
         this.cleanUpVertexPlacementState()
     }
 
+    public delete() {
+        if (this.selectedHandle === undefined) {
+            return
+        }
+        // TODO: remove selected handle
+    }
+
     private closeLoop() {
         // Reset cursor
         document.getElementsByTagName("body")[0].style.cursor = "auto";
@@ -185,7 +187,6 @@ class BedEditor {
 
         this.lineSegments = []
 
-        // TODO: close the loop
         const len = this.vertexHandles.length;
         for (let i = 0; i < len; i++) {
             const p1 = this.vertexHandles[i % len].position
@@ -252,7 +253,9 @@ class BedEditor {
 
         if (this.selectedHandle === undefined) {
 
+            // Insert vertex
             if (object.userData.isLineSegment) {
+                // TODO: make this undoable (use a command)
                 console.log("Line segment clicked")
                 const vertex = createVertexHandle()
                 this.editor.add(vertex)
@@ -291,6 +294,7 @@ class BedEditor {
             case BedEditorMode.PLACE_VERTICES:
                 this.vertices.pop();
                 break;
+            // TODO: make vertices undoable
             default:
                 break;
         }
@@ -363,6 +367,7 @@ class BedEditor {
                 document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
             }
         } else { // vertex selected
+            // TODO: make this a command so it is undoable
             this.selectedHandle.position.set(...point)
             this.drawVertexEdges()
         }

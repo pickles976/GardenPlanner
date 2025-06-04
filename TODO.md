@@ -95,9 +95,16 @@
 - [x] change cursor on mouse over line
 - [x] insert vertices
 - [ ] delete selected vertex with delete key
-- [ ] improve vertex appearance
+    - [ ] create delete command
+    - [ ] get deletion working
+- [ ] refactor keyboard event propagation in event handler.ts
+- [ ] make all actions in vertex edit mode undoable
 
+- [ ] improve vertex appearance
 - [ ] add angle text to line segments
+
+- [ ] vertex edit mode finished!
+
 
 Write up about 
 - design philosophy

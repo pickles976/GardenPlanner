@@ -114,7 +114,7 @@ export function handleMouseClick(event, editor) {
     performRaycast(event, editor, callback, layers)
 }
 
-
+// TODO: just propagate this to the children and let each of them handle it
 export function handleKeyDown(event, editor: Editor) {
     switch ( event.key ) {
 
@@ -173,6 +173,16 @@ export function handleKeyDown(event, editor: Editor) {
 
         case 'Escape':
             editor.selector.deselect();
+            break;
+
+        case 'Delete':
+            switch (editor.mode) {
+                case EditorMode.BED:
+                    editor.bedEditor.delete();
+                    break;
+                default:
+                    break;
+            }
             break;
 
     }
