@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Editor } from "./Editor";
 import { Object3D } from 'three';
 import { eventBus } from './EventBus';
-import { EditorMode, LayerEnums } from './Constants';
+import { LayerEnums } from './Constants';
 
 const raycaster = new THREE.Raycaster();
 

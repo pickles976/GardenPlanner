@@ -92,10 +92,12 @@
         - [x] stop using vertices, start using the vertex handles
         - [x] write a function to draw the line segments given the vertex handle locations
         - [x] call this function every time the vertex handle location is updated
-- [ ] change cursor on mouse over line
-- [ ] insert vertices
+- [x] change cursor on mouse over line
+- [x] insert vertices
 - [ ] delete selected vertex with delete key
 - [ ] improve vertex appearance
+
+- [ ] add angle text to line segments
 
 Write up about 
 - design philosophy

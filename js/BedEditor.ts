@@ -18,6 +18,40 @@ import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { CommandStack } from "./CommandStack";
 import { handleMouseMoveObjectMode } from "./EventHandlers";
 
+
+function createVertexHandle() : Mesh {
+    const vertex = new Mesh(
+                new BoxGeometry(0.1, 0.1, 0.1), 
+                new MeshPhongMaterial({color: 0xDDDDDD}))
+    vertex.layers.set(LayerEnums.BedVertices);
+    vertex.userData = {selectable: true, isVertexHandle: true}
+    return vertex
+}
+
+
+function createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
+
+    // Get Distance Text
+    const distance = lastPoint.distanceTo(point);
+    const lineLabel = getTextGeometry(`${distance.toFixed(2)}m`)
+    let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
+    textPos.z = 0.3;
+    lineLabel.position.set(...textPos)
+
+    // Get line segment
+    const geometry = new LineGeometry();
+    geometry.setPositions( destructureVector3Array([point, lastPoint]) );
+    const material = new LineMaterial({ color: 0x00ff00, linewidth: 5 });
+    const line = new Line2(geometry, material);
+
+    const group = new THREE.Group();
+    group.add( line );
+    group.add( lineLabel );
+
+    return group;
+
+}
+
 enum BedEditorMode {
     NONE = "NONE",
     PLACE_VERTICES = "PLACE_VERTICES",
@@ -156,7 +190,7 @@ class BedEditor {
         for (let i = 0; i < len; i++) {
             const p1 = this.vertexHandles[i % len].position
             const p2 = this.vertexHandles[(i + 1) % len].position
-            const lineSegment = this.createLineSegment(p1, p2)
+            const lineSegment = createLineSegment(p1, p2)
             const line = lineSegment.children[0]
             line.userData = {
                 isLineSegment: true,
@@ -186,12 +220,7 @@ class BedEditor {
     private createVertexHandles() {
 
         for (const point of this.vertices) {
-            const vertex = new Mesh(
-                new BoxGeometry(0.1, 0.1, 0.1), 
-                new MeshPhongMaterial({color: 0xDDDDDD}))
-            vertex.layers.set(LayerEnums.BedVertices);
-            vertex.userData = {selectable: true}
-
+            const vertex = createVertexHandle();
             this.editor.add(vertex);
             vertex.position.set(...point)
             this.vertexHandles.push(vertex)
@@ -199,30 +228,7 @@ class BedEditor {
 
     }
 
-    private createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
-
-        // Get Distance Text
-        const distance = lastPoint.distanceTo(point);
-        const lineLabel = getTextGeometry(`${distance.toFixed(2)}m`)
-        let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-        textPos.z = 0.3;
-        lineLabel.position.set(...textPos)
-
-        // Get line segment
-        const geometry = new LineGeometry();
-        geometry.setPositions( destructureVector3Array([point, lastPoint]) );
-        const material = new LineMaterial({ color: 0x00ff00, linewidth: 5 });
-        const line = new Line2(geometry, material);
-
-        const group = new THREE.Group();
-        group.add( line );
-        group.add( lineLabel );
-
-        return group;
-
-    }
-
-    private handleMouseClickPlaceVerticesMode(point: Vector3) {
+    private handleMouseClickPlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
         if (this.tryCloseLoop(point)) {
             eventBus.emit('requestRender')
             return
@@ -234,7 +240,7 @@ class BedEditor {
             return
         }
 
-        const lineSegment = this.createLineSegment(point, this.vertices[this.vertices.length - 2].clone());
+        const lineSegment = createLineSegment(point, this.vertices[this.vertices.length - 2].clone());
 
         const command = new CreateObjectCommand(lineSegment, this.editor);
         this.commandStack.execute(command);
@@ -245,11 +251,22 @@ class BedEditor {
     private handleMouseClickEditVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
 
         if (this.selectedHandle === undefined) {
-            for (const handle of this.vertexHandles) {
-                if (object === handle) {
-                    this.selectedHandle = object;
-                }
+
+            if (object.userData.isLineSegment) {
+                console.log("Line segment clicked")
+                const vertex = createVertexHandle()
+                this.editor.add(vertex)
+                vertex.position.set(...point)
+                this.vertexHandles.splice(object.userData.p1 + 1, 0, vertex)
+                this.drawVertexEdges()
+                return
             }
+
+            if (object.userData.isVertexHandle) {
+                this.selectedHandle = object;
+                return
+            }
+
         } else {
             this.selectedHandle = undefined;
         }
@@ -261,7 +278,7 @@ class BedEditor {
 
         switch (this.mode) {
             case BedEditorMode.PLACE_VERTICES:
-                this.handleMouseClickPlaceVerticesMode(point)
+                this.handleMouseClickPlaceVerticesMode(editor, object, point)
                 break;
             default:
                 this.handleMouseClickEditVerticesMode(editor, object, point)
@@ -282,7 +299,7 @@ class BedEditor {
         eventBus.emit('requestRender')
     }
 
-    private handleMouseMovePlaceVerticesMode(point: Vector3) {
+    private handleMouseMovePlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
 
         this.lastPoint = point;
 
@@ -359,7 +376,7 @@ class BedEditor {
 
         switch (this.mode) {
             case BedEditorMode.PLACE_VERTICES:
-                this.handleMouseMovePlaceVerticesMode(point)
+                this.handleMouseMovePlaceVerticesMode(editor, object, point)
                 break;
             case BedEditorMode.EDIT_VERTICES:
                 // call this function for free highlighting

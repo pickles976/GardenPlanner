@@ -72,7 +72,6 @@ editor.canvas.addEventListener('mousemove', () => requestRenderIfNotRequested(ed
 editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
 editor.canvas.addEventListener('mouseleave', () => requestRenderIfNotRequested(editor));
 
-// TODO: CLEAN THIS UP, TOO CONVOLUTED!!!
 editor.canvas.addEventListener('mousemove', (event) => handleMouseMove(event, editor));
 editor.canvas.addEventListener('mouseout', (event) => handleMouseMove(event, editor));
 editor.canvas.addEventListener('mouseleave', (event) => handleMouseMove(event, editor));
