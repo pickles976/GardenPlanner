@@ -4,6 +4,8 @@
  *  b. close loop by clicking on start vertex
  * 2. Edit Vertices
  * 3. Configure Bed
+ * 
+ * TODO: make this all command-based at some point
  */
 
 

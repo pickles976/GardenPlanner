@@ -98,14 +98,14 @@
 - [x] delete selected vertex with delete key
 - [x] refactor keyboard event propagation in event handler.ts
 
-- [ ] improve vertex appearance
-- [ ] add angle text to line segments
-- [ ] draw north in vertex mode
+- [ ] add cancel button that becomes visible when "create new" is clicked
+- [ ] implement cancel functionality
+
+- [ ] change "create new" button to "save vertices?" when vertices are placed
+- [ ] fill in polygon with transparent thing
+- [ ] add clickable button like in manor lords to save vertices
 
 - [ ] vertex edit mode finished!
-
-- [ ] create a delete command in object mode
-
 
 Write up about 
 - design philosophy
@@ -114,7 +114,12 @@ Write up about
 - what else?
 
 #### Create Bed config mode
-- [ ] add button to create bed? where would this live?
+
+
+- [ ] go to bed config mode
+
+- [ ] add m^2 calculations to UI
+
 - [ ] mesh extrusion
 - [ ] control bed height
 - [ ] control border width
@@ -122,7 +127,6 @@ Write up about
 - [ ] create bed object
 
 - [ ] add delete object command with undo
-
 - [ ] show/hide grid
 - [ ] enable/disable snap to grid
 - [ ] toggle metric vs imperial globally
@@ -130,7 +134,11 @@ Write up about
 viewport.js line 99 copy
 
 ### Minor Improvements
-- [ ] move more with WASD
+- [ ] improve vertex appearance
+- [ ] add angle text to line segments
+- [ ] draw north in vertex mode
+- [ ] move more with WASD in vertex mode
+- [ ] create a delete command in object mode
 - [x] fix aspect ratio with ortho perspective
 
 ### BUGS
