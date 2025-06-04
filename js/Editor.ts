@@ -257,6 +257,60 @@ class Editor {
         this.setPerspectiveCamera()
     }
 
+    public handleKeyDown(event) {
+        switch ( event.key ) {
+
+            case 't':
+                this.transformControls.setMode( 'translate' );
+                break;
+
+            case 'r':
+                this.transformControls.setMode( 'rotate' );
+                break;
+
+            case 's':
+                this.transformControls.setMode( 'scale' );
+                break;
+
+            case '+':
+            case '=':
+                this.transformControls.setSize( this.transformControls.size + 0.1 );
+                break;
+
+            case '-':
+            case '_':
+                this.transformControls.setSize( Math.max( this.transformControls.size - 0.1, 0.1 ) );
+                break;
+
+            case 'x':
+                this.transformControls.showX = ! this.transformControls.showX;
+                break;
+
+            case 'y':
+                this.transformControls.showY = ! this.transformControls.showY;
+                break;
+
+            case 'z':
+
+                if (event.ctrlKey) {
+                    this.undo();
+                } else {
+                    this.transformControls.showZ = ! this.transformControls.showZ;
+                }
+
+                break;
+
+            case ' ':
+                this.transformControls.enabled = ! this.transformControls.enabled;
+                break;
+
+            case 'Escape':
+                this.selector.deselect();
+                break;
+
+        }
+    }
+
 
 }
 export {Editor};

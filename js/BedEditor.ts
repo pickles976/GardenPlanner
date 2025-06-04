@@ -1,3 +1,12 @@
+/**
+ * 1. Place Vertices
+ *  a. insert and undo
+ *  b. close loop by clicking on start vertex
+ * 2. Edit Vertices
+ * 3. Configure Bed
+ */
+
+
 import { Vector2, Object3D, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh } from "three";
 import * as THREE from "three"
 
@@ -9,6 +18,7 @@ import { Line2 } from 'three/addons/lines/Line2.js';
 
 import { destructureVector3Array, getCentroid, getTextGeometry } from "./Utils";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
+import { SetPositionCommand } from "./commands/SetPositionCommand";
 import { CommandStack } from "./CommandStack";
 import { LayerEnums } from "./Constants";
 import { eventBus } from "./EventBus";
@@ -163,13 +173,6 @@ class BedEditor {
         this.cleanUpVertexPlacementState()
     }
 
-    public delete() {
-        if (this.selectedHandle === undefined) {
-            return
-        }
-        // TODO: remove selected handle
-    }
-
     private closeLoop() {
         // Reset cursor
         document.getElementsByTagName("body")[0].style.cursor = "auto";
@@ -209,13 +212,15 @@ class BedEditor {
 
     private tryCloseLoop(point: Vector3) : boolean {
 
-        for (const vertex of this.vertices) {
-            if (vertex.distanceTo(point) < CLOSE_THRESH) {
-                this.closeLoop()
-                return true;
+        if (this.vertices.length > 0) {
+            const startVertex = this.vertices[0];
+            if (startVertex.distanceTo(point) < CLOSE_THRESH) {
+                    this.closeLoop()
+                    return true;
             }
         }
-        return false
+
+        return false;
     }
 
     private createVertexHandles() {
@@ -243,8 +248,7 @@ class BedEditor {
 
         const lineSegment = createLineSegment(point, this.vertices[this.vertices.length - 2].clone());
 
-        const command = new CreateObjectCommand(lineSegment, this.editor);
-        this.commandStack.execute(command);
+        this.commandStack.execute(new CreateObjectCommand(lineSegment, this.editor));
 
         eventBus.emit('requestRender')
     }
@@ -290,15 +294,17 @@ class BedEditor {
     }
 
     public undo() {
+        this.commandStack.undo();
         switch (this.mode) {
             case BedEditorMode.PLACE_VERTICES:
                 this.vertices.pop();
                 break;
-            // TODO: make vertices undoable
+            case BedEditorMode.EDIT_VERTICES:
+                this.drawVertexEdges();
+                break;
             default:
                 break;
         }
-        this.commandStack.undo();
         this.handleMouseMove(this.editor, undefined, this.lastPoint);
         eventBus.emit('requestRender')
     }
@@ -363,14 +369,42 @@ class BedEditor {
         point.z = 0.0
 
         if (this.selectedHandle === undefined) { // No vertex selected
+
+            if (object === undefined) {
+                return
+            }
+
             if (object.userData.isLineSegment === true) { // mouse over line segment
                 document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
             }
         } else { // vertex selected
-            // TODO: make this a command so it is undoable
-            this.selectedHandle.position.set(...point)
+            this.commandStack.execute(new SetPositionCommand(this.selectedHandle, this.selectedHandle.position, point))
             this.drawVertexEdges()
         }
+    }
+
+    private delete() {
+
+        if (this.selectedHandle === undefined) {
+            return
+        }
+
+        // don't allow user to delete the loop
+        if (this.vertexHandles.length === 3) {
+            return
+        }
+
+        this.editor.remove(this.selectedHandle)
+        
+        for (let i = 0; i < this.vertexHandles.length; i++) {
+            if (this.vertexHandles[i] === this.selectedHandle) {
+                this.vertexHandles.splice(i, 1)
+            }
+        }
+
+        this.drawVertexEdges()
+        eventBus.emit('requestRender')
+
     }
 
     public handleMouseMove(editor: Editor, object: Object3D, point: Vector3) {
@@ -393,6 +427,34 @@ class BedEditor {
         }
 
 
+    }
+
+    
+    public handleKeyDown(event) {
+        switch ( event.key ) {
+
+            case 'z':
+                if (event.ctrlKey) {
+                    this.undo();
+                }
+                break;
+
+            case 'Escape':
+                this.editor.selector.deselect();
+                // TODO: deselect vertices
+                break;
+
+            case 'Delete':
+                switch (this.mode) {
+                    case BedEditorMode.EDIT_VERTICES:
+                        this.delete();
+                        break;
+                    default:
+                        break;
+                }
+                break;
+
+        }
     }
 }
 

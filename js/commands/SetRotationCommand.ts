@@ -13,8 +13,8 @@ class SetRotationCommand extends Command {
         this.name = "SetRotationCommand";
         this.updateable = true;
         this.object = object;
-        this.startQuaternion = startQuaternion;
-        this.endQuaternion = endQuaternion;
+        this.startQuaternion = startQuaternion.clone();
+        this.endQuaternion = endQuaternion.clone();
     }
 
     public canUpdate(newCommand: Command): boolean {

@@ -13,8 +13,8 @@ class SetPositionCommand extends Command {
         this.name = "SetPositionCommand";
         this.updateable = true;
         this.object = object;
-        this.startPosition = startPosition;
-        this.endPosition = endPosition;
+        this.startPosition = startPosition.clone();
+        this.endPosition = endPosition.clone();
     }
 
     public canUpdate(newCommand: Command): boolean {

@@ -116,74 +116,15 @@ export function handleMouseClick(event, editor) {
 
 // TODO: just propagate this to the children and let each of them handle it
 export function handleKeyDown(event, editor: Editor) {
-    switch ( event.key ) {
 
-        case 't':
-            editor.transformControls.setMode( 'translate' );
+    switch (editor.mode) {
+        case EditorMode.OBJECT:
+            editor.handleKeyDown(event)
             break;
-
-        case 'r':
-            editor.transformControls.setMode( 'rotate' );
+        case EditorMode.BED:
+            editor.bedEditor.handleKeyDown(event)
             break;
-
-        case 's':
-            editor.transformControls.setMode( 'scale' );
+        default:
             break;
-
-        case '+':
-        case '=':
-            editor.transformControls.setSize( editor.transformControls.size + 0.1 );
-            break;
-
-        case '-':
-        case '_':
-            editor.transformControls.setSize( Math.max( editor.transformControls.size - 0.1, 0.1 ) );
-            break;
-
-        case 'x':
-            editor.transformControls.showX = ! editor.transformControls.showX;
-            break;
-
-        case 'y':
-            editor.transformControls.showY = ! editor.transformControls.showY;
-            break;
-
-        case 'z':
-
-            if (event.ctrlKey) {
-                switch (editor.mode) {
-                    case EditorMode.OBJECT:
-                        editor.undo();
-                        break;
-                    case EditorMode.BED:
-                        editor.bedEditor.undo();
-                        break;
-                    default:
-                        break;
-                }
-            } else {
-                editor.transformControls.showZ = ! editor.transformControls.showZ;
-            }
-
-            break;
-
-        case ' ':
-            editor.transformControls.enabled = ! editor.transformControls.enabled;
-            break;
-
-        case 'Escape':
-            editor.selector.deselect();
-            break;
-
-        case 'Delete':
-            switch (editor.mode) {
-                case EditorMode.BED:
-                    editor.bedEditor.delete();
-                    break;
-                default:
-                    break;
-            }
-            break;
-
     }
 }

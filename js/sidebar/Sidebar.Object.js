@@ -445,7 +445,7 @@ function SidebarObject( editor ) {
 
 		const newPosition = new THREE.Vector3( objectPositionX.getValue(), objectPositionY.getValue(), objectPositionZ.getValue() );
 		if ( object.position.distanceTo( newPosition ) >= 0.01 ) {
-			editor.execute( new SetPositionCommand( object, object.position.clone(), newPosition ) );
+			editor.execute( new SetPositionCommand( object, object.position, newPosition ) );
 		}
 
 		// const newRotation = new THREE.Euler( objectRotationX.getValue() * THREE.MathUtils.DEG2RAD, objectRotationY.getValue() * THREE.MathUtils.DEG2RAD, objectRotationZ.getValue() * THREE.MathUtils.DEG2RAD );

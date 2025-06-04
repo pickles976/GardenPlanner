@@ -13,8 +13,8 @@ class SetScaleCommand extends Command {
         this.name = "SetScaleCommand";
         this.updateable = true;
         this.object = object;
-        this.startScale = startScale;
-        this.endScale = endScale;
+        this.startScale = startScale.clone();
+        this.endScale = endScale.clone();
     }
 
     public canUpdate(newCommand: Command): boolean {

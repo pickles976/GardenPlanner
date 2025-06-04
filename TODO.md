@@ -72,7 +72,6 @@
 - [x] swap back when done with orbit controls
 - [x] top-down
 - [x] WASD controls
-- [ ] draw north in vertex mode
 
 ### Multiple Bed Editor Stages
 
@@ -94,16 +93,18 @@
         - [x] call this function every time the vertex handle location is updated
 - [x] change cursor on mouse over line
 - [x] insert vertices
-- [ ] delete selected vertex with delete key
-    - [ ] create delete command
-    - [ ] get deletion working
-- [ ] refactor keyboard event propagation in event handler.ts
-- [ ] make all actions in vertex edit mode undoable
+- [x] make all actions in vertex edit mode undoable
+- [x] cannot allow undoing insert vertices due to statefulness of vertices
+- [x] delete selected vertex with delete key
+- [x] refactor keyboard event propagation in event handler.ts
 
 - [ ] improve vertex appearance
 - [ ] add angle text to line segments
+- [ ] draw north in vertex mode
 
 - [ ] vertex edit mode finished!
+
+- [ ] create a delete command in object mode
 
 
 Write up about 
