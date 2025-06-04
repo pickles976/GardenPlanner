@@ -65,7 +65,7 @@ class BedEditor {
         this.selectedHandle = undefined;
     }
 
-    private cleanUp() {
+    private cleanUpVertexPlacementState() {
         this.editor.remove(this.linePreview)
         this.editor.remove(this.angleText)
         this.editor.remove(this.distanceText)
@@ -80,7 +80,7 @@ class BedEditor {
 
     // TODO: rename this method it is confusin
     public createNewBed() {
-        this.cleanUp()
+        this.cleanUpVertexPlacementState()
         this.mode = BedEditorMode.PLACE_VERTICES;
 
         // TODO: move cursor changes out to function
@@ -131,14 +131,14 @@ class BedEditor {
 
         // Reset cursor
         document.getElementsByTagName("body")[0].style.cursor = "auto";
-        this.cleanUp()
+        this.cleanUpVertexPlacementState()
     }
 
     private closeLoop() {
         // Reset cursor
         document.getElementsByTagName("body")[0].style.cursor = "auto";
         this.createVertexHandles();
-        this.cleanUp()
+        this.cleanUpVertexPlacementState()
         this.drawVertexEdges();
         this.mode = BedEditorMode.EDIT_VERTICES;
     }
@@ -152,10 +152,18 @@ class BedEditor {
         this.lineSegments = []
 
         // TODO: close the loop
-        for (let i = 1; i < this.vertexHandles.length; i++) {
-            const p1 = this.vertexHandles[i - 1].position
-            const p2 = this.vertexHandles[i].position
+        const len = this.vertexHandles.length;
+        for (let i = 0; i < len; i++) {
+            const p1 = this.vertexHandles[i % len].position
+            const p2 = this.vertexHandles[(i + 1) % len].position
             const lineSegment = this.createLineSegment(p1, p2)
+            const line = lineSegment.children[0]
+            line.userData = {
+                isLineSegment: true,
+                p1: i % len,
+                p2: (i + 1) % len
+            }
+            line.layers.set(LayerEnums.BedVertices)
             this.lineSegments.push(lineSegment)
         }
 
@@ -207,8 +215,8 @@ class BedEditor {
         const line = new Line2(geometry, material);
 
         const group = new THREE.Group();
-        group.add( lineLabel );
         group.add( line );
+        group.add( lineLabel );
 
         return group;
 
@@ -322,11 +330,22 @@ class BedEditor {
     }
 
     private handleMouseMoveEditVerticesMode(editor, object, point) {
+
+        document.getElementsByTagName("body")[0].style.cursor = "auto";
+
         if (point === undefined) {
             return
         }
 
-        if (this.selectedHandle !== undefined) {
+        // This is here because the raycast intersects the vertex continuously, causing it to "climb"
+        // TODO: figure out a way to do this without hardcoding the location to z=0
+        point.z = 0.0
+
+        if (this.selectedHandle === undefined) { // No vertex selected
+            if (object.userData.isLineSegment === true) { // mouse over line segment
+                document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
+            }
+        } else { // vertex selected
             this.selectedHandle.position.set(...point)
             this.drawVertexEdges()
         }
@@ -343,6 +362,7 @@ class BedEditor {
                 this.handleMouseMovePlaceVerticesMode(point)
                 break;
             case BedEditorMode.EDIT_VERTICES:
+                // call this function for free highlighting
                 handleMouseMoveObjectMode(editor, object, point)
                 this.handleMouseMoveEditVerticesMode(editor, object, point)
                 break;

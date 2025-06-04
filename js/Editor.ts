@@ -4,7 +4,7 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { requestRenderIfNotRequested } from './Rendering';
 import { Command } from './commands/Command';
 import { Selector } from './Selector';
-import { EditorMode, LayerEnums} from './Constants';
+import { EditorMode, FRUSTUM_SIZE, LayerEnums} from './Constants';
 import { BedEditor } from './BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
@@ -81,7 +81,6 @@ class Editor {
     
         // Perspective Camera
         const aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
-        const frustumSize = 10;
 
         this.perspectiveCamera = new THREE.PerspectiveCamera(60, aspect, 0.1, 2000000);
         this.perspectiveCamera.name = "Perspective Camera"
@@ -100,7 +99,7 @@ class Editor {
         this.perspectiveCameraControls.maxPolarAngle = (Math.PI / 2) - (Math.PI / 360)
 
         // Orthographic Camera https://threejs.org/docs/#api/en/cameras/OrthographicCamera
-        this.orthoCamera = new THREE.OrthographicCamera( 0.5 * frustumSize * aspect / - 2, 0.5 * frustumSize * aspect / 2, frustumSize / 2, frustumSize / - 2, 0.01, 1000 );
+        this.orthoCamera = new THREE.OrthographicCamera(FRUSTUM_SIZE * aspect / - 2, FRUSTUM_SIZE * aspect / 2, FRUSTUM_SIZE / 2, FRUSTUM_SIZE / - 2, 0.01, 1000 );
         this.orthoCamera.name = "Ortho Camera"
         this.orthoCamera.position.set(0, 0, 5);
         this.orthoCamera.up.set(0, 0, 1);
@@ -116,7 +115,6 @@ class Editor {
         this.orthoCameraControls.maxDistance = 16384;
         this.orthoCameraControls.enableRotate = false
         this.orthoCameraControls.listenToKeyEvents( window ); // optional
-        console.log(this.orthoCameraControls.keys)
 
         this.orthoCameraControls.keys = {
             LEFT: 'KeyA',
@@ -124,7 +122,6 @@ class Editor {
             RIGHT: 'KeyD', 
             BOTTOM: 'KeyS' 
         }
-
 
         this.currentCamera = this.perspectiveCamera
         this.currentCameraControls = this.perspectiveCameraControls

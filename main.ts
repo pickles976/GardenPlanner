@@ -72,44 +72,11 @@ editor.canvas.addEventListener('mousemove', () => requestRenderIfNotRequested(ed
 editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
 editor.canvas.addEventListener('mouseleave', () => requestRenderIfNotRequested(editor));
 
-// TODO: CLEAN THIS UP
-function performRaycast(event, editor, callback){
-    
-    // Only do a raycast if the LMB was used
-    if (event.button !== 0) {
-        return
-    }
-
-    const selector = editor.selector;
-    let intersections = selector.performRaycast(event);
-    if ( intersections.length > 0 ) {
-
-        const intersection = intersections[ 0 ];
-        const object = intersection.object;
-        const point = intersection.point;
-        
-        if (object.userData.selectable === true) {
-            callback(editor, object, point);
-        } else {
-            callback(editor, undefined, point);
-        }
-
-        return true;
-
-    } else {
-
-        callback(editor, undefined, undefined);
-
-        return false;
-
-    }
-}
-
 // TODO: CLEAN THIS UP, TOO CONVOLUTED!!!
-editor.canvas.addEventListener('mousemove', (event) => performRaycast(event, editor, handleMouseMove));
-editor.canvas.addEventListener('mouseout', (event) => performRaycast(event, editor, handleMouseMove));
-editor.canvas.addEventListener('mouseleave', (event) => performRaycast(event, editor, handleMouseMove));
-editor.canvas.addEventListener('mousedown', (event) => performRaycast(event, editor, handleMouseClick));
+editor.canvas.addEventListener('mousemove', (event) => handleMouseMove(event, editor));
+editor.canvas.addEventListener('mouseout', (event) => handleMouseMove(event, editor));
+editor.canvas.addEventListener('mouseleave', (event) => handleMouseMove(event, editor));
+editor.canvas.addEventListener('mousedown', (event) => handleMouseClick(event, editor));
 
 
 editor.transformControls.addEventListener('mouseDown', function (event) {

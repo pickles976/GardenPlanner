@@ -1,3 +1,4 @@
+import { FRUSTUM_SIZE } from './Constants';
 import { Editor } from './Editor';
 
 let renderRequested = false;
@@ -21,7 +22,14 @@ export async function render(editor: Editor) {
     // fix buffer size
     if (resizeRendererToDisplaySize(editor.renderer)) {
         const canvas = editor.renderer.domElement;
-        editor.currentCamera.aspect = canvas.clientWidth / canvas.clientHeight;
+        const aspect = canvas.clientWidth / canvas.clientHeight;
+        editor.currentCamera.aspect = aspect;
+
+        // TODO: handle resize orthographic caemra
+        // if (editor.currentCamera) {
+        //   editor.currentCamera.left = FRUSTUM_SIZE * aspect / -2;
+        //   editor.currentCamera.right = FRUSTUM_SIZE * aspect / 2;
+        // }
         editor.currentCamera.updateProjectionMatrix();
     }
 

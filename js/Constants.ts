@@ -1,4 +1,6 @@
 
+export const FRUSTUM_SIZE = 10;
+
 enum EditorMode {
     OBJECT = "OBJECT",
     BED = "BED"

@@ -32,15 +32,15 @@ class Selector {
         };
     }
 
-    public performRaycast(event: Event) : THREE.Object3D[] {
+    public performRaycast(event: Event, layers: LayerEnums[]) : THREE.Object3D[] {
 
-        if (this.editor.mode === EditorMode.BED) {
+        // Set up layers        
+        if (layers.length > 0) {
             raycaster.layers.disableAll();
-            raycaster.layers.enable(LayerEnums.Objects);
-            raycaster.layers.enable(LayerEnums.BedVertices);
-        }
-
-        if (this.editor.mode === EditorMode.OBJECT) {
+            layers.forEach((layer) => {
+                raycaster.layers.enable(layer)
+            })
+        } else {
             raycaster.layers.enableAll();
         }
 

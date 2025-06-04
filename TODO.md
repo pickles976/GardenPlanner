@@ -86,15 +86,15 @@
 
 #### vertex edit mode
 - [x] highlight vertices on mouse over
-- [ ] get vertex handles working
+- [x] get vertex handles working
     - [x] movement with mouse
-    - [ ] update line segments when vertices are updated (redraw each frame?)
-        - [ ] stop using vertices, start using the vertex handles
-        - [ ] write a function to draw the line segments given the vertex handle locations
-        - [ ] call this function every time the vertex handle location is updated
+    - [x] update line segments when vertices are updated (redraw each frame?)
+        - [x] stop using vertices, start using the vertex handles
+        - [x] write a function to draw the line segments given the vertex handle locations
+        - [x] call this function every time the vertex handle location is updated
 - [ ] change cursor on mouse over line
 - [ ] insert vertices
-- [ ] delete vertex with delete key
+- [ ] delete selected vertex with delete key
 - [ ] improve vertex appearance
 
 Write up about 
@@ -104,6 +104,7 @@ Write up about
 - what else?
 
 #### Create Bed config mode
+- [ ] add button to create bed? where would this live?
 - [ ] mesh extrusion
 - [ ] control bed height
 - [ ] control border width
@@ -120,6 +121,7 @@ viewport.js line 99 copy
 
 ### Minor Improvements
 - [ ] move more with WASD
+- [x] fix aspect ratio with ortho perspective
 
 ### BUGS
 - [x] get vertex drawing working
@@ -237,3 +239,6 @@ MVP finished!
     }
 }
 ```
+
+
+- selectable vs raycastable
