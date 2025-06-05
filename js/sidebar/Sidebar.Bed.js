@@ -35,22 +35,37 @@ function SidebarBed( editor ) {
 	container.add(cancelButton)
 	container.setDisplay("Block")
 
-	createNewButton.onClick(() => editor.setBedMode())
-	saveButton.onClick(() => editor.bedEditor.createMesh())
-	cancelButton.onClick(() => editor.setObjectMode())
+	createNewButton.onClick(() => eventBus.emit("bedEditingStarted"))
+	saveButton.onClick(() => eventBus.emit("bedEditingFinished"))
+	cancelButton.onClick(() => eventBus.emit("bedEditingCancelled"))
 
 	eventBus.on("bedEditingStarted", () => {
-		cancelButton.setDisplay("Block")
-		createNewButton.setDisplay("none")
+		console.log("bedEditingStarted")
+		cancelButton.setDisplay("Block");
+		saveButton.setDisplay("none");
+		createNewButton.setDisplay("none");
 	})
 
 	eventBus.on("vertexEditingStarted", () => {
-		saveButton.setDisplay("Block")
+		console.log("vertexEditingStarted")
+		cancelButton.setDisplay("Block");
+		saveButton.setDisplay("Block");
+		createNewButton.setDisplay("none");
 	})
 
 	eventBus.on("bedEditingFinished", () => {
-		cancelButton.setDisplay("none")
-		createNewButton.setDisplay("Block")
+		console.log("bedEditingFinished")
+		cancelButton.setDisplay("none");
+		saveButton.setDisplay("none");
+		createNewButton.setDisplay("Block");
+	})
+
+	// TODO: why the fuck isn't this working
+	eventBus.on("bedEditingCancelled", () => {
+		console.log("bedEditingCancelled")
+		cancelButton.setDisplay("none");
+		saveButton.setDisplay("none");
+		createNewButton.setDisplay("Block");
 	})
 
 	// const objectTypeRow = new UIRow();

@@ -102,8 +102,9 @@
 - [x] implement cancel functionality
 
 - [x] change "create new" button to "save vertices?" when vertices are placed
-- [ ] fill in polygon with transparent thing
-- [ ] add clickable button like in manor lords to save vertices
+- [x] fill in polygon with transparent thing
+
+- [ ] add clickable button like in manor lords to save vertices or cancel vertices
 
 - [ ] vertex edit mode finished!
 
@@ -115,7 +116,9 @@
 
 - [ ] mesh extrusion
 - [ ] control bed height
+    - [ ] draw ghosted preview
 - [ ] control border width
+    - [ ] draw border around bed
 
 - [ ] create bed object
 
@@ -151,10 +154,6 @@ Write up about
 - event flow/propagation
 - modularity
 - what else?
-
-
-
-
 
 #### PLANT EDITOR
 - [ ] add UI for placing and removing objects

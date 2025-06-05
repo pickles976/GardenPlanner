@@ -59,6 +59,13 @@ function createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
 
 }
 
+function createPolygon(points: Vector3[]) : Mesh {
+    let polyShape = new THREE.Shape(points.map((coord) => new THREE.Vector2(coord.x, coord.y)))
+    const polyGeometry = new THREE.ShapeGeometry(polyShape);
+    polyGeometry.setAttribute("position", new THREE.Float32BufferAttribute(points.map(coord => [coord.x, coord.y, coord.z]).flat(), 3))
+    return new THREE.Mesh(polyGeometry, new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide, transparent: true, opacity: 0.2}))
+}
+
 enum BedEditorMode {
     NONE = "NONE",
     PLACE_VERTICES = "PLACE_VERTICES",
@@ -85,6 +92,7 @@ class BedEditor {
     // Edit mode
     vertexHandles: Object3D[];
     lineSegments: Object3D[];
+    polygon?: Object3D;
     selectedHandle?: Object3D;
 
     constructor(editor: Editor) {
@@ -103,7 +111,9 @@ class BedEditor {
         // Edit mode
         this.vertexHandles = []
         this.lineSegments = []
+        this.polygon = undefined;
         this.selectedHandle = undefined;
+
     }
 
     public cleanUp() {
@@ -116,9 +126,14 @@ class BedEditor {
             this.editor.remove(segment)
         }
 
+        this.editor.remove(this.polygon)
+
         this.lineSegments = []
         this.vertexHandles = []
 
+        document.getElementsByTagName("body")[0].style.cursor = "auto";
+        
+        eventBus.emit('requestRender')
      }
 
     private cleanUpVertexPlacementState() {
@@ -195,7 +210,6 @@ class BedEditor {
         // TODO: make the camera south of the newly-created bed
         this.editor.currentCameraControls.target.copy(centroid)
 
-        eventBus.emit("bedEditingFinished")
         eventBus.emit("requestRender")
     }
 
@@ -231,6 +245,10 @@ class BedEditor {
             line.layers.set(LayerEnums.BedVertices)
             this.lineSegments.push(lineSegment)
         }
+
+        this.editor.remove(this.polygon)
+        this.polygon = createPolygon(this.vertexHandles.map((item) => item.position));
+        this.editor.add(this.polygon)
 
         for (const segment of this.lineSegments) {
             this.editor.add(segment)

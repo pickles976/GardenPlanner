@@ -194,10 +194,13 @@ class Editor {
         // TODO: move transform controls from editor to Selector
         this.transformControls = new TransformControls( this.perspectiveCamera, this.canvas );
         this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );    
+
+        eventBus.on("bedEditingStarted", () => this.setBedMode())
+        eventBus.on("bedEditingFinished", () => this.bedEditor.createMesh())
+        eventBus.on("bedEditingCancelled", () => this.setObjectMode())
     }
 
     public setOrthoCamera() {
-        // this.orthoCamera.position.set(...this.perspectiveCamera.position)
         this.currentCamera = this.orthoCamera;
         this.currentCameraControls = this.orthoCameraControls
         this.perspectiveCameraControls.enabled = false
@@ -205,7 +208,6 @@ class Editor {
     }
 
     public setPerspectiveCamera() {
-        // this.perspectiveCamera.position.set(...this.orthoCamera.position)
         this.currentCamera = this.perspectiveCamera
         this.currentCameraControls = this.perspectiveCameraControls
         this.perspectiveCameraControls.enabled = true
@@ -250,7 +252,6 @@ class Editor {
         this.mode = EditorMode.BED;
         this.setOrthoCamera()
         this.bedEditor.createNewBed(); // TODO: change htis method name
-        eventBus.emit("bedEditingStarted")
     }
 
     public setObjectMode() {
@@ -258,7 +259,6 @@ class Editor {
         this.mode = EditorMode.OBJECT;
         this.setPerspectiveCamera()
         this.bedEditor.cleanUp();
-        eventBus.emit("bedEditingFinished")
     }
 
     public handleKeyDown(event) {
