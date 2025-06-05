@@ -2,6 +2,8 @@
 
 JavaScript: suncalc
 
+https://pictogrammers.com/library/mdi/
+
 [Rust: sun or astro-rust](https://github.com/mourner/suncalc)
 
 
@@ -18,7 +20,7 @@ JavaScript: suncalc
 - [x] 06/02/2025 -- Start on bed editor
 - [x] 06/03/2025 -- ~~finished bed editor functionality~~ finished bed editor place vertex mode
 - [x] 06/04/2025 -- work on vertex edit mode
-- [ ] 06/05/2025 -- food forest/city hall/break day
+- [x] 06/05/2025 -- food forest/city hall/break day
 - [ ] 06/06/2025 -- finish vertex edit mode, start on bed config mode
 - [ ] 06/07/2025 -- finish bed config mode
 - [ ] 06/09/2025 -- refactor and cleanup (improve readability, improve view) (get feedback from users)

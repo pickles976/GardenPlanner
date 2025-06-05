@@ -105,6 +105,10 @@
 - [x] fill in polygon with transparent thing
 
 - [ ] add clickable button like in manor lords to save vertices or cancel vertices
+    - [ ] figure out how to render svg in 3D (2D?)
+    - [ ] make clickable complete button
+    - [ ] make clickable cancel button
+    - [ ] parent buttons to centroid
 
 - [ ] vertex edit mode finished!
 
