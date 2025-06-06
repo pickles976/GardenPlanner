@@ -105,10 +105,18 @@
 - [x] fill in polygon with transparent thing
 
 - [ ] add clickable button like in manor lords to save vertices or cancel vertices
-    - [ ] figure out how to render svg in 3D (2D?)
-    - [ ] make clickable complete button
+    - [x] add CSS 2D renderer to scene
+    - [x] get literally anything rendering in 2D
+    - [x] figure out how to render svg in 3D (2D?)
+    - [x] parent buttons to centroid
+    - [x] make clickable complete button
+        - [ ] add mouse over callback
+        - [ ] add mouse click callback
+        - [ ] make it erase itself between frames
     - [ ] make clickable cancel button
-    - [ ] parent buttons to centroid
+        - [ ] add mouse over callback
+        - [ ] add mouse click callback
+        - [ ] make it erase itself between frames
 
 - [ ] vertex edit mode finished!
 

@@ -20,7 +20,7 @@ export async function render(editor: Editor) {
     editor.currentCameraControls.update()
 
     // fix buffer size
-    if (resizeRendererToDisplaySize(editor.renderer)) {
+    if (resizeRendererToDisplaySize(editor.renderer) || resizeRendererToDisplaySize(editor.labelRenderer)) {
         const canvas = editor.renderer.domElement;
         const aspect = canvas.clientWidth / canvas.clientHeight;
         editor.currentCamera.aspect = aspect;
@@ -39,6 +39,7 @@ export async function render(editor: Editor) {
     editor.currentCamera.updateProjectionMatrix();
 
     editor.renderer.render(editor.scene, editor.currentCamera);
+    editor.labelRenderer.render(editor.scene, editor.currentCamera);
 }
 
 export function requestRenderIfNotRequested(editor: Editor) {

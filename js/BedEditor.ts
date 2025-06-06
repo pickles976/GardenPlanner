@@ -11,6 +11,9 @@
 
 import { Vector2, Object3D, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh } from "three";
 import * as THREE from "three"
+import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
+import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
 
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
@@ -57,6 +60,29 @@ function createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
 
     return group;
 
+}
+
+function createButton(position: Vector3) : Mesh {
+
+    // TODO: cleanup button between frames
+    // TODO: mouse over callback
+    // TODO: mouse click callback
+    const button = document.createElement( 'button' );
+    // button.className = 'button';
+    // button.textContent = '7.342e22 kg';
+    button.style.backgroundColor = 'transparent';
+    button.style.pointerEvents = "all"
+
+    const image = document.createElement( 'img' );
+    image.src ="/icons/check-circle-outline.svg"
+    image.height = 48
+    image.width = 48
+    button.appendChild(image)
+
+    const label = new CSS2DObject( button );
+    label.position.set(...position);
+    label.center.set( 0, 0 );
+    return label;
 }
 
 function createPolygon(points: Vector3[]) : Mesh {
@@ -249,6 +275,11 @@ class BedEditor {
         this.editor.remove(this.polygon)
         this.polygon = createPolygon(this.vertexHandles.map((item) => item.position));
         this.editor.add(this.polygon)
+
+        // TODO: create svg buttons for saving and cancelling vertices
+        const vertices = this.vertexHandles.map((item) => item.position.clone());
+        const centroid = getCentroid(vertices);
+        this.polygon.add(createButton(centroid))
 
         for (const segment of this.lineSegments) {
             this.editor.add(segment)

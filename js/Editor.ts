@@ -9,6 +9,8 @@ import { BedEditor } from './BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
 import { eventBus } from './EventBus';
+import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
+
 
 const SHADOWMAP_WIDTH = 32;
 const SHADOWMAP_RESOLUTION = 1024;
@@ -25,6 +27,7 @@ class Editor {
 
     canvas: HTMLCanvasElement
     renderer: THREE.WebGLRenderer
+    labelRenderer: CSS2DRenderer
     scene: THREE.Scene
 
     currentCamera: THREE.Camera
@@ -69,6 +72,14 @@ class Editor {
 
         // TODO: only one canvas?
         this.canvas = document.body.appendChild(this.renderer.domElement);
+
+
+        this.labelRenderer = new CSS2DRenderer();
+        this.labelRenderer.setSize( window.innerWidth, window.innerHeight );
+        this.labelRenderer.domElement.style.position = 'absolute';
+        this.labelRenderer.domElement.style.top = '0px';
+        this.labelRenderer.domElement.style.pointerEvents = 'none'; // don't want any events coming from the CSS renderer guy
+        document.body.appendChild( this.labelRenderer.domElement );
     
         // renderer.outputEncoding = THREE.sRGBEncoding;
         // renderer.toneMapping = THREE.ACESFilmicToneMapping;
