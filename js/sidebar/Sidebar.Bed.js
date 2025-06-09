@@ -35,15 +35,27 @@ function SidebarBed( editor ) {
 	container.add(cancelButton)
 	container.setDisplay("Block")
 
-	// 
-	const dimensionRow = new UIRow();
+	// Area
+	const areaRow = new UIRow();
 	const area = new UINumber().setUnit( 'm²' ).setWidth( '50px' )
+	area.dom.style.pointerEvents = 'none'
 
-	dimensionRow.add( new UIText( "Bed Area" ).setClass( 'Label' ) );
-	dimensionRow.add(area);
-	dimensionRow.setDisplay("none");
+	areaRow.add( new UIText( "Bed Area" ).setClass( 'Label' ) );
+	areaRow.add(area);
+	areaRow.setDisplay("none");
 
-	container.add(dimensionRow);
+	container.add(areaRow);
+
+	// Volume
+	const volumeRow = new UIRow();
+	const volume = new UINumber().setUnit( 'm³' ).setWidth( '50px' )
+	volume.dom.style.pointerEvents = 'none'
+
+	volumeRow.add( new UIText( "Bed Volume" ).setClass( 'Label' ) );
+	volumeRow.add(volume);
+	volumeRow.setDisplay("none");
+
+	container.add(volumeRow);
 
 	// Bed Config
 	const bedHeightRow = new UIRow();
@@ -74,7 +86,7 @@ function SidebarBed( editor ) {
 		saveButton.setDisplay("Block");
 		createNewButton.setDisplay("none");
 		bedHeightRow.setDisplay("none")
-		dimensionRow.setDisplay("Block")
+		areaRow.setDisplay("Block")
 	})
 
 	eventBus.on(EventEnums.VERTEX_EDITING_UPDATED, () => {
@@ -87,6 +99,7 @@ function SidebarBed( editor ) {
 		saveButton.setDisplay("none");
 		createNewButton.setDisplay("none");
 		bedHeightRow.setDisplay("Block")
+		volumeRow.setDisplay("Block");
 	})
 
 	eventBus.on(EventEnums.BED_EDITING_FINISHED, () => {
@@ -95,8 +108,8 @@ function SidebarBed( editor ) {
 		saveButton.setDisplay("none");
 		createNewButton.setDisplay("Block");
 		bedHeightRow.setDisplay("none")
-		dimensionRow.setDisplay("none")
-
+		areaRow.setDisplay("none")
+		volumeRow.setDisplay("none");
 	})
 
 	eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => {
@@ -109,10 +122,16 @@ function SidebarBed( editor ) {
 
 	function update() {
 		eventBus.emit(EventEnums.BED_EDITING_UPDATED, {"height": bedHeight.value})
+		updateFromEditor()
 	}
 
 	function updateFromEditor() {
-		area.setValue(editor.bedEditor.getArea())
+
+		const a = editor.bedEditor.getArea();
+		area.setValue(a)
+		if (volume.display !== "none") {
+			volume.setValue(a * bedHeight.value);
+		}
 	}
 
 	// const objectTypeRow = new UIRow();

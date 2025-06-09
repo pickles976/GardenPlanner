@@ -608,6 +608,11 @@ class BedEditor {
 
     public getArea(): number {
         // TODO: fail gracefully
+
+        if (this.vertices.length > 0) {
+            return polygonArea(this.vertices);
+        } 
+
         return polygonArea(this.vertexHandles.map((item) => item.position.clone()));
     }
 

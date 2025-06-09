@@ -135,10 +135,11 @@
 - [x] get area calculations
 - [x] show in Bed UI during vertex editing step
 - [x] show in bed UI during bed config step
-- [ ] calculate bed volume as well
+- [x] calculate bed volume as well
 
 - [ ] control border width
     - [ ] draw border around bed
+    - [ ] use holes https://threejs.org/docs/#api/en/extras/core/Shape.holes
 
 - [ ] finalize bed object and save
     - [ ] use nice colors
