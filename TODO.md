@@ -128,25 +128,33 @@
 - [x] go to bed config mode
 - [x] draw ghosted preview of mesh
 
-- [ ] create new UI element for configuring bed
-- [ ] mesh extrusion
-- [ ] control bed height
+- [x] create new UI element for configuring bed
+- [x] mesh extrusion
+- [x] control bed height
 
-- [ ] add m^2 calculations to UI
-
+- [x] get area calculations
+- [x] show in Bed UI during vertex editing step
+- [x] show in bed UI during bed config step
+- [ ] calculate bed volume as well
 
 - [ ] control border width
     - [ ] draw border around bed
 
-- [ ] create bed object
+- [ ] finalize bed object and save
+    - [ ] use nice colors
 
 - [ ] pull cursors out into js file
+- [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
+    - [ ] come up with better state names
+
+DOCUMENT SOFTWARE ARCHITECTURE
 
 #### Bed Editor QOL improvements
 - [ ] add delete object command with undo
 - [ ] show/hide grid
 - [ ] enable/disable snap to grid
 - [ ] toggle metric vs imperial globally
+- [ ] fix bed editor z-fighting on ghost mesh
 
 ### Minor Improvements\
 - [ ] refactor and cleanup

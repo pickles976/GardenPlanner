@@ -35,6 +35,27 @@ function SidebarBed( editor ) {
 	container.add(cancelButton)
 	container.setDisplay("Block")
 
+	// 
+	const dimensionRow = new UIRow();
+	const area = new UINumber().setUnit( 'm²' ).setWidth( '50px' )
+
+	dimensionRow.add( new UIText( "Bed Area" ).setClass( 'Label' ) );
+	dimensionRow.add(area);
+	dimensionRow.setDisplay("none");
+
+	container.add(dimensionRow);
+
+	// Bed Config
+	const bedHeightRow = new UIRow();
+	const bedHeight = new UINumber().setStep( 0.1 ).setNudge( 0.01 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
+	bedHeight.setValue(0.2);
+
+	bedHeightRow.add( new UIText( "Bed Height" ).setClass( 'Label' ) );
+	bedHeightRow.add( bedHeight );
+	bedHeightRow.setDisplay("none")
+
+	container.add( bedHeightRow );
+
 	createNewButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_STARTED))
 	saveButton.onClick(() => eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_CANCELLED))
@@ -44,6 +65,7 @@ function SidebarBed( editor ) {
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("none");
 		createNewButton.setDisplay("none");
+		bedHeightRow.setDisplay("none")
 	})
 
 	eventBus.on(EventEnums.VERTEX_EDITING_STARTED, () => {
@@ -51,6 +73,12 @@ function SidebarBed( editor ) {
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("Block");
 		createNewButton.setDisplay("none");
+		bedHeightRow.setDisplay("none")
+		dimensionRow.setDisplay("Block")
+	})
+
+	eventBus.on(EventEnums.VERTEX_EDITING_UPDATED, () => {
+		updateFromEditor()
 	})
 
 	eventBus.on(EventEnums.VERTEX_EDITING_FINISHED, () => {
@@ -58,6 +86,7 @@ function SidebarBed( editor ) {
 		cancelButton.setDisplay("none");
 		saveButton.setDisplay("none");
 		createNewButton.setDisplay("none");
+		bedHeightRow.setDisplay("Block")
 	})
 
 	eventBus.on(EventEnums.BED_EDITING_FINISHED, () => {
@@ -65,6 +94,9 @@ function SidebarBed( editor ) {
 		cancelButton.setDisplay("none");
 		saveButton.setDisplay("none");
 		createNewButton.setDisplay("Block");
+		bedHeightRow.setDisplay("none")
+		dimensionRow.setDisplay("none")
+
 	})
 
 	eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => {
@@ -72,7 +104,16 @@ function SidebarBed( editor ) {
 		cancelButton.setDisplay("none");
 		saveButton.setDisplay("none");
 		createNewButton.setDisplay("Block");
+		bedHeightRow.setDisplay("none")
 	})
+
+	function update() {
+		eventBus.emit(EventEnums.BED_EDITING_UPDATED, {"height": bedHeight.value})
+	}
+
+	function updateFromEditor() {
+		area.setValue(editor.bedEditor.getArea())
+	}
 
 	// const objectTypeRow = new UIRow();
 	// const objectType = new UIText();

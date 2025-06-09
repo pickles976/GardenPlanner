@@ -20,7 +20,7 @@ import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { handleMouseMoveObjectMode } from "./EventHandlers";
 import { Line2 } from 'three/addons/lines/Line2.js';
 
-import { destructureVector3Array, getCentroid, getTextGeometry } from "./Utils";
+import { destructureVector3Array, getCentroid, getTextGeometry, polygonArea } from "./Utils";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
 import { SetPositionCommand } from "./commands/SetPositionCommand";
 import { CommandStack } from "./CommandStack";
@@ -139,6 +139,9 @@ class BedEditor {
     saveButton?: CSS2DObject;
     cancelButton?: CSS2DObject;
 
+    bedGhostMesh?: Mesh;
+    bedHeight: number;
+
     constructor(editor: Editor) {
 
         this.editor = editor;
@@ -161,26 +164,21 @@ class BedEditor {
         this.saveButton = undefined;
         this.cancelButton = undefined;
 
+        // Bed Config
+        this.bedGhostMesh = undefined;
+        this.bedHeight = 0.2;
+
+        eventBus.on(EventEnums.BED_EDITING_UPDATED, (event) => {
+            this.bedHeight = event.height;
+            this.createGhostMesh()
+            eventBus.emit(EventEnums.REQUEST_RENDER)
+        });
+
     }
 
     public cleanUp() {
         this.cleanUpVertexPlacementState()
-        for (const vertex of this.vertexHandles) {
-            this.editor.remove(vertex)
-        }
-
-        for (const segment of this.lineSegments) {
-            this.editor.remove(segment)
-        }
-
-        this.editor.remove(this.polygon)
-        this.editor.remove(this.saveButton)
-        this.editor.remove(this.cancelButton)
-
-        this.lineSegments = []
-        this.vertexHandles = []
-
-        document.getElementsByTagName("body")[0].style.cursor = "auto";
+        
         
         eventBus.emit(EventEnums.REQUEST_RENDER)
      }
@@ -198,6 +196,25 @@ class BedEditor {
 
     }
 
+    private cleanUpVertexEditingState() {
+        for (const vertex of this.vertexHandles) {
+            this.editor.remove(vertex)
+        }
+
+        for (const segment of this.lineSegments) {
+            this.editor.remove(segment)
+        }
+
+        this.editor.remove(this.polygon)
+        this.editor.remove(this.saveButton)
+        this.editor.remove(this.cancelButton)
+
+        this.lineSegments = []
+        this.vertexHandles = []
+
+        document.getElementsByTagName("body")[0].style.cursor = "auto";
+    }
+
     // TODO: rename this method it is confusing
     public createNewBed() {
         this.cleanUpVertexPlacementState()
@@ -208,13 +225,12 @@ class BedEditor {
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
-    public setBedConfigMode() {
-        this.mode = BedEditorMode.BED_CONFIG;
+    public createGhostMesh() {
 
-        const height = 1;
+        this.editor.remove(this.bedGhostMesh)
 
         // get the centroid of the points
-        const vertices = this.vertexHandles.map((item) => item.position.clone());
+        const vertices = this.vertices
         const centroid = getCentroid(vertices);
 
         vertices.push(vertices[0]);
@@ -226,7 +242,7 @@ class BedEditor {
         const shape = new THREE.Shape(points);
 
         const extrudeSettings = { 
-            depth: height, 
+            depth: this.bedHeight, 
             bevelEnabled: false, 
             bevelSegments: 2, 
             steps: 2, 
@@ -236,36 +252,45 @@ class BedEditor {
 
         const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
-        const mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0xDDDDDD, side: THREE.DoubleSide, transparent: true, opacity: 0.4}) );
+        this.bedGhostMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0xDDDDDD, side: THREE.DoubleSide, transparent: true, opacity: 0.4}) );
 
-        mesh.userData = {"selectable": true}
-        mesh.layers.set(LayerEnums.Objects)
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        mesh.name = "New Bed"
+        this.bedGhostMesh.userData = {"selectable": true}
+        this.bedGhostMesh.layers.set(LayerEnums.Objects)
+        this.bedGhostMesh.castShadow = true;
+        this.bedGhostMesh.receiveShadow = true;
+        this.bedGhostMesh.name = "New Bed"
+
+        this.editor.add(this.bedGhostMesh)
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
-        mesh.position.set(...centroid);
+        this.bedGhostMesh.position.set(...centroid);
 
-        this.editor.execute(new CreateObjectCommand(mesh, this.editor));
+    }
+
+    public setBedConfigMode() {
+
+        this.vertices = this.vertexHandles.map((item) => item.position.clone());
+        console.log(this.vertices)
+
+        this.mode = BedEditorMode.BED_CONFIG;
 
         // Reset cursor
         document.getElementsByTagName("body")[0].style.cursor = "auto";
-        this.cleanUp()
+        this.cleanUpVertexEditingState()
 
-        // this.editor.setObjectMode()
         this.editor.setPerspectiveCamera()
 
         // Make the camera look at the newly-created bed
         // TODO: make the camera south of the newly-created bed
+        // get the centroid of the points
+        this.createGhostMesh()
+        const centroid = getCentroid(this.vertices);
         this.editor.currentCameraControls.target.copy(centroid)
 
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
     public createMesh() {
-
-        const height = 1;
 
         // get the centroid of the points
         const vertices = this.vertexHandles.map((item) => item.position.clone());
@@ -280,7 +305,7 @@ class BedEditor {
         const shape = new THREE.Shape(points);
 
         const extrudeSettings = { 
-            depth: height, 
+            depth: this.bedHeight, 
             bevelEnabled: false, 
             bevelSegments: 2, 
             steps: 2, 
@@ -581,6 +606,11 @@ class BedEditor {
 
     }
 
+    public getArea(): number {
+        // TODO: fail gracefully
+        return polygonArea(this.vertexHandles.map((item) => item.position.clone()));
+    }
+
     public handleMouseMove(editor: Editor, object: Object3D, point: Vector3) {
 
         if (point === undefined) {
@@ -595,6 +625,7 @@ class BedEditor {
                 // call this function for free highlighting
                 handleMouseMoveObjectMode(editor, object, point)
                 this.handleMouseMoveEditVerticesMode(editor, object, point)
+                eventBus.emit(EventEnums.VERTEX_EDITING_UPDATED)
                 break;
             default:
                 break;
