@@ -137,9 +137,13 @@
 - [x] show in bed UI during bed config step
 - [x] calculate bed volume as well
 
-- [ ] control border width
-    - [ ] draw border around bed
-    - [ ] use holes https://threejs.org/docs/#api/en/extras/core/Shape.holes
+- [x] control border width
+    - [x] draw border around bed
+    - [x] use holes https://threejs.org/docs/#api/en/extras/core/Shape.holes
+    - [x] redraw border with bed
+    - [x] add controls UI
+    - [x] border height
+    - [x] border scale
 
 - [ ] finalize bed object and save
     - [ ] use nice colors

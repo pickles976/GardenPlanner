@@ -20,7 +20,7 @@ import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { handleMouseMoveObjectMode } from "./EventHandlers";
 import { Line2 } from 'three/addons/lines/Line2.js';
 
-import { destructureVector3Array, getCentroid, getTextGeometry, polygonArea } from "./Utils";
+import { createBedBorder, destructureVector3Array, getCentroid, getTextGeometry, polygonArea } from "./Utils";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
 import { SetPositionCommand } from "./commands/SetPositionCommand";
 import { CommandStack } from "./CommandStack";
@@ -140,7 +140,10 @@ class BedEditor {
     cancelButton?: CSS2DObject;
 
     bedGhostMesh?: Mesh;
+    bedGhostBorder?: Mesh;
     bedHeight: number;
+    borderHeight: number;
+    borderWidth: number;
 
     constructor(editor: Editor) {
 
@@ -166,10 +169,17 @@ class BedEditor {
 
         // Bed Config
         this.bedGhostMesh = undefined;
+        this.bedGhostBorder = undefined;
+        // Default values
         this.bedHeight = 0.2;
+        this.borderHeight = 0.3;
+        this.borderWidth = 0.1;
 
+        // TODO: change the field names
         eventBus.on(EventEnums.BED_EDITING_UPDATED, (event) => {
             this.bedHeight = event.height;
+            this.borderHeight = event.borderHeight;
+            this.borderWidth = event.borderWidth;
             this.createGhostMesh()
             eventBus.emit(EventEnums.REQUEST_RENDER)
         });
@@ -227,11 +237,15 @@ class BedEditor {
 
     public createGhostMesh() {
 
+        this.editor.remove(this.bedGhostBorder)
         this.editor.remove(this.bedGhostMesh)
 
         // get the centroid of the points
-        const vertices = this.vertices
+        const vertices = this.vertices.map((v) => v.clone());
         const centroid = getCentroid(vertices);
+        
+        this.bedGhostBorder = createBedBorder(vertices, this.borderWidth, this.borderHeight);
+        this.editor.add(this.bedGhostBorder)
 
         vertices.push(vertices[0]);
         const points = vertices.map((p) => {
@@ -239,6 +253,7 @@ class BedEditor {
             return new Vector2(temp.x, temp.y);
         });
 
+        // TODO: pull this out
         const shape = new THREE.Shape(points);
 
         const extrudeSettings = { 
@@ -252,7 +267,7 @@ class BedEditor {
 
         const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
-        this.bedGhostMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0xDDDDDD, side: THREE.DoubleSide, transparent: true, opacity: 0.4}) );
+        this.bedGhostMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0x999999, side: THREE.DoubleSide, transparent: true, opacity: 0.4}) );
 
         this.bedGhostMesh.userData = {"selectable": true}
         this.bedGhostMesh.layers.set(LayerEnums.Objects)

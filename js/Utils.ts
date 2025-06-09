@@ -57,3 +57,58 @@ export function polygonArea(vertices: Vector3[]): number {
   }
   return Math.abs(area) / 2.0;
 }
+
+export function createBedBorder(vertices: Vector3[], width: number, height: number) : THREE.Mesh {
+
+  const verts = vertices.map((v) => v.clone());
+
+  // 1. find centroid
+  const centroid = getCentroid(verts);
+
+  // 2. scale vertices
+  for (let i = 0; i < verts.length; i++) {
+    const v1 = verts[i].clone();
+    const v2 = verts[(i + 1) % verts.length].clone();
+    const line = v1.sub(v2);
+
+    const orthoAngle = Math.atan2(line.y, line.x) - (Math.PI / 2);
+    const ortho = new Vector3(Math.cos(orthoAngle), Math.sin(orthoAngle), 0).multiplyScalar(width)
+
+    verts[i].add(ortho);
+    verts[(i + 1) % verts.length].add(ortho);
+  }
+
+  // 3. Clone verts
+  let border = verts.map((v) => v.clone());
+
+  // 4. Create shape from scaled vertices, use original vertices to create a hole
+  border.push(border[0]);
+  const points = border.map((p) => {
+      const temp = p.clone().sub(centroid);
+      return new THREE.Vector2(temp.x, temp.y);
+  });
+
+  const holes = vertices.map((p) => {
+      const temp = p.clone().sub(centroid);
+      return new THREE.Vector2(temp.x, temp.y);
+  });
+
+  const shape = new THREE.Shape(points);
+  shape.holes.push(new THREE.Path(holes));
+
+  const extrudeSettings = { 
+      depth: height, 
+      bevelEnabled: false, 
+      bevelSegments: 2, 
+      steps: 2, 
+      bevelSize: 1, 
+      bevelThickness: 1 
+  };
+
+  const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+  // 6. Extrude and create mesh
+  const borderMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0xDDDDDD, side: THREE.DoubleSide, transparent: true, opacity: 0.6}) );
+  borderMesh.position.set(...centroid);
+  return borderMesh;
+}

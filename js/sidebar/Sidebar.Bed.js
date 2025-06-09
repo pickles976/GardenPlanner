@@ -60,13 +60,28 @@ function SidebarBed( editor ) {
 	// Bed Config
 	const bedHeightRow = new UIRow();
 	const bedHeight = new UINumber().setStep( 0.1 ).setNudge( 0.01 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
-	bedHeight.setValue(0.2);
-
+	bedHeight.setValue(editor.bedEditor.bedHeight);
 	bedHeightRow.add( new UIText( "Bed Height" ).setClass( 'Label' ) );
 	bedHeightRow.add( bedHeight );
 	bedHeightRow.setDisplay("none")
 
+	const borderHeightRow = new UIRow();
+	const borderHeight = new UINumber().setStep( 0.1 ).setNudge( 0.01 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
+	borderHeight.setValue(editor.bedEditor.borderHeight);
+	borderHeightRow.add( new UIText( "Border Height" ).setClass( 'Label' ) );
+	borderHeightRow.add( borderHeight );
+	borderHeightRow.setDisplay("none")
+
+	const borderWidthRow = new UIRow();
+	const borderWidth = new UINumber().setStep( 0.1 ).setNudge( 0.01 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
+	borderWidth.setValue(editor.bedEditor.borderWidth);
+	borderWidthRow.add( new UIText( "Border Width" ).setClass( 'Label' ) );
+	borderWidthRow.add( borderWidth );
+	borderWidthRow.setDisplay("none")
+
 	container.add( bedHeightRow );
+	container.add( borderHeightRow );
+	container.add( borderWidthRow );
 
 	createNewButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_STARTED))
 	saveButton.onClick(() => eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED))
@@ -78,6 +93,8 @@ function SidebarBed( editor ) {
 		saveButton.setDisplay("none");
 		createNewButton.setDisplay("none");
 		bedHeightRow.setDisplay("none")
+		borderHeightRow.setDisplay("none")
+		borderWidthRow.setDisplay("none")
 	})
 
 	eventBus.on(EventEnums.VERTEX_EDITING_STARTED, () => {
@@ -99,6 +116,8 @@ function SidebarBed( editor ) {
 		saveButton.setDisplay("none");
 		createNewButton.setDisplay("none");
 		bedHeightRow.setDisplay("Block")
+		borderHeightRow.setDisplay("Block")
+		borderWidthRow.setDisplay("Block")
 		volumeRow.setDisplay("Block");
 	})
 
@@ -108,6 +127,7 @@ function SidebarBed( editor ) {
 		saveButton.setDisplay("none");
 		createNewButton.setDisplay("Block");
 		bedHeightRow.setDisplay("none")
+		borderWidthRow.setDisplay("none")
 		areaRow.setDisplay("none")
 		volumeRow.setDisplay("none");
 	})
@@ -121,7 +141,11 @@ function SidebarBed( editor ) {
 	})
 
 	function update() {
-		eventBus.emit(EventEnums.BED_EDITING_UPDATED, {"height": bedHeight.value})
+		eventBus.emit(EventEnums.BED_EDITING_UPDATED, {
+			"height": bedHeight.value, 
+			"borderHeight": borderHeight.value, 
+			"borderWidth": borderWidth.value
+		})
 		updateFromEditor()
 	}
 
