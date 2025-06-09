@@ -108,7 +108,7 @@ export function createBedBorder(vertices: Vector3[], width: number, height: numb
   const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
   // 6. Extrude and create mesh
-  const borderMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0xDDDDDD, side: THREE.DoubleSide, transparent: true, opacity: 0.6}) );
+  const borderMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0xDDDDDD, side: THREE.DoubleSide, transparent: true, opacity: 0.8}) );
   borderMesh.position.set(...centroid);
   return borderMesh;
 }

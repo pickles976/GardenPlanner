@@ -267,7 +267,7 @@ class BedEditor {
 
         const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
-        this.bedGhostMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0x999999, side: THREE.DoubleSide, transparent: true, opacity: 0.4}) );
+        this.bedGhostMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0x999999, side: THREE.DoubleSide, transparent: true, opacity: 0.8}) );
 
         this.bedGhostMesh.userData = {"selectable": true}
         this.bedGhostMesh.layers.set(LayerEnums.Objects)

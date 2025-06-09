@@ -144,6 +144,9 @@
     - [x] add controls UI
     - [x] border height
     - [x] border scale
+- [ ] allow editing bed color
+    - [ ] inside color
+    - [ ] border color
 
 - [ ] finalize bed object and save
     - [ ] use nice colors
@@ -151,6 +154,8 @@
 - [ ] pull cursors out into js file
 - [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
     - [ ] come up with better state names
+    - [ ] clean up state
+    - [ ] remove any hardcoded values
 
 DOCUMENT SOFTWARE ARCHITECTURE
 
