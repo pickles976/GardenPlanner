@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Command } from './Command';
 import { Editor } from '../Editor';
-import { eventBus } from '../EventBus';
+import { eventBus, EventEnums } from '../EventBus';
 
 class CreateObjectCommand extends Command {
 
@@ -22,7 +22,7 @@ class CreateObjectCommand extends Command {
 
     public execute() {
         this.editor.add(this.object);
-        eventBus.emit('requestRender', this.object);
+        eventBus.emit(EventEnums.REQUEST_RENDER, this.object);
     }
 
     public undo() {
@@ -32,7 +32,7 @@ class CreateObjectCommand extends Command {
             this.editor.selector.deselect();
         }
         this.editor.remove(this.object);
-        eventBus.emit('requestRender', this.object);
+        eventBus.emit(EventEnums.REQUEST_RENDER, this.object);
     }
 
 }

@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { Editor } from "./Editor";
 import { Object3D } from 'three';
-import { eventBus } from './EventBus';
+import { eventBus, EventEnums } from './EventBus';
 import { LayerEnums } from './Constants';
 
 const raycaster = new THREE.Raycaster();
@@ -78,7 +78,7 @@ class Selector {
             this.editor.scene.add(this.transformControlsGizmo);
         }
 
-        eventBus.emit('objectSelected', object);
+        eventBus.emit(EventEnums.OBJECT_SELECTED, object);
     }
 
     public deselect() {
@@ -95,7 +95,7 @@ class Selector {
 
         this.currentSelectedObject = undefined;
 
-        eventBus.emit('objectSelected', undefined);
+        eventBus.emit(EventEnums.OBJECT_SELECTED, undefined);
     }
 
 }

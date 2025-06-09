@@ -11,7 +11,7 @@ import { SetScaleCommand } from '../commands/SetScaleCommand.js';
 // import { SetColorCommand } from './commands/SetColorCommand.js';
 // import { SetShadowValueCommand } from './commands/SetShadowValueCommand.js';
 import { Strings } from './Strings';
-import {eventBus} from '../EventBus.js';
+import {eventBus, EventEnums} from '../EventBus.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -713,7 +713,7 @@ function SidebarObject( editor ) {
 
 	// // events
 
-	eventBus.on('objectSelected', (object) => {
+	eventBus.on(EventEnums.OBJECT_SELECTED, (object) => {
 		console.log(object)
 		if ( object !== null && object !== undefined) {
 
@@ -730,7 +730,7 @@ function SidebarObject( editor ) {
 
 	} );
 
-	eventBus.on('objectChanged', ( object ) => {
+	eventBus.on(EventEnums.OBJECT_CHANGED, ( object ) => {
 
 		updateUI( object );
 

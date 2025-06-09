@@ -4,6 +4,7 @@ import { Selector } from './Selector';
 import { render } from './Rendering';
 import { eventBus } from './EventBus';
 import { EditorMode, LayerEnums } from './Constants';
+import { BLACK, YELLOW } from './Colors';
 
 // TODO: CLEAN THIS UP
 function performRaycast(event, editor, callback, layers){

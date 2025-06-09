@@ -5,7 +5,7 @@ import { UIBoolean } from '../libs/ui.three.js';
 
 import { SetPositionCommand } from '../commands/SetPositionCommand.js';
 import { Strings } from './Strings.js';
-import {eventBus} from '../EventBus.js';
+import {eventBus, EventEnums} from '../EventBus.js';
 import { contain } from 'three/src/extras/TextureUtils.js';
 
 const strings = Strings({'language': 'en'});
@@ -35,33 +35,32 @@ function SidebarBed( editor ) {
 	container.add(cancelButton)
 	container.setDisplay("Block")
 
-	createNewButton.onClick(() => eventBus.emit("bedEditingStarted"))
-	saveButton.onClick(() => eventBus.emit("bedEditingFinished"))
-	cancelButton.onClick(() => eventBus.emit("bedEditingCancelled"))
+	createNewButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_STARTED))
+	saveButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_FINISHED))
+	cancelButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_CANCELLED))
 
-	eventBus.on("bedEditingStarted", () => {
+	eventBus.on(EventEnums.BED_EDITING_STARTED, () => {
 		console.log("bedEditingStarted")
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("none");
 		createNewButton.setDisplay("none");
 	})
 
-	eventBus.on("vertexEditingStarted", () => {
+	eventBus.on(EventEnums.VERTEX_EDITING_STARTED, () => {
 		console.log("vertexEditingStarted")
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("Block");
 		createNewButton.setDisplay("none");
 	})
 
-	eventBus.on("bedEditingFinished", () => {
+	eventBus.on(EventEnums.BED_EDITING_FINISHED, () => {
 		console.log("bedEditingFinished")
 		cancelButton.setDisplay("none");
 		saveButton.setDisplay("none");
 		createNewButton.setDisplay("Block");
 	})
 
-	// TODO: why the fuck isn't this working
-	eventBus.on("bedEditingCancelled", () => {
+	eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => {
 		console.log("bedEditingCancelled")
 		cancelButton.setDisplay("none");
 		saveButton.setDisplay("none");

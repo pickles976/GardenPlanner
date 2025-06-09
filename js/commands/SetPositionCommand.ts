@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Command } from './Command';
-import { eventBus } from '../EventBus';
+import { eventBus, EventEnums } from '../EventBus';
 
 class SetPositionCommand extends Command {
 
@@ -27,12 +27,12 @@ class SetPositionCommand extends Command {
 
     public execute() {
         this.object.position.set(...this.endPosition);
-        eventBus.emit('objectChanged', this.object);
+        eventBus.emit(EventEnums.OBJECT_CHANGED, this.object);
     }
 
     public undo() {
         this.object.position.set(...this.startPosition)
-        eventBus.emit('objectChanged', this.object);
+        eventBus.emit(EventEnums.OBJECT_CHANGED, this.object);
     }
 
 }

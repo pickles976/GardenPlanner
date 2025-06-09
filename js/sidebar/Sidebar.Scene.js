@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 import { UIPanel, UIBreak, UIRow, UIColor, UISelect, UIText, UINumber } from '../libs/ui.js';
 import { UIOutliner, UITexture } from '../libs/ui.three.js';
-import { eventBus } from '../EventBus.js';
+import { eventBus, EventEnums } from '../EventBus.js';
 
 function SidebarScene( editor ) {
 
@@ -186,7 +186,7 @@ function SidebarScene( editor ) {
 
 	refreshUI();
 
-	eventBus.on('objectSelected', refreshUI);
+	eventBus.on(EventEnums.OBJECT_SELECTED, refreshUI);
 
 	return container;
 

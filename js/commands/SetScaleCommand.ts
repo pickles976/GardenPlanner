@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Command } from './Command';
-import { eventBus } from '../EventBus';
+import { eventBus, EventEnums } from '../EventBus';
 
 class SetScaleCommand extends Command {
 
@@ -27,12 +27,12 @@ class SetScaleCommand extends Command {
 
     public execute() {
         this.object.scale.set(...this.endScale);
-        eventBus.emit('objectChanged', this.object);
+        eventBus.emit(EventEnums.OBJECT_CHANGED, this.object);
     }
 
     public undo() {
         this.object.scale.set(...this.startScale);
-        eventBus.emit('objectChanged', this.object);
+        eventBus.emit(EventEnums.OBJECT_CHANGED, this.object);
     }
 
 }

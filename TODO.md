@@ -117,8 +117,11 @@
         - [x] add mouse over callback
         - [x] add mouse click callback
         - [x] make it erase itself between frames
-- [ ] fix bug with the buttons disappearing while editing vertices
-- [ ] vertex edit mode finished!
+- [x] vertex edit mode finished!
+
+- [x] conslidate colors into file
+- [x] consolidate event bus messages into file w/ enums
+
 
 #### Create Bed config mode
 
@@ -147,12 +150,13 @@
 - [ ] draw north in vertex mode
 - [ ] move more with WASD in vertex mode
 - [ ] create a delete command in object mode
-- [x] fix aspect ratio with ortho perspective
+- [x] fix aspect ratio with ortho perspective\
+- [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
 
 ### BUGS
 - [x] get vertex drawing working
 - [x] mouse cursor not changing
-- [ ] finished beds are difficult to select?
+- [ ] finished beds are difficult to select? (raycasting appears to only work on the top face?)
 
 #### Feedback
 - [ ] try out the bed editor mode for garden beds I designed

@@ -25,17 +25,18 @@ import { CreateObjectCommand } from "./commands/CreateObjectCommand";
 import { SetPositionCommand } from "./commands/SetPositionCommand";
 import { CommandStack } from "./CommandStack";
 import { LayerEnums } from "./Constants";
-import { eventBus } from "./EventBus";
+import { eventBus, EventEnums } from "./EventBus";
 import { Editor } from "./Editor";
 
 
 import "external-svg-loader";
+import { GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "./Colors";
 
 
 function createVertexHandle() : Mesh {
     const vertex = new Mesh(
                 new BoxGeometry(0.1, 0.1, 0.1), 
-                new MeshPhongMaterial({color: 0xDDDDDD}))
+                new MeshPhongMaterial({color: VERTEX_COLOR}))
     vertex.layers.set(LayerEnums.BedVertices);
     vertex.userData = {selectable: true, isVertexHandle: true}
     return vertex
@@ -54,7 +55,7 @@ function createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
     // Get line segment
     const geometry = new LineGeometry();
     geometry.setPositions( destructureVector3Array([point, lastPoint]) );
-    const material = new LineMaterial({ color: 0x00ff00, linewidth: 5 });
+    const material = new LineMaterial({ color: GREEN, linewidth: 5 });
     const line = new Line2(geometry, material);
 
     const group = new THREE.Group();
@@ -104,7 +105,7 @@ function createPolygon(points: Vector3[]) : Mesh {
     let polyShape = new THREE.Shape(points.map((coord) => new THREE.Vector2(coord.x, coord.y)))
     const polyGeometry = new THREE.ShapeGeometry(polyShape);
     polyGeometry.setAttribute("position", new THREE.Float32BufferAttribute(points.map(coord => [coord.x, coord.y, coord.z]).flat(), 3))
-    return new THREE.Mesh(polyGeometry, new THREE.MeshBasicMaterial({ color: 0x00ff00, side: THREE.DoubleSide, transparent: true, opacity: 0.2}))
+    return new THREE.Mesh(polyGeometry, new THREE.MeshBasicMaterial({ color: GREEN, side: THREE.DoubleSide, transparent: true, opacity: 0.2}))
 }
 
 enum BedEditorMode {
@@ -181,7 +182,7 @@ class BedEditor {
 
         document.getElementsByTagName("body")[0].style.cursor = "auto";
         
-        eventBus.emit('requestRender')
+        eventBus.emit(EventEnums.REQUEST_RENDER)
      }
 
     private cleanUpVertexPlacementState() {
@@ -204,7 +205,7 @@ class BedEditor {
 
         // TODO: move cursor changes out to function
         document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
-        eventBus.emit("requestRender")
+        eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
     public createMesh() {
@@ -258,7 +259,7 @@ class BedEditor {
         // TODO: make the camera south of the newly-created bed
         this.editor.currentCameraControls.target.copy(centroid)
 
-        eventBus.emit("requestRender")
+        eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
     private closeLoop() {
@@ -268,12 +269,13 @@ class BedEditor {
         this.cleanUpVertexPlacementState()
         this.drawVertexEdges();
         this.mode = BedEditorMode.EDIT_VERTICES;
-        eventBus.emit("vertexEditingStarted")
+        eventBus.emit(EventEnums.VERTEX_EDITING_STARTED)
     }
 
     private drawVertexEdges() {
         // TODO: rename to draw the other stuff
 
+        // Redraw Line Segments
         for (const segment of this.lineSegments) {
             this.editor.remove(segment)
         }
@@ -295,36 +297,37 @@ class BedEditor {
             this.lineSegments.push(lineSegment)
         }
 
+        for (const segment of this.lineSegments) {
+            this.editor.add(segment)
+        }
+
+        // Redraw Polygon
         this.editor.remove(this.polygon)
         this.polygon = createPolygon(this.vertexHandles.map((item) => item.position));
         this.editor.add(this.polygon)
 
-        // TODO: create svg buttons for saving and cancelling vertices
+        // Redraw buttons
         const vertices = this.vertexHandles.map((item) => item.position.clone());
         const centroid = getCentroid(vertices);
 
         this.editor.remove(this.saveButton)
-        this.saveButton = createButton(centroid, "/icons/check-circle.svg", "#82EE73")
+        this.saveButton = createButton(centroid, "/icons/check-circle.svg", UI_GREEN_COLOR)
         this.saveButton.center.set( 1.0, 0.5 );
         this.editor.add(this.saveButton)
 
         this.saveButton.element.addEventListener('click', () => {
-            eventBus.emit('bedEditingFinished')
-            console.log("poop")
+            eventBus.emit(EventEnums.BED_EDITING_FINISHED)
         });
 
         this.editor.remove(this.cancelButton)
-        this.cancelButton = createButton(centroid, "/icons/cancel.svg", "#CCCCCC")
+        this.cancelButton = createButton(centroid, "/icons/cancel.svg", UI_GRAY_COLOR)
         this.cancelButton.center.set( 0.0, 0.5 );
         this.editor.add(this.cancelButton)
 
         this.cancelButton.element.addEventListener('click', () => {
-            eventBus.emit('bedEditingCancelled')
+            eventBus.emit(EventEnums.BED_EDITING_CANCELLED)
         });
 
-        for (const segment of this.lineSegments) {
-            this.editor.add(segment)
-        }
     }
 
     private tryCloseLoop(point: Vector3) : boolean {
@@ -353,7 +356,7 @@ class BedEditor {
 
     private handleMouseClickPlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
         if (this.tryCloseLoop(point)) {
-            eventBus.emit('requestRender')
+            eventBus.emit(EventEnums.REQUEST_RENDER)
             return
         }
 
@@ -367,7 +370,7 @@ class BedEditor {
 
         this.commandStack.execute(new CreateObjectCommand(lineSegment, this.editor));
 
-        eventBus.emit('requestRender')
+        eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
     private handleMouseClickEditVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
@@ -423,7 +426,7 @@ class BedEditor {
                 break;
         }
         this.handleMouseMove(this.editor, undefined, this.lastPoint);
-        eventBus.emit('requestRender')
+        eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
     private handleMouseMovePlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
@@ -441,7 +444,7 @@ class BedEditor {
         const lastPoint = this.vertices[this.vertices.length - 1]
         const geometry = new LineGeometry();
         geometry.setPositions(destructureVector3Array([lastPoint, point]))
-        const material = new LineMaterial({ color: 0xffff00, linewidth: 5});
+        const material = new LineMaterial({ color: YELLOW, linewidth: 5});
         this.linePreview = new Line2(geometry, material);
         this.editor.add(this.linePreview)
 
@@ -520,7 +523,7 @@ class BedEditor {
         }
 
         this.drawVertexEdges()
-        eventBus.emit('requestRender')
+        eventBus.emit(EventEnums.REQUEST_RENDER)
 
     }
 

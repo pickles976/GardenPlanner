@@ -7,7 +7,7 @@ import { SetPositionCommand } from './js/commands/SetPositionCommand';
 import { SetRotationCommand } from './js/commands/SetRotationCommand';
 import { SetScaleCommand } from './js/commands/SetScaleCommand';
 import { Sidebar } from './js/sidebar/Sidebar';
-import { eventBus } from './js/EventBus';
+import { eventBus, EventEnums } from './js/EventBus';
 import { CreateObjectCommand } from './js/commands/CreateObjectCommand';
 import { LayerEnums } from './js/Constants';
 import { GROUND_COLOR } from './js/Colors';
@@ -131,8 +131,8 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
     editor.execute(command);
 });
 
-eventBus.on('requestRender', () => render(editor));
-eventBus.on('objectChanged', () => render(editor));
+eventBus.on(EventEnums.REQUEST_RENDER, () => render(editor));
+eventBus.on(EventEnums.OBJECT_CHANGED, () => render(editor));
 
 
 createGround(editor.scene)

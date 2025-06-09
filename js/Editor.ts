@@ -8,8 +8,9 @@ import { EditorMode, FRUSTUM_SIZE, LayerEnums} from './Constants';
 import { BedEditor } from './BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
-import { eventBus } from './EventBus';
+import { eventBus, EventEnums } from './EventBus';
 import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
+import { WHITE } from './Colors';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -143,9 +144,8 @@ class Editor {
     
         // TODO: split this out into a lighting object
         // lighting
-        const white = 0xFFFFFF;
         const intensity = 1.0;
-        this.directionalLight = new THREE.DirectionalLight(white, intensity);
+        this.directionalLight = new THREE.DirectionalLight(WHITE, intensity);
         this.directionalLight.position.set(-20, 20, 20);
         this.directionalLight.castShadow = true;
         this.scene.add(this.directionalLight);
@@ -169,7 +169,7 @@ class Editor {
 
         this.directionalLight.name = "Directional Light";
     
-        const ambient = new THREE.AmbientLight(white, 0.5);
+        const ambient = new THREE.AmbientLight(WHITE, 0.5);
         ambient.name = "Ambient Light"
         this.scene.add(ambient);
     
@@ -181,13 +181,14 @@ class Editor {
     
         // Grid Helper
         let size = 64
-        const meterGrid = new THREE.GridHelper(size, size, 0xFFFFFF, 0xFFFFFF);
+        const meterGrid = new THREE.GridHelper(size, size, WHITE, WHITE);
         meterGrid.layers.set(LayerEnums.NoRaycast)
         meterGrid.rotateX(Math.PI / 2)
         meterGrid.position.set(0, 0, 0.002)
         meterGrid.name = "Grid Helper"
         this.scene.add(meterGrid);
 
+        // TODO: pull these out
         size = 64
         const decimeterGrid = new THREE.GridHelper(size, size * 10, 0x555555, 0xAAAAAA);
         decimeterGrid.layers.set(LayerEnums.NoRaycast)
@@ -196,7 +197,7 @@ class Editor {
         decimeterGrid.name = "Grid Helper"
         this.scene.add(decimeterGrid);
     
-        this.scene.background = new THREE.Color(white);
+        this.scene.background = new THREE.Color(WHITE);
     
 
         this.perspectiveCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
@@ -206,9 +207,9 @@ class Editor {
         this.transformControls = new TransformControls( this.perspectiveCamera, this.canvas );
         this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );    
 
-        eventBus.on("bedEditingStarted", () => this.setBedMode())
-        eventBus.on("bedEditingFinished", () => this.bedEditor.createMesh())
-        eventBus.on("bedEditingCancelled", () => this.setObjectMode())
+        eventBus.on(EventEnums.BED_EDITING_STARTED, () => this.setBedMode())
+        eventBus.on(EventEnums.BED_EDITING_FINISHED, () => this.bedEditor.createMesh())
+        eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())
     }
 
     public setOrthoCamera() {

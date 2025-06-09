@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { Command } from './Command';
-import { eventBus } from '../EventBus';
+import { eventBus, EventEnums } from '../EventBus';
 
 class SetRotationCommand extends Command {
 
@@ -27,12 +27,12 @@ class SetRotationCommand extends Command {
 
     public execute() {
         this.object.quaternion.set(...this.endQuaternion);
-        eventBus.emit('objectChanged', this.object);
+        eventBus.emit(EventEnums.OBJECT_CHANGED, this.object);
     }
 
     public undo() {
         this.object.quaternion.set(...this.startQuaternion);
-        eventBus.emit('objectChanged', this.object);
+        eventBus.emit(EventEnums.OBJECT_CHANGED, this.object);
     }
 
 }
