@@ -125,13 +125,16 @@
 
 #### Create Bed config mode
 
-- [ ] go to bed config mode
+- [x] go to bed config mode
+- [x] draw ghosted preview of mesh
+
+- [ ] create new UI element for configuring bed
+- [ ] mesh extrusion
+- [ ] control bed height
 
 - [ ] add m^2 calculations to UI
 
-- [ ] mesh extrusion
-- [ ] control bed height
-    - [ ] draw ghosted preview
+
 - [ ] control border width
     - [ ] draw border around bed
 

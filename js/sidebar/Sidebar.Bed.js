@@ -36,7 +36,7 @@ function SidebarBed( editor ) {
 	container.setDisplay("Block")
 
 	createNewButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_STARTED))
-	saveButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_FINISHED))
+	saveButton.onClick(() => eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_CANCELLED))
 
 	eventBus.on(EventEnums.BED_EDITING_STARTED, () => {
@@ -50,6 +50,13 @@ function SidebarBed( editor ) {
 		console.log("vertexEditingStarted")
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("Block");
+		createNewButton.setDisplay("none");
+	})
+
+	eventBus.on(EventEnums.VERTEX_EDITING_FINISHED, () => {
+		console.log("vertexEditingFinished")
+		cancelButton.setDisplay("none");
+		saveButton.setDisplay("none");
 		createNewButton.setDisplay("none");
 	})
 

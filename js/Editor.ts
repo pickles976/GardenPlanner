@@ -198,7 +198,6 @@ class Editor {
         this.scene.add(decimeterGrid);
     
         this.scene.background = new THREE.Color(WHITE);
-    
 
         this.perspectiveCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
         this.orthoCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
@@ -208,6 +207,7 @@ class Editor {
         this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );  
 
         eventBus.on(EventEnums.BED_EDITING_STARTED, () => this.setBedMode())
+        eventBus.on(EventEnums.VERTEX_EDITING_FINISHED, () => this.bedEditor.setBedConfigMode())
         eventBus.on(EventEnums.BED_EDITING_FINISHED, () => this.bedEditor.createMesh())
         eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())
     }

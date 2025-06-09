@@ -208,8 +208,62 @@ class BedEditor {
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
+    public setBedConfigMode() {
+        this.mode = BedEditorMode.BED_CONFIG;
+
+        const height = 1;
+
+        // get the centroid of the points
+        const vertices = this.vertexHandles.map((item) => item.position.clone());
+        const centroid = getCentroid(vertices);
+
+        vertices.push(vertices[0]);
+        const points = vertices.map((p) => {
+            const temp = p.clone().sub(centroid);
+            return new Vector2(temp.x, temp.y);
+        });
+
+        const shape = new THREE.Shape(points);
+
+        const extrudeSettings = { 
+            depth: height, 
+            bevelEnabled: false, 
+            bevelSegments: 2, 
+            steps: 2, 
+            bevelSize: 1, 
+            bevelThickness: 1 
+        };
+
+        const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+        const mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0xDDDDDD, side: THREE.DoubleSide, transparent: true, opacity: 0.4}) );
+
+        mesh.userData = {"selectable": true}
+        mesh.layers.set(LayerEnums.Objects)
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.name = "New Bed"
+
+        // Move the mesh to the centroid so that it doesn't spawn at the origin
+        mesh.position.set(...centroid);
+
+        this.editor.execute(new CreateObjectCommand(mesh, this.editor));
+
+        // Reset cursor
+        document.getElementsByTagName("body")[0].style.cursor = "auto";
+        this.cleanUp()
+
+        // this.editor.setObjectMode()
+        this.editor.setPerspectiveCamera()
+
+        // Make the camera look at the newly-created bed
+        // TODO: make the camera south of the newly-created bed
+        this.editor.currentCameraControls.target.copy(centroid)
+
+        eventBus.emit(EventEnums.REQUEST_RENDER)
+    }
+
     public createMesh() {
-        // TODO: clean this up and make it dynamic
 
         const height = 1;
 
@@ -316,7 +370,7 @@ class BedEditor {
         this.editor.add(this.saveButton)
 
         this.saveButton.element.addEventListener('click', () => {
-            eventBus.emit(EventEnums.BED_EDITING_FINISHED)
+            eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED)
         });
 
         this.editor.remove(this.cancelButton)
