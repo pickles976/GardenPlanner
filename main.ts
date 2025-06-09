@@ -10,11 +10,12 @@ import { Sidebar } from './js/sidebar/Sidebar';
 import { eventBus } from './js/EventBus';
 import { CreateObjectCommand } from './js/commands/CreateObjectCommand';
 import { LayerEnums } from './js/Constants';
+import { GROUND_COLOR } from './js/Colors';
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
 
     const groundMat = new THREE.MeshPhongMaterial({
-        color: 0x00FF11,    // red (can also use a CSS color string here)
+        color: GROUND_COLOR,    // red (can also use a CSS color string here)
     });
     const groundGeo = new THREE.PlaneGeometry(64, 64, 4, 4)
     const groundMesh = new THREE.Mesh(groundGeo, groundMat)

@@ -11,7 +11,6 @@
 
 import { Vector2, Object3D, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh } from "three";
 import * as THREE from "three"
-import { SVGLoader } from 'three/addons/loaders/SVGLoader.js';
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 
@@ -28,6 +27,10 @@ import { CommandStack } from "./CommandStack";
 import { LayerEnums } from "./Constants";
 import { eventBus } from "./EventBus";
 import { Editor } from "./Editor";
+
+
+import "external-svg-loader";
+
 
 function createVertexHandle() : Mesh {
     const vertex = new Mesh(
@@ -62,26 +65,38 @@ function createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
 
 }
 
-function createButton(position: Vector3) : Mesh {
+function createButton(position: Vector3, icon: string, color: string) : CSS2DObject {
 
     // TODO: cleanup button between frames
     // TODO: mouse over callback
     // TODO: mouse click callback
-    const button = document.createElement( 'button' );
     // button.className = 'button';
     // button.textContent = '7.342e22 kg';
+    const button = document.createElement( 'button' );
     button.style.backgroundColor = 'transparent';
     button.style.pointerEvents = "all"
 
-    const image = document.createElement( 'img' );
-    image.src ="/icons/check-circle-outline.svg"
-    image.height = 48
-    image.width = 48
-    button.appendChild(image)
+    const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+
+    svgEl.setAttribute('data-src', icon);
+    svgEl.setAttribute('fill', 'currentColor');
+    svgEl.setAttribute('width', '50px');
+    svgEl.setAttribute('height', '50px');
+    svgEl.style.color = color;
+    button.appendChild(svgEl)
+
+    button.addEventListener('mouseenter', () => {
+        // For each child element, increase brightness
+        svgEl.style.filter = 'brightness(2.0)';
+    });
+
+    button.addEventListener('mouseleave', () => {
+        // Remove the brightness filter
+        svgEl.style.filter = '';
+    });
 
     const label = new CSS2DObject( button );
     label.position.set(...position);
-    label.center.set( 0, 0 );
     return label;
 }
 
@@ -120,6 +135,8 @@ class BedEditor {
     lineSegments: Object3D[];
     polygon?: Object3D;
     selectedHandle?: Object3D;
+    saveButton?: CSS2DObject;
+    cancelButton?: CSS2DObject;
 
     constructor(editor: Editor) {
 
@@ -140,6 +157,9 @@ class BedEditor {
         this.polygon = undefined;
         this.selectedHandle = undefined;
 
+        this.saveButton = undefined;
+        this.cancelButton = undefined;
+
     }
 
     public cleanUp() {
@@ -153,6 +173,8 @@ class BedEditor {
         }
 
         this.editor.remove(this.polygon)
+        this.editor.remove(this.saveButton)
+        this.editor.remove(this.cancelButton)
 
         this.lineSegments = []
         this.vertexHandles = []
@@ -250,6 +272,7 @@ class BedEditor {
     }
 
     private drawVertexEdges() {
+        // TODO: rename to draw the other stuff
 
         for (const segment of this.lineSegments) {
             this.editor.remove(segment)
@@ -279,7 +302,25 @@ class BedEditor {
         // TODO: create svg buttons for saving and cancelling vertices
         const vertices = this.vertexHandles.map((item) => item.position.clone());
         const centroid = getCentroid(vertices);
-        this.polygon.add(createButton(centroid))
+
+        this.editor.remove(this.saveButton)
+        this.saveButton = createButton(centroid, "/icons/check-circle.svg", "#82EE73")
+        this.saveButton.center.set( 1.0, 0.5 );
+        this.editor.add(this.saveButton)
+
+        this.saveButton.element.addEventListener('click', () => {
+            eventBus.emit('bedEditingFinished')
+            console.log("poop")
+        });
+
+        this.editor.remove(this.cancelButton)
+        this.cancelButton = createButton(centroid, "/icons/cancel.svg", "#CCCCCC")
+        this.cancelButton.center.set( 0.0, 0.5 );
+        this.editor.add(this.cancelButton)
+
+        this.cancelButton.element.addEventListener('click', () => {
+            eventBus.emit('bedEditingCancelled')
+        });
 
         for (const segment of this.lineSegments) {
             this.editor.add(segment)

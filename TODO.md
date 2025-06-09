@@ -110,14 +110,14 @@
     - [x] figure out how to render svg in 3D (2D?)
     - [x] parent buttons to centroid
     - [x] make clickable complete button
-        - [ ] add mouse over callback
-        - [ ] add mouse click callback
-        - [ ] make it erase itself between frames
-    - [ ] make clickable cancel button
-        - [ ] add mouse over callback
-        - [ ] add mouse click callback
-        - [ ] make it erase itself between frames
-
+        - [x] add mouse over callback
+        - [x] add mouse click callback
+        - [x] make it erase itself between frames
+    - [x] make clickable cancel button
+        - [x] add mouse over callback
+        - [x] add mouse click callback
+        - [x] make it erase itself between frames
+- [ ] fix bug with the buttons disappearing while editing vertices
 - [ ] vertex edit mode finished!
 
 #### Create Bed config mode

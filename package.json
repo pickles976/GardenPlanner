@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "external-svg-loader": "^1.7.1",
     "gizmos": "^0.0.0",
     "mitt": "^3.0.1",
     "three": "^0.176.0",
