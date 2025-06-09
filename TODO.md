@@ -104,7 +104,7 @@
 - [x] change "create new" button to "save vertices?" when vertices are placed
 - [x] fill in polygon with transparent thing
 
-- [ ] add clickable button like in manor lords to save vertices or cancel vertices
+- [x] add clickable button like in manor lords to save vertices or cancel vertices
     - [x] add CSS 2D renderer to scene
     - [x] get literally anything rendering in 2D
     - [x] figure out how to render svg in 3D (2D?)
@@ -137,6 +137,8 @@
 
 - [ ] create bed object
 
+- [ ] pull cursors out into js file
+
 #### Bed Editor QOL improvements
 - [ ] add delete object command with undo
 - [ ] show/hide grid
@@ -150,13 +152,7 @@
 - [ ] draw north in vertex mode
 - [ ] move more with WASD in vertex mode
 - [ ] create a delete command in object mode
-- [x] fix aspect ratio with ortho perspective\
 - [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
-
-### BUGS
-- [x] get vertex drawing working
-- [x] mouse cursor not changing
-- [ ] finished beds are difficult to select? (raycasting appears to only work on the top face?)
 
 #### Feedback
 - [ ] try out the bed editor mode for garden beds I designed

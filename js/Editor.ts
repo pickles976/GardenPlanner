@@ -205,7 +205,7 @@ class Editor {
 
         // TODO: move transform controls from editor to Selector
         this.transformControls = new TransformControls( this.perspectiveCamera, this.canvas );
-        this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );    
+        this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );  
 
         eventBus.on(EventEnums.BED_EDITING_STARTED, () => this.setBedMode())
         eventBus.on(EventEnums.BED_EDITING_FINISHED, () => this.bedEditor.createMesh())

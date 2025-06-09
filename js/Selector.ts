@@ -42,6 +42,7 @@ class Selector {
             })
         } else {
             raycaster.layers.enableAll();
+            raycaster.layers.disable(LayerEnums.NoRaycast)
         }
 
         const pos = this.getCanvasRelativePosition(event);
@@ -76,6 +77,7 @@ class Selector {
             this.editor.transformControls.attach(object);
             this.transformControlsGizmo = this.editor.transformControls.getHelper();
             this.editor.scene.add(this.transformControlsGizmo);
+            this.transformControlsGizmo.layers.set(LayerEnums.NoRaycast)
         }
 
         eventBus.emit(EventEnums.OBJECT_SELECTED, object);
