@@ -2,6 +2,8 @@ import { Vector3 } from "three";
 import * as THREE from "three";
 import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { color } from "three/tsl";
+import { LayerEnums } from "./Constants";
 
 export function getCentroid(points: Vector3[]) {
   const centroid = new Vector3(0, 0, 0);
@@ -58,7 +60,7 @@ export function polygonArea(vertices: Vector3[]): number {
   return Math.abs(area) / 2.0;
 }
 
-export function createBedBorder(vertices: Vector3[], width: number, height: number, color: string) : THREE.Mesh {
+export function createBedBorder(vertices: Vector3[], width: number, height: number, color: string, opacity: number) : THREE.Mesh {
 
   const verts = vertices.map((v) => v.clone());
 
@@ -108,7 +110,52 @@ export function createBedBorder(vertices: Vector3[], width: number, height: numb
   const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
   // 6. Extrude and create mesh
-  const borderMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide, transparent: true, opacity: 0.8}) );
+  const borderMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ 
+    color: color, 
+    side: THREE.DoubleSide, 
+    transparent: isTransparent(opacity), 
+    opacity: opacity}) );
   borderMesh.position.set(...centroid);
   return borderMesh;
+}
+
+export function isTransparent(opacity: number) {
+  return (opacity == 1.0) ? false : true;
+}
+
+export function createBed(vertices: Vector3[], height: number, color: string, opacity: number) {
+
+  const verts = vertices.map((v) => v.clone());
+  const centroid = getCentroid(verts);
+
+  verts.push(vertices[0]);
+  const points = verts.map((p) => {
+      const temp = p.clone().sub(centroid);
+      return new THREE.Vector2(temp.x, temp.y);
+  });
+
+  const shape = new THREE.Shape(points);
+
+  const extrudeSettings = { 
+      depth: height, 
+      bevelEnabled: false, 
+      bevelSegments: 2, 
+      steps: 2, 
+      bevelSize: 1, 
+      bevelThickness: 1 
+  };
+
+  const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+  const mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ 
+    color: color, 
+    side: THREE.DoubleSide, 
+    transparent: isTransparent(opacity), 
+    opacity: opacity}));
+  mesh.userData = {"selectable": true}
+  mesh.layers.set(LayerEnums.Objects)
+  mesh.castShadow = true;
+  mesh.receiveShadow = true;
+  
+  return mesh
 }

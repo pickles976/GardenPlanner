@@ -20,7 +20,7 @@ import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { handleMouseMoveObjectMode } from "./EventHandlers";
 import { Line2 } from 'three/addons/lines/Line2.js';
 
-import { createBedBorder, destructureVector3Array, getCentroid, getTextGeometry, polygonArea } from "./Utils";
+import { createBedBorder, createBed, destructureVector3Array, getCentroid, getTextGeometry, polygonArea } from "./Utils";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
 import { SetPositionCommand } from "./commands/SetPositionCommand";
 import { CommandStack } from "./CommandStack";
@@ -248,44 +248,14 @@ class BedEditor {
         this.editor.remove(this.bedGhostBorder)
         this.editor.remove(this.bedGhostMesh)
 
-        // get the centroid of the points
-        const vertices = this.vertices.map((v) => v.clone());
-        const centroid = getCentroid(vertices);
-        
-        this.bedGhostBorder = createBedBorder(vertices, this.borderWidth, this.borderHeight, this.borderColor);
+        this.bedGhostBorder = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, this.borderColor, 0.8);
         this.editor.add(this.bedGhostBorder)
 
-        vertices.push(vertices[0]);
-        const points = vertices.map((p) => {
-            const temp = p.clone().sub(centroid);
-            return new Vector2(temp.x, temp.y);
-        });
-
-        // TODO: pull this out
-        const shape = new THREE.Shape(points);
-
-        const extrudeSettings = { 
-            depth: this.bedHeight, 
-            bevelEnabled: false, 
-            bevelSegments: 2, 
-            steps: 2, 
-            bevelSize: 1, 
-            bevelThickness: 1 
-        };
-
-        const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-
-        this.bedGhostMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: this.bedColor, side: THREE.DoubleSide, transparent: true, opacity: 0.8}) );
-
-        this.bedGhostMesh.userData = {"selectable": true}
-        this.bedGhostMesh.layers.set(LayerEnums.Objects)
-        this.bedGhostMesh.castShadow = true;
-        this.bedGhostMesh.receiveShadow = true;
-        this.bedGhostMesh.name = "New Bed"
-
+        this.bedGhostMesh = createBed(this.vertices, this.bedHeight, this.bedColor, 0.8)
         this.editor.add(this.bedGhostMesh)
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
+        const centroid = getCentroid(this.vertices);
         this.bedGhostMesh.position.set(...centroid);
 
     }
