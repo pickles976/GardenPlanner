@@ -4,6 +4,8 @@ import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { color } from "three/tsl";
 import { LayerEnums } from "./Constants";
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
+
 
 export function getCentroid(points: Vector3[]) {
   const centroid = new Vector3(0, 0, 0);
@@ -191,4 +193,24 @@ export function createBed(vertices: Vector3[], height: number, color: string, gh
   mesh.receiveShadow = true;
 
   return mesh
+}
+
+export function mergeMeshes(meshes: THREE.Mesh[]) : THREE.Mesh {
+  let meshArray = meshes.map((m) => m.clone());
+  // TODO: explain what this does
+  meshArray.forEach((m) => m.updateMatrixWorld())
+
+  let geometries = meshArray.map((m) => m.geometry.clone());
+  for (let i = 0; i < geometries.length; i++) {
+    const geom = geometries[i];
+    // TODO: explain what this does
+    geom.applyMatrix4(meshArray[i].matrixWorld);
+    geom.clearGroups();
+    geom.addGroup(0, geom.index ? geom.index.count : geom.attributes.position.count, i);
+  }
+
+  const mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries, true);
+  const materials = meshArray.map((m) => m.material.clone());
+  const mergedMesh = new THREE.Mesh(mergedGeometry, materials);
+  return mergedMesh;
 }

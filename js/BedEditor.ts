@@ -9,19 +9,17 @@
  */
 
 
-import { Vector2, Object3D, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh } from "three";
+import { Object3D, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh } from "three";
 import * as THREE from "three"
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-
 
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { handleMouseMoveObjectMode } from "./EventHandlers";
 import { Line2 } from 'three/addons/lines/Line2.js';
-import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 
-import { createBedBorder, createBed, destructureVector3Array, getCentroid, getTextGeometry, polygonArea } from "./Utils";
+import { createBedBorder, createBed, destructureVector3Array, getCentroid, getTextGeometry, polygonArea, mergeMeshes } from "./Utils";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
 import { SetPositionCommand } from "./commands/SetPositionCommand";
 import { CommandStack } from "./CommandStack";
@@ -32,6 +30,7 @@ import { Editor } from "./Editor";
 
 import "external-svg-loader";
 import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "./Colors";
+import { setCrossCursor, setDefaultCursor } from "./Cursors";
 
 
 function createVertexHandle() : Mesh {
@@ -206,8 +205,6 @@ class BedEditor {
             this.cleanUp();
         })
 
-
-
     }
 
     public cleanUp() {
@@ -247,7 +244,7 @@ class BedEditor {
         this.lineSegments = []
         this.vertexHandles = []
 
-        document.getElementsByTagName("body")[0].style.cursor = "auto";
+        setDefaultCursor()
     }
 
     private cleanUpBedConfigState() {
@@ -262,8 +259,7 @@ class BedEditor {
         this.cleanUpVertexPlacementState()
         this.mode = BedEditorMode.PLACE_VERTICES;
 
-        // TODO: move cursor changes out to function
-        document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
+        setCrossCursor()
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
@@ -291,7 +287,7 @@ class BedEditor {
         this.mode = BedEditorMode.BED_CONFIG;
 
         // Reset cursor
-        document.getElementsByTagName("body")[0].style.cursor = "auto";
+        setDefaultCursor()
         this.cleanUpVertexEditingState()
 
         this.editor.setPerspectiveCamera()
@@ -313,25 +309,7 @@ class BedEditor {
         const border = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, this.borderColor, false);
         const bed = createBed(this.vertices, this.bedHeight, this.bedColor, false);
 
-
-        bed.updateMatrixWorld();
-        border.updateMatrixWorld();
-
-        // TODO: create a generic merge functionality
-        const geom1 = bed.geometry.clone();
-        const geom2 = border.geometry.clone();
-
-        geom1.applyMatrix4(bed.matrixWorld);
-        geom2.applyMatrix4(border.matrixWorld);
-
-        geom1.clearGroups();
-        geom1.addGroup(0, geom1.index ? geom1.index.count : geom1.attributes.position.count, 0);
-
-        geom2.clearGroups();
-        geom2.addGroup(0, geom2.index ? geom2.index.count : geom2.attributes.position.count, 1);
-
-        const mergedGeometry = BufferGeometryUtils.mergeGeometries([geom1, geom2], true);
-        const mergedMesh = new THREE.Mesh(mergedGeometry, [bed.material, border.material]);
+        const mergedMesh = mergeMeshes([border, bed]);
         mergedMesh.castShadow = true;
         mergedMesh.receiveShadow = true;
         mergedMesh.userData = { selectable: true }
@@ -341,7 +319,7 @@ class BedEditor {
         this.editor.execute(new CreateObjectCommand(mergedMesh, this.editor));
 
         // Reset cursor
-        document.getElementsByTagName("body")[0].style.cursor = "auto";
+        setDefaultCursor()
         this.cleanUp()
 
         this.editor.setObjectMode()
@@ -355,7 +333,7 @@ class BedEditor {
 
     private closeLoop() {
         // Reset cursor
-        document.getElementsByTagName("body")[0].style.cursor = "auto";
+        setDefaultCursor()
         this.createVertexHandles();
         this.cleanUpVertexPlacementState()
         this.drawVertexEdges();
@@ -568,7 +546,7 @@ class BedEditor {
 
     private handleMouseMoveEditVerticesMode(editor, object, point) {
 
-        document.getElementsByTagName("body")[0].style.cursor = "auto";
+        setDefaultCursor();
 
         if (point === undefined) {
             return
@@ -585,7 +563,7 @@ class BedEditor {
             }
 
             if (object.userData.isLineSegment === true) { // mouse over line segment
-                document.getElementsByTagName("body")[0].style.cursor = "url('/cross_black.cur'), auto";
+                setCrossCursor()
             }
         } else { // vertex selected
             this.commandStack.execute(new SetPositionCommand(this.selectedHandle, this.selectedHandle.position, point))

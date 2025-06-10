@@ -163,7 +163,7 @@
 - [ ] commandify value changes:
     `editor.execute( new SetValueCommand( editor, editor.selected, 'name', objectName.getValue() ) )`
 
-- [ ] pull cursors out into js file
+- [x] pull cursors out into js file
 - [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
     - [ ] clean up TODOs
     - [ ] clean up BedEditor
