@@ -4,6 +4,7 @@
  *  b. close loop by clicking on start vertex
  * 2. Edit Vertices
  * 3. Configure Bed
+ * 4. Save finalized mesh
  * 
  * TODO: make this all command-based at some point
  */
@@ -19,7 +20,7 @@ import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { handleMouseMoveObjectMode } from "./EventHandlers";
 import { Line2 } from 'three/addons/lines/Line2.js';
 
-import { createBedBorder, createBed, destructureVector3Array, getCentroid, getTextGeometry, polygonArea, mergeMeshes } from "./Utils";
+import { createBedBorder, createBed, destructureVector3Array, getCentroid, getTextGeometry, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial } from "./Utils";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
 import { SetPositionCommand } from "./commands/SetPositionCommand";
 import { CommandStack } from "./CommandStack";
@@ -125,13 +126,13 @@ class BedEditor {
 
     vertices: Vector3[];
 
-    // Placement mode
+    // Vertex Placement mode
     lastPoint?: Vector3;
     linePreview?: Line;
     angleText?: TextGeometry;
     distanceText?: TextGeometry;
 
-    // Edit mode
+    // Vertex Edit mode
     vertexHandles: Object3D[];
     lineSegments: Object3D[];
     polygon?: Object3D;
@@ -139,8 +140,9 @@ class BedEditor {
     saveButton?: CSS2DObject;
     cancelButton?: CSS2DObject;
 
-    bedGhostMesh?: Mesh;
-    bedGhostBorder?: Mesh;
+    // Bed Config Mode
+    bedPreviewMesh?: Mesh;
+    bedPreviewBorder?: Mesh;
     bedHeight: number;
     borderHeight: number;
     borderWidth: number;
@@ -171,8 +173,8 @@ class BedEditor {
         this.cancelButton = undefined;
 
         // Bed Config
-        this.bedGhostMesh = undefined;
-        this.bedGhostBorder = undefined;
+        this.bedPreviewMesh = undefined;
+        this.bedPreviewBorder = undefined;
         // Default values
         this.bedHeight = 0.2;
         this.borderHeight = 0.3;
@@ -190,7 +192,7 @@ class BedEditor {
             this.bedColor = event.bedColor;
             this.borderColor = event.borderColor
             this.bedName = event.name
-            this.createGhostMesh()
+            this.createPreviewMesh()
             eventBus.emit(EventEnums.REQUEST_RENDER)
         });
 
@@ -206,6 +208,8 @@ class BedEditor {
         })
 
     }
+
+    // Cleanup
 
     public cleanUp() {
         this.cleanUpVertexPlacementState()
@@ -248,39 +252,37 @@ class BedEditor {
     }
 
     private cleanUpBedConfigState() {
-        this.editor.remove(this.bedGhostMesh)
-        this.editor.remove(this.bedGhostBorder)
-        this.bedGhostMesh = undefined;
-        this.bedGhostBorder = undefined;
+        this.editor.remove(this.bedPreviewMesh)
+        this.editor.remove(this.bedPreviewBorder)
+        this.bedPreviewMesh = undefined;
+        this.bedPreviewBorder = undefined;
     }
 
-    // TODO: rename this method it is confusing
-    public createNewBed() {
-        this.cleanUpVertexPlacementState()
+    // Change modes
+
+    public beginBedEditing() {
+        this.setVertexPlacementMode()
+    }
+
+    private setVertexPlacementMode() {
+        this.cleanUp()
         this.mode = BedEditorMode.PLACE_VERTICES;
 
         setCrossCursor()
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
-    public createGhostMesh() {
-
-        this.editor.remove(this.bedGhostBorder)
-        this.editor.remove(this.bedGhostMesh)
-
-        this.bedGhostBorder = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, this.borderColor, true);
-        this.editor.add(this.bedGhostBorder)
-
-        this.bedGhostMesh = createBed(this.vertices, this.bedHeight, this.bedColor, true)
-        this.editor.add(this.bedGhostMesh)
-
-        // Move the mesh to the centroid so that it doesn't spawn at the origin
-        const centroid = getCentroid(this.vertices);
-        this.bedGhostBorder.position.set(...centroid);
-        this.bedGhostMesh.position.set(...centroid);
+    private setVertexEditMode() {
+        // Reset cursor
+        setDefaultCursor()
+        this.createVertexHandles();
+        this.cleanUpVertexPlacementState()
+        this.drawVertexEdges();
+        this.mode = BedEditorMode.EDIT_VERTICES;
+        eventBus.emit(EventEnums.VERTEX_EDITING_STARTED)
     }
 
-    public setBedConfigMode() {
+    private setBedConfigMode() {
 
         this.vertices = this.vertexHandles.map((item) => item.position.clone());
 
@@ -292,22 +294,43 @@ class BedEditor {
 
         this.editor.setPerspectiveCamera()
 
-        // Make the camera look at the newly-created bed
-        // TODO: make the camera south of the newly-created bed
         // get the centroid of the points
-        this.createGhostMesh()
+        this.createPreviewMesh()
         const centroid = getCentroid(this.vertices);
+        // make the camera south of the newly-created bed
+        // TODO: pull out these magic numbers
+        this.editor.currentCamera.position.set(...centroid.clone().add(new Vector3(0, -5, 5)))
+        // Make the camera look at the newly-created bed
         this.editor.currentCameraControls.target.copy(centroid)
 
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
-    public createMesh() {
+    // Drawing
+
+    private createPreviewMesh() {
+
+        this.editor.remove(this.bedPreviewBorder)
+        this.editor.remove(this.bedPreviewMesh)
+
+        this.bedPreviewBorder = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, createPreviewMaterial(this.borderColor));
+        this.editor.add(this.bedPreviewBorder)
+
+        this.bedPreviewMesh = createBed(this.vertices, this.bedHeight, createPreviewMaterial(this.bedColor))
+        this.editor.add(this.bedPreviewMesh)
+
+        // Move the mesh to the centroid so that it doesn't spawn at the origin
+        const centroid = getCentroid(this.vertices);
+        this.bedPreviewBorder.position.set(...centroid);
+        this.bedPreviewMesh.position.set(...centroid);
+    }
+
+    private createMesh() {
 
         const centroid = getCentroid(this.vertices);
 
-        const border = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, this.borderColor, false);
-        const bed = createBed(this.vertices, this.bedHeight, this.bedColor, false);
+        const border = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, createPhongMaterial(this.borderColor));
+        const bed = createBed(this.vertices, this.bedHeight, createPhongMaterial(this.bedColor));
 
         const mergedMesh = mergeMeshes([border, bed]);
         mergedMesh.castShadow = true;
@@ -330,17 +353,7 @@ class BedEditor {
 
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
-
-    private closeLoop() {
-        // Reset cursor
-        setDefaultCursor()
-        this.createVertexHandles();
-        this.cleanUpVertexPlacementState()
-        this.drawVertexEdges();
-        this.mode = BedEditorMode.EDIT_VERTICES;
-        eventBus.emit(EventEnums.VERTEX_EDITING_STARTED)
-    }
-
+    
     private drawVertexEdges() {
         // TODO: rename to draw the other stuff
 
@@ -399,19 +412,6 @@ class BedEditor {
 
     }
 
-    private tryCloseLoop(point: Vector3) : boolean {
-
-        if (this.vertices.length > 0) {
-            const startVertex = this.vertices[0];
-            if (startVertex.distanceTo(point) < CLOSE_THRESH) {
-                    this.closeLoop()
-                    return true;
-            }
-        }
-
-        return false;
-    }
-
     private createVertexHandles() {
 
         for (const point of this.vertices) {
@@ -421,6 +421,21 @@ class BedEditor {
             this.vertexHandles.push(vertex)
         }
 
+    }
+
+    // Event Handling
+
+    private tryCloseLoop(point: Vector3) : boolean {
+
+        if (this.vertices.length > 0) {
+            const startVertex = this.vertices[0];
+            if (startVertex.distanceTo(point) < CLOSE_THRESH) {
+                    this.setVertexEditMode()
+                    return true;
+            }
+        }
+
+        return false;
     }
 
     private handleMouseClickPlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
@@ -479,22 +494,6 @@ class BedEditor {
                 this.handleMouseClickEditVerticesMode(editor, object, point)
                 break;
         }
-    }
-
-    public undo() {
-        this.commandStack.undo();
-        switch (this.mode) {
-            case BedEditorMode.PLACE_VERTICES:
-                this.vertices.pop();
-                break;
-            case BedEditorMode.EDIT_VERTICES:
-                this.drawVertexEdges();
-                break;
-            default:
-                break;
-        }
-        this.handleMouseMove(this.editor, undefined, this.lastPoint);
-        eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
     private handleMouseMovePlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
@@ -571,40 +570,6 @@ class BedEditor {
         }
     }
 
-    private delete() {
-
-        if (this.selectedHandle === undefined) {
-            return
-        }
-
-        // don't allow user to delete the loop
-        if (this.vertexHandles.length === 3) {
-            return
-        }
-
-        this.editor.remove(this.selectedHandle)
-        
-        for (let i = 0; i < this.vertexHandles.length; i++) {
-            if (this.vertexHandles[i] === this.selectedHandle) {
-                this.vertexHandles.splice(i, 1)
-            }
-        }
-
-        this.drawVertexEdges()
-        eventBus.emit(EventEnums.REQUEST_RENDER)
-
-    }
-
-    public getArea(): number {
-        // TODO: fail gracefully
-
-        if (this.vertices.length > 0) {
-            return polygonArea(this.vertices);
-        } 
-
-        return polygonArea(this.vertexHandles.map((item) => item.position.clone()));
-    }
-
     public handleMouseMove(editor: Editor, object: Object3D, point: Vector3) {
 
         if (point === undefined) {
@@ -628,7 +593,6 @@ class BedEditor {
 
     }
 
-    
     public handleKeyDown(event) {
         switch ( event.key ) {
 
@@ -655,6 +619,58 @@ class BedEditor {
 
         }
     }
+
+    private delete() {
+
+        if (this.selectedHandle === undefined) {
+            return
+        }
+
+        // don't allow user to delete the loop
+        if (this.vertexHandles.length === 3) {
+            return
+        }
+
+        this.editor.remove(this.selectedHandle)
+        
+        for (let i = 0; i < this.vertexHandles.length; i++) {
+            if (this.vertexHandles[i] === this.selectedHandle) {
+                this.vertexHandles.splice(i, 1)
+            }
+        }
+
+        this.drawVertexEdges()
+        eventBus.emit(EventEnums.REQUEST_RENDER)
+
+    }
+
+    public undo() {
+        this.commandStack.undo();
+        switch (this.mode) {
+            case BedEditorMode.PLACE_VERTICES:
+                this.vertices.pop();
+                break;
+            case BedEditorMode.EDIT_VERTICES:
+                this.drawVertexEdges();
+                break;
+            // TODO: undo bed editor changes
+            default:
+                break;
+        }
+        this.handleMouseMove(this.editor, undefined, this.lastPoint);
+        eventBus.emit(EventEnums.REQUEST_RENDER)
+    }
+
+    public getArea(): number {
+        // TODO: fail gracefully
+
+        if (this.vertices.length > 0) {
+            return polygonArea(this.vertices);
+        } 
+
+        return polygonArea(this.vertexHandles.map((item) => item.position.clone()));
+    }
+
 }
 
 export { BedEditor, BedEditorMode };

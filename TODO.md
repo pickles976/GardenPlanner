@@ -158,17 +158,20 @@
 
 - [x] get workflow working e2e with no bugs
     - [x] get cancel working from bed config mode
+- [x] clean up bed creation functions
+    - [x] inject material
+
 - [ ] hide scene viewer in BED mode
 
 - [ ] commandify value changes:
     `editor.execute( new SetValueCommand( editor, editor.selected, 'name', objectName.getValue() ) )`
+- [ ] get ctrl-z working for bed config mode
 
 - [x] pull cursors out into js file
 - [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
     - [ ] clean up TODOs
     - [ ] clean up BedEditor
     - [ ] handle messages from within relevant 
-    - [ ] come up with better state names
     - [ ] clean up state
     - [ ] remove any hardcoded values
 

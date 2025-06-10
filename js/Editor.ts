@@ -96,7 +96,7 @@ class Editor {
 
         this.perspectiveCamera = new THREE.PerspectiveCamera(60, aspect, 0.1, 2000000);
         this.perspectiveCamera.name = "Perspective Camera"
-        this.perspectiveCamera.position.set(0, 5, 5);
+        this.perspectiveCamera.position.set(0, -5, 5);
         this.perspectiveCamera.up.set(0, 0, 1);
         this.perspectiveCamera.lookAt(0, 0, 0);
         this.perspectiveCamera.layers.enableAll();
@@ -260,7 +260,7 @@ class Editor {
         this.selector.deselect();
         this.mode = EditorMode.BED;
         this.setOrthoCamera()
-        this.bedEditor.createNewBed(); // TODO: change htis method name
+        this.bedEditor.beginBedEditing(); // TODO: change htis method name
     }
 
     public setObjectMode() {

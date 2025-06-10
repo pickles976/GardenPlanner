@@ -1,9 +1,5 @@
 import { Vector3 } from "three";
 import * as THREE from "three";
-import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
-import { color } from "three/tsl";
-import { LayerEnums } from "./Constants";
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 
 
@@ -49,6 +45,7 @@ export function destructureVector3Array(array: Vector3[]): number[] {
   return newArray
 }
 
+// TODO: move to bed editor
 export function polygonArea(vertices: Vector3[]): number {
   let area = 0;
   for (let i = 0; i < vertices.length; i++) {
@@ -62,7 +59,8 @@ export function polygonArea(vertices: Vector3[]): number {
   return Math.abs(area) / 2.0;
 }
 
-export function createBedBorder(vertices: Vector3[], width: number, height: number, color: string, ghost: bool): THREE.Mesh {
+// TODO: move to bed editor
+export function createBedBorder(vertices: Vector3[], width: number, height: number, material: THREE.Material): THREE.Mesh {
 
   const verts = vertices.map((v) => v.clone());
 
@@ -110,37 +108,11 @@ export function createBedBorder(vertices: Vector3[], width: number, height: numb
     bevelThickness: 1
   };
 
-  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-
-  // 6. Extrude and create mesh
-  let borderMesh;
-  if (ghost) {
-    borderMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-      color: color,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.8
-    }));
-  } else {
-    borderMesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
-      color: color,
-      side: THREE.DoubleSide
-    }));
-
-    borderMesh.castShadow = true;
-    borderMesh.receiveShadow = true;
-    borderMesh.userData = { selectable: true }
-    borderMesh.layers.set(LayerEnums.Objects)
-  }
-
-  return borderMesh;
+  return new THREE.Mesh(new THREE.ExtrudeGeometry(shape, extrudeSettings), material);
 }
 
-export function isTransparent(opacity: number) {
-  return (opacity == 1.0) ? false : true;
-}
-
-export function createBed(vertices: Vector3[], height: number, color: string, ghost: boolean) {
+// TODO: move to bed editor
+export function createBed(vertices: Vector3[], height: number, material: THREE.Material) {
 
   const verts = vertices.map((v) => v.clone());
   const centroid = getCentroid(verts);
@@ -162,40 +134,14 @@ export function createBed(vertices: Vector3[], height: number, color: string, gh
     bevelThickness: 1
   };
 
-  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-
-  // TODO: pass mesh in?
-  // TODO: create a materials factory function?
-  // TODO: memoize materials factory function?
-  let mesh;
-  if (ghost) {
-    mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
-      color: color,
-      side: THREE.DoubleSide,
-      transparent: true,
-      opacity: 0.8
-    }));
-  } else {
-    mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
-      color: color,
-      side: THREE.DoubleSide
-    }));
-
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    mesh.userData = { selectable: true }
-    mesh.layers.set(LayerEnums.Objects)
-  }
-
-  mesh.userData = { "selectable": true }
-  mesh.layers.set(LayerEnums.Objects)
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-
-  return mesh
+  return new THREE.Mesh(new THREE.ExtrudeGeometry(shape, extrudeSettings), material);
 }
 
 export function mergeMeshes(meshes: THREE.Mesh[]) : THREE.Mesh {
+  /**
+   * Merges multiple meshes
+   */
+
   let meshArray = meshes.map((m) => m.clone());
   // TODO: explain what this does
   meshArray.forEach((m) => m.updateMatrixWorld())
@@ -213,4 +159,17 @@ export function mergeMeshes(meshes: THREE.Mesh[]) : THREE.Mesh {
   const materials = meshArray.map((m) => m.material.clone());
   const mergedMesh = new THREE.Mesh(mergedGeometry, materials);
   return mergedMesh;
+}
+
+export function createPhongMaterial(color: string) : THREE.MeshPhongMaterial {
+  return new THREE.MeshPhongMaterial({color: color,side: THREE.DoubleSide})
+}
+
+export function createPreviewMaterial(color: string) : THREE.MeshBasicMaterial {
+  return new THREE.MeshBasicMaterial({
+    color: color,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 0.8
+  });
 }
