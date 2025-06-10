@@ -69,7 +69,6 @@ class Editor {
             antialias: ANTI_ALIASING
         });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
-        console.log(this.renderer)
 
         // TODO: only one canvas?
         this.canvas = document.body.appendChild(this.renderer.domElement);

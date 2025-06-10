@@ -180,6 +180,7 @@ class BedEditor {
 
         this.bedColor = DARK_GRAY;
         this.borderColor = VERTEX_COLOR;
+        this.bedName = "New Bed";
 
         // TODO: change the field names
         eventBus.on(EventEnums.BED_EDITING_UPDATED, (event) => {
@@ -188,6 +189,7 @@ class BedEditor {
             this.borderWidth = event.borderWidth;
             this.bedColor = event.bedColor;
             this.borderColor = event.borderColor
+            this.bedName = event.name
             this.createGhostMesh()
             eventBus.emit(EventEnums.REQUEST_RENDER)
         });
@@ -263,7 +265,6 @@ class BedEditor {
     public setBedConfigMode() {
 
         this.vertices = this.vertexHandles.map((item) => item.position.clone());
-        console.log(this.vertices)
 
         this.mode = BedEditorMode.BED_CONFIG;
 
@@ -452,7 +453,6 @@ class BedEditor {
             // Insert vertex
             if (object.userData.isLineSegment) {
                 // TODO: make this undoable (use a command)
-                console.log("Line segment clicked")
                 const vertex = createVertexHandle()
                 this.editor.add(vertex)
                 vertex.position.set(...point)

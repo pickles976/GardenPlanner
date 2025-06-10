@@ -714,7 +714,7 @@ function SidebarObject( editor ) {
 	// // events
 
 	eventBus.on(EventEnums.OBJECT_SELECTED, (object) => {
-		console.log(object)
+		// console.log(object)
 		if ( object !== null && object !== undefined) {
 
 			container.setDisplay( 'block' );

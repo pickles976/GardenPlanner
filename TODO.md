@@ -147,8 +147,12 @@
 - [x] allow editing bed color
     - [x] inside color
     - [x] border color
-- [ ] allow user set name
+- [x] allow user set name
 - [ ] draw line between editable and non-editable properties
+    - [ ] create multiple containers
+    - [ ] edit container styles
+- [ ] commandify value changes:
+    `editor.execute( new SetValueCommand( editor, editor.selected, 'name', objectName.getValue() ) )`
 
 - [ ] finalize bed object and save
     - [ ] add "save bed" button
