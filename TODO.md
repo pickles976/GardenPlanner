@@ -163,9 +163,9 @@
 - [x] pull cursors out into js file
 - [x] hide scene viewer in BED mode
 
-- [ ] commandify value changes:
+- [x] commandify value changes:
     `editor.execute( new SetValueCommand( editor, editor.selected, 'name', objectName.getValue() ) )`
-- [ ] get ctrl-z working for bed config mode
+- [x] get ctrl-z working for bed config mode
 
 #### Bed Editor QOL improvements
 - [ ] enable/disable snap to grid
@@ -179,6 +179,7 @@
     - [ ] handle messages from within relevant objects
     - [ ] clean up BedEditor state
     - [ ] remove any hardcoded values
+    - [ ] add some logic to update `BedEditingUpdateCommand` if the changed values are floats.
 
 BED EDITING FINISHED (FOR NOW)
 

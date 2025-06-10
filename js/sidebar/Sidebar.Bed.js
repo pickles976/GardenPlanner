@@ -7,6 +7,7 @@ import { SetPositionCommand } from '../commands/SetPositionCommand.js';
 import { Strings } from './Strings.js';
 import {eventBus, EventEnums} from '../EventBus.js';
 import { contain } from 'three/src/extras/TextureUtils.js';
+import { BedEditingUpdateCommand } from '../commands/BedEditingUpdateCommand.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -174,24 +175,34 @@ function SidebarBed( editor ) {
 	})
 
 	function update() {
-		eventBus.emit(EventEnums.BED_EDITING_UPDATED, {
+		const props = {
 			"name": objectName.value,
-			"height": bedHeight.value, 
+			"bedHeight": bedHeight.value, 
 			"borderHeight": borderHeight.value, 
 			"borderWidth": borderWidth.value,
 			"bedColor": bedColor.dom.value,
 			"borderColor": borderColor.dom.value
-		})
-		updateFromEditor()
+		};
+
+		const command = new BedEditingUpdateCommand(props, editor.bedEditor, updateFromEditor)
+		eventBus.emit(EventEnums.BED_EDITING_UPDATED, command)
 	}
 
 	function updateFromEditor() {
 
 		const a = editor.bedEditor.getArea();
 		area.setValue(a)
+
 		if (volume.display !== "none") {
-			volume.setValue(a * bedHeight.value);
+			volume.setValue(a * editor.bedEditor.bedHeight);
 		}
+
+		bedHeight.setValue(editor.bedEditor.bedHeight)
+		borderHeight.setValue(editor.bedEditor.borderHeight)
+		borderWidth.setValue(editor.bedEditor.borderWidth)
+
+		bedColor.setValue(editor.bedEditor.bedColor)
+		borderColor.setValue(editor.bedEditor.borderColor)
 	}
 
 	return container;

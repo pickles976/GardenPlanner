@@ -186,13 +186,8 @@ class BedEditor {
         this.bedName = "New Bed";
 
         // TODO: change the field names
-        eventBus.on(EventEnums.BED_EDITING_UPDATED, (event) => {
-            this.bedHeight = event.height;
-            this.borderHeight = event.borderHeight;
-            this.borderWidth = event.borderWidth;
-            this.bedColor = event.bedColor;
-            this.borderColor = event.borderColor
-            this.bedName = event.name
+        eventBus.on(EventEnums.BED_EDITING_UPDATED, (command) => {
+            this.commandStack.execute(command)
             this.createPreviewMesh()
             eventBus.emit(EventEnums.REQUEST_RENDER)
         });
@@ -210,6 +205,15 @@ class BedEditor {
 
     }
 
+    public updateBed(props: Object) {
+        this.bedHeight = props.bedHeight;
+        this.borderHeight = props.borderHeight;
+        this.borderWidth = props.borderWidth;
+        this.bedColor = props.bedColor;
+        this.borderColor = props.borderColor
+        this.bedName = props.name
+    }
+
     // Cleanup
 
     public cleanUp() {
@@ -218,7 +222,7 @@ class BedEditor {
         this.cleanUpBedConfigState()
         
         eventBus.emit(EventEnums.REQUEST_RENDER)
-     }
+    }
 
     private cleanUpVertexPlacementState() {
         this.editor.remove(this.linePreview)
@@ -655,7 +659,9 @@ class BedEditor {
             case BedEditorMode.EDIT_VERTICES:
                 this.drawVertexEdges();
                 break;
-            // TODO: undo bed editor changes
+            case BedEditorMode.BED_CONFIG:
+                this.createPreviewMesh()
+                break;
             default:
                 break;
         }
