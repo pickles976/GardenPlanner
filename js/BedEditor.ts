@@ -19,6 +19,7 @@ import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { handleMouseMoveObjectMode } from "./EventHandlers";
 import { Line2 } from 'three/addons/lines/Line2.js';
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 
 import { createBedBorder, createBed, destructureVector3Array, getCentroid, getTextGeometry, polygonArea } from "./Utils";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
@@ -194,11 +195,25 @@ class BedEditor {
             eventBus.emit(EventEnums.REQUEST_RENDER)
         });
 
+        eventBus.on(EventEnums.VERTEX_EDITING_FINISHED, () => this.setBedConfigMode())
+
+        eventBus.on(EventEnums.BED_EDITING_FINISHED, (event) => {
+            this.createMesh()
+            this.cleanUp();
+        })
+
+        eventBus.on(EventEnums.BED_EDITING_CANCELLED, (event) => {
+            this.cleanUp();
+        })
+
+
+
     }
 
     public cleanUp() {
         this.cleanUpVertexPlacementState()
-        
+        this.cleanUpVertexEditingState()
+        this.cleanUpBedConfigState()
         
         eventBus.emit(EventEnums.REQUEST_RENDER)
      }
@@ -235,6 +250,13 @@ class BedEditor {
         document.getElementsByTagName("body")[0].style.cursor = "auto";
     }
 
+    private cleanUpBedConfigState() {
+        this.editor.remove(this.bedGhostMesh)
+        this.editor.remove(this.bedGhostBorder)
+        this.bedGhostMesh = undefined;
+        this.bedGhostBorder = undefined;
+    }
+
     // TODO: rename this method it is confusing
     public createNewBed() {
         this.cleanUpVertexPlacementState()
@@ -250,16 +272,16 @@ class BedEditor {
         this.editor.remove(this.bedGhostBorder)
         this.editor.remove(this.bedGhostMesh)
 
-        this.bedGhostBorder = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, this.borderColor, 0.8);
+        this.bedGhostBorder = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, this.borderColor, true);
         this.editor.add(this.bedGhostBorder)
 
-        this.bedGhostMesh = createBed(this.vertices, this.bedHeight, this.bedColor, 0.8)
+        this.bedGhostMesh = createBed(this.vertices, this.bedHeight, this.bedColor, true)
         this.editor.add(this.bedGhostMesh)
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices);
+        this.bedGhostBorder.position.set(...centroid);
         this.bedGhostMesh.position.set(...centroid);
-
     }
 
     public setBedConfigMode() {
@@ -286,41 +308,37 @@ class BedEditor {
 
     public createMesh() {
 
-        // get the centroid of the points
-        const vertices = this.vertexHandles.map((item) => item.position.clone());
-        const centroid = getCentroid(vertices);
+        const centroid = getCentroid(this.vertices);
 
-        vertices.push(vertices[0]);
-        const points = vertices.map((p) => {
-            const temp = p.clone().sub(centroid);
-            return new Vector2(temp.x, temp.y);
-        });
+        const border = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, this.borderColor, false);
+        const bed = createBed(this.vertices, this.bedHeight, this.bedColor, false);
 
-        const shape = new THREE.Shape(points);
 
-        const extrudeSettings = { 
-            depth: this.bedHeight, 
-            bevelEnabled: false, 
-            bevelSegments: 2, 
-            steps: 2, 
-            bevelSize: 1, 
-            bevelThickness: 1 
-        };
+        bed.updateMatrixWorld();
+        border.updateMatrixWorld();
 
-        const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+        // TODO: create a generic merge functionality
+        const geom1 = bed.geometry.clone();
+        const geom2 = border.geometry.clone();
 
-        const mesh = new THREE.Mesh( geometry, new THREE.MeshPhongMaterial() );
+        geom1.applyMatrix4(bed.matrixWorld);
+        geom2.applyMatrix4(border.matrixWorld);
 
-        mesh.userData = {"selectable": true}
-        mesh.layers.set(LayerEnums.Objects)
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        mesh.name = "New Bed"
+        geom1.clearGroups();
+        geom1.addGroup(0, geom1.index ? geom1.index.count : geom1.attributes.position.count, 0);
 
-        // Move the mesh to the centroid so that it doesn't spawn at the origin
-        mesh.position.set(...centroid);
+        geom2.clearGroups();
+        geom2.addGroup(0, geom2.index ? geom2.index.count : geom2.attributes.position.count, 1);
 
-        this.editor.execute(new CreateObjectCommand(mesh, this.editor));
+        const mergedGeometry = BufferGeometryUtils.mergeGeometries([geom1, geom2], true);
+        const mergedMesh = new THREE.Mesh(mergedGeometry, [bed.material, border.material]);
+        mergedMesh.castShadow = true;
+        mergedMesh.receiveShadow = true;
+        mergedMesh.userData = { selectable: true }
+        mergedMesh.layers.set(LayerEnums.Objects)
+        mergedMesh.position.set(...centroid)
+
+        this.editor.execute(new CreateObjectCommand(mergedMesh, this.editor));
 
         // Reset cursor
         document.getElementsByTagName("body")[0].style.cursor = "auto";

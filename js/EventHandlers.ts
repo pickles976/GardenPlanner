@@ -40,17 +40,29 @@ export function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, p
 
         // Un-highlight old mouseOverObject
         if (selector.currentMousedOverObject !== undefined) {
-            selector.currentMousedOverObject.material.emissive.setHex(0x000000)
+            if (Array.isArray(selector.currentMousedOverObject.material)) {
+                selector.currentMousedOverObject.material.forEach((mat) => mat.emissive.setHex(0x000000));
+            } else {
+                selector.currentMousedOverObject.material.emissive.setHex(0x000000);
+            }
         }
 
         // Highlight new mouseOverObject
         selector.currentMousedOverObject = object;
-        object.material.emissive.setHex(0xFFFF00);
+        if (Array.isArray(selector.currentMousedOverObject.material)) {
+            selector.currentMousedOverObject.material.forEach((mat) => mat.emissive.setHex(0xFFFF00));
+        } else {
+            selector.currentMousedOverObject.material.emissive.setHex(0xFFFF00);
+        }
 
     } else {
         // Un-highlight old mouseOverObject
         if (selector.currentMousedOverObject !== undefined) { 
-            selector.currentMousedOverObject.material.emissive.setHex(0x000000)
+            if (Array.isArray(selector.currentMousedOverObject.material)) {
+                selector.currentMousedOverObject.material.forEach((mat) => mat.emissive.setHex(0x000000));
+            } else {
+                selector.currentMousedOverObject.material.emissive.setHex(0x000000);
+            }
         } 
         selector.currentMousedOverObject = undefined;
     }

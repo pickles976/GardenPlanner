@@ -206,8 +206,6 @@ class Editor {
         this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );  
 
         eventBus.on(EventEnums.BED_EDITING_STARTED, () => this.setBedMode())
-        eventBus.on(EventEnums.VERTEX_EDITING_FINISHED, () => this.bedEditor.setBedConfigMode())
-        eventBus.on(EventEnums.BED_EDITING_FINISHED, () => this.bedEditor.createMesh())
         eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())
     }
 
@@ -269,7 +267,6 @@ class Editor {
         this.selector.deselect();
         this.mode = EditorMode.OBJECT;
         this.setPerspectiveCamera()
-        this.bedEditor.cleanUp();
     }
 
     public handleKeyDown(event) {

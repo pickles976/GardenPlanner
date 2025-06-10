@@ -148,18 +148,26 @@
     - [x] inside color
     - [x] border color
 - [x] allow user set name
-- [ ] draw line between editable and non-editable properties
-    - [ ] create multiple containers
-    - [ ] edit container styles
+- [x] draw line between editable and non-editable properties
+    - [x] create multiple containers
+    - [x] edit container styles
+- [x] finalize bed object and save
+    - [x] add "save bed" button
+    - [x] create mesh group and save
+- [x] merge meshes somehow
+
+- [x] get workflow working e2e with no bugs
+    - [x] get cancel working from bed config mode
+- [ ] hide scene viewer in BED mode
+
 - [ ] commandify value changes:
     `editor.execute( new SetValueCommand( editor, editor.selected, 'name', objectName.getValue() ) )`
 
-- [ ] finalize bed object and save
-    - [ ] add "save bed" button
-    - [ ] create mesh group and save
-
 - [ ] pull cursors out into js file
 - [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
+    - [ ] clean up TODOs
+    - [ ] clean up BedEditor
+    - [ ] handle messages from within relevant 
     - [ ] come up with better state names
     - [ ] clean up state
     - [ ] remove any hardcoded values

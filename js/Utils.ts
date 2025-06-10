@@ -60,7 +60,7 @@ export function polygonArea(vertices: Vector3[]): number {
   return Math.abs(area) / 2.0;
 }
 
-export function createBedBorder(vertices: Vector3[], width: number, height: number, color: string, opacity: number) : THREE.Mesh {
+export function createBedBorder(vertices: Vector3[], width: number, height: number, color: string, ghost: bool): THREE.Mesh {
 
   const verts = vertices.map((v) => v.clone());
 
@@ -68,6 +68,7 @@ export function createBedBorder(vertices: Vector3[], width: number, height: numb
   const centroid = getCentroid(verts);
 
   // 2. scale vertices
+  // TODO: this method is crude and doesn't work very well for certain geometries
   for (let i = 0; i < verts.length; i++) {
     const v1 = verts[i].clone();
     const v2 = verts[(i + 1) % verts.length].clone();
@@ -86,36 +87,50 @@ export function createBedBorder(vertices: Vector3[], width: number, height: numb
   // 4. Create shape from scaled vertices, use original vertices to create a hole
   border.push(border[0]);
   const points = border.map((p) => {
-      const temp = p.clone().sub(centroid);
-      return new THREE.Vector2(temp.x, temp.y);
+    const temp = p.clone().sub(centroid);
+    return new THREE.Vector2(temp.x, temp.y);
   });
 
   const holes = vertices.map((p) => {
-      const temp = p.clone().sub(centroid);
-      return new THREE.Vector2(temp.x, temp.y);
+    const temp = p.clone().sub(centroid);
+    return new THREE.Vector2(temp.x, temp.y);
   });
 
   const shape = new THREE.Shape(points);
   shape.holes.push(new THREE.Path(holes));
 
-  const extrudeSettings = { 
-      depth: height, 
-      bevelEnabled: false, 
-      bevelSegments: 2, 
-      steps: 2, 
-      bevelSize: 1, 
-      bevelThickness: 1 
+  const extrudeSettings = {
+    depth: height,
+    bevelEnabled: false,
+    bevelSegments: 2,
+    steps: 2,
+    bevelSize: 1,
+    bevelThickness: 1
   };
 
-  const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
 
   // 6. Extrude and create mesh
-  const borderMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ 
-    color: color, 
-    side: THREE.DoubleSide, 
-    transparent: isTransparent(opacity), 
-    opacity: opacity}) );
-  borderMesh.position.set(...centroid);
+  let borderMesh;
+  if (ghost) {
+    borderMesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
+      color: color,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.8
+    }));
+  } else {
+    borderMesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
+      color: color,
+      side: THREE.DoubleSide
+    }));
+
+    borderMesh.castShadow = true;
+    borderMesh.receiveShadow = true;
+    borderMesh.userData = { selectable: true }
+    borderMesh.layers.set(LayerEnums.Objects)
+  }
+
   return borderMesh;
 }
 
@@ -123,39 +138,57 @@ export function isTransparent(opacity: number) {
   return (opacity == 1.0) ? false : true;
 }
 
-export function createBed(vertices: Vector3[], height: number, color: string, opacity: number) {
+export function createBed(vertices: Vector3[], height: number, color: string, ghost: boolean) {
 
   const verts = vertices.map((v) => v.clone());
   const centroid = getCentroid(verts);
 
   verts.push(vertices[0]);
   const points = verts.map((p) => {
-      const temp = p.clone().sub(centroid);
-      return new THREE.Vector2(temp.x, temp.y);
+    const temp = p.clone().sub(centroid);
+    return new THREE.Vector2(temp.x, temp.y);
   });
 
   const shape = new THREE.Shape(points);
 
-  const extrudeSettings = { 
-      depth: height, 
-      bevelEnabled: false, 
-      bevelSegments: 2, 
-      steps: 2, 
-      bevelSize: 1, 
-      bevelThickness: 1 
+  const extrudeSettings = {
+    depth: height,
+    bevelEnabled: false,
+    bevelSegments: 2,
+    steps: 2,
+    bevelSize: 1,
+    bevelThickness: 1
   };
 
-  const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+  const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
 
-  const mesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ 
-    color: color, 
-    side: THREE.DoubleSide, 
-    transparent: isTransparent(opacity), 
-    opacity: opacity}));
-  mesh.userData = {"selectable": true}
+  // TODO: pass mesh in?
+  // TODO: create a materials factory function?
+  // TODO: memoize materials factory function?
+  let mesh;
+  if (ghost) {
+    mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({
+      color: color,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0.8
+    }));
+  } else {
+    mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({
+      color: color,
+      side: THREE.DoubleSide
+    }));
+
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.userData = { selectable: true }
+    mesh.layers.set(LayerEnums.Objects)
+  }
+
+  mesh.userData = { "selectable": true }
   mesh.layers.set(LayerEnums.Objects)
   mesh.castShadow = true;
   mesh.receiveShadow = true;
-  
+
   return mesh
 }
