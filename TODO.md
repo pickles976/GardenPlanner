@@ -168,6 +168,12 @@
 - [x] get ctrl-z working for bed config mode
 
 #### Bed Editor QOL improvements
+- [x] add some logic to update `BedEditingUpdateCommand` if the changed values are floats.
+- [ ] fix bed border function (use polygon-offset)
+
+https://www.npmjs.com/package/polygon-offset
+
+
 - [ ] enable/disable snap to grid
 - [ ] toggle metric vs imperial globally
 - [ ] fix bed editor z-fighting on ghost mesh
@@ -179,7 +185,6 @@
     - [ ] handle messages from within relevant objects
     - [ ] clean up BedEditor state
     - [ ] remove any hardcoded values
-    - [ ] add some logic to update `BedEditingUpdateCommand` if the changed values are floats.
 
 BED EDITING FINISHED (FOR NOW)
 

@@ -45,6 +45,34 @@ export function destructureVector3Array(array: Vector3[]): number[] {
   return newArray
 }
 
+function sortVector3Clockwise(points, plane = 'XY') {
+  if (points.length <= 1) return points.slice(); // Return a copy if 1 or 0 points
+
+  // Compute the center point
+  const center = points.reduce((sum, p) => sum.add(p.clone()), new THREE.Vector3()).divideScalar(points.length);
+
+  // Helper to get angle based on chosen plane
+  function getAngle(p) {
+    switch (plane.toUpperCase()) {
+      case 'XY':
+        return Math.atan2(p.y - center.y, p.x - center.x);
+      case 'XZ':
+        return Math.atan2(p.z - center.z, p.x - center.x);
+      case 'YZ':
+        return Math.atan2(p.z - center.z, p.y - center.y);
+      default:
+        throw new Error("Invalid plane specified. Use 'XY', 'XZ', or 'YZ'.");
+    }
+  }
+
+  // Sort by angle in clockwise direction
+  return points.slice().sort((a, b) => {
+    const angleA = getAngle(a);
+    const angleB = getAngle(b);
+    return angleB - angleA; // Clockwise: larger angle first
+  });
+}
+
 // TODO: move to bed editor
 export function polygonArea(vertices: Vector3[]): number {
   let area = 0;
@@ -63,26 +91,29 @@ export function polygonArea(vertices: Vector3[]): number {
 export function createBedBorder(vertices: Vector3[], width: number, height: number, material: THREE.Material): THREE.Mesh {
 
   const verts = vertices.map((v) => v.clone());
+  // verts = sortVector3Clockwise(verts)
 
-  // 1. find centroid
+  // // 1. find centroid
   const centroid = getCentroid(verts);
 
   // 2. scale vertices
-  // TODO: this method is crude and doesn't work very well for certain geometries
+  // TODO: this method sucks :/
+  let newVerts = verts.map((v) => v.clone())
   for (let i = 0; i < verts.length; i++) {
-    const v1 = verts[i].clone();
+    const v1 = verts[i % verts.length].clone();
     const v2 = verts[(i + 1) % verts.length].clone();
     const line = v1.sub(v2);
 
+    // This only works for CW points
     const orthoAngle = Math.atan2(line.y, line.x) - (Math.PI / 2);
     const ortho = new Vector3(Math.cos(orthoAngle), Math.sin(orthoAngle), 0).multiplyScalar(width)
 
-    verts[i].add(ortho);
-    verts[(i + 1) % verts.length].add(ortho);
+    newVerts[i % verts.length].add(ortho);
+    newVerts[(i + 1) % verts.length].add(ortho);
   }
 
   // 3. Clone verts
-  let border = verts.map((v) => v.clone());
+  let border = newVerts.map((v) => v.clone());
 
   // 4. Create shape from scaled vertices, use original vertices to create a hole
   border.push(border[0]);
