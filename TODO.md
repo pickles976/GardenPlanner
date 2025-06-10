@@ -144,12 +144,15 @@
     - [x] add controls UI
     - [x] border height
     - [x] border scale
-- [ ] allow editing bed color
-    - [ ] inside color
-    - [ ] border color
+- [x] allow editing bed color
+    - [x] inside color
+    - [x] border color
+- [ ] allow user set name
+- [ ] draw line between editable and non-editable properties
 
 - [ ] finalize bed object and save
-    - [ ] use nice colors
+    - [ ] add "save bed" button
+    - [ ] create mesh group and save
 
 - [ ] pull cursors out into js file
 - [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??

@@ -30,7 +30,7 @@ import { Editor } from "./Editor";
 
 
 import "external-svg-loader";
-import { GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "./Colors";
+import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "./Colors";
 
 
 function createVertexHandle() : Mesh {
@@ -145,6 +145,9 @@ class BedEditor {
     borderHeight: number;
     borderWidth: number;
 
+    bedColor: string;
+    borderColor: string;
+
     constructor(editor: Editor) {
 
         this.editor = editor;
@@ -175,11 +178,16 @@ class BedEditor {
         this.borderHeight = 0.3;
         this.borderWidth = 0.1;
 
+        this.bedColor = DARK_GRAY;
+        this.borderColor = VERTEX_COLOR;
+
         // TODO: change the field names
         eventBus.on(EventEnums.BED_EDITING_UPDATED, (event) => {
             this.bedHeight = event.height;
             this.borderHeight = event.borderHeight;
             this.borderWidth = event.borderWidth;
+            this.bedColor = event.bedColor;
+            this.borderColor = event.borderColor
             this.createGhostMesh()
             eventBus.emit(EventEnums.REQUEST_RENDER)
         });
@@ -244,7 +252,7 @@ class BedEditor {
         const vertices = this.vertices.map((v) => v.clone());
         const centroid = getCentroid(vertices);
         
-        this.bedGhostBorder = createBedBorder(vertices, this.borderWidth, this.borderHeight);
+        this.bedGhostBorder = createBedBorder(vertices, this.borderWidth, this.borderHeight, this.borderColor);
         this.editor.add(this.bedGhostBorder)
 
         vertices.push(vertices[0]);
@@ -267,7 +275,7 @@ class BedEditor {
 
         const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
-        this.bedGhostMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0x999999, side: THREE.DoubleSide, transparent: true, opacity: 0.8}) );
+        this.bedGhostMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: this.bedColor, side: THREE.DoubleSide, transparent: true, opacity: 0.8}) );
 
         this.bedGhostMesh.userData = {"selectable": true}
         this.bedGhostMesh.layers.set(LayerEnums.Objects)

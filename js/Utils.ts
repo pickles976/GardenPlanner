@@ -58,7 +58,7 @@ export function polygonArea(vertices: Vector3[]): number {
   return Math.abs(area) / 2.0;
 }
 
-export function createBedBorder(vertices: Vector3[], width: number, height: number) : THREE.Mesh {
+export function createBedBorder(vertices: Vector3[], width: number, height: number, color: string) : THREE.Mesh {
 
   const verts = vertices.map((v) => v.clone());
 
@@ -108,7 +108,7 @@ export function createBedBorder(vertices: Vector3[], width: number, height: numb
   const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
   // 6. Extrude and create mesh
-  const borderMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: 0xDDDDDD, side: THREE.DoubleSide, transparent: true, opacity: 0.8}) );
+  const borderMesh = new THREE.Mesh( geometry, new THREE.MeshBasicMaterial({ color: color, side: THREE.DoubleSide, transparent: true, opacity: 0.8}) );
   borderMesh.position.set(...centroid);
   return borderMesh;
 }

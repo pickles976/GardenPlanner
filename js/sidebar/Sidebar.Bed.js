@@ -44,7 +44,6 @@ function SidebarBed( editor ) {
 	areaRow.add(area);
 	areaRow.setDisplay("none");
 
-	container.add(areaRow);
 
 	// Volume
 	const volumeRow = new UIRow();
@@ -55,7 +54,6 @@ function SidebarBed( editor ) {
 	volumeRow.add(volume);
 	volumeRow.setDisplay("none");
 
-	container.add(volumeRow);
 
 	// Bed Config
 	const bedHeightRow = new UIRow();
@@ -79,9 +77,29 @@ function SidebarBed( editor ) {
 	borderWidthRow.add( borderWidth );
 	borderWidthRow.setDisplay("none")
 
+	const bedColorRow = new UIRow();
+	const bedColor = new UIColor().onInput( update );
+	bedColor.setValue(editor.bedEditor.bedColor)
+	bedColorRow.add( new UIText( "Bed Color" ).setClass( 'Border Color' ) );
+	bedColorRow.add(bedColor)
+	bedColorRow.setDisplay("none")
+
+	const borderColorRow = new UIRow();
+	const borderColor = new UIColor().onInput( update );
+	borderColor.setValue(editor.bedEditor.borderColor)
+	borderColorRow.add( new UIText( "Border Color" ).setClass( 'Border Color' ) );
+	borderColorRow.add(borderColor)
+	borderColorRow.setDisplay("none")
+
 	container.add( bedHeightRow );
 	container.add( borderHeightRow );
 	container.add( borderWidthRow );
+
+	container.add(bedColorRow);
+	container.add( borderColorRow );
+
+	container.add(areaRow);
+	container.add(volumeRow);
 
 	createNewButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_STARTED))
 	saveButton.onClick(() => eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED))
@@ -95,6 +113,8 @@ function SidebarBed( editor ) {
 		bedHeightRow.setDisplay("none")
 		borderHeightRow.setDisplay("none")
 		borderWidthRow.setDisplay("none")
+		borderColorRow.setDisplay("none")
+		bedColorRow.setDisplay("Block")
 	})
 
 	eventBus.on(EventEnums.VERTEX_EDITING_STARTED, () => {
@@ -119,6 +139,8 @@ function SidebarBed( editor ) {
 		borderHeightRow.setDisplay("Block")
 		borderWidthRow.setDisplay("Block")
 		volumeRow.setDisplay("Block");
+		borderColorRow.setDisplay("Block")
+		bedColorRow.setDisplay("Block")
 	})
 
 	eventBus.on(EventEnums.BED_EDITING_FINISHED, () => {
@@ -130,6 +152,8 @@ function SidebarBed( editor ) {
 		borderWidthRow.setDisplay("none")
 		areaRow.setDisplay("none")
 		volumeRow.setDisplay("none");
+		borderColorRow.setDisplay("none")
+		bedColorRow.setDisplay("none")
 	})
 
 	eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => {
@@ -144,7 +168,9 @@ function SidebarBed( editor ) {
 		eventBus.emit(EventEnums.BED_EDITING_UPDATED, {
 			"height": bedHeight.value, 
 			"borderHeight": borderHeight.value, 
-			"borderWidth": borderWidth.value
+			"borderWidth": borderWidth.value,
+			"bedColor": bedColor.dom.value,
+			"borderColor": borderColor.dom.value
 		})
 		updateFromEditor()
 	}
