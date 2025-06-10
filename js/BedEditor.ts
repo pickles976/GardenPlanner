@@ -149,6 +149,7 @@ class BedEditor {
 
     bedColor: string;
     borderColor: string;
+    bedName: string;
 
     constructor(editor: Editor) {
 
@@ -338,6 +339,7 @@ class BedEditor {
         mergedMesh.userData = { selectable: true }
         mergedMesh.layers.set(LayerEnums.Objects)
         mergedMesh.position.set(...centroid)
+        mergedMesh.name = this.bedName;
 
         this.editor.execute(new CreateObjectCommand(mergedMesh, this.editor));
 

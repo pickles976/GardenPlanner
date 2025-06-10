@@ -187,6 +187,17 @@ function SidebarScene( editor ) {
 	refreshUI();
 
 	eventBus.on(EventEnums.OBJECT_SELECTED, refreshUI);
+	eventBus.on(EventEnums.BED_EDITING_STARTED, () => {
+		container.setDisplay("none")
+	})
+	eventBus.on(EventEnums.BED_EDITING_FINISHED, () => {
+		container.setDisplay("Block")
+		refreshUI()
+	})
+	eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => {
+		container.setDisplay("Block")
+		refreshUI()
+	})
 
 	return container;
 

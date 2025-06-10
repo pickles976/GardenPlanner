@@ -160,29 +160,34 @@
     - [x] get cancel working from bed config mode
 - [x] clean up bed creation functions
     - [x] inject material
-
-- [ ] hide scene viewer in BED mode
+- [x] pull cursors out into js file
+- [x] hide scene viewer in BED mode
 
 - [ ] commandify value changes:
     `editor.execute( new SetValueCommand( editor, editor.selected, 'name', objectName.getValue() ) )`
 - [ ] get ctrl-z working for bed config mode
 
-- [x] pull cursors out into js file
-- [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
-    - [ ] clean up TODOs
-    - [ ] clean up BedEditor
-    - [ ] handle messages from within relevant 
-    - [ ] clean up state
-    - [ ] remove any hardcoded values
-
-DOCUMENT SOFTWARE ARCHITECTURE
-
 #### Bed Editor QOL improvements
-- [ ] add delete object command with undo
-- [ ] show/hide grid
 - [ ] enable/disable snap to grid
 - [ ] toggle metric vs imperial globally
 - [ ] fix bed editor z-fighting on ghost mesh
+
+- [ ] fix bug with bed name
+
+- [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
+    - [ ] clean up BedEditor TODOs
+    - [ ] handle messages from within relevant objects
+    - [ ] clean up BedEditor state
+    - [ ] remove any hardcoded values
+
+BED EDITING FINISHED (FOR NOW)
+
+DOCUMENT SOFTWARE ARCHITECTURE
+
+#### QOL
+- [ ] add delete object command with undo
+- [ ] show/hide grid
+
 
 ### Minor Improvements\
 - [ ] refactor and cleanup
