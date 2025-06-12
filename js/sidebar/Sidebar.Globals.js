@@ -16,7 +16,12 @@ function SidebarGlobals( editor ) {
 	container.setPaddingTop( '20px' );
 	container.setDisplay("Block")
 
-	// Create
+    const showGridRow = new UIRow();
+	const showGridCheck = new UICheckbox();
+    showGridCheck.setValue(true)
+	showGridRow.add(showGridCheck)
+    showGridRow.add( new UIText( "Show Grid" ));
+
     const snapRow = new UIRow();
 	const snapCheck = new UICheckbox();
     snapCheck.setValue(true)
@@ -29,9 +34,11 @@ function SidebarGlobals( editor ) {
     metricRow.add(metricCheck)
     metricRow.add(new UIText("Metric System"))
 
+    container.add(showGridRow)
     container.add(snapRow)
     container.add(metricRow)
 
+    showGridCheck.onClick(() => eventBus.emit(EventEnums.GRID_VISIBILITY_CHANGED, showGridCheck.getValue()))
 	snapCheck.onClick(() => eventBus.emit(EventEnums.SNAP_CHANGED, snapCheck.getValue()))
     metricCheck.onClick(() => eventBus.emit(EventEnums.METRIC_CHANGED, metricCheck.getValue()))
 

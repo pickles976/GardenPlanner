@@ -31,6 +31,7 @@ class CreateObjectCommand extends Command {
         if (this.object === this.editor.selector.currentSelectedObject) {
             this.editor.selector.deselect();
         }
+
         this.editor.remove(this.object);
         eventBus.emit(EventEnums.REQUEST_RENDER, this.object);
     }

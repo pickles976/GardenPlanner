@@ -137,6 +137,7 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
 eventBus.on(EventEnums.REQUEST_RENDER, () => render(editor));
 eventBus.on(EventEnums.OBJECT_CHANGED, () => render(editor));
 eventBus.on(EventEnums.METRIC_CHANGED, (value) => gridManager.setMetric(value))
+eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(value))
 
 
 createGround(editor.scene)

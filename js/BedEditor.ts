@@ -28,7 +28,6 @@ import { LayerEnums } from "./Constants";
 import { eventBus, EventEnums } from "./EventBus";
 import { Editor } from "./Editor";
 
-
 import "external-svg-loader";
 import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "./Colors";
 import { setCrossCursor, setDefaultCursor } from "./Cursors";
@@ -50,10 +49,12 @@ function createVertexHandle() : Mesh {
 function createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
 
     // Get Distance Text
-    const distance = lastPoint.distanceTo(point);
-    const lineLabel = getTextGeometry(snapper.getText(distance))
+    const text = document.createElement( 'div' );
+    text.textContent = snapper.getText(lastPoint.distanceTo(point));
+    text.style.fontSize = "30px";
+
     let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-    textPos.z = 0.3;
+    const lineLabel = new CSS2DObject( text );
     lineLabel.position.set(...textPos)
 
     // Get line segment
@@ -72,11 +73,6 @@ function createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
 
 function createButton(position: Vector3, icon: string, color: string) : CSS2DObject {
 
-    // TODO: cleanup button between frames
-    // TODO: mouse over callback
-    // TODO: mouse click callback
-    // button.className = 'button';
-    // button.textContent = '7.342e22 kg';
     const button = document.createElement( 'button' );
     button.style.backgroundColor = 'transparent';
     button.style.pointerEvents = "all"
@@ -180,8 +176,8 @@ class BedEditor {
         this.bedPreviewMesh = undefined;
         this.bedPreviewBorder = undefined;
         // Default values
-        this.bedHeight = 0.2;
-        this.borderHeight = 0.3;
+        this.bedHeight = 0.15;
+        this.borderHeight = 0.15;
         this.borderWidth = 0.1;
 
         this.bedColor = DARK_GRAY;
@@ -213,8 +209,8 @@ class BedEditor {
         this.borderHeight = props.borderHeight;
         this.borderWidth = props.borderWidth;
         this.bedColor = props.bedColor;
-        this.borderColor = props.borderColor
-        this.bedName = props.name
+        this.borderColor = props.borderColor;
+        this.bedName = props.name;
     }
 
     // Cleanup
@@ -530,30 +526,27 @@ class BedEditor {
         this.linePreview = new Line2(geometry, material);
         this.editor.add(this.linePreview)
 
-        // TODO: fix the 
-
-        // Angle between north
+        // Angle text
         const segment = lastPoint.clone().sub(point)
         let angle = segment.angleTo(new Vector3(0,-1,0)) * 180 / Math.PI;
-
-        this.angleText = getTextGeometry(`${angle.toFixed(2)}°`)
+        const angleText = document.createElement( 'div' );
+        angleText.textContent = `${angle.toFixed(2)}°`;
+        angleText.style.marginTop = "30px";
+        angleText.style.fontSize = "30px";
 
         let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-        textPos.z = 0.03;
-        textPos.y -= 0.3;
-
+        this.angleText = new CSS2DObject( angleText );
         this.angleText.position.set(...textPos)
         this.editor.add(this.angleText)
 
-        // Distance Label
-        const distance = lastPoint.distanceTo(point);
-
-
-        this.distanceText = getTextGeometry(snapper.getText(distance))
+        // Distance
+        const distanceText = document.createElement( 'div' );
+        distanceText.textContent = snapper.getText(lastPoint.distanceTo(point));
+        distanceText.style.marginTop = "-30px";
+        distanceText.style.fontSize = "30px";
 
         textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-        textPos.z = 0.03;
-
+        this.distanceText = new CSS2DObject( distanceText );
         this.distanceText.position.set(...textPos)
         this.editor.add(this.distanceText)
     }

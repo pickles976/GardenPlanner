@@ -15,8 +15,11 @@ class GridManager {
     inchGrid: THREE.GridHelper
 
     size: number;
+    metric: boolean;
 
     constructor(editor) {
+
+        this.metric = true;
 
         this.meterGrid = new THREE.GridHelper(SIZE, SIZE, WHITE, WHITE);
         this.meterGrid.layers.set(LayerEnums.NoRaycast)
@@ -47,6 +50,7 @@ class GridManager {
     }
 
     public setMetric(value: boolean) {
+        this.metric = value;
         if (value) {
             this.meterGrid.visible = true;
             this.decimeterGrid.visible = true;
@@ -57,6 +61,18 @@ class GridManager {
             this.decimeterGrid.visible = false;
             this.footGrid.visible = true;
             this.inchGrid.visible = true;
+        }
+        eventBus.emit(EventEnums.REQUEST_RENDER)
+    }
+
+    public showGrid(value: boolean) {
+        this.meterGrid.visible = value;
+        this.decimeterGrid.visible = value;
+        this.footGrid.visible = value;
+        this.inchGrid.visible = value;
+
+        if (value) {
+            this.setMetric(this.metric)
         }
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }

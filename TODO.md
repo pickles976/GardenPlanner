@@ -178,11 +178,14 @@
     - [x] toggle snap distance
     - [x] toggle grids
 - [x] fix vertex size 
-- [ ] fix text size for line previews (use CSS2D)
+- [x] fix text size for line previews (use CSS2D)
+- [x] show/hide grid
+
 - [ ] change from meters to feet on UI
 - [ ] fix bed editor z-fighting on ghost mesh
 
-- [ ] fix bug with bed name
+
+
 
 - [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
     - [ ] clean up BedEditor TODOs
@@ -192,21 +195,23 @@
 
 BED EDITING FINISHED (FOR NOW)
 
-DOCUMENT SOFTWARE ARCHITECTURE
-
-#### QOL
-- [ ] add delete object command with undo
-- [ ] show/hide grid
-
-
-### Minor Improvements\
+### Minor Improvements
 - [ ] refactor and cleanup
 - [ ] improve vertex appearance
-- [ ] add angle text to line segments
+
 - [ ] draw north in vertex mode
+- [ ] draw angle when rotating an object
+
+- [ ] add rotation snapping
+- [ ] add object translation snapping
+
 - [ ] move more with WASD in vertex mode
 - [ ] create a delete command in object mode
+    - [ ] make undoable
 - [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
+- [ ] fix bug with bed name
+
+DOCUMENT SOFTWARE ARCHITECTURE
 
 #### Feedback
 - [ ] try out the bed editor mode for garden beds I designed

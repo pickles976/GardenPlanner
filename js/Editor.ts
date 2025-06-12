@@ -9,7 +9,7 @@ import { BedEditor } from './BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
 import { eventBus, EventEnums } from './EventBus';
-import { CSS2DRenderer } from 'three/addons/renderers/CSS2DRenderer.js';
+import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { WHITE } from './Colors';
 
 
@@ -274,6 +274,17 @@ class Editor {
         if (object === undefined) {
             return
         }
+
+        if (object instanceof THREE.Group) {
+            object.traverse((child) => {
+                if (child instanceof CSS2DObject) {
+                    if (child.element && child.element.parentNode) {
+                        child.element.parentNode.removeChild(child.element);
+                    }
+                }
+            });
+        }
+
         this.scene.remove(object);
         delete this.objectMap[object.uuid];
     }
