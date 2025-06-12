@@ -35,9 +35,11 @@ import { setCrossCursor, setDefaultCursor } from "./Cursors";
 import { snapper } from "./Snapping";
 
 
+const VERTEX_SIZE = 0.05;
+
 function createVertexHandle() : Mesh {
     const vertex = new Mesh(
-                new BoxGeometry(0.1, 0.1, 0.1), 
+                new BoxGeometry(VERTEX_SIZE, VERTEX_SIZE, VERTEX_SIZE), 
                 new MeshPhongMaterial({color: VERTEX_COLOR}))
     vertex.layers.set(LayerEnums.BedVertices);
     vertex.userData = {selectable: true, isVertexHandle: true}
@@ -49,7 +51,7 @@ function createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
 
     // Get Distance Text
     const distance = lastPoint.distanceTo(point);
-    const lineLabel = getTextGeometry(`${distance.toFixed(2)}m`)
+    const lineLabel = getTextGeometry(snapper.getText(distance))
     let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
     textPos.z = 0.3;
     lineLabel.position.set(...textPos)
@@ -117,7 +119,7 @@ enum BedEditorMode {
     BED_CONFIG = "BED_CONFIG"
 }
 
-const CLOSE_THRESH = 0.5;
+const CLOSE_THRESH = 0.1;
 
 class BedEditor {
 
@@ -547,7 +549,7 @@ class BedEditor {
         const distance = lastPoint.distanceTo(point);
 
 
-        this.distanceText = getTextGeometry(`${distance.toFixed(2)}m`)
+        this.distanceText = getTextGeometry(snapper.getText(distance))
 
         textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
         textPos.z = 0.03;

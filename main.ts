@@ -11,6 +11,7 @@ import { eventBus, EventEnums } from './js/EventBus';
 import { CreateObjectCommand } from './js/commands/CreateObjectCommand';
 import { LayerEnums } from './js/Constants';
 import { GROUND_COLOR } from './js/Colors';
+import { GridManager } from './js/GridManager';
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
 
@@ -65,6 +66,8 @@ function createTorus(editor: Editor): THREE.Mesh {
 
 const editor = new Editor();
 editor.initThree();
+
+const gridManager = new GridManager(editor);
 
 window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
 window.addEventListener('keydown', (event) => handleKeyDown(event, editor));
@@ -133,6 +136,7 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
 
 eventBus.on(EventEnums.REQUEST_RENDER, () => render(editor));
 eventBus.on(EventEnums.OBJECT_CHANGED, () => render(editor));
+eventBus.on(EventEnums.METRIC_CHANGED, (value) => gridManager.setMetric(value))
 
 
 createGround(editor.scene)

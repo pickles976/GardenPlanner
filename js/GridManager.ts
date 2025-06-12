@@ -1,0 +1,66 @@
+import * as THREE from 'three';
+import { LayerEnums} from './Constants';
+import { WHITE } from './Colors';
+import { eventBus, EventEnums } from './EventBus';
+
+const SIZE = 64;
+const FEET_PER_METER = 3.280839895;
+
+class GridManager {
+
+    meterGrid: THREE.GridHelper
+    decimeterGrid: THREE.GridHelper
+
+    footGrid: THREE.GridHelper
+    inchGrid: THREE.GridHelper
+
+    size: number;
+
+    constructor(editor) {
+
+        this.meterGrid = new THREE.GridHelper(SIZE, SIZE, WHITE, WHITE);
+        this.meterGrid.layers.set(LayerEnums.NoRaycast)
+        this.meterGrid.rotateX(Math.PI / 2)
+        this.meterGrid.position.set(0, 0, 0.002)
+        editor.scene.add(this.meterGrid);
+
+        this.decimeterGrid = new THREE.GridHelper(SIZE, SIZE * 10, 0x555555, 0xAAAAAA);
+        this.decimeterGrid.layers.set(LayerEnums.NoRaycast)
+        this.decimeterGrid.rotateX(Math.PI / 2)
+        this.decimeterGrid.position.set(0, 0, 0.001)
+        editor.scene.add(this.decimeterGrid);
+
+        let footDivisions = FEET_PER_METER * SIZE;
+        this.footGrid = new THREE.GridHelper(SIZE, footDivisions, WHITE, WHITE);
+        this.footGrid.layers.set(LayerEnums.NoRaycast)
+        this.footGrid.rotateX(Math.PI / 2)
+        this.footGrid.position.set(0, 0, 0.002)
+        editor.scene.add(this.footGrid);
+        this.footGrid.visible = false;
+
+        this.inchGrid = new THREE.GridHelper(SIZE, footDivisions * 12, 0x555555, 0xAAAAAA);
+        this.inchGrid.layers.set(LayerEnums.NoRaycast)
+        this.inchGrid.rotateX(Math.PI / 2)
+        this.inchGrid.position.set(0, 0, 0.001)
+        editor.scene.add(this.inchGrid);
+        this.inchGrid.visible = false;
+    }
+
+    public setMetric(value: boolean) {
+        if (value) {
+            this.meterGrid.visible = true;
+            this.decimeterGrid.visible = true;
+            this.footGrid.visible = false;
+            this.inchGrid.visible = false;
+        } else {
+            this.meterGrid.visible = false;
+            this.decimeterGrid.visible = false;
+            this.footGrid.visible = true;
+            this.inchGrid.visible = true;
+        }
+        eventBus.emit(EventEnums.REQUEST_RENDER)
+    }
+
+}
+
+export { GridManager }; 

@@ -174,7 +174,12 @@
     - [x] add snapping class
     - [x] enable snapping functionality
     - [x] add button to toggle snapping
-- [ ] toggle metric vs imperial globally
+- [x] toggle metric vs imperial globally
+    - [x] toggle snap distance
+    - [x] toggle grids
+- [x] fix vertex size 
+- [ ] fix text size for line previews (use CSS2D)
+- [ ] change from meters to feet on UI
 - [ ] fix bed editor z-fighting on ghost mesh
 
 - [ ] fix bug with bed name
