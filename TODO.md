@@ -169,12 +169,11 @@
 
 #### Bed Editor QOL improvements
 - [x] add some logic to update `BedEditingUpdateCommand` if the changed values are floats.
-- [ ] fix bed border function (use polygon-offset)
 
-https://www.npmjs.com/package/polygon-offset
-
-
-- [ ] enable/disable snap to grid
+- [x] enable/disable snap to grid
+    - [x] add snapping class
+    - [x] enable snapping functionality
+    - [x] add button to toggle snapping
 - [ ] toggle metric vs imperial globally
 - [ ] fix bed editor z-fighting on ghost mesh
 

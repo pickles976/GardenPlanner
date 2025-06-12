@@ -13,7 +13,10 @@ enum EventEnums {
     VERTEX_EDITING_FINISHED = "vertexEditingFinished",
 
     OBJECT_CHANGED = "objectChanged",
-    OBJECT_SELECTED = "objectSelected"
+    OBJECT_SELECTED = "objectSelected",
+
+    SNAP_CHANGED = "snapChanged",
+    METRIC_CHANGED = "metricChanged"
 }
 
 const eventBus = mitt();

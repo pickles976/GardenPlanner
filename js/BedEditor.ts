@@ -32,6 +32,7 @@ import { Editor } from "./Editor";
 import "external-svg-loader";
 import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "./Colors";
 import { setCrossCursor, setDefaultCursor } from "./Cursors";
+import { snapper } from "./Snapping";
 
 
 function createVertexHandle() : Mesh {
@@ -492,6 +493,12 @@ class BedEditor {
 
     public handleMouseClick(editor: Editor, object: Object3D, point: Vector3) {
 
+        if (point === undefined) {
+            return
+        }
+
+        point = snapper.snap(point)
+
         switch (this.mode) {
             case BedEditorMode.PLACE_VERTICES:
                 this.handleMouseClickPlaceVerticesMode(editor, object, point)
@@ -581,6 +588,8 @@ class BedEditor {
         if (point === undefined) {
             return
         }
+
+        point = snapper.snap(point)
 
         switch (this.mode) {
             case BedEditorMode.PLACE_VERTICES:

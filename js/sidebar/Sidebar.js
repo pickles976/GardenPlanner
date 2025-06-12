@@ -4,6 +4,7 @@ import { SidebarScene } from './Sidebar.Scene.js';
 import { SidebarProperties } from './Sidebar.Properties.js';
 import { SidebarProject } from './Sidebar.Project.js';
 import { SidebarSettings } from './Sidebar.Settings.js';
+import { SidebarGlobals } from './Sidebar.Globals.js';
 
 import { Strings } from './Strings.js';
 const strings = Strings({'language': 'en'});
@@ -16,6 +17,7 @@ function Sidebar( editor ) {
 	const sidebarProperties = new SidebarProperties( editor );
 
 	const scene = new UISpan().add(
+		new SidebarGlobals( editor ),
 		new SidebarScene( editor ),
 		sidebarProperties
 	);
