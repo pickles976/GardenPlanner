@@ -215,7 +215,6 @@ function SidebarBed( editor ) {
 				"borderColor": borderColor.dom.value
 			};
 		}
-		
 
 		const command = new BedEditingUpdateCommand(props, editor.bedEditor, updateFromEditor)
 		eventBus.emit(EventEnums.BED_CONFIG_UPDATED, command)
@@ -224,6 +223,7 @@ function SidebarBed( editor ) {
 	function updateFromEditor() {
 
 		let a = editor.bedEditor.getBedArea();
+		console.log(a)
 
 		if (snapper.metric) {
 			area.setValue(a)

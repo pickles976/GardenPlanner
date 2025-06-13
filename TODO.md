@@ -215,6 +215,7 @@ BED EDITING FINISHED (FOR NOW)
 - [ ] create a delete command in object mode
     - [ ] make undoable
 - [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
+- [ ] swap between transform controls handles, and parenting object to raycast
 
 DOCUMENT SOFTWARE ARCHITECTURE
 
@@ -251,16 +252,16 @@ Write up about
 # Garden Design Utilities
 
 - [ ] measurements tool
-    - [ ] grid lines
+    - [x] grid lines
+    - [x] toggle metric/imperial
     - [ ] placeable ruler
     - [ ] pen tool for area calculation
-    - [ ] toggle metric/imperial
 
-- [ ] bed creation
-    - [ ] draw polylines
-    - [ ] create 3D walls of bed
-    - [ ] control bed height
-    - [ ] auto-fill bed
+- [x] bed creation
+    - [x] draw polylines
+    - [x] create 3D walls of bed
+    - [x] control bed height
+    - [x] auto-fill bed
 
 - [ ] panel UI with pre-built models for drag and drop
 - [ ] load mesh resources, create thumbnails for them

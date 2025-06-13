@@ -9,7 +9,9 @@
  * TODO: make this all command-based at some point
  */
 
-import { Object3D, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh, Vector2, Shape, Material, ExtrudeGeometry, Path, Float32BufferAttribute, Group } from "three";
+import { Object3D, ShapeGeometry, MeshBasicMaterial, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh, Vector2, Shape, Material, ExtrudeGeometry, Path, Float32BufferAttribute, Group } from "three";
+import * as THREE from "three";
+
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
@@ -824,10 +826,11 @@ class BedEditor {
         switch (this.mode) {
             case BedEditorMode.INACTIVE:
                 return NaN;
-            case BedEditorMode.PLACE_VERTEX_MODE:
-                return polygonArea(this.vertices);
-            default:
+            case BedEditorMode.EDIT_VERTEX_MODE:
                 return polygonArea(this.vertexHandles.map((item) => item.position.clone()));
+            default:
+                return polygonArea(this.vertices);
+
         }
     }
 
