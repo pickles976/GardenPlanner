@@ -175,6 +175,9 @@ class Editor {
         this.orthoCamera.rotateZ(-Math.PI / 2)
         this.orthoCamera.layers.enableAll();
 
+        // TODO: CAMERA LAYERS CONFIG
+        this.orthoCamera.layers.disable(LayerEnums.Plants)
+
         // Orbit Controls https://threejs.org/docs/#examples/en/controls/OrbitControls.keys
         this.orthoCameraControls = new OrbitControls( this.orthoCamera, this.canvas );
         this.orthoCameraControls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled

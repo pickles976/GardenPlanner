@@ -192,21 +192,20 @@
     - [x] save position and rotation
     - [x] if bed exists, update new bed with position and rotation
 - [x] bug when bed selected and "create new" clicked
-- [ ] hide all Objects when entering bed edit mode
-- [ ] refactor and cleanup
+- [x] hide all Objects when entering bed edit mode
 
-- [ ] improve vertex appearance
-- [ ] draw north in vertex mode
+- [x] refactor and cleanup
 
-- [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
-    - [ ] clean up BedEditor TODOs
-    - [ ] remove any hardcoded values
-    - [ ] general cleanup
+- [x] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
+    - [x] clean up BedEditor TODOs
+    - [x] remove any hardcoded values
+    - [x] general cleanup
 
 BED EDITING FINISHED (FOR NOW)
 
 ### Minor Improvements
 - [ ] draw angle when rotating an object
+- [ ] draw north as rotating UI element
 
 - [ ] add rotation snapping
 - [ ] add object translation snapping
@@ -216,7 +215,6 @@ BED EDITING FINISHED (FOR NOW)
 - [ ] create a delete command in object mode
     - [ ] make undoable
 - [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
-
 
 DOCUMENT SOFTWARE ARCHITECTURE
 

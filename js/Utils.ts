@@ -1,7 +1,10 @@
 import { Vector3 } from "three";
 import * as THREE from "three";
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
-import offsetPolygon from "offset-polygon";
+
+export function rad2deg(radians: number) : number {
+  return radians * 180 / Math.PI;
+}
 
 export function getCentroid(points: Vector3[]) {
   const centroid = new Vector3(0, 0, 0);
@@ -45,7 +48,6 @@ export function destructureVector3Array(array: Vector3[]): number[] {
   return newArray
 }
 
-// TODO: move to bed editor
 export function polygonArea(vertices: Vector3[]): number {
   let area = 0;
   for (let i = 0; i < vertices.length; i++) {
@@ -57,77 +59,6 @@ export function polygonArea(vertices: Vector3[]): number {
     area += (x1 * y2) - (x2 * y1);
   }
   return Math.abs(area) / 2.0;
-}
-
-// TODO: move to bed editor
-export function createBedBorder(vertices: Vector3[], width: number, height: number, material: THREE.Material): THREE.Mesh {
-
-  const verts = vertices.map((v) => ({"x": v.x, "y": v.y}));
-
-  // Scale the border
-  // TODO: remove magic number 1 for arcsegments
-
-  // Depending on if the vertices were placed CW or CCW, the polygon will shrink or grow. If the border area is smaller than the bed area, 
-  // then we need to re-calculate the offset with a flipped sign
-  let border = offsetPolygon(verts, width, 1).map((v) => new Vector3(v.x, v.y, 0.0));
-  if (polygonArea(border.map((v) => new Vector3(v["x"], v["y"], 0.0))) < polygonArea(vertices)) {
-    border = offsetPolygon(verts, -width, 1).map((v) => new Vector3(v.x, v.y, 0.0));
-  }
-
-  border.push(border[0]);
-  
-
-  const centroid = getCentroid(verts);
-  
-  const points = border.map((p) => {
-    const temp = p.clone().sub(centroid);
-    return new THREE.Vector2(temp.x, temp.y);
-  });
-
-  const holes = vertices.map((p) => {
-    const temp = p.clone().sub(centroid);
-    return new THREE.Vector2(temp.x, temp.y);
-  });
-
-  const shape = new THREE.Shape(points);
-  shape.holes.push(new THREE.Path(holes));
-
-  const extrudeSettings = {
-    depth: height,
-    bevelEnabled: false,
-    bevelSegments: 2,
-    steps: 2,
-    bevelSize: 1,
-    bevelThickness: 1
-  };
-
-  return new THREE.Mesh(new THREE.ExtrudeGeometry(shape, extrudeSettings), material);
-}
-
-// TODO: move to bed editor
-export function createBed(vertices: Vector3[], height: number, material: THREE.Material) {
-
-  const verts = vertices.map((v) => v.clone());
-  const centroid = getCentroid(verts);
-
-  verts.push(vertices[0]);
-  const points = verts.map((p) => {
-    const temp = p.clone().sub(centroid);
-    return new THREE.Vector2(temp.x, temp.y);
-  });
-
-  const shape = new THREE.Shape(points);
-
-  const extrudeSettings = {
-    depth: height,
-    bevelEnabled: false,
-    bevelSegments: 2,
-    steps: 2,
-    bevelSize: 1,
-    bevelThickness: 1
-  };
-
-  return new THREE.Mesh(new THREE.ExtrudeGeometry(shape, extrudeSettings), material);
 }
 
 export function mergeMeshes(meshes: THREE.Mesh[]) : THREE.Mesh {

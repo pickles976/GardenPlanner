@@ -223,7 +223,7 @@ function SidebarBed( editor ) {
 
 	function updateFromEditor() {
 
-		let a = editor.bedEditor.getArea();
+		let a = editor.bedEditor.getBedArea();
 
 		if (snapper.metric) {
 			area.setValue(a)

@@ -9,71 +9,175 @@
  * TODO: make this all command-based at some point
  */
 
-
-import { Object3D, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh } from "three";
-import * as THREE from "three"
+import { Object3D, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh, Vector2, Shape, Material, ExtrudeGeometry, Path, Float32BufferAttribute, Group } from "three";
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
-import { handleMouseMoveObjectMode } from "./EventHandlers";
 import { Line2 } from 'three/addons/lines/Line2.js';
 
-import { createBedBorder, createBed, destructureVector3Array, getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial } from "./Utils";
+import offsetPolygon from "offset-polygon";
+import "external-svg-loader";
+
+import { destructureVector3Array, getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial, rad2deg } from "./Utils";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
 import { SetPositionCommand } from "./commands/SetPositionCommand";
+import { eventBus, EventEnums } from "./EventBus";
 import { CommandStack } from "./CommandStack";
 import { LayerEnums } from "./Constants";
-import { eventBus, EventEnums } from "./EventBus";
 import { Editor } from "./Editor";
 
-import "external-svg-loader";
 import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "./Colors";
 import { setCrossCursor, setDefaultCursor } from "./Cursors";
+import { handleMouseMoveObjectMode } from "./EventHandlers";
 import { snapper } from "./Snapping";
 
+const INITIAL_BED_HEIGHT = 0.15;
+const INITIAL_BORDER_WIDTH = 0.10;
 
 const VERTEX_SIZE = 0.05;
+const POLYGON_CLOSE_THRESH = 0.1;
+const NUM_ARC_SEGMENTS = 1;
+const BED_CONFIG_CAMERA_OFFSET = new Vector3(0, -2, 2);
+const FONT_SIZE = 30;
+const LINE_WIDTH = 5;
 
-function createVertexHandle() : Mesh {
+const SVG_SIZE = '50px';
+
+const POLYGON_OPACITY = 0.2;
+
+function getCSS2DText(content: string, margin: string): CSS2DObject {
+    const text = document.createElement('div');
+    text.textContent = content;
+    text.style.fontSize = fontSizeString(FONT_SIZE);
+    text.style.marginTop = margin;
+    return new CSS2DObject(text);
+}
+
+function fontSizeString(fontSize: number): string {
+    return `${fontSize}px`
+}
+
+function createBedBorder(vertices: Vector3[], width: number, height: number, material: Material): Mesh {
+    /**
+     * Create the border of the bed in 3D from a series of points defining the inner bed, plus the border width. 
+     * This will be a "donut" shape with an inner-loop the shape of the bed, and the outer loop 
+     * a similar shape, but expanded in all directions by the specified `width`
+     */
+
+    const verts = vertices.map((v) => ({ "x": v.x, "y": v.y }));
+
+    // Grow the border polygon by `width`
+    // Depending on if the vertices were placed CW or CCW, the polygon will shrink or grow. If the border area is smaller than the bed area, 
+    // then we need to re-calculate the offset with a flipped sign
+    let border = offsetPolygon(verts, width, 1).map((v) => new Vector3(v.x, v.y, 0.0));
+    if (polygonArea(border.map((v) => new Vector3(v["x"], v["y"], 0.0))) < polygonArea(vertices)) {
+        border = offsetPolygon(verts, -width, NUM_ARC_SEGMENTS).map((v) => new Vector3(v.x, v.y, 0.0));
+    }
+    border.push(border[0]); // close loop
+
+    const centroid = getCentroid(vertices); // Use the centroid to set the origin of the object at 0,0
+
+    const points = border.map((p) => {
+        const temp = p.clone().sub(centroid);
+        return new Vector2(temp.x, temp.y);
+    });
+
+    const holes = vertices.map((p) => {
+        const temp = p.clone().sub(centroid);
+        return new Vector2(temp.x, temp.y);
+    });
+
+    // Create a "donut" polygon
+    const shape = new Shape(points);
+    shape.holes.push(new Path(holes));
+
+    const extrudeSettings = {
+        depth: height,
+        bevelEnabled: false,
+        bevelSegments: 2,
+        steps: 2,
+        bevelSize: 1,
+        bevelThickness: 1
+    };
+
+    // Extrude 2D polygon to 3D mesh
+    return new Mesh(new ExtrudeGeometry(shape, extrudeSettings), material);
+}
+
+function createVertexHandle(): Mesh {
+    /**
+     * Create a grabbable and moveable 3D vertex object
+     */
     const vertex = new Mesh(
-                new BoxGeometry(VERTEX_SIZE, VERTEX_SIZE, VERTEX_SIZE), 
-                new MeshPhongMaterial({color: VERTEX_COLOR}))
+        new BoxGeometry(VERTEX_SIZE, VERTEX_SIZE, VERTEX_SIZE),
+        new MeshPhongMaterial({ color: VERTEX_COLOR }))
     vertex.layers.set(LayerEnums.BedVertices);
-    vertex.userData = {selectable: true, isVertexHandle: true}
+    vertex.userData = { selectable: true, isVertexHandle: true }
+    vertex.renderOrder = 100001; // Always draw on top
     return vertex
 }
 
+function createBed(vertices: Vector3[], height: number, material: Material) {
+    /**
+     * Create the 3D bed object from an array of points.
+     */
 
-function createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
+    const verts = vertices.map((v) => v.clone());
+    const centroid = getCentroid(verts); // Use the centroid to set the origin of the object at 0,0
+
+    verts.push(vertices[0]);
+    const points = verts.map((p) => {
+        const temp = p.clone().sub(centroid);
+        return new Vector2(temp.x, temp.y);
+    });
+
+    const shape = new Shape(points);
+
+    const extrudeSettings = {
+        depth: height,
+        bevelEnabled: false,
+        bevelSegments: 2,
+        steps: 2,
+        bevelSize: 1,
+        bevelThickness: 1
+    };
+
+    return new Mesh(new ExtrudeGeometry(shape, extrudeSettings), material);
+}
+
+
+function createLineSegment(point: Vector3, lastPoint: Vector3): Object3D {
+    /**
+     * Create a line segment object from 2 points. Includes label for the length of the line.
+     */
 
     // Get Distance Text
-    const text = document.createElement( 'div' );
-    text.textContent = snapper.getText(lastPoint.distanceTo(point));
-    text.style.fontSize = "30px";
-
     let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-    const lineLabel = new CSS2DObject( text );
+    const lineLabel = getCSS2DText(snapper.getText(lastPoint.distanceTo(point)), fontSizeString(FONT_SIZE));
     lineLabel.position.set(...textPos)
 
     // Get line segment
     const geometry = new LineGeometry();
-    geometry.setPositions( destructureVector3Array([point, lastPoint]) );
+    geometry.setPositions(destructureVector3Array([point, lastPoint]));
     const material = new LineMaterial({ color: GREEN, linewidth: 5, depthWrite: false, depthTest: false });
     const line = new Line2(geometry, material);
 
-    const group = new THREE.Group();
-    group.add( line );
-    group.add( lineLabel );
+    const group = new Group();
+    group.add(line);
+    group.add(lineLabel);
 
     return group;
 
 }
 
-function createButton(position: Vector3, icon: string, color: string) : CSS2DObject {
+function createButton(position: Vector3, icon: string, color: string): CSS2DObject {
+    /**
+     * Create a clickable button as a CSS2DObject
+     */
 
-    const button = document.createElement( 'button' );
+    const button = document.createElement('button');
     button.style.backgroundColor = 'transparent';
     button.style.pointerEvents = "all"
 
@@ -81,8 +185,8 @@ function createButton(position: Vector3, icon: string, color: string) : CSS2DObj
 
     svgEl.setAttribute('data-src', icon);
     svgEl.setAttribute('fill', 'currentColor');
-    svgEl.setAttribute('width', '50px');
-    svgEl.setAttribute('height', '50px');
+    svgEl.setAttribute('width', SVG_SIZE);
+    svgEl.setAttribute('height', SVG_SIZE);
     svgEl.style.color = color;
     button.appendChild(svgEl)
 
@@ -96,26 +200,26 @@ function createButton(position: Vector3, icon: string, color: string) : CSS2DObj
         svgEl.style.filter = '';
     });
 
-    const label = new CSS2DObject( button );
+    const label = new CSS2DObject(button);
     label.position.set(...position);
     return label;
 }
 
-function createPolygon(points: Vector3[]) : Mesh {
-    let polyShape = new THREE.Shape(points.map((coord) => new THREE.Vector2(coord.x, coord.y)))
-    const polyGeometry = new THREE.ShapeGeometry(polyShape);
-    polyGeometry.setAttribute("position", new THREE.Float32BufferAttribute(points.map(coord => [coord.x, coord.y, coord.z]).flat(), 3))
-    return new THREE.Mesh(polyGeometry, new THREE.MeshBasicMaterial({ color: GREEN, side: THREE.DoubleSide, transparent: true, opacity: 0.2, depthWrite: false, depthTest: false}))
+function createPolygon(points: Vector3[]): Mesh {
+    /** Create a Polygon from an array of points */
+    let polyShape = new Shape(points.map((coord) => new Vector2(coord.x, coord.y)))
+    const polyGeometry = new ShapeGeometry(polyShape);
+    polyGeometry.setAttribute("position", new Float32BufferAttribute(points.map(coord => [coord.x, coord.y, coord.z]).flat(), 3))
+    return new Mesh(polyGeometry, new MeshBasicMaterial({ color: GREEN, side: THREE.DoubleSide, transparent: true, opacity: POLYGON_OPACITY, depthWrite: false, depthTest: false }))
 }
 
 enum BedEditorMode {
-    NONE = "NONE",
-    PLACE_VERTICES = "PLACE_VERTICES",
-    EDIT_VERTICES = "EDIT_VERTICES",
-    BED_CONFIG = "BED_CONFIG"
+    INACTIVE = "INACTIVE",
+    PLACE_VERTEX_MODE = "PLACE_VERTEX_MODE",
+    EDIT_VERTEX_MODE = "EDIT_VERTEX_MODE",
+    BED_CONFIG_MODE = "BED_CONFIG_MODE"
 }
 
-const CLOSE_THRESH = 0.1;
 
 class BedEditor {
 
@@ -123,7 +227,7 @@ class BedEditor {
     commandStack: CommandStack;
     mode: BedEditorMode;
 
-    vertices: Vector3[];
+    vertices: Vector3[]; // Used during vertex placement mode and bed config mode
 
     // Original bed
     oldBed?: Object3D;
@@ -157,7 +261,7 @@ class BedEditor {
 
         this.editor = editor;
         this.commandStack = new CommandStack();
-        this.mode = BedEditorMode.NONE;
+        this.mode = BedEditorMode.INACTIVE;
 
         this.oldBed = undefined;
 
@@ -181,15 +285,14 @@ class BedEditor {
         this.bedPreviewMesh = undefined;
         this.bedPreviewBorder = undefined;
         // Default values
-        this.bedHeight = 0.15;
-        this.borderHeight = 0.15;
-        this.borderWidth = 0.1;
+        this.bedHeight = INITIAL_BED_HEIGHT;
+        this.borderHeight = INITIAL_BED_HEIGHT;
+        this.borderWidth = INITIAL_BORDER_WIDTH;
 
         this.bedColor = DARK_GRAY;
         this.borderColor = VERTEX_COLOR;
         this.bedName = "New Bed";
 
-        // TODO: change the field names
         eventBus.on(EventEnums.BED_CONFIG_UPDATED, (command) => {
             this.commandStack.execute(command)
             this.createPreviewMesh()
@@ -208,8 +311,8 @@ class BedEditor {
         })
 
         eventBus.on(EventEnums.METRIC_CHANGED, () => {
-            if (this.mode === BedEditorMode.EDIT_VERTICES) {
-                this.drawVertexEdges()
+            if (this.mode === BedEditorMode.EDIT_VERTEX_MODE) {
+                this.drawBedPolygon()
             }
             // TODO: figure out how to change text when in vertex placement mode
         })
@@ -217,6 +320,9 @@ class BedEditor {
     }
 
     public updateBed(props: Object) {
+        /**
+         * Update bed config from properties
+         */
         this.bedHeight = props.bedHeight;
         this.borderHeight = props.borderHeight;
         this.borderWidth = props.borderWidth;
@@ -238,7 +344,7 @@ class BedEditor {
         this.cleanUpVertexPlacementState()
         this.cleanUpVertexEditingState()
         this.cleanUpBedConfigState()
-        
+
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
@@ -283,18 +389,11 @@ class BedEditor {
 
     // Change modes
     public beginBedEditing(bed?: Object3D) {
-        console.log(bed)
         if (bed === undefined) { // Create new bed
             this.setVertexPlacementMode()
         } else { // Edit existing bed
-            // TODO: make this a function?
             this.vertices = bed.userData.vertices;
-            this.bedHeight = bed.userData.bedHeight
-            this.borderHeight = bed.userData.borderHeight;
-            this.borderWidth = bed.userData.borderWidth;
-            this.bedColor = bed.userData.bedColor;
-            this.borderColor = bed.userData.borderColor;
-            this.bedName = bed.name;
+            this.updateBed(bed.userData)
             this.setVertexEditMode()
             this.oldBed = bed;
             this.editor.remove(bed);
@@ -303,7 +402,7 @@ class BedEditor {
 
     private setVertexPlacementMode() {
         this.cleanUp()
-        this.mode = BedEditorMode.PLACE_VERTICES;
+        this.mode = BedEditorMode.PLACE_VERTEX_MODE;
 
         setCrossCursor()
         eventBus.emit(EventEnums.REQUEST_RENDER)
@@ -314,30 +413,27 @@ class BedEditor {
         setDefaultCursor()
         this.createVertexHandles();
         this.cleanUpVertexPlacementState()
-        this.drawVertexEdges();
-        this.mode = BedEditorMode.EDIT_VERTICES;
+        this.drawBedPolygon();
+        this.mode = BedEditorMode.EDIT_VERTEX_MODE;
         eventBus.emit(EventEnums.VERTEX_EDITING_STARTED)
     }
 
     private setBedConfigMode() {
 
         this.vertices = this.vertexHandles.map((item) => item.position.clone());
-
-        this.mode = BedEditorMode.BED_CONFIG;
+        this.mode = BedEditorMode.BED_CONFIG_MODE;
 
         // Reset cursor
         setDefaultCursor()
         this.cleanUpVertexEditingState()
-
         this.editor.setPerspectiveCamera()
+        this.createPreviewMesh()
 
         // get the centroid of the points
-        this.createPreviewMesh()
         const centroid = getCentroid(this.vertices);
-        // make the camera south of the newly-created bed
-        // TODO: pull out these magic numbers
-        this.editor.currentCamera.position.set(...centroid.clone().add(new Vector3(0, -2, 2)))
-        // Make the camera look at the newly-created bed
+
+        // make the camera south of the newly-created bed + Make the camera look at the newly-created bed
+        this.editor.currentCamera.position.set(...centroid.clone().add(BED_CONFIG_CAMERA_OFFSET))
         this.editor.currentCameraControls.target.copy(centroid)
 
         eventBus.emit(EventEnums.REQUEST_RENDER)
@@ -358,13 +454,14 @@ class BedEditor {
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices);
-        centroid.add(new Vector3(0,0,0.01))
+        centroid.add(new Vector3(0, 0, 0.01)) // prevent z-fighting
         this.bedPreviewBorder.position.set(...centroid);
         this.bedPreviewMesh.position.set(...centroid);
     }
 
     private createMesh() {
 
+        // Create and merge border + bed meshes
         const centroid = getCentroid(this.vertices);
 
         const border = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, createPhongMaterial(this.borderColor));
@@ -373,43 +470,41 @@ class BedEditor {
         const mergedMesh = mergeMeshes([border, bed]);
         mergedMesh.castShadow = true;
         mergedMesh.receiveShadow = true;
-        mergedMesh.userData = { 
+        mergedMesh.userData = { // Give mesh the data used to create it, so it can be edited. Add selection callbacks
             selectable: true,
             onSelect: () => eventBus.emit(EventEnums.BED_SELECTED, true),
             onDeselect: () => eventBus.emit(EventEnums.BED_SELECTED, false),
             vertices: this.vertices,
-            bedHeight: this.bedHeight, 
+            bedHeight: this.bedHeight,
             borderHeight: this.borderHeight,
             borderWidth: this.borderWidth,
             bedColor: this.bedColor,
             borderColor: this.borderColor
-         }
+        }
         mergedMesh.layers.set(LayerEnums.Objects)
         mergedMesh.position.set(...centroid)
         mergedMesh.name = this.bedName;
 
-        // update mesh position, rotation, and scale
+        // update mesh position, rotation, and scale if editing a pre-existing bed
         if (this.oldBed) {
             mergedMesh.position.copy(this.oldBed.position)
             mergedMesh.rotation.copy(this.oldBed.rotation)
             mergedMesh.scale.copy(this.oldBed.scale)
         }
+
         this.editor.execute(new CreateObjectCommand(mergedMesh, this.editor));
 
         // Reset cursor
         setDefaultCursor()
         this.cleanUp()
-
         this.editor.setObjectMode()
-
-        // Make the camera look at the newly-created bed
-        this.editor.currentCameraControls.target.copy(centroid)
-
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
-    
-    private drawVertexEdges() {
-        // TODO: rename to draw the other stuff
+
+    private drawBedPolygon() {
+        /**
+         * Draw line segments between vertex handles, with a transparent polygon + labels
+         */
 
         // Redraw Line Segments
         for (const segment of this.lineSegments) {
@@ -448,7 +543,7 @@ class BedEditor {
 
         this.editor.remove(this.saveButton)
         this.saveButton = createButton(centroid, "/icons/check-circle.svg", UI_GREEN_COLOR)
-        this.saveButton.center.set( 1.0, 0.5 );
+        this.saveButton.center.set(1.0, 0.5);
         this.editor.add(this.saveButton)
 
         this.saveButton.element.addEventListener('click', () => {
@@ -457,7 +552,7 @@ class BedEditor {
 
         this.editor.remove(this.cancelButton)
         this.cancelButton = createButton(centroid, "/icons/cancel.svg", UI_GRAY_COLOR)
-        this.cancelButton.center.set( 0.0, 0.5 );
+        this.cancelButton.center.set(0.0, 0.5);
         this.editor.add(this.cancelButton)
 
         this.cancelButton.element.addEventListener('click', () => {
@@ -467,6 +562,9 @@ class BedEditor {
     }
 
     private createVertexHandles() {
+        /**
+         * Create interactable vertex objects from 3D points
+         */
 
         for (const point of this.vertices) {
             const vertex = createVertexHandle();
@@ -479,13 +577,13 @@ class BedEditor {
 
     // Event Handling
 
-    private tryCloseLoop(point: Vector3) : boolean {
+    private tryCloseLoop(point: Vector3): boolean {
 
         if (this.vertices.length > 0) {
             const startVertex = this.vertices[0];
-            if (startVertex.distanceTo(point) < CLOSE_THRESH) {
-                    this.setVertexEditMode()
-                    return true;
+            if (startVertex.distanceTo(point) < POLYGON_CLOSE_THRESH) {
+                this.setVertexEditMode()
+                return true;
             }
         }
 
@@ -493,6 +591,8 @@ class BedEditor {
     }
 
     private handleMouseClickPlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
+
+        // If loop is closed, go to `VERTEX_EDIT_MODE`
         if (this.tryCloseLoop(point)) {
             eventBus.emit(EventEnums.REQUEST_RENDER)
             return
@@ -500,13 +600,17 @@ class BedEditor {
 
         this.vertices.push(point);
 
-        if (this.vertices.length < 2){
+        if (this.vertices.length < 2) {
             return
         }
 
+        // Create line segment
         const lineSegment = createLineSegment(point, this.vertices[this.vertices.length - 2].clone());
-
         this.commandStack.execute(new CreateObjectCommand(lineSegment, this.editor));
+
+        // Remove previous labels
+        this.editor.remove(this.angleText)
+        this.editor.remove(this.distanceText)
 
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
@@ -517,22 +621,23 @@ class BedEditor {
 
             // Insert vertex
             if (object.userData.isLineSegment) {
-                // TODO: make this undoable (use a command)
+                // TODO: make this undoable (would need to make a custom command that stores the old and new arrays of VertexHandle objects?)
                 const vertex = createVertexHandle()
                 this.editor.add(vertex)
                 vertex.position.set(...point)
                 this.vertexHandles.splice(object.userData.p1 + 1, 0, vertex)
-                this.drawVertexEdges()
+                this.drawBedPolygon()
                 return
             }
 
+            // Select clicked handle
             if (object.userData.isVertexHandle) {
                 this.selectedHandle = object;
                 return
             }
 
         } else {
-            this.selectedHandle = undefined;
+            this.selectedHandle = undefined; // deselect
         }
 
 
@@ -547,7 +652,7 @@ class BedEditor {
         point = snapper.snap(point)
 
         switch (this.mode) {
-            case BedEditorMode.PLACE_VERTICES:
+            case BedEditorMode.PLACE_VERTEX_MODE:
                 this.handleMouseClickPlaceVerticesMode(editor, object, point)
                 break;
             default:
@@ -568,35 +673,26 @@ class BedEditor {
             return
         }
 
+        // Draw line preview to show what new line segment would look like
         const lastPoint = this.vertices[this.vertices.length - 1]
         const geometry = new LineGeometry();
         geometry.setPositions(destructureVector3Array([lastPoint, point]))
-        const material = new LineMaterial({ color: YELLOW, linewidth: 5, depthWrite: false, depthTest: false});
+        const material = new LineMaterial({ color: YELLOW, linewidth: LINE_WIDTH, depthWrite: false, depthTest: false });
         this.linePreview = new Line2(geometry, material);
-        this.linePreview.renderOrder = 100000;
+        this.linePreview.renderOrder = 100000; // Always draw on top
         this.editor.add(this.linePreview)
 
         // Angle text
         const segment = lastPoint.clone().sub(point)
-        let angle = segment.angleTo(new Vector3(0,-1,0)) * 180 / Math.PI;
-        const angleText = document.createElement( 'div' );
-        angleText.textContent = `${angle.toFixed(2)}°`;
-        angleText.style.marginTop = "30px";
-        angleText.style.fontSize = "30px";
-
+        let angle = rad2deg(segment.angleTo(new Vector3(0, -1, 0)));
         let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-        this.angleText = new CSS2DObject( angleText );
+        this.angleText = getCSS2DText(`${angle.toFixed(2)}°`, fontSizeString(FONT_SIZE))
         this.angleText.position.set(...textPos)
         this.editor.add(this.angleText)
 
         // Distance
-        const distanceText = document.createElement( 'div' );
-        distanceText.textContent = snapper.getText(lastPoint.distanceTo(point));
-        distanceText.style.marginTop = "-30px";
-        distanceText.style.fontSize = "30px";
-
         textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-        this.distanceText = new CSS2DObject( distanceText );
+        this.distanceText = getCSS2DText(snapper.getText(lastPoint.distanceTo(point)), fontSizeString(-1 * FONT_SIZE))
         this.distanceText.position.set(...textPos)
         this.editor.add(this.distanceText)
     }
@@ -624,7 +720,7 @@ class BedEditor {
             }
         } else { // vertex selected
             this.commandStack.execute(new SetPositionCommand(this.selectedHandle, this.selectedHandle.position, point))
-            this.drawVertexEdges()
+            this.drawBedPolygon()
         }
     }
 
@@ -637,10 +733,10 @@ class BedEditor {
         point = snapper.snap(point)
 
         switch (this.mode) {
-            case BedEditorMode.PLACE_VERTICES:
+            case BedEditorMode.PLACE_VERTEX_MODE:
                 this.handleMouseMovePlaceVerticesMode(editor, object, point)
                 break;
-            case BedEditorMode.EDIT_VERTICES:
+            case BedEditorMode.EDIT_VERTEX_MODE:
                 // call this function for free highlighting
                 handleMouseMoveObjectMode(editor, object, point)
                 this.handleMouseMoveEditVerticesMode(editor, object, point)
@@ -654,7 +750,7 @@ class BedEditor {
     }
 
     public handleKeyDown(event) {
-        switch ( event.key ) {
+        switch (event.key) {
 
             case 'z':
                 if (event.ctrlKey) {
@@ -663,14 +759,15 @@ class BedEditor {
                 break;
 
             case 'Escape':
+                // Deselect vertex handle
                 this.editor.selector.deselect();
-                // TODO: deselect vertices
+                this.selectedHandle = undefined;
                 break;
 
             case 'Delete':
                 switch (this.mode) {
-                    case BedEditorMode.EDIT_VERTICES:
-                        this.delete();
+                    case BedEditorMode.EDIT_VERTEX_MODE:
+                        this.deleteSelectedHandle();
                         break;
                     default:
                         break;
@@ -680,26 +777,26 @@ class BedEditor {
         }
     }
 
-    private delete() {
+    private deleteSelectedHandle() {
 
         if (this.selectedHandle === undefined) {
             return
         }
 
-        // don't allow user to delete the loop
+        // don't allow user to deleteSelectedHandle the loop
         if (this.vertexHandles.length === 3) {
             return
         }
 
         this.editor.remove(this.selectedHandle)
-        
+
         for (let i = 0; i < this.vertexHandles.length; i++) {
             if (this.vertexHandles[i] === this.selectedHandle) {
                 this.vertexHandles.splice(i, 1)
             }
         }
 
-        this.drawVertexEdges()
+        this.drawBedPolygon()
         eventBus.emit(EventEnums.REQUEST_RENDER)
 
     }
@@ -707,13 +804,13 @@ class BedEditor {
     public undo() {
         this.commandStack.undo();
         switch (this.mode) {
-            case BedEditorMode.PLACE_VERTICES:
+            case BedEditorMode.PLACE_VERTEX_MODE:
                 this.vertices.pop();
                 break;
-            case BedEditorMode.EDIT_VERTICES:
-                this.drawVertexEdges();
+            case BedEditorMode.EDIT_VERTEX_MODE:
+                this.drawBedPolygon();
                 break;
-            case BedEditorMode.BED_CONFIG:
+            case BedEditorMode.BED_CONFIG_MODE:
                 this.createPreviewMesh()
                 break;
             default:
@@ -723,14 +820,15 @@ class BedEditor {
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
-    public getArea(): number {
-        // TODO: fail gracefully
-
-        if (this.vertices.length > 0) {
-            return polygonArea(this.vertices);
-        } 
-
-        return polygonArea(this.vertexHandles.map((item) => item.position.clone()));
+    public getBedArea(): number {
+        switch (this.mode) {
+            case BedEditorMode.INACTIVE:
+                return NaN;
+            case BedEditorMode.PLACE_VERTEX_MODE:
+                return polygonArea(this.vertices);
+            default:
+                return polygonArea(this.vertexHandles.map((item) => item.position.clone()));
+        }
     }
 
 }
