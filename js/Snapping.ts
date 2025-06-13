@@ -1,6 +1,10 @@
 import {Vector3} from "three";
 import { eventBus, EventEnums } from "./EventBus";
+import { METRIC } from "./Constants";
 
+const INCHES_PER_METER = 39.3700787402;
+const CENTIMETERS_PER_INCH = 2.54;
+const METERS_PER_INCH = CENTIMETERS_PER_INCH / 100.0;
 
 class Snapper {
 
@@ -10,9 +14,10 @@ class Snapper {
 
     constructor () {
         this.snapEnabled = true;
-        this.metric = true;
+        this.metric = METRIC;
         this.snapAmount = 0.1;
 
+        this.setMetric(this.metric)
     }
 
     snap(p: Vector3) : Vector3 {
@@ -35,24 +40,27 @@ class Snapper {
         this.snapAmount = value ? 0.1 : 0.0254;
     }
 
-    convert(value: number) {
+    metersToInches(value: number) {
         /**
          * Convert meters to inches
          */
         if (this.metric) {
             return value;
         } else {
-            return value * 39.3700787402;
+            return value * INCHES_PER_METER;
         }
     }
 
     inchesToMeters(value: number) {
-        return value / 39.3700787402;
+        return value / INCHES_PER_METER;
     }
 
-    getText(distance: number) {
-        const char = this.metric ? 'm' : '"';
-        return `${snapper.convert(distance).toFixed(2)}${char}`
+    getText(distance: number) : string{
+        if (this.metric) {
+            return `${distance.toFixed(2)}m`
+        } else {
+            return `${snapper.metersToInches(distance).toFixed(2)}"`
+        }
     }
 
 }

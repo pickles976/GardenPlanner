@@ -32,7 +32,7 @@ function createCube(editor: Editor): THREE.Mesh {
     const boxMat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
     })
-    const boxGeo = new THREE.BoxGeometry(0.75, 0.75, 0.75);
+    const boxGeo = new THREE.BoxGeometry(0.3048, 0.3048, 0.3048);
     const boxMesh = new THREE.Mesh(boxGeo, boxMat)
     boxMesh.castShadow = true;
     boxMesh.receiveShadow = true;
@@ -50,7 +50,7 @@ function createTorus(editor: Editor): THREE.Mesh {
     const torusMat = new THREE.MeshPhongMaterial({
         color: 0x2A7AB0,
     })
-    const torusGeo = new THREE.TorusGeometry(1, 0.25, 64, 64);
+    const torusGeo = new THREE.TorusGeometry(0.3048, 0.25 * 0.3048, 64, 64);
     const torusMesh = new THREE.Mesh(torusGeo, torusMat)
     torusMesh.castShadow = true;
     torusMesh.receiveShadow = true;
@@ -142,10 +142,10 @@ eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(
 
 createGround(editor.scene)
 let box = createCube(editor)
-box.position.set(0, 0, 2)
+box.position.set(0, 0, 0.3048)
 
 let torus = createTorus(editor)
-torus.position.set(3, 3, 2)
+torus.position.set(1, 1, 0.3048)
 
 render(editor);
 

@@ -230,11 +230,11 @@ function SidebarBed( editor ) {
 			area.setUnit( 'ft²' )
 			volume.setUnit( 'ft³' )
 
-			volume.setValue(a * (snapper.convert(editor.bedEditor.bedHeight) / 12.0))
+			volume.setValue(a * (snapper.metersToInches(editor.bedEditor.bedHeight) / 12.0))
 
-			bedHeight.setValue(snapper.convert(editor.bedEditor.bedHeight))
-			borderHeight.setValue(snapper.convert(editor.bedEditor.borderHeight))
-			borderWidth.setValue(snapper.convert(editor.bedEditor.borderWidth))
+			bedHeight.setValue(snapper.metersToInches(editor.bedEditor.bedHeight))
+			borderHeight.setValue(snapper.metersToInches(editor.bedEditor.borderHeight))
+			borderWidth.setValue(snapper.metersToInches(editor.bedEditor.borderWidth))
 
 			bedHeight.setUnit('in')
 			borderHeight.setUnit('in')

@@ -66,8 +66,16 @@ export function createBedBorder(vertices: Vector3[], width: number, height: numb
 
   // Scale the border
   // TODO: remove magic number 1 for arcsegments
-  const border = offsetPolygon(verts, -width, 1).map((v) => new Vector3(v.x, v.y, 0.0));
+
+  // Depending on if the vertices were placed CW or CCW, the polygon will shrink or grow. If the border area is smaller than the bed area, 
+  // then we need to re-calculate the offset with a flipped sign
+  let border = offsetPolygon(verts, width, 1).map((v) => new Vector3(v.x, v.y, 0.0));
+  if (polygonArea(border.map((v) => new Vector3(v["x"], v["y"], 0.0))) < polygonArea(vertices)) {
+    border = offsetPolygon(verts, -width, 1).map((v) => new Vector3(v.x, v.y, 0.0));
+  }
+
   border.push(border[0]);
+  
 
   const centroid = getCentroid(verts);
   

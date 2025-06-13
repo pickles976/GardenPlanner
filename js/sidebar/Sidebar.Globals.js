@@ -4,6 +4,7 @@ import { UIPanel, UIRow, UIInput, UIButton, UIColor, UICheckbox, UIInteger, UITe
 
 import { Strings } from './Strings.js';
 import {eventBus, EventEnums} from '../EventBus.js';
+import { snapper } from '../Snapping.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -30,7 +31,7 @@ function SidebarGlobals( editor ) {
 
     const metricRow = new UIRow();
     const metricCheck = new UICheckbox();
-    metricCheck.setValue(true)
+    metricCheck.setValue(snapper.metric)
     metricRow.add(metricCheck)
     metricRow.add(new UIText("Metric System"))
 

@@ -20,7 +20,7 @@ import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { handleMouseMoveObjectMode } from "./EventHandlers";
 import { Line2 } from 'three/addons/lines/Line2.js';
 
-import { createBedBorder, createBed, destructureVector3Array, getCentroid, getTextGeometry, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial } from "./Utils";
+import { createBedBorder, createBed, destructureVector3Array, getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial } from "./Utils";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
 import { SetPositionCommand } from "./commands/SetPositionCommand";
 import { CommandStack } from "./CommandStack";
@@ -200,6 +200,13 @@ class BedEditor {
 
         eventBus.on(EventEnums.BED_EDITING_CANCELLED, (event) => {
             this.cleanUp();
+        })
+
+        eventBus.on(EventEnums.METRIC_CHANGED, () => {
+            if (this.mode === BedEditorMode.EDIT_VERTICES) {
+                this.drawVertexEdges()
+            }
+            // TODO: figure out how to change text when in vertex placement mode
         })
 
     }

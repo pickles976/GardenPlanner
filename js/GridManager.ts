@@ -2,8 +2,9 @@ import * as THREE from 'three';
 import { LayerEnums} from './Constants';
 import { WHITE } from './Colors';
 import { eventBus, EventEnums } from './EventBus';
+import { snapper } from './Snapping';
 
-const SIZE = 64;
+const GRID_SIZE = 64;
 const FEET_PER_METER = 3.280839895;
 
 class GridManager {
@@ -19,34 +20,34 @@ class GridManager {
 
     constructor(editor) {
 
-        this.metric = true;
+        this.metric = snapper.metric;
 
-        this.meterGrid = new THREE.GridHelper(SIZE, SIZE, WHITE, WHITE);
+        this.meterGrid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE, WHITE, WHITE);
         this.meterGrid.layers.set(LayerEnums.NoRaycast)
         this.meterGrid.rotateX(Math.PI / 2)
         this.meterGrid.position.set(0, 0, 0.002)
         editor.scene.add(this.meterGrid);
 
-        this.decimeterGrid = new THREE.GridHelper(SIZE, SIZE * 10, 0x555555, 0xAAAAAA);
+        this.decimeterGrid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE * 10, 0x555555, 0xAAAAAA);
         this.decimeterGrid.layers.set(LayerEnums.NoRaycast)
         this.decimeterGrid.rotateX(Math.PI / 2)
         this.decimeterGrid.position.set(0, 0, 0.001)
         editor.scene.add(this.decimeterGrid);
 
-        let footDivisions = FEET_PER_METER * SIZE;
-        this.footGrid = new THREE.GridHelper(SIZE, footDivisions, WHITE, WHITE);
+        let footDivisions = FEET_PER_METER * GRID_SIZE;
+        this.footGrid = new THREE.GridHelper(GRID_SIZE, footDivisions, WHITE, WHITE);
         this.footGrid.layers.set(LayerEnums.NoRaycast)
         this.footGrid.rotateX(Math.PI / 2)
         this.footGrid.position.set(0, 0, 0.002)
         editor.scene.add(this.footGrid);
-        this.footGrid.visible = false;
 
-        this.inchGrid = new THREE.GridHelper(SIZE, footDivisions * 12, 0x555555, 0xAAAAAA);
+        this.inchGrid = new THREE.GridHelper(GRID_SIZE, footDivisions * 12, 0x555555, 0xAAAAAA);
         this.inchGrid.layers.set(LayerEnums.NoRaycast)
         this.inchGrid.rotateX(Math.PI / 2)
         this.inchGrid.position.set(0, 0, 0.001)
         editor.scene.add(this.inchGrid);
-        this.inchGrid.visible = false;
+
+        this.setMetric(this.metric)
     }
 
     public setMetric(value: boolean) {
