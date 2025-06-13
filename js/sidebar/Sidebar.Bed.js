@@ -8,6 +8,7 @@ import { Strings } from './Strings.js';
 import {eventBus, EventEnums} from '../EventBus.js';
 import { contain } from 'three/src/extras/TextureUtils.js';
 import { BedEditingUpdateCommand } from '../commands/BedEditingUpdateCommand.js';
+import { snapper } from '../Snapping.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -174,15 +175,32 @@ function SidebarBed( editor ) {
 		configContainer.setDisplay("none")
 	})
 
+	eventBus.on(EventEnums.METRIC_CHANGED, () => {
+		updateFromEditor();
+	})
+
 	function update() {
-		const props = {
-			"name": objectName.value,
-			"bedHeight": bedHeight.value, 
-			"borderHeight": borderHeight.value, 
-			"borderWidth": borderWidth.value,
-			"bedColor": bedColor.dom.value,
-			"borderColor": borderColor.dom.value
-		};
+		let props = {};
+		if (snapper.metric) {
+			props = {
+				"name": objectName.value,
+				"bedHeight": bedHeight.value, 
+				"borderHeight": borderHeight.value, 
+				"borderWidth": borderWidth.value,
+				"bedColor": bedColor.dom.value,
+				"borderColor": borderColor.dom.value
+			};
+		} else {
+			props = {
+				"name": objectName.value,
+				"bedHeight": snapper.inchesToMeters(bedHeight.value), 
+				"borderHeight": snapper.inchesToMeters(borderHeight.value), 
+				"borderWidth": snapper.inchesToMeters(borderWidth.value),
+				"bedColor": bedColor.dom.value,
+				"borderColor": borderColor.dom.value
+			};
+		}
+		
 
 		const command = new BedEditingUpdateCommand(props, editor.bedEditor, updateFromEditor)
 		eventBus.emit(EventEnums.BED_EDITING_UPDATED, command)
@@ -190,19 +208,44 @@ function SidebarBed( editor ) {
 
 	function updateFromEditor() {
 
-		const a = editor.bedEditor.getArea();
-		area.setValue(a)
+		let a = editor.bedEditor.getArea();
 
-		if (volume.display !== "none") {
-			volume.setValue(a * editor.bedEditor.bedHeight);
+		if (snapper.metric) {
+			area.setValue(a)
+			volume.setValue(a * editor.bedEditor.bedHeight)
+			area.setUnit( 'm²' )
+			volume.setUnit( 'm³' )
+
+			bedHeight.setValue(editor.bedEditor.bedHeight)
+			borderHeight.setValue(editor.bedEditor.borderHeight)
+			borderWidth.setValue(editor.bedEditor.borderWidth)
+
+			bedHeight.setUnit('m')
+			borderHeight.setUnit('m')
+			borderWidth.setUnit('m')
+
+		} else {
+			a *= 10.7639;
+			area.setValue(a)
+			area.setUnit( 'ft²' )
+			volume.setUnit( 'ft³' )
+
+			volume.setValue(a * (snapper.convert(editor.bedEditor.bedHeight) / 12.0))
+
+			bedHeight.setValue(snapper.convert(editor.bedEditor.bedHeight))
+			borderHeight.setValue(snapper.convert(editor.bedEditor.borderHeight))
+			borderWidth.setValue(snapper.convert(editor.bedEditor.borderWidth))
+
+			bedHeight.setUnit('in')
+			borderHeight.setUnit('in')
+			borderWidth.setUnit('in')
 		}
 
-		bedHeight.setValue(editor.bedEditor.bedHeight)
-		borderHeight.setValue(editor.bedEditor.borderHeight)
-		borderWidth.setValue(editor.bedEditor.borderWidth)
-
+		
 		bedColor.setValue(editor.bedEditor.bedColor)
 		borderColor.setValue(editor.bedEditor.borderColor)
+
+
 	}
 
 	return container;

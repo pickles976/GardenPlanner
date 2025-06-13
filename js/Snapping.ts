@@ -36,11 +36,18 @@ class Snapper {
     }
 
     convert(value: number) {
+        /**
+         * Convert meters to inches
+         */
         if (this.metric) {
             return value;
         } else {
             return value * 39.3700787402;
         }
+    }
+
+    inchesToMeters(value: number) {
+        return value / 39.3700787402;
     }
 
     getText(distance: number) {

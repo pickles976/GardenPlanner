@@ -181,11 +181,8 @@
 - [x] fix text size for line previews (use CSS2D)
 - [x] show/hide grid
 
-- [ ] change from meters to feet on UI
+- [x] change from meters to feet on UI
 - [ ] fix bed editor z-fighting on ghost mesh
-
-
-
 
 - [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
     - [ ] clean up BedEditor TODOs
@@ -193,13 +190,17 @@
     - [ ] clean up BedEditor state
     - [ ] remove any hardcoded values
 
-BED EDITING FINISHED (FOR NOW)
+- [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
+- [ ] fix bug with bed name
 
-### Minor Improvements
 - [ ] refactor and cleanup
 - [ ] improve vertex appearance
 
 - [ ] draw north in vertex mode
+
+BED EDITING FINISHED (FOR NOW)
+
+### Minor Improvements
 - [ ] draw angle when rotating an object
 
 - [ ] add rotation snapping
@@ -208,8 +209,6 @@ BED EDITING FINISHED (FOR NOW)
 - [ ] move more with WASD in vertex mode
 - [ ] create a delete command in object mode
     - [ ] make undoable
-- [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
-- [ ] fix bug with bed name
 
 DOCUMENT SOFTWARE ARCHITECTURE
 
