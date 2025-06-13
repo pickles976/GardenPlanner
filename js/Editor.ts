@@ -245,6 +245,7 @@ class Editor {
 
         eventBus.on(EventEnums.BED_EDITING_STARTED, () => this.setBedMode())
         eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())
+        eventBus.on(EventEnums.EDIT_BED, () => this.editBed())
     }
 
     public setOrthoCamera() {
@@ -308,6 +309,13 @@ class Editor {
         this.mode = EditorMode.BED;
         this.setOrthoCamera()
         this.bedEditor.beginBedEditing(); // TODO: change htis method name
+    }
+
+    public editBed() {
+        this.mode = EditorMode.BED;
+        this.setOrthoCamera()
+        this.bedEditor.beginBedEditing(this.selector.currentSelectedObject); // TODO: change htis method name
+        this.selector.deselect();
     }
 
     public setObjectMode() {

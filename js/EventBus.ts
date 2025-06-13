@@ -17,7 +17,10 @@ enum EventEnums {
 
     SNAP_CHANGED = "snapChanged",
     METRIC_CHANGED = "metricChanged",
-    GRID_VISIBILITY_CHANGED = "gridVisibilityChanged"
+    GRID_VISIBILITY_CHANGED = "gridVisibilityChanged",
+
+    BED_SELECTED = "bedSelected",
+    EDIT_BED = "editBed"
 }
 
 const eventBus = mitt();

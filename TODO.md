@@ -182,21 +182,20 @@
 - [x] show/hide grid
 
 - [x] change from meters to feet on UI
-- [ ] fix bed editor z-fighting on ghost mesh
+
+- [x] fix bed editor z-fighting on ghost mesh
+
+- [x] add userData to bed object (or create bed class?)
+- [x] add ability to edit bed starting with vertex mode
+- [ ] refactor and cleanup
+- [ ] save original bed so that if the user cancels, the bed isn't permanently deleted
+
+- [ ] improve vertex appearance
+- [ ] draw north in vertex mode
 
 - [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
     - [ ] clean up BedEditor TODOs
-    - [ ] handle messages from within relevant objects
-    - [ ] clean up BedEditor state
     - [ ] remove any hardcoded values
-
-- [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
-- [ ] fix bug with bed name
-
-- [ ] refactor and cleanup
-- [ ] improve vertex appearance
-
-- [ ] draw north in vertex mode
 
 BED EDITING FINISHED (FOR NOW)
 
@@ -205,10 +204,13 @@ BED EDITING FINISHED (FOR NOW)
 
 - [ ] add rotation snapping
 - [ ] add object translation snapping
+- [ ] add CTRL+D and CTRL+C functionality
 
 - [ ] move more with WASD in vertex mode
 - [ ] create a delete command in object mode
     - [ ] make undoable
+- [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
+
 
 DOCUMENT SOFTWARE ARCHITECTURE
 

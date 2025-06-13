@@ -271,8 +271,20 @@ class BedEditor {
 
     // Change modes
 
-    public beginBedEditing() {
-        this.setVertexPlacementMode()
+    public beginBedEditing(bed?: Object3D) {
+        console.log(bed)
+        if (bed === undefined) {
+            this.setVertexPlacementMode()
+        } else {
+            this.vertices = bed.userData.vertices;
+            this.bedHeight = bed.userData.bedHeight
+            this.borderHeight = bed.userData.borderHeight;
+            this.borderWidth = bed.userData.borderWidth;
+            this.bedColor = bed.userData.bedColor;
+            this.borderColor = bed.userData.borderColor;
+            this.setVertexEditMode()
+            this.editor.remove(bed)
+        }
     }
 
     private setVertexPlacementMode() {
@@ -332,6 +344,7 @@ class BedEditor {
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices);
+        centroid.add(new Vector3(0,0,0.01))
         this.bedPreviewBorder.position.set(...centroid);
         this.bedPreviewMesh.position.set(...centroid);
     }
@@ -346,7 +359,17 @@ class BedEditor {
         const mergedMesh = mergeMeshes([border, bed]);
         mergedMesh.castShadow = true;
         mergedMesh.receiveShadow = true;
-        mergedMesh.userData = { selectable: true }
+        mergedMesh.userData = { 
+            selectable: true,
+            onSelect: () => eventBus.emit(EventEnums.BED_SELECTED, true),
+            onDeselect: () => eventBus.emit(EventEnums.BED_SELECTED, false),
+            vertices: this.vertices,
+            bedHeight: this.bedHeight, 
+            borderHeight: this.borderHeight,
+            borderWidth: this.borderWidth,
+            bedColor: this.bedColor,
+            borderColor: this.borderColor
+         }
         mergedMesh.layers.set(LayerEnums.Objects)
         mergedMesh.position.set(...centroid)
         mergedMesh.name = this.bedName;

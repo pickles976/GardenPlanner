@@ -36,6 +36,10 @@ function SidebarBed( editor ) {
 	const cancelButton = new UIButton("Cancel");
 	cancelButton.setDisplay("none")
 
+	// Edit
+	const editButton = new UIButton("Edit");
+	editButton.setDisplay("none")
+
 	// Area
 	const areaRow = new UIRow();
 	const area = new UINumber().setUnit( 'm²' ).setWidth( '50px' )
@@ -97,6 +101,7 @@ function SidebarBed( editor ) {
 	buttonContainer.add(saveButton)
 	buttonContainer.add(saveBedButton)
 	buttonContainer.add(cancelButton)
+	buttonContainer.add(editButton)
 
 	const configContainer = new UIPanel();
 	configContainer.setBorderTop( '1' );
@@ -125,8 +130,10 @@ function SidebarBed( editor ) {
 	saveButton.onClick(() => eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED))
 	saveBedButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_CANCELLED))
+	editButton.onClick(() => eventBus.emit(EventEnums.EDIT_BED))
 
 	eventBus.on(EventEnums.BED_EDITING_STARTED, () => {
+		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
@@ -136,6 +143,7 @@ function SidebarBed( editor ) {
 	})
 
 	eventBus.on(EventEnums.VERTEX_EDITING_STARTED, () => {
+		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("Block");
 		saveBedButton.setDisplay("none");
@@ -149,6 +157,7 @@ function SidebarBed( editor ) {
 	})
 
 	eventBus.on(EventEnums.VERTEX_EDITING_FINISHED, () => {
+		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("none");
 		saveBedButton.setDisplay("Block");
@@ -158,6 +167,7 @@ function SidebarBed( editor ) {
 	})
 
 	eventBus.on(EventEnums.BED_EDITING_FINISHED, () => {
+		editButton.setDisplay("none");
 		cancelButton.setDisplay("none");
 		saveButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
@@ -167,12 +177,17 @@ function SidebarBed( editor ) {
 	})
 
 	eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => {
+		editButton.setDisplay("none");
 		cancelButton.setDisplay("none");
 		saveButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
 		createNewButton.setDisplay("Block");
 		dimensionContainer.setDisplay("none")
 		configContainer.setDisplay("none")
+	})
+
+	eventBus.on(EventEnums.BED_SELECTED, (value) => {
+		editButton.setDisplay(value ? "Block" : "none") 
 	})
 
 	eventBus.on(EventEnums.METRIC_CHANGED, () => {

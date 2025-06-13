@@ -78,6 +78,9 @@ class Selector {
             this.transformControlsGizmo = this.editor.transformControls.getHelper();
             this.editor.scene.add(this.transformControlsGizmo);
             this.transformControlsGizmo.layers.set(LayerEnums.NoRaycast)
+
+            object.userData?.onSelect()
+
         }
 
         eventBus.emit(EventEnums.OBJECT_SELECTED, object);
@@ -94,6 +97,8 @@ class Selector {
 
         this.editor.scene.remove(this.transformControlsGizmo);
         this.transformControlsGizmo = undefined;
+
+        this.currentSelectedObject.userData?.onDeselect()
 
         this.currentSelectedObject = undefined;
 
