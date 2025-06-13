@@ -152,7 +152,7 @@ class Editor {
 
         this.perspectiveCamera = new THREE.PerspectiveCamera(60, aspect, 0.1, 2000000);
         this.perspectiveCamera.name = "Perspective Camera"
-        this.perspectiveCamera.position.set(0, -5, 5);
+        this.perspectiveCamera.position.set(0, -1, 1);
         this.perspectiveCamera.up.set(0, 0, 1);
         this.perspectiveCamera.lookAt(0, 0, 0);
         this.perspectiveCamera.layers.enableAll();
@@ -169,7 +169,7 @@ class Editor {
         // Orthographic Camera https://threejs.org/docs/#api/en/cameras/OrthographicCamera
         this.orthoCamera = new THREE.OrthographicCamera(FRUSTUM_SIZE * aspect / - 2, FRUSTUM_SIZE * aspect / 2, FRUSTUM_SIZE / 2, FRUSTUM_SIZE / - 2, 0.01, 1000 );
         this.orthoCamera.name = "Ortho Camera"
-        this.orthoCamera.position.set(0, 0, 5);
+        this.orthoCamera.position.set(0, 0, 1);
         this.orthoCamera.up.set(0, 0, 1);
         this.orthoCamera.lookAt(0, 0, 0);
         this.orthoCamera.rotateZ(-Math.PI / 2)
@@ -243,9 +243,9 @@ class Editor {
         this.transformControls = new TransformControls( this.perspectiveCamera, this.canvas );
         this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );  
 
-        eventBus.on(EventEnums.BED_EDITING_STARTED, () => this.setBedMode())
+        eventBus.on(EventEnums.BED_CREATION_STARTED, () => this.setBedMode())
         eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())
-        eventBus.on(EventEnums.EDIT_BED, () => this.editBed())
+        eventBus.on(EventEnums.BED_EDITING_STARTED, (bed) => this.setBedMode(bed))
     }
 
     public setOrthoCamera() {
@@ -304,17 +304,10 @@ class Editor {
         this.commandStack.undo();
     }
 
-    public setBedMode() {
-        this.selector.deselect();
+    public setBedMode(bed?: THREE.Object3D) {
         this.mode = EditorMode.BED;
         this.setOrthoCamera()
-        this.bedEditor.beginBedEditing(); // TODO: change htis method name
-    }
-
-    public editBed() {
-        this.mode = EditorMode.BED;
-        this.setOrthoCamera()
-        this.bedEditor.beginBedEditing(this.selector.currentSelectedObject); // TODO: change htis method name
+        this.bedEditor.beginBedEditing(bed);
         this.selector.deselect();
     }
 

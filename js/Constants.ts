@@ -1,5 +1,5 @@
 
-export const FRUSTUM_SIZE = 10;
+export const FRUSTUM_SIZE = 3;
 export const METRIC = false;
 
 enum EditorMode {

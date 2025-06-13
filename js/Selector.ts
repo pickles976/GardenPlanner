@@ -45,6 +45,7 @@ class Selector {
             raycaster.layers.disable(LayerEnums.NoRaycast)
         }
 
+        // Get mouse position
         const pos = this.getCanvasRelativePosition(event);
         const pickPosition = new THREE.Vector2();
         pickPosition.x = (pos.x / this.editor.canvas.width ) *  2 - 1;
@@ -62,23 +63,25 @@ class Selector {
             return;
         }
 
+        // Remove transform controls gizmo
         this.editor.transformControls.detach();
         this.editor.scene.remove(this.transformControlsGizmo);
         this.transformControlsGizmo = undefined;
 
-        if (object === undefined) {
+        if (object === undefined) { // hide controls
             this.editor.transformControls.visible = false;
             this.currentSelectedObject = undefined
-        } else {
+        } else { // show controls
             this.editor.transformControls.visible = true;
             this.currentSelectedObject = object;
 
-            // TODO: dont attach the gizmo every time this is very intensive
+            // Attach controls and gizmo
             this.editor.transformControls.attach(object);
             this.transformControlsGizmo = this.editor.transformControls.getHelper();
             this.editor.scene.add(this.transformControlsGizmo);
             this.transformControlsGizmo.layers.set(LayerEnums.NoRaycast)
 
+            // Call object callback if exists
             object.userData?.onSelect()
 
         }
@@ -92,14 +95,17 @@ class Selector {
             return
         }
 
+        // Detach transform controls and remove gizmo
         this.editor.transformControls.detach();
         this.editor.transformControls.visible = false;
 
         this.editor.scene.remove(this.transformControlsGizmo);
         this.transformControlsGizmo = undefined;
 
+        // Call callback if exists
         this.currentSelectedObject.userData?.onDeselect()
 
+        // Clear selection
         this.currentSelectedObject = undefined;
 
         eventBus.emit(EventEnums.OBJECT_SELECTED, undefined);

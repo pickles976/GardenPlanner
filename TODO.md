@@ -187,8 +187,13 @@
 
 - [x] add userData to bed object (or create bed class?)
 - [x] add ability to edit bed starting with vertex mode
+- [x] save original bed so that if the user cancels, the bed isn't permanently deleted
+    - [x] save object
+    - [x] save position and rotation
+    - [x] if bed exists, update new bed with position and rotation
+- [x] bug when bed selected and "create new" clicked
+- [ ] hide all Objects when entering bed edit mode
 - [ ] refactor and cleanup
-- [ ] save original bed so that if the user cancels, the bed isn't permanently deleted
 
 - [ ] improve vertex appearance
 - [ ] draw north in vertex mode
@@ -196,6 +201,7 @@
 - [ ] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
     - [ ] clean up BedEditor TODOs
     - [ ] remove any hardcoded values
+    - [ ] general cleanup
 
 BED EDITING FINISHED (FOR NOW)
 

@@ -3,8 +3,18 @@ import mitt from 'mitt'
 enum EventEnums {
     REQUEST_RENDER = "requestRender",
 
-    BED_EDITING_STARTED = "bedEditingStarted",
-    BED_EDITING_UPDATED = "bedEditingUpdated", // TODO: change this state name
+    OBJECT_CHANGED = "objectChanged",
+    OBJECT_SELECTED = "objectSelected",
+
+    // GLOBAL EVENTS
+    SNAP_CHANGED = "snapChanged",
+    METRIC_CHANGED = "metricChanged",
+    GRID_VISIBILITY_CHANGED = "gridVisibilityChanged",
+
+    // BED CREATION/EDITING EVENTS
+    BED_SELECTED = "bedSelected",
+    BED_CREATION_STARTED = "bedCreationStarted", // Create new bed
+    BED_EDITING_STARTED = "bedEditingStarted", // Edit existing bed
     BED_EDITING_FINISHED = "bedEditingFinished",
     BED_EDITING_CANCELLED = "bedEditingCancelled",
 
@@ -12,15 +22,10 @@ enum EventEnums {
     VERTEX_EDITING_UPDATED = "vertexEditingUpdated",
     VERTEX_EDITING_FINISHED = "vertexEditingFinished",
 
-    OBJECT_CHANGED = "objectChanged",
-    OBJECT_SELECTED = "objectSelected",
+    BED_CONFIG_UPDATED = "bedConfigUpdated", // 
 
-    SNAP_CHANGED = "snapChanged",
-    METRIC_CHANGED = "metricChanged",
-    GRID_VISIBILITY_CHANGED = "gridVisibilityChanged",
 
-    BED_SELECTED = "bedSelected",
-    EDIT_BED = "editBed"
+
 }
 
 const eventBus = mitt();

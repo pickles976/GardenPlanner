@@ -126,13 +126,13 @@ function SidebarBed( editor ) {
 	container.add(configContainer)
 	container.add(dimensionContainer)
 
-	createNewButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_STARTED))
+	createNewButton.onClick(() => eventBus.emit(EventEnums.BED_CREATION_STARTED, undefined))
 	saveButton.onClick(() => eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED))
 	saveBedButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_CANCELLED))
-	editButton.onClick(() => eventBus.emit(EventEnums.EDIT_BED))
+	editButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_STARTED, editor.selector.currentSelectedObject))
 
-	eventBus.on(EventEnums.BED_EDITING_STARTED, () => {
+	eventBus.on(EventEnums.BED_CREATION_STARTED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("none");
@@ -218,7 +218,7 @@ function SidebarBed( editor ) {
 		
 
 		const command = new BedEditingUpdateCommand(props, editor.bedEditor, updateFromEditor)
-		eventBus.emit(EventEnums.BED_EDITING_UPDATED, command)
+		eventBus.emit(EventEnums.BED_CONFIG_UPDATED, command)
 	}
 
 	function updateFromEditor() {

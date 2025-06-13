@@ -60,7 +60,7 @@ function createLineSegment(point: Vector3, lastPoint: Vector3) : Object3D{
     // Get line segment
     const geometry = new LineGeometry();
     geometry.setPositions( destructureVector3Array([point, lastPoint]) );
-    const material = new LineMaterial({ color: GREEN, linewidth: 5 });
+    const material = new LineMaterial({ color: GREEN, linewidth: 5, depthWrite: false, depthTest: false });
     const line = new Line2(geometry, material);
 
     const group = new THREE.Group();
@@ -105,7 +105,7 @@ function createPolygon(points: Vector3[]) : Mesh {
     let polyShape = new THREE.Shape(points.map((coord) => new THREE.Vector2(coord.x, coord.y)))
     const polyGeometry = new THREE.ShapeGeometry(polyShape);
     polyGeometry.setAttribute("position", new THREE.Float32BufferAttribute(points.map(coord => [coord.x, coord.y, coord.z]).flat(), 3))
-    return new THREE.Mesh(polyGeometry, new THREE.MeshBasicMaterial({ color: GREEN, side: THREE.DoubleSide, transparent: true, opacity: 0.2}))
+    return new THREE.Mesh(polyGeometry, new THREE.MeshBasicMaterial({ color: GREEN, side: THREE.DoubleSide, transparent: true, opacity: 0.2, depthWrite: false, depthTest: false}))
 }
 
 enum BedEditorMode {
@@ -124,6 +124,9 @@ class BedEditor {
     mode: BedEditorMode;
 
     vertices: Vector3[];
+
+    // Original bed
+    oldBed?: Object3D;
 
     // Vertex Placement mode
     lastPoint?: Vector3;
@@ -156,6 +159,8 @@ class BedEditor {
         this.commandStack = new CommandStack();
         this.mode = BedEditorMode.NONE;
 
+        this.oldBed = undefined;
+
         // Placement mode
         this.vertices = []
         this.lastPoint = undefined;
@@ -185,7 +190,7 @@ class BedEditor {
         this.bedName = "New Bed";
 
         // TODO: change the field names
-        eventBus.on(EventEnums.BED_EDITING_UPDATED, (command) => {
+        eventBus.on(EventEnums.BED_CONFIG_UPDATED, (command) => {
             this.commandStack.execute(command)
             this.createPreviewMesh()
             eventBus.emit(EventEnums.REQUEST_RENDER)
@@ -199,7 +204,7 @@ class BedEditor {
         })
 
         eventBus.on(EventEnums.BED_EDITING_CANCELLED, (event) => {
-            this.cleanUp();
+            this.cancel();
         })
 
         eventBus.on(EventEnums.METRIC_CHANGED, () => {
@@ -220,9 +225,16 @@ class BedEditor {
         this.bedName = props.name;
     }
 
-    // Cleanup
+    public cancel() {
+        if (this.oldBed) {
+            this.editor.execute(new CreateObjectCommand(this.oldBed, this.editor))
+        }
+        this.cleanUp();
+    }
 
+    // Cleanup
     public cleanUp() {
+        this.oldBed = undefined;
         this.cleanUpVertexPlacementState()
         this.cleanUpVertexEditingState()
         this.cleanUpBedConfigState()
@@ -270,20 +282,22 @@ class BedEditor {
     }
 
     // Change modes
-
     public beginBedEditing(bed?: Object3D) {
         console.log(bed)
-        if (bed === undefined) {
+        if (bed === undefined) { // Create new bed
             this.setVertexPlacementMode()
-        } else {
+        } else { // Edit existing bed
+            // TODO: make this a function?
             this.vertices = bed.userData.vertices;
             this.bedHeight = bed.userData.bedHeight
             this.borderHeight = bed.userData.borderHeight;
             this.borderWidth = bed.userData.borderWidth;
             this.bedColor = bed.userData.bedColor;
             this.borderColor = bed.userData.borderColor;
+            this.bedName = bed.name;
             this.setVertexEditMode()
-            this.editor.remove(bed)
+            this.oldBed = bed;
+            this.editor.remove(bed);
         }
     }
 
@@ -322,7 +336,7 @@ class BedEditor {
         const centroid = getCentroid(this.vertices);
         // make the camera south of the newly-created bed
         // TODO: pull out these magic numbers
-        this.editor.currentCamera.position.set(...centroid.clone().add(new Vector3(0, -5, 5)))
+        this.editor.currentCamera.position.set(...centroid.clone().add(new Vector3(0, -2, 2)))
         // Make the camera look at the newly-created bed
         this.editor.currentCameraControls.target.copy(centroid)
 
@@ -374,6 +388,12 @@ class BedEditor {
         mergedMesh.position.set(...centroid)
         mergedMesh.name = this.bedName;
 
+        // update mesh position, rotation, and scale
+        if (this.oldBed) {
+            mergedMesh.position.copy(this.oldBed.position)
+            mergedMesh.rotation.copy(this.oldBed.rotation)
+            mergedMesh.scale.copy(this.oldBed.scale)
+        }
         this.editor.execute(new CreateObjectCommand(mergedMesh, this.editor));
 
         // Reset cursor
@@ -383,7 +403,6 @@ class BedEditor {
         this.editor.setObjectMode()
 
         // Make the camera look at the newly-created bed
-        // TODO: make the camera south of the newly-created bed
         this.editor.currentCameraControls.target.copy(centroid)
 
         eventBus.emit(EventEnums.REQUEST_RENDER)
@@ -552,8 +571,9 @@ class BedEditor {
         const lastPoint = this.vertices[this.vertices.length - 1]
         const geometry = new LineGeometry();
         geometry.setPositions(destructureVector3Array([lastPoint, point]))
-        const material = new LineMaterial({ color: YELLOW, linewidth: 5});
+        const material = new LineMaterial({ color: YELLOW, linewidth: 5, depthWrite: false, depthTest: false});
         this.linePreview = new Line2(geometry, material);
+        this.linePreview.renderOrder = 100000;
         this.editor.add(this.linePreview)
 
         // Angle text
