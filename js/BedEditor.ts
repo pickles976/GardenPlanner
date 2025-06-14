@@ -18,6 +18,7 @@ import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { Line2 } from 'three/addons/lines/Line2.js';
+import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 import offsetPolygon from "offset-polygon";
 import "external-svg-loader";

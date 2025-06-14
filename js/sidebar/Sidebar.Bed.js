@@ -26,6 +26,7 @@ function SidebarBed( editor ) {
 
 	// Save Polygon
 	const saveButton = new UIButton("✓ Save Polygon")
+	saveButton.dom.style.color = "#AAFFAA"
 	saveButton.setDisplay("none")
 
 	// Save Bed
@@ -34,6 +35,7 @@ function SidebarBed( editor ) {
 
 	// Cancel
 	const cancelButton = new UIButton("Cancel");
+	cancelButton.dom.style.color = "#FF8888"
 	cancelButton.setDisplay("none")
 
 	// Edit
@@ -122,9 +124,9 @@ function SidebarBed( editor ) {
 	dimensionContainer.setDisplay("none");
 
 	// Add sub-panels
-	container.add(buttonContainer)
 	container.add(configContainer)
 	container.add(dimensionContainer)
+	container.add(buttonContainer)
 
 	createNewButton.onClick(() => eventBus.emit(EventEnums.BED_CREATION_STARTED, undefined))
 	saveButton.onClick(() => eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED))

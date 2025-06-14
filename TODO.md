@@ -204,6 +204,8 @@
 BED EDITING FINISHED (FOR NOW)
 
 ### Minor Improvements
+
+#### Rotation Widget
 - [x] draw angle when rotating an object
     - [x] draw north
     - [x] draw arc
@@ -214,17 +216,25 @@ BED EDITING FINISHED (FOR NOW)
 - [ ] add rotation and translation snapping
 https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
+#### Object Mode Improvements
 - [ ] add CTRL+D and CTRL+C functionality
 
 - [ ] move more with WASD in vertex mode
 - [ ] create a delete command in object mode
     - [ ] make undoable
-- [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
+
 - [ ] swap between transform controls handles, and parenting object to raycast
 - [ ] add ability of UI to change object size object panel
 
 - [ ] draw pointer to north as rotating UI element
 
+#### Measurement Tools
+- [x] grid lines
+- [x] toggle metric/imperial
+- [ ] placeable ruler
+- [ ] pen tool for area calculation
+
+- [ ] bug with clicking on line segments
 
 DOCUMENT SOFTWARE ARCHITECTURE
 
@@ -256,22 +266,10 @@ Write up about
 - [ ] Azimuth and angle sun editor
 
 - [ ] save basic editor
-- [ ] get feedback from Erika, give her a task like "design a house" and watch her interaction with the software
+- [ ] get feedback from Erika, give her a task like "design my garden from layout" and watch her interaction with the software
+- [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
 
 # Garden Design Utilities
-
-- [ ] measurements tool
-    - [x] grid lines
-    - [x] toggle metric/imperial
-    - [ ] placeable ruler
-    - [ ] pen tool for area calculation
-
-- [x] bed creation
-    - [x] draw polylines
-    - [x] create 3D walls of bed
-    - [x] control bed height
-    - [x] auto-fill bed
-
 - [ ] panel UI with pre-built models for drag and drop
 - [ ] load mesh resources, create thumbnails for them
 

@@ -141,7 +141,7 @@ class Selector {
         const north = new Line2(geometry, material);
 
         // Get Angle line
-        const rotation = object.rotation.z + (Math.PI / 2)
+        let rotation = object.rotation.z + (Math.PI / 2)
         const angleEnd = origin.clone().add(new THREE.Vector3(Math.cos(rotation),Math.sin(rotation),0));
         material = new LineMaterial({ color: WHITE, linewidth: 2, depthWrite: false, depthTest: false });
         geometry = new LineGeometry();
@@ -169,8 +169,9 @@ class Selector {
             );
 
         // Draw angle text
-        const textPos = origin.clone().add(new THREE.Vector3(Math.cos(rotation / 2),Math.sin(rotation / 2),0));
-        textPos.multiplyScalar(0.25)
+        rotation = (object.rotation.z / 2) + (Math.PI / 2)
+        const textPos = origin.clone().add(new THREE.Vector3(Math.cos(rotation),Math.sin(rotation),0));
+        textPos.sub(origin).multiplyScalar(0.4).add(origin)
         const angleLabel = getCSS2DText(`${rad2deg(object.rotation.z).toFixed(2)}°`, fontSizeString(FONT_SIZE));
         angleLabel.position.set(...textPos)
 
