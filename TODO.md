@@ -205,10 +205,14 @@ BED EDITING FINISHED (FOR NOW)
 
 ### Minor Improvements
 - [ ] draw angle when rotating an object
-- [ ] draw north as rotating UI element
+    - [ ] draw north
+    - [ ] draw arc
+    - [ ] draw semi-circle
+    - [ ] draw angle text
 
-- [ ] add rotation snapping
-- [ ] add object translation snapping
+- [ ] add rotation and translation snapping
+https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
+
 - [ ] add CTRL+D and CTRL+C functionality
 
 - [ ] move more with WASD in vertex mode
@@ -216,6 +220,10 @@ BED EDITING FINISHED (FOR NOW)
     - [ ] make undoable
 - [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
 - [ ] swap between transform controls handles, and parenting object to raycast
+- [ ] add ability of UI to change object size object panel
+
+- [ ] draw pointer to north as rotating UI element
+
 
 DOCUMENT SOFTWARE ARCHITECTURE
 

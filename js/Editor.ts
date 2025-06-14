@@ -11,6 +11,7 @@ import { CommandStack } from './CommandStack';
 import { eventBus, EventEnums } from './EventBus';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { WHITE } from './Colors';
+import { handleTransformControlsChange } from './EventHandlers';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -244,7 +245,10 @@ class Editor {
 
         // TODO: move transform controls from editor to Selector
         this.transformControls = new TransformControls( this.perspectiveCamera, this.canvas );
-        this.transformControls.addEventListener( 'change', () => requestRenderIfNotRequested(this) );  
+        this.transformControls.addEventListener( 'change', () => {
+            handleTransformControlsChange(this);
+            requestRenderIfNotRequested(this);
+        } );  
 
         eventBus.on(EventEnums.BED_CREATION_STARTED, () => this.setBedMode())
         eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())

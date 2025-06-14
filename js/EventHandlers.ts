@@ -68,6 +68,16 @@ export function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, p
     }
 }
 
+export function handleTransformControlsChange(editor) {
+    switch (editor.transformControls.mode) {
+        case "rotate": 
+            editor.selector.handleRotationChange()
+            return;
+        default:
+            return
+    }
+}
+
 export function handleMouseMove(event, editor) {
     /**
      * Function that highlights objects when the mouse is over them, and returns them to their original color once the mouse has left.
