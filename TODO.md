@@ -204,11 +204,12 @@
 BED EDITING FINISHED (FOR NOW)
 
 ### Minor Improvements
-- [ ] draw angle when rotating an object
-    - [ ] draw north
-    - [ ] draw arc
-    - [ ] draw semi-circle
-    - [ ] draw angle text
+- [x] draw angle when rotating an object
+    - [x] draw north
+    - [x] draw arc
+    - [x] draw angle text
+- [ ] parent rotation widget while translating
+- [ ] re-draw rotation widget while using CTRL+Z
 
 - [ ] add rotation and translation snapping
 https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap

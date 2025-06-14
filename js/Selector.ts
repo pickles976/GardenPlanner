@@ -2,12 +2,13 @@ import * as THREE from 'three';
 import { Editor } from "./Editor";
 import { Object3D } from 'three';
 import { eventBus, EventEnums } from './EventBus';
-import { LayerEnums } from './Constants';
-import { destructureVector3Array } from './Utils';
+import { FONT_SIZE, LayerEnums } from './Constants';
+import { destructureVector3Array, fontSizeString, getCSS2DText, rad2deg } from './Utils';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { GREEN, WHITE } from './Colors';
 import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+import { Group } from 'three';
 
 const raycaster = new THREE.Raycaster();
 
@@ -112,10 +113,15 @@ class Selector {
         this.transformControlsGizmo = undefined;
 
         // Call callback if exists
-        this.currentSelectedObject.userData?.onDeselect()
+        if (this.currentSelectedObject.userData.onDeselect) {
+            this.currentSelectedObject.userData?.onDeselect()
+        }
 
         // Clear selection
         this.currentSelectedObject = undefined;
+
+        // Remove rotation thing
+        this.editor.remove(this.rotationAngleVisualizer)
 
         eventBus.emit(EventEnums.OBJECT_SELECTED, undefined);
     }
@@ -127,37 +133,53 @@ class Selector {
         const origin = object.position.clone();
         origin.z = 0;
 
-        // let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-        // const lineLabel = getCSS2DText(snapper.getText(lastPoint.distanceTo(point)), fontSizeString(FONT_SIZE));
-        // lineLabel.position.set(...textPos)
-
         // Get North line
-        let endPos = origin.clone().add(new THREE.Vector3(0,1,0));
+        const northEnd = origin.clone().add(new THREE.Vector3(0,1,0));
         let material = new LineMaterial({ color: WHITE, linewidth: 3, depthWrite: false, depthTest: false });
         let geometry = new LineGeometry();
-        geometry.setPositions(destructureVector3Array([origin, endPos]));
+        geometry.setPositions(destructureVector3Array([origin, northEnd]));
         const north = new Line2(geometry, material);
 
         // Get Angle line
         const rotation = object.rotation.z + (Math.PI / 2)
-        endPos = origin.clone().add(new THREE.Vector3(Math.cos(rotation),Math.sin(rotation),0));
+        const angleEnd = origin.clone().add(new THREE.Vector3(Math.cos(rotation),Math.sin(rotation),0));
         material = new LineMaterial({ color: WHITE, linewidth: 2, depthWrite: false, depthTest: false });
         geometry = new LineGeometry();
-        geometry.setPositions(destructureVector3Array([origin, endPos]));
+        geometry.setPositions(destructureVector3Array([origin, angleEnd]));
         const angle = new Line2(geometry, material);
 
-        // Draw arc
+        // Draw Arc
+        // TODO: fix bug with arc drawing
+	
+		// set interpolation points
+        const radius = 0.5
+		northEnd.sub( origin ).setLength( radius ).add( origin );
+		angleEnd.sub( origin ).setLength( radius ).add( origin );
 
-        // Draw semi-circle
+        const N = 30;
+        var points = [];
+		// collect points along the arc
+        for( var i=0; i<=N; i++ ) points.push( new THREE.Vector3( ) );
+        for( var i=0; i<=N; i++ ) points[i].lerpVectors( northEnd, angleEnd, (i/N)).sub( origin ).setLength( radius ).add( origin );
+        geometry = new LineGeometry();
+        geometry.setPositions(destructureVector3Array(points))
+        let arcLine = new Line2(
+            geometry, 
+            new LineMaterial( { color: WHITE, linewidth: 2, depthWrite: false, depthTest: false  } )
+            );
 
         // Draw angle text
-        // let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-        // // const lineLabel = getCSS2DText(snapper.getText(lastPoint.distanceTo(point)), fontSizeString(FONT_SIZE));
-        // // lineLabel.position.set(...textPos)
+        const textPos = origin.clone().add(new THREE.Vector3(Math.cos(rotation / 2),Math.sin(rotation / 2),0));
+        textPos.multiplyScalar(0.25)
+        const angleLabel = getCSS2DText(`${rad2deg(object.rotation.z).toFixed(2)}°`, fontSizeString(FONT_SIZE));
+        angleLabel.position.set(...textPos)
 
-        // return group;
-        this.editor.add(north)
-        this.editor.add(angle)
+        // Create Group
+        this.editor.remove(this.rotationAngleVisualizer)
+        const group = new Group();
+        group.add(north, angle, arcLine, angleLabel)
+        this.rotationAngleVisualizer = group
+        this.editor.add(this.rotationAngleVisualizer)
     }
 
 }

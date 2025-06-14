@@ -2,6 +2,8 @@
 export const FRUSTUM_SIZE = 3;
 export const METRIC = false;
 
+export const FONT_SIZE = 30;
+
 enum EditorMode {
     OBJECT = "OBJECT",
     BED = "BED"

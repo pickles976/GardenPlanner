@@ -12,7 +12,7 @@
 import { Object3D, ShapeGeometry, MeshBasicMaterial, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh, Vector2, Shape, Material, ExtrudeGeometry, Path, Float32BufferAttribute, Group } from "three";
 import * as THREE from "three";
 
-import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
 
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
@@ -22,12 +22,12 @@ import { Line2 } from 'three/addons/lines/Line2.js';
 import offsetPolygon from "offset-polygon";
 import "external-svg-loader";
 
-import { destructureVector3Array, getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial, rad2deg } from "./Utils";
+import { destructureVector3Array, getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial, rad2deg, fontSizeString, getCSS2DText } from "./Utils";
 import { CreateObjectCommand } from "./commands/CreateObjectCommand";
 import { SetPositionCommand } from "./commands/SetPositionCommand";
 import { eventBus, EventEnums } from "./EventBus";
 import { CommandStack } from "./CommandStack";
-import { LayerEnums } from "./Constants";
+import { FONT_SIZE, LayerEnums } from "./Constants";
 import { Editor } from "./Editor";
 
 import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "./Colors";
@@ -42,24 +42,13 @@ const VERTEX_SIZE = 0.05;
 const POLYGON_CLOSE_THRESH = 0.1;
 const NUM_ARC_SEGMENTS = 1;
 const BED_CONFIG_CAMERA_OFFSET = new Vector3(0, -2, 2);
-const FONT_SIZE = 30;
 const LINE_WIDTH = 5;
 
 const SVG_SIZE = '50px';
 
 const POLYGON_OPACITY = 0.2;
 
-function getCSS2DText(content: string, margin: string): CSS2DObject {
-    const text = document.createElement('div');
-    text.textContent = content;
-    text.style.fontSize = fontSizeString(FONT_SIZE);
-    text.style.marginTop = margin;
-    return new CSS2DObject(text);
-}
 
-function fontSizeString(fontSize: number): string {
-    return `${fontSize}px`
-}
 
 function createBedBorder(vertices: Vector3[], width: number, height: number, material: Material): Mesh {
     /**

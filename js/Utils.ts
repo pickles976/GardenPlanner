@@ -1,6 +1,8 @@
 import { Vector3 } from "three";
+import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import * as THREE from "three";
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
+import { FONT_SIZE } from "./Constants";
 
 export function rad2deg(radians: number) : number {
   return radians * 180 / Math.PI;
@@ -96,4 +98,16 @@ export function createPreviewMaterial(color: string) : THREE.MeshBasicMaterial {
     transparent: true,
     opacity: 0.8
   });
+}
+
+export function fontSizeString(fontSize: number): string {
+    return `${fontSize}px`
+}
+
+export function getCSS2DText(content: string, margin: string): CSS2DObject {
+    const text = document.createElement('div');
+    text.textContent = content;
+    text.style.fontSize = fontSizeString(FONT_SIZE);
+    text.style.marginTop = margin;
+    return new CSS2DObject(text);
 }
