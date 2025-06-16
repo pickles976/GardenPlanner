@@ -223,8 +223,11 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [x] TODO: use the same controls for both cameras
 - [x] allow editing objects from ortho camera
 
-- [ ] 2-way binding for top-down camera UI
-- [ ] hide objects in bed editor mode only
+- [x] 2-way binding for top-down camera UI
+    - [x] check button from editor if possible
+- [x] hide objects in bed editor mode only
+    - [x] add hide layers function to editor
+    - [x] call it
 
 - [ ] 2-way binding for rotation in object mode
 

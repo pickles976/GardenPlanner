@@ -51,6 +51,8 @@ function SidebarGlobals( editor ) {
 	snapCheck.onClick(() => eventBus.emit(EventEnums.SNAP_CHANGED, snapCheck.getValue()))
     metricCheck.onClick(() => eventBus.emit(EventEnums.METRIC_CHANGED, metricCheck.getValue()))
 
+    eventBus.on(EventEnums.CHANGE_CAMERA_UI, (value) => cameraCheck.setValue(value))
+
 	return container;
 
 }

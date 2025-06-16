@@ -277,14 +277,27 @@ class Editor {
     public setBedMode(bed?: THREE.Object3D) {
         this.mode = EditorMode.BED;
         this.setOrthoCamera()
+        eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true) // change UI
         this.bedEditor.beginBedEditing(bed);
         this.selector.deselect();
+        this.hideCameraLayers([LayerEnums.Plants])
     }
 
     public setObjectMode() {
         this.selector.deselect();
         this.mode = EditorMode.OBJECT;
         this.setPerspectiveCamera()
+        this.hideCameraLayers([])
+    }
+
+    public hideCameraLayers(layers: LayerEnums[]) {
+        this.perspectiveCamera.layers.enableAll()
+        this.orthoCamera.layers.enableAll()
+
+        layers.forEach((layer) => {
+            this.perspectiveCamera.layers.disable(layer);
+            this.orthoCamera.layers.disable(layer);
+        })
     }
 
     public handleKeyDown(event) {

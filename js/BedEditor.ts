@@ -428,6 +428,7 @@ class BedEditor {
         this.editor.currentCamera.position.set(...centroid.clone().add(BED_CONFIG_CAMERA_OFFSET))
         this.editor.currentCameraControls.target.copy(centroid)
 
+        eventBus.emit(EventEnums.CHANGE_CAMERA_UI, false) // change UI
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
