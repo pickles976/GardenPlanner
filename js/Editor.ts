@@ -124,8 +124,8 @@ class Editor {
         this.orthoCamera.rotateZ(-Math.PI / 2)
         this.orthoCamera.layers.enableAll();
 
-        // TODO: CAMERA LAYERS CONFIG
-        this.orthoCamera.layers.disable(LayerEnums.Plants)
+        // // TODO: CAMERA LAYERS CONFIG
+        // this.orthoCamera.layers.disable(LayerEnums.Plants)
 
         // Orbit Controls https://threejs.org/docs/#examples/en/controls/OrbitControls.keys
         this.orthoCameraControls = new OrbitControls(this.orthoCamera, this.canvas);
@@ -189,8 +189,7 @@ class Editor {
         this.perspectiveCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
         this.orthoCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
 
-        // TODO: move transform controls from editor to Selector
-        this.transformControls = new TransformControls(this.perspectiveCamera, this.canvas);
+        this.transformControls = new TransformControls(this.currentCamera, this.canvas);
         this.transformControls.addEventListener('change', () => {
             handleTransformControlsChange(this);
             requestRenderIfNotRequested(this);
@@ -201,6 +200,7 @@ class Editor {
         eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())
         eventBus.on(EventEnums.BED_EDITING_STARTED, (bed) => this.setBedMode(bed))
         eventBus.on(EventEnums.SNAP_CHANGED, (value) => this.setSnapping(value))
+        eventBus.on(EventEnums.CAMERA_CHANGED, (value) => value ? this.setOrthoCamera() : this.setPerspectiveCamera())
     }
 
     private setSnapping(value: boolean) {
@@ -219,6 +219,8 @@ class Editor {
         this.currentCameraControls = this.orthoCameraControls
         this.perspectiveCameraControls.enabled = false
         this.orthoCameraControls.enabled = true
+        this.transformControls.camera = this.currentCamera;
+        eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
     public setPerspectiveCamera() {
@@ -226,6 +228,8 @@ class Editor {
         this.currentCameraControls = this.perspectiveCameraControls
         this.perspectiveCameraControls.enabled = true
         this.orthoCameraControls.enabled = false
+        this.transformControls.camera = this.currentCamera;
+        eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
     public add(object?: THREE.Object3D) {

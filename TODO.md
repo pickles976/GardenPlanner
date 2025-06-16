@@ -219,7 +219,14 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [x] move more with WASD in vertex mode
 - [x] create a delete command in object mode
     - [x] make undoable
-- [ ] add ability to swap between ortho and perspective camera
+- [x] add ability to swap between ortho and perspective camera
+- [x] TODO: use the same controls for both cameras
+- [x] allow editing objects from ortho camera
+
+- [ ] 2-way binding for top-down camera UI
+- [ ] hide objects in bed editor mode only
+
+- [ ] 2-way binding for rotation in object mode
 
 - [ ] add CTRL+D and CTRL+C functionality
 

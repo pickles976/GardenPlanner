@@ -17,28 +17,36 @@ function SidebarGlobals( editor ) {
 	container.setPaddingTop( '20px' );
 	container.setDisplay("Block")
 
+    const cameraRow = new UIRow();
+	const cameraCheck = new UICheckbox();
+    cameraCheck.setValue(false)
+	cameraRow.add(cameraCheck)
+    cameraRow.add( new UIText( " Top-Down Camera" ));
+
     const showGridRow = new UIRow();
 	const showGridCheck = new UICheckbox();
     showGridCheck.setValue(true)
 	showGridRow.add(showGridCheck)
-    showGridRow.add( new UIText( "Show Grid" ));
+    showGridRow.add( new UIText( " Show Grid" ));
 
     const snapRow = new UIRow();
 	const snapCheck = new UICheckbox();
     snapCheck.setValue(true)
 	snapRow.add(snapCheck)
-    snapRow.add( new UIText( "Snap to Grid" ));
+    snapRow.add( new UIText( " Snap to Grid" ));
 
     const metricRow = new UIRow();
     const metricCheck = new UICheckbox();
     metricCheck.setValue(snapper.metric)
     metricRow.add(metricCheck)
-    metricRow.add(new UIText("Metric System"))
+    metricRow.add(new UIText(" Metric System"))
 
+    container.add(cameraRow)
     container.add(showGridRow)
     container.add(snapRow)
     container.add(metricRow)
 
+    cameraCheck.onClick(() => eventBus.emit(EventEnums.CAMERA_CHANGED, cameraCheck.getValue()))
     showGridCheck.onClick(() => eventBus.emit(EventEnums.GRID_VISIBILITY_CHANGED, showGridCheck.getValue()))
 	snapCheck.onClick(() => eventBus.emit(EventEnums.SNAP_CHANGED, snapCheck.getValue()))
     metricCheck.onClick(() => eventBus.emit(EventEnums.METRIC_CHANGED, metricCheck.getValue()))

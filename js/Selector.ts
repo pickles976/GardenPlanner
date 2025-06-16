@@ -127,7 +127,6 @@ class Selector {
 
         eventBus.emit(EventEnums.OBJECT_SELECTED, undefined);
     }
-    
 
     public drawRotationVisualizer() {
 

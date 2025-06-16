@@ -732,6 +732,10 @@ function SidebarObject( editor ) {
 
 	eventBus.on(EventEnums.OBJECT_CHANGED, ( object ) => {
 
+		if (object === undefined) {
+			return
+		}
+
 		updateUI( object );
 
 	} );

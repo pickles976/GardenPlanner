@@ -10,6 +10,7 @@ enum EventEnums {
     SNAP_CHANGED = "snapChanged",
     METRIC_CHANGED = "metricChanged",
     GRID_VISIBILITY_CHANGED = "gridVisibilityChanged",
+    CAMERA_CHANGED = "cameraChanged",
 
     // BED CREATION/EDITING EVENTS
     BED_SELECTED = "bedSelected",
