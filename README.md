@@ -18,13 +18,17 @@ https://pictogrammers.com/library/mdi/
 - [x] 06/03/2025 -- ~~finished bed editor functionality~~ finished bed editor place vertex mode
 - [x] 06/04/2025 -- work on vertex edit mode
 - [x] 06/05/2025 -- food forest/city hall/break day
+
+# Week 2
 - [x] 06/09/2025 -- finish vertex edit mode, start on bed config mode
 - [x] 06/10/2025 -- bed config mode
 - [x] 06/11/2025 -- car maintenance
 - [x] 06/12/2025 -- finish bed config mode
 - [x] 06/13/2025 -- add QOL features, refactor and cleanup (improve readability, improve view) (get feedback from users)
-- [ ] 06/14/2025 -- minor improvements
-- [ ] 06/15/2025 -- start on plant editor
+
+# Week 3
+- [ ] 06/16/2025 -- minor improvements, measuring tools
+- [ ] 06/17/2025 -- start on plant editor
 
 - [ ] object creator and editor
 - [ ] add objects to scene

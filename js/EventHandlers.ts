@@ -31,7 +31,7 @@ function performRaycast(event, editor, callback, layers){
 export function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3){
     const selector = editor.selector;
 
-    if (selector.currentMousedOverObject === object) {
+    if (selector.currentMousedOverObject === object || selector.currentSelectedObject === object) {
         return
     }
 

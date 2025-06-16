@@ -111,3 +111,21 @@ export function getCSS2DText(content: string, margin: string): CSS2DObject {
     text.style.marginTop = margin;
     return new CSS2DObject(text);
 }
+
+export function deepClone(object) {
+  const clone = object.clone(true); // true = recursive (deep) clone
+
+  // Clone materials
+  clone.traverse((node) => {
+    if (node.isMesh) {
+      // Clone material(s)
+      if (Array.isArray(node.material)) {
+        node.material = node.material.map(mat => mat.clone());
+      } else {
+        node.material = node.material.clone();
+      }
+    }
+  });
+
+  return clone;
+}

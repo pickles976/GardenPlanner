@@ -14,6 +14,8 @@ import { WHITE } from './Colors';
 import { handleTransformControlsChange } from './EventHandlers';
 import { snapper } from './Snapping';
 import { DeleteObjectCommand } from './commands/DeleteObjectCommand';
+import { CreateObjectCommand } from './commands/CreateObjectCommand';
+import { deepClone } from './Utils';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -302,6 +304,15 @@ class Editor {
 
     public handleKeyDown(event) {
         switch (event.key) {
+
+            // Duplicate object
+            case 'd':
+                if (event.ctrlKey) {
+                    if (this.selector.currentSelectedObject) {
+                        this.execute(new CreateObjectCommand(deepClone(this.selector.currentSelectedObject), this))
+                    }
+                }
+                break;
 
             case 't':
                 this.transformControls.setMode('translate');

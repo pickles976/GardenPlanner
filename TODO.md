@@ -228,13 +228,12 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [x] hide objects in bed editor mode only
     - [x] add hide layers function to editor
     - [x] call it
+- [x] 2-way binding for rotation in object mode
 
-- [ ] 2-way binding for rotation in object mode
-
-- [ ] add CTRL+D and CTRL+C functionality
-
+- [x] add CTRL+D functionality
 - [ ] swap between transform controls handles, and parenting object to raycast
-- [ ] add ability of UI to change object size object panel
+    - [x] transform controls mode
+    - [ ] sims mode
 
 - [ ] draw pointer to north as rotating UI element
 

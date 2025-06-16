@@ -41,15 +41,23 @@ function SidebarGlobals( editor ) {
     metricRow.add(metricCheck)
     metricRow.add(new UIText(" Metric System"))
 
+    const transformRow = new UIRow();
+    const transformCheck = new UICheckbox();
+    transformCheck.setValue(false)
+    transformRow.add(transformCheck)
+    transformRow.add(new UIText(" Advanced Transform"))
+
     container.add(cameraRow)
     container.add(showGridRow)
     container.add(snapRow)
     container.add(metricRow)
+    container.add(transformRow)
 
     cameraCheck.onClick(() => eventBus.emit(EventEnums.CAMERA_CHANGED, cameraCheck.getValue()))
     showGridCheck.onClick(() => eventBus.emit(EventEnums.GRID_VISIBILITY_CHANGED, showGridCheck.getValue()))
 	snapCheck.onClick(() => eventBus.emit(EventEnums.SNAP_CHANGED, snapCheck.getValue()))
     metricCheck.onClick(() => eventBus.emit(EventEnums.METRIC_CHANGED, metricCheck.getValue()))
+    transformCheck.onClick(() => eventBus.emit(EventEnums.TRANSFORM_MODE_CHANGED, transformCheck.getValue()))
 
     eventBus.on(EventEnums.CHANGE_CAMERA_UI, (value) => cameraCheck.setValue(value))
 

@@ -24,14 +24,27 @@ class Selector {
 
     rotationAngleVisualizer?: THREE.Object3D;
 
+    advancedTransformMode: boolean;
+
     constructor (editor: Editor) {
         this.editor = editor;
         this.currentMousedOverObject = undefined;
         this.currentSelectedObject = undefined;
         this.transformControlsGizmo = undefined;
         this.isUsingTransformControls = false;
+        this.advancedTransformMode = false;
 
-        eventBus.on(EventEnums.OBJECT_CHANGED, () => this.drawRotationVisualizer())
+        eventBus.on(EventEnums.OBJECT_CHANGED, () => this.drawRotationVisualizer());
+        eventBus.on(EventEnums.TRANSFORM_MODE_CHANGED, (value) => this.setTransformMode(value));
+    }
+
+    private setTransformMode(value: boolean) {
+        this.advancedTransformMode = value
+        if (value) {
+            if (this.currentSelectedObject !== undefined) this.attachTransformControls(this.currentSelectedObject)
+        } else {
+            this.removeTransformControls()
+        }
     }
 
     private getCanvasRelativePosition(event) {
@@ -67,29 +80,32 @@ class Selector {
 
     }
 
-    public select(object: Object3D) {
-
-        if (object === this.currentSelectedObject) {
-            return;
-        }
-
+    private removeTransformControls(){
         // Remove transform controls gizmo
         this.editor.transformControls.detach();
         this.editor.scene.remove(this.transformControlsGizmo);
         this.transformControlsGizmo = undefined;
+    }
+
+    private attachTransformControls(object: Object3D) {
+        // Attach controls and gizmo
+        this.editor.transformControls.visible = true;
+        this.editor.transformControls.attach(object);
+        this.transformControlsGizmo = this.editor.transformControls.getHelper();
+        this.editor.scene.add(this.transformControlsGizmo);
+        this.transformControlsGizmo.layers.set(LayerEnums.NoRaycast)
+    }
+
+    private advancedTransformSelect(object: Object3D) {
+
+        this.removeTransformControls()
 
         if (object === undefined) { // hide controls
             this.editor.transformControls.visible = false;
             this.currentSelectedObject = undefined
         } else { // show controls
-            this.editor.transformControls.visible = true;
             this.currentSelectedObject = object;
-
-            // Attach controls and gizmo
-            this.editor.transformControls.attach(object);
-            this.transformControlsGizmo = this.editor.transformControls.getHelper();
-            this.editor.scene.add(this.transformControlsGizmo);
-            this.transformControlsGizmo.layers.set(LayerEnums.NoRaycast)
+            this.attachTransformControls(object);
 
             // Call object callback if exists
             if (object.userData?.onSelect) {
@@ -97,8 +113,50 @@ class Selector {
             }
 
         }
+    }
+
+    private simpleTransformSelect(object: Object3D) {
+        if (object === undefined) { // hide controls
+            this.currentSelectedObject = undefined
+        } else { // show controls
+            this.currentSelectedObject = object;
+
+            // Call object callback if exists
+            if (object.userData?.onSelect) {
+                object.userData.onSelect()
+            }
+
+        }
+    }
+
+    public select(object: Object3D) {
+
+        if (object === this.currentSelectedObject) {
+            return;
+        }
+
+        if (this.advancedTransformMode) {
+            this.advancedTransformSelect(object)
+        } else {
+            this.simpleTransformSelect(object)
+        }
+
+        this.drawRotationVisualizer()
 
         eventBus.emit(EventEnums.OBJECT_SELECTED, object);
+    }
+
+    private advancedTransformDeselect() {
+        // Detach transform controls and remove gizmo
+        this.editor.transformControls.detach();
+        this.editor.transformControls.visible = false;
+
+        this.editor.scene.remove(this.transformControlsGizmo);
+        this.transformControlsGizmo = undefined;
+    }
+
+    private simpleTransformDeselect() {
+
     }
 
     public deselect() {
@@ -107,12 +165,11 @@ class Selector {
             return
         }
 
-        // Detach transform controls and remove gizmo
-        this.editor.transformControls.detach();
-        this.editor.transformControls.visible = false;
-
-        this.editor.scene.remove(this.transformControlsGizmo);
-        this.transformControlsGizmo = undefined;
+        if (this.advancedTransformMode) {
+            this.advancedTransformDeselect()
+        } else {
+            this.simpleTransformDeselect()
+        }
 
         // Call callback if exists
         if (this.currentSelectedObject.userData.onDeselect) {
@@ -130,10 +187,7 @@ class Selector {
 
     public drawRotationVisualizer() {
 
-        if (this.currentSelectedObject === undefined) {
-            return
-        }
-
+        if (this.currentSelectedObject === undefined) { return }
 
         const object = this.currentSelectedObject;
         const origin = object.position.clone();
