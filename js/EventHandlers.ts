@@ -5,6 +5,9 @@ import { render } from './Rendering';
 import { eventBus } from './EventBus';
 import { EditorMode, LayerEnum } from './Constants';
 import { BLACK, YELLOW } from './Colors';
+import { SetPositionCommand } from './commands/SetPositionCommand';
+import { Vector3 } from 'three';
+import { snapper } from './Snapping';
 
 // TODO: CLEAN THIS UP
 function performRaycast(event, editor, callback, layers){
@@ -73,7 +76,19 @@ export function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, p
     const selector = editor.selector;
 
     if (selector.currentSelectedObject) {
-        // object.position.set(...point)
+
+        if (selector.advancedTransformMode) {
+            // Transform handles already handle the transforming
+        } else {
+            const box = new THREE.Box3().setFromObject(selector.currentSelectedObject);
+            const size = new THREE.Vector3();
+            box.getSize(size);
+
+            let newPos = point.add(new Vector3(0,0,size.z / 2))
+            newPos = snapper.snap(newPos);
+            editor.execute(new SetPositionCommand(selector.currentSelectedObject, selector.currentSelectedObject.position, newPos))
+        }
+
     } 
 
     highlightMouseOverObject(editor, object, point)
@@ -116,6 +131,8 @@ export function handleMouseClickObjectMode(editor: Editor, object?: THREE.Mesh, 
 
     if (object.userData.selectable === true) {
         editor.selector.select(object)
+    } else {
+        editor.selector.deselect()
     }
 }
 

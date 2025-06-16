@@ -231,11 +231,30 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [x] 2-way binding for rotation in object mode
 
 - [x] add CTRL+D functionality
-- [ ] swap between transform controls handles, and parenting object to raycast
+- [x] swap between transform controls handles, and parenting object to raycast
     - [x] transform controls mode
-    - [ ] sims mode
+    - [x] sims mode
 
-- [ ] draw pointer to north as rotating UI element
+- [x] add hotkeys to toggle globals
+- [x] TODO: fix bug when duplicating selected item
+
+#### REFACTOR
+- [ ] refactor event handling
+    - [ ] make a diagram of the events
+    - [ ] figure out how we want events to propagate
+
+- [ ] refactor selector
+    - [ ] draw a state diagram
+    - [ ] pull as much out into functions as we can
+    - [ ] pattern matching?
+    - [ ] always deselect no matter what
+
+- [ ] refactor
+
+- [ ] try refactor bed editor to use scene graph better
+
+
+
 
 #### Measurement Tools
 - [x] grid lines
@@ -244,6 +263,9 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [ ] pen tool for area calculation
 
 - [ ] bug with clicking on line segments
+
+- [ ] let user set rotation from typing?
+- [ ] draw pointer to north as rotating UI element
 
 DOCUMENT SOFTWARE ARCHITECTURE
 
@@ -259,10 +281,6 @@ Write up about
 - event flow/propagation
 - modularity
 - what else?
-
-- [ ] fork branch
-- [ ] try refactor bed editor to use scene graph better
-- [ ] try refacotr selecotr
 
 #### PLANT EDITOR
 - [ ] add UI for placing and removing objects
