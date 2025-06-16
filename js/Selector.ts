@@ -131,6 +131,10 @@ class Selector {
 
     public drawRotationVisualizer() {
 
+        if (this.currentSelectedObject === undefined) {
+            return
+        }
+
 
         const object = this.currentSelectedObject;
         const origin = object.position.clone();

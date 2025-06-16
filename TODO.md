@@ -212,15 +212,16 @@ BED EDITING FINISHED (FOR NOW)
     - [x] draw angle text
 - [x] parent rotation widget while translating
 
-- [ ] add rotation and translation snapping
+- [x] add rotation and translation snapping
 https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
 #### Object Mode Improvements
-- [ ] add CTRL+D and CTRL+C functionality
-
-- [ ] move more with WASD in vertex mode
 - [ ] create a delete command in object mode
     - [ ] make undoable
+- [ ] add CTRL+D and CTRL+C functionality
+
+- [x] move more with WASD in vertex mode
+
 
 - [ ] swap between transform controls handles, and parenting object to raycast
 - [ ] add ability of UI to change object size object panel

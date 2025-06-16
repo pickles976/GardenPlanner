@@ -4,7 +4,7 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { requestRenderIfNotRequested } from './Rendering';
 import { Command } from './commands/Command';
 import { Selector } from './Selector';
-import { EditorMode, FRUSTUM_SIZE, LayerEnums} from './Constants';
+import { EditorMode, FRUSTUM_SIZE, LayerEnums } from './Constants';
 import { BedEditor } from './BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
@@ -12,6 +12,7 @@ import { eventBus, EventEnums } from './EventBus';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { WHITE } from './Colors';
 import { handleTransformControlsChange } from './EventHandlers';
+import { snapper } from './Snapping';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -20,6 +21,9 @@ const ANTI_ALIASING = true;
 
 const SCREEN_WIDTH = window.innerWidth;
 const SCREEN_HEIGHT = window.innerHeight;
+
+const ROTATION_DEGREES = 0.008726639;
+const ORBIT_CONTROLS_PAN_SPEED = 20.0;
 
 class Editor {
     /**
@@ -53,7 +57,7 @@ class Editor {
 
     mode: EditorMode;
 
-    constructor () {
+    constructor() {
         this.commandStack = new CommandStack();
         this.objectMap = {};
         this.selector = new Selector(this);
@@ -62,7 +66,7 @@ class Editor {
     }
 
     public initThree() {
-    
+
         // renderer
         this.renderer = new THREE.WebGLRenderer({
             logarithmicDepthBuffer: true,
@@ -75,22 +79,22 @@ class Editor {
 
 
         this.labelRenderer = new CSS2DRenderer();
-        this.labelRenderer.setSize( window.innerWidth, window.innerHeight );
+        this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
         this.labelRenderer.domElement.style.position = 'absolute';
         this.labelRenderer.domElement.style.top = '0px';
         this.labelRenderer.domElement.style.pointerEvents = 'none'; // don't want any events coming from the CSS renderer guy
-        document.body.appendChild( this.labelRenderer.domElement );
-    
+        document.body.appendChild(this.labelRenderer.domElement);
+
         // renderer.outputEncoding = THREE.sRGBEncoding;
         // renderer.toneMapping = THREE.ACESFilmicToneMapping;
         // renderer.toneMappingExposure = 1.0;
         this.renderer.shadowMap.enabled = true;
-    
+
         // scene
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(0xEBE2DB, 0.00003);
-    
-    
+
+
         // Perspective Camera
         const aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
 
@@ -111,7 +115,7 @@ class Editor {
         this.perspectiveCameraControls.maxPolarAngle = (Math.PI / 2) - (Math.PI / 360)
 
         // Orthographic Camera https://threejs.org/docs/#api/en/cameras/OrthographicCamera
-        this.orthoCamera = new THREE.OrthographicCamera(FRUSTUM_SIZE * aspect / - 2, FRUSTUM_SIZE * aspect / 2, FRUSTUM_SIZE / 2, FRUSTUM_SIZE / - 2, 0.01, 1000 );
+        this.orthoCamera = new THREE.OrthographicCamera(FRUSTUM_SIZE * aspect / - 2, FRUSTUM_SIZE * aspect / 2, FRUSTUM_SIZE / 2, FRUSTUM_SIZE / - 2, 0.01, 1000);
         this.orthoCamera.name = "Ortho Camera"
         this.orthoCamera.position.set(0, 0, 1);
         this.orthoCamera.up.set(0, 0, 1);
@@ -123,27 +127,25 @@ class Editor {
         this.orthoCamera.layers.disable(LayerEnums.Plants)
 
         // Orbit Controls https://threejs.org/docs/#examples/en/controls/OrbitControls.keys
-        this.orthoCameraControls = new OrbitControls( this.orthoCamera, this.canvas );
+        this.orthoCameraControls = new OrbitControls(this.orthoCamera, this.canvas);
         this.orthoCameraControls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
         this.orthoCameraControls.screenSpacePanning = false;
         this.orthoCameraControls.minDistance = 1;
         this.orthoCameraControls.maxDistance = 16384;
         this.orthoCameraControls.enableRotate = false
-        this.orthoCameraControls.listenToKeyEvents( window ); // optional
+        this.orthoCameraControls.listenToKeyEvents(window); // optional
+        this.orthoCameraControls.keyPanSpeed = ORBIT_CONTROLS_PAN_SPEED;
 
         this.orthoCameraControls.keys = {
             LEFT: 'KeyA',
-            UP: 'KeyW', 
-            RIGHT: 'KeyD', 
-            BOTTOM: 'KeyS' 
+            UP: 'KeyW',
+            RIGHT: 'KeyD',
+            BOTTOM: 'KeyS'
         }
 
         this.currentCamera = this.perspectiveCamera
         this.currentCameraControls = this.perspectiveCameraControls
-    
 
-
-    
         // TODO: split this out into a lighting object
         // lighting
         const intensity = 1.0;
@@ -152,7 +154,7 @@ class Editor {
         this.directionalLight.castShadow = true;
         this.scene.add(this.directionalLight);
         this.scene.name = "Scene"
-    
+
         // Shadow properties
         // https://threejs.org/docs/index.html#api/en/lights/shadows/DirectionalLightShadow
 
@@ -163,39 +165,52 @@ class Editor {
         this.directionalLight.shadow.mapSize.height = SHADOWMAP_RESOLUTION; // default
         this.directionalLight.shadow.camera.near = 0.5; // default
         this.directionalLight.shadow.camera.far = 500; // default
-    
+
         this.directionalLight.shadow.camera.left = -SHADOWMAP_WIDTH;
         this.directionalLight.shadow.camera.right = SHADOWMAP_WIDTH;
         this.directionalLight.shadow.camera.top = -SHADOWMAP_WIDTH;
         this.directionalLight.shadow.camera.bottom = SHADOWMAP_WIDTH;
 
         this.directionalLight.name = "Directional Light";
-    
+
         const ambient = new THREE.AmbientLight(WHITE, 0.5);
         ambient.name = "Ambient Light"
         this.scene.add(ambient);
-    
+
         const axesHelper = new THREE.AxesHelper(10);
         axesHelper.layers.set(LayerEnums.NoRaycast)
         axesHelper.position.set(0, 0, 0.003)
         axesHelper.name = "Axes Helper"
         this.scene.add(axesHelper);
-    
+
         this.scene.background = new THREE.Color(WHITE);
 
         this.perspectiveCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
         this.orthoCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
 
         // TODO: move transform controls from editor to Selector
-        this.transformControls = new TransformControls( this.perspectiveCamera, this.canvas );
-        this.transformControls.addEventListener( 'change', () => {
+        this.transformControls = new TransformControls(this.perspectiveCamera, this.canvas);
+        this.transformControls.addEventListener('change', () => {
             handleTransformControlsChange(this);
             requestRenderIfNotRequested(this);
-        } );  
+        });
+        this.setSnapping(snapper.snapEnabled)
 
         eventBus.on(EventEnums.BED_CREATION_STARTED, () => this.setBedMode())
         eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())
         eventBus.on(EventEnums.BED_EDITING_STARTED, (bed) => this.setBedMode(bed))
+        eventBus.on(EventEnums.SNAP_CHANGED, (value) => this.setSnapping(value))
+    }
+
+    private setSnapping(value: boolean) {
+        if (value) {
+            this.transformControls.setRotationSnap(ROTATION_DEGREES * 2);
+            this.transformControls.setTranslationSnap(snapper.metric ? 0.1 : snapper.inchesToMeters(1));
+
+        } else {
+            this.transformControls.setRotationSnap(null);
+            this.transformControls.setTranslationSnap(null);
+        }
     }
 
     public setOrthoCamera() {
@@ -268,36 +283,36 @@ class Editor {
     }
 
     public handleKeyDown(event) {
-        switch ( event.key ) {
+        switch (event.key) {
 
             case 't':
-                this.transformControls.setMode( 'translate' );
+                this.transformControls.setMode('translate');
                 break;
 
             case 'r':
-                this.transformControls.setMode( 'rotate' );
+                this.transformControls.setMode('rotate');
                 break;
 
             case 's':
-                this.transformControls.setMode( 'scale' );
+                this.transformControls.setMode('scale');
                 break;
 
             case '+':
             case '=':
-                this.transformControls.setSize( this.transformControls.size + 0.1 );
+                this.transformControls.setSize(this.transformControls.size + 0.1);
                 break;
 
             case '-':
             case '_':
-                this.transformControls.setSize( Math.max( this.transformControls.size - 0.1, 0.1 ) );
+                this.transformControls.setSize(Math.max(this.transformControls.size - 0.1, 0.1));
                 break;
 
             case 'x':
-                this.transformControls.showX = ! this.transformControls.showX;
+                this.transformControls.showX = !this.transformControls.showX;
                 break;
 
             case 'y':
-                this.transformControls.showY = ! this.transformControls.showY;
+                this.transformControls.showY = !this.transformControls.showY;
                 break;
 
             case 'z':
@@ -305,13 +320,13 @@ class Editor {
                 if (event.ctrlKey) {
                     this.undo();
                 } else {
-                    this.transformControls.showZ = ! this.transformControls.showZ;
+                    this.transformControls.showZ = !this.transformControls.showZ;
                 }
 
                 break;
 
             case ' ':
-                this.transformControls.enabled = ! this.transformControls.enabled;
+                this.transformControls.enabled = !this.transformControls.enabled;
                 break;
 
             case 'Escape':
@@ -322,4 +337,4 @@ class Editor {
     }
 
 }
-export {Editor};
+export { Editor };
