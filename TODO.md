@@ -210,8 +210,7 @@ BED EDITING FINISHED (FOR NOW)
     - [x] draw north
     - [x] draw arc
     - [x] draw angle text
-- [ ] parent rotation widget while translating
-- [ ] re-draw rotation widget while using CTRL+Z
+- [x] parent rotation widget while translating
 
 - [ ] add rotation and translation snapping
 https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap

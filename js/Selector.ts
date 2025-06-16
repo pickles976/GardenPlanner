@@ -30,6 +30,8 @@ class Selector {
         this.currentSelectedObject = undefined;
         this.transformControlsGizmo = undefined;
         this.isUsingTransformControls = false;
+
+        eventBus.on(EventEnums.OBJECT_CHANGED, () => this.drawRotationVisualizer())
     }
 
     private getCanvasRelativePosition(event) {
@@ -125,8 +127,9 @@ class Selector {
 
         eventBus.emit(EventEnums.OBJECT_SELECTED, undefined);
     }
+    
 
-    public handleRotationChange() {
+    public drawRotationVisualizer() {
 
 
         const object = this.currentSelectedObject;
@@ -182,6 +185,7 @@ class Selector {
         this.rotationAngleVisualizer = group
         this.editor.add(this.rotationAngleVisualizer)
     }
+    
 
 }
 

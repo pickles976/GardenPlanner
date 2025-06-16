@@ -21,63 +21,6 @@ const ANTI_ALIASING = true;
 const SCREEN_WIDTH = window.innerWidth;
 const SCREEN_HEIGHT = window.innerHeight;
 
-class GridManager {
-
-    meterGrid: THREE.GridHelper
-    decimeterGrid: THREE.GridHelper
-
-    footGrid: THREE.GridHelper
-    inchGrid: THREE.GridHelper
-
-    size: number;
-
-    constructor(editor) {
-        this.size = 64
-
-        this.meterGrid = new THREE.GridHelper(this.size, this.size, WHITE, WHITE);
-        this.meterGrid.layers.set(LayerEnums.NoRaycast)
-        this.meterGrid.rotateX(Math.PI / 2)
-        this.meterGrid.position.set(0, 0, 0.002)
-        editor.scene.add(this.meterGrid);
-
-        this.decimeterGrid = new THREE.GridHelper(this.size, this.size * 10, 0x555555, 0xAAAAAA);
-        this.decimeterGrid.layers.set(LayerEnums.NoRaycast)
-        this.decimeterGrid.rotateX(Math.PI / 2)
-        this.decimeterGrid.position.set(0, 0, 0.001)
-        editor.scene.add(this.decimeterGrid);
-
-        let footDivisions = 209.9737532808
-        this.footGrid = new THREE.GridHelper(this.size, footDivisions, WHITE, WHITE);
-        this.footGrid.layers.set(LayerEnums.NoRaycast)
-        this.footGrid.rotateX(Math.PI / 2)
-        this.footGrid.position.set(0, 0, 0.002)
-        editor.scene.add(this.footGrid);
-        this.footGrid.visible = false;
-
-        this.inchGrid = new THREE.GridHelper(this.size, footDivisions * 12, 0x555555, 0xAAAAAA);
-        this.inchGrid.layers.set(LayerEnums.NoRaycast)
-        this.inchGrid.rotateX(Math.PI / 2)
-        this.inchGrid.position.set(0, 0, 0.001)
-        editor.scene.add(this.inchGrid);
-        this.inchGrid.visible = false;
-    }
-
-    public setMetric(value: boolean) {
-        if (value) {
-            this.meterGrid.visible = true;
-            this.decimeterGrid.visible = true;
-            this.footGrid.visible = false;
-            this.inchGrid.visible = false;
-        } else {
-            this.meterGrid.visible = false;
-            this.decimeterGrid.visible = false;
-            this.footGrid.visible = true;
-            this.inchGrid.visible = true;
-        }
-    }
-
-}
-
 class Editor {
     /**
      * Holds all of our important Three.js instance stuff. We should try to move as much out of here as possible to avoid creating a 

@@ -69,13 +69,7 @@ export function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, p
 }
 
 export function handleTransformControlsChange(editor) {
-    switch (editor.transformControls.mode) {
-        case "rotate": 
-            editor.selector.handleRotationChange()
-            return;
-        default:
-            return
-    }
+    editor.selector.drawRotationVisualizer()
 }
 
 export function handleMouseMove(event, editor) {
