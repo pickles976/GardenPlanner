@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { LayerEnums} from './Constants';
+import { LayerEnum} from './Constants';
 import { WHITE } from './Colors';
 import { eventBus, EventEnums } from './EventBus';
 import { snapper } from './Snapping';
@@ -23,26 +23,26 @@ class GridManager {
         this.metric = snapper.metric;
 
         this.meterGrid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE, WHITE, WHITE);
-        this.meterGrid.layers.set(LayerEnums.NoRaycast)
+        this.meterGrid.layers.set(LayerEnum.NoRaycast)
         this.meterGrid.rotateX(Math.PI / 2)
         this.meterGrid.position.set(0, 0, 0.002)
         editor.scene.add(this.meterGrid);
 
         this.decimeterGrid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE * 10, 0x555555, 0xAAAAAA);
-        this.decimeterGrid.layers.set(LayerEnums.NoRaycast)
+        this.decimeterGrid.layers.set(LayerEnum.NoRaycast)
         this.decimeterGrid.rotateX(Math.PI / 2)
         this.decimeterGrid.position.set(0, 0, 0.001)
         editor.scene.add(this.decimeterGrid);
 
         let footDivisions = FEET_PER_METER * GRID_SIZE;
         this.footGrid = new THREE.GridHelper(GRID_SIZE, footDivisions, WHITE, WHITE);
-        this.footGrid.layers.set(LayerEnums.NoRaycast)
+        this.footGrid.layers.set(LayerEnum.NoRaycast)
         this.footGrid.rotateX(Math.PI / 2)
         this.footGrid.position.set(0, 0, 0.002)
         editor.scene.add(this.footGrid);
 
         this.inchGrid = new THREE.GridHelper(GRID_SIZE, footDivisions * 12, 0x555555, 0xAAAAAA);
-        this.inchGrid.layers.set(LayerEnums.NoRaycast)
+        this.inchGrid.layers.set(LayerEnum.NoRaycast)
         this.inchGrid.rotateX(Math.PI / 2)
         this.inchGrid.position.set(0, 0, 0.001)
         editor.scene.add(this.inchGrid);

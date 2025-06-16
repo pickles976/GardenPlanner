@@ -3,7 +3,7 @@ import { Editor } from './Editor';
 import { Selector } from './Selector';
 import { render } from './Rendering';
 import { eventBus } from './EventBus';
-import { EditorMode, LayerEnums } from './Constants';
+import { EditorMode, LayerEnum } from './Constants';
 import { BLACK, YELLOW } from './Colors';
 
 // TODO: CLEAN THIS UP
@@ -28,10 +28,10 @@ function performRaycast(event, editor, callback, layers){
     }
 }
 
-export function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3){
+function highlightMouseOverObject(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
     const selector = editor.selector;
 
-    if (selector.currentMousedOverObject === object || selector.currentSelectedObject === object) {
+    if (selector.currentMousedOverObject === object) {
         return
     }
 
@@ -68,6 +68,18 @@ export function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, p
     }
 }
 
+export function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3){
+
+    const selector = editor.selector;
+
+    if (selector.currentSelectedObject) {
+        // object.position.set(...point)
+    } 
+
+    highlightMouseOverObject(editor, object, point)
+
+}
+
 export function handleTransformControlsChange(editor) {
     editor.selector.drawRotationVisualizer()
 }
@@ -85,7 +97,7 @@ export function handleMouseMove(event, editor) {
             break;
         case EditorMode.BED:
             callback = (editor, object, point) => editor.bedEditor.handleMouseMove(editor, object, point);;
-            layers = [LayerEnums.Objects, LayerEnums.BedVertices]
+            layers = [LayerEnum.Objects, LayerEnum.BedVertices]
             break;
         default:
             break
@@ -122,7 +134,7 @@ export function handleMouseClick(event, editor) {
             break;
         case EditorMode.BED:
             callback = (editor, object, point) => editor.bedEditor.handleMouseClick(editor, object, point);
-            layers = [LayerEnums.Objects, LayerEnums.BedVertices]
+            layers = [LayerEnum.Objects, LayerEnum.BedVertices]
             break;
         default:
             break

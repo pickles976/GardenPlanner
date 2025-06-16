@@ -4,7 +4,7 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { requestRenderIfNotRequested } from './Rendering';
 import { Command } from './commands/Command';
 import { Selector } from './Selector';
-import { EditorMode, FRUSTUM_SIZE, LayerEnums } from './Constants';
+import { EditorMode, FRUSTUM_SIZE, LayerEnum } from './Constants';
 import { BedEditor } from './BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
@@ -127,7 +127,7 @@ class Editor {
         this.orthoCamera.layers.enableAll();
 
         // // TODO: CAMERA LAYERS CONFIG
-        // this.orthoCamera.layers.disable(LayerEnums.Plants)
+        // this.orthoCamera.layers.disable(LayerEnum.Plants)
 
         // Orbit Controls https://threejs.org/docs/#examples/en/controls/OrbitControls.keys
         this.orthoCameraControls = new OrbitControls(this.orthoCamera, this.canvas);
@@ -181,7 +181,7 @@ class Editor {
         this.scene.add(ambient);
 
         const axesHelper = new THREE.AxesHelper(10);
-        axesHelper.layers.set(LayerEnums.NoRaycast)
+        axesHelper.layers.set(LayerEnum.NoRaycast)
         axesHelper.position.set(0, 0, 0.003)
         axesHelper.name = "Axes Helper"
         this.scene.add(axesHelper);
@@ -282,7 +282,7 @@ class Editor {
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true) // change UI
         this.bedEditor.beginBedEditing(bed);
         this.selector.deselect();
-        this.hideCameraLayers([LayerEnums.Plants])
+        this.hideCameraLayers([LayerEnum.Plants])
     }
 
     public setObjectMode() {
@@ -292,7 +292,7 @@ class Editor {
         this.hideCameraLayers([])
     }
 
-    public hideCameraLayers(layers: LayerEnums[]) {
+    public hideCameraLayers(layers: LayerEnum[]) {
         this.perspectiveCamera.layers.enableAll()
         this.orthoCamera.layers.enableAll()
 

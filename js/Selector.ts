@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Editor } from "./Editor";
 import { Object3D } from 'three';
 import { eventBus, EventEnums } from './EventBus';
-import { FONT_SIZE, LayerEnums } from './Constants';
+import { FONT_SIZE, LayerEnum } from './Constants';
 import { destructureVector3Array, fontSizeString, getCSS2DText, rad2deg } from './Utils';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { GREEN, WHITE } from './Colors';
@@ -19,6 +19,7 @@ class Selector {
     editor: Editor
     currentMousedOverObject?: THREE.Object3D;
     currentSelectedObject?: THREE.Object3D;
+    originalLayers?: LayerEnum;
     transformControlsGizmo?: THREE.Object3D;
     isUsingTransformControls: boolean
 
@@ -29,7 +30,9 @@ class Selector {
     constructor (editor: Editor) {
         this.editor = editor;
         this.currentMousedOverObject = undefined;
+        this.originalLayers = undefined;
         this.currentSelectedObject = undefined;
+
         this.transformControlsGizmo = undefined;
         this.isUsingTransformControls = false;
         this.advancedTransformMode = false;
@@ -55,17 +58,15 @@ class Selector {
         };
     }
 
-    public performRaycast(event: Event, layers: LayerEnums[]) : THREE.Object3D[] {
+    public performRaycast(event: Event, layers: LayerEnum[]) : THREE.Object3D[] {
 
         // Set up layers        
         if (layers.length > 0) {
             raycaster.layers.disableAll();
-            layers.forEach((layer) => {
-                raycaster.layers.enable(layer)
-            })
+            layers.forEach((layer) => { raycaster.layers.enable(layer)});
         } else {
             raycaster.layers.enableAll();
-            raycaster.layers.disable(LayerEnums.NoRaycast)
+            raycaster.layers.disable(LayerEnum.NoRaycast);
         }
 
         // Get mouse position
@@ -93,7 +94,7 @@ class Selector {
         this.editor.transformControls.attach(object);
         this.transformControlsGizmo = this.editor.transformControls.getHelper();
         this.editor.scene.add(this.transformControlsGizmo);
-        this.transformControlsGizmo.layers.set(LayerEnums.NoRaycast)
+        this.transformControlsGizmo.layers.set(LayerEnum.NoRaycast)
     }
 
     private advancedTransformSelect(object: Object3D) {
@@ -119,6 +120,7 @@ class Selector {
         if (object === undefined) { // hide controls
             this.currentSelectedObject = undefined
         } else { // show controls
+
             this.currentSelectedObject = object;
 
             // Call object callback if exists
@@ -141,6 +143,10 @@ class Selector {
             this.simpleTransformSelect(object)
         }
 
+        // Disable raycast on selected object
+        this.originalLayers = this.currentSelectedObject.layers.mask;
+        this.currentSelectedObject.layers.set(LayerEnum.NoRaycast)
+
         this.drawRotationVisualizer()
 
         eventBus.emit(EventEnums.OBJECT_SELECTED, object);
@@ -156,7 +162,7 @@ class Selector {
     }
 
     private simpleTransformDeselect() {
-
+        
     }
 
     public deselect() {
@@ -170,6 +176,9 @@ class Selector {
         } else {
             this.simpleTransformDeselect()
         }
+
+        // Restore layers
+        this.currentSelectedObject.layers.set(this.originalLayers.valueOf() >> 1)
 
         // Call callback if exists
         if (this.currentSelectedObject.userData.onDeselect) {

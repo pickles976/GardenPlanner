@@ -9,11 +9,11 @@ enum EditorMode {
     BED = "BED"
 }
 
-enum LayerEnums {
+enum LayerEnum {
     NoRaycast = 0,
     Objects = 1,
     Plants = 2,
     BedVertices = 3,
 }
 
-export { EditorMode, LayerEnums };
+export { EditorMode, LayerEnum };

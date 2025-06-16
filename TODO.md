@@ -260,6 +260,10 @@ Write up about
 - modularity
 - what else?
 
+- [ ] fork branch
+- [ ] try refactor bed editor to use scene graph better
+- [ ] try refacotr selecotr
+
 #### PLANT EDITOR
 - [ ] add UI for placing and removing objects
     - [ ] button for creating new plant

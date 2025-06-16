@@ -28,7 +28,7 @@ import { CreateObjectCommand } from "./commands/CreateObjectCommand";
 import { SetPositionCommand } from "./commands/SetPositionCommand";
 import { eventBus, EventEnums } from "./EventBus";
 import { CommandStack } from "./CommandStack";
-import { FONT_SIZE, LayerEnums } from "./Constants";
+import { FONT_SIZE, LayerEnum } from "./Constants";
 import { Editor } from "./Editor";
 
 import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "./Colors";
@@ -105,7 +105,7 @@ function createVertexHandle(): Mesh {
     const vertex = new Mesh(
         new BoxGeometry(VERTEX_SIZE, VERTEX_SIZE, VERTEX_SIZE),
         new MeshPhongMaterial({ color: VERTEX_COLOR }))
-    vertex.layers.set(LayerEnums.BedVertices);
+    vertex.layers.set(LayerEnum.BedVertices);
     vertex.userData = { selectable: true, isVertexHandle: true }
     vertex.renderOrder = 100001; // Always draw on top
     return vertex
@@ -474,7 +474,7 @@ class BedEditor {
             bedColor: this.bedColor,
             borderColor: this.borderColor
         }
-        mergedMesh.layers.set(LayerEnums.Objects)
+        mergedMesh.layers.set(LayerEnum.Objects)
         mergedMesh.position.set(...centroid)
         mergedMesh.name = this.bedName;
 
@@ -517,7 +517,7 @@ class BedEditor {
                 p1: i % len,
                 p2: (i + 1) % len
             }
-            line.layers.set(LayerEnums.BedVertices)
+            line.layers.set(LayerEnum.BedVertices)
             this.lineSegments.push(lineSegment)
         }
 
