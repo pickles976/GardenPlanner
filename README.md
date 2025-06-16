@@ -9,6 +9,8 @@ https://pictogrammers.com/library/mdi/
 [Transform Controls](https://threejs.org/docs/#examples/en/controls/TransformControls)
 [Mitt](https://www.npmjs.com/package/mitt)
 
+https://github.com/Tencent-Hunyuan/Hunyuan3D-2
+
 - timeline?
 - ECS?
 - animations?
@@ -27,8 +29,9 @@ https://pictogrammers.com/library/mdi/
 - [x] 06/13/2025 -- add QOL features, refactor and cleanup (improve readability, improve view) (get feedback from users)
 
 # Week 3
-- [ ] 06/16/2025 -- minor improvements, measuring tools
-- [ ] 06/17/2025 -- start on plant editor
+- [x] 06/16/2025 -- minor improvements, hotkeys
+- [ ] 06/17/2025 -- refactor
+- [ ] 06/18/2025 -- start on plant editor
 
 - [ ] object creator and editor
 - [ ] add objects to scene

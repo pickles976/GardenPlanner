@@ -253,35 +253,6 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
 - [ ] try refactor bed editor to use scene graph better
 
-
-
-
-#### Measurement Tools
-- [x] grid lines
-- [x] toggle metric/imperial
-- [ ] placeable ruler
-- [ ] pen tool for area calculation
-
-- [ ] bug with clicking on line segments
-
-- [ ] let user set rotation from typing?
-- [ ] draw pointer to north as rotating UI element
-
-DOCUMENT SOFTWARE ARCHITECTURE
-
-#### Feedback
-- [ ] try out the bed editor mode for garden beds I designed
-- [ ] write down what worked well, what didn't
-- [ ] make Erika repeat the same task
-- [ ] get feedback on appearance
-- [ ] get feedback on interactions
-
-Write up about 
-- design philosophy
-- event flow/propagation
-- modularity
-- what else?
-
 #### PLANT EDITOR
 - [ ] add UI for placing and removing objects
     - [ ] button for creating new plant
@@ -299,6 +270,32 @@ Write up about
 - [ ] save basic editor
 - [ ] get feedback from Erika, give her a task like "design my garden from layout" and watch her interaction with the software
 - [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
+
+
+#### Feedback
+- [ ] rotation in simple transform mode
+- [ ] jump to selected object in scene w/ double click
+- [ ] type to set length of line in pen mode
+- [ ] esc to reset line
+- [ ] put a crosshair at bed editor path start to make closing easier
+- [ ] draw angle on completed line segments
+- [ ] shift+click to select multiple
+- [ ] fix polygon drawing bug
+- [ ] bug with clicking on line segments
+- [ ] let user set rotation from typing?
+
+#### Measurement Tools
+- [ ] placeable ruler
+- [ ] pen tool for area calculation
+- [ ] draw pointer to north as rotating UI element
+
+Write up about 
+- design philosophy
+- event flow/propagation
+- modularity
+- what else?
+
+
 
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
