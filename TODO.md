@@ -216,12 +216,12 @@ BED EDITING FINISHED (FOR NOW)
 https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
 #### Object Mode Improvements
-- [ ] create a delete command in object mode
-    - [ ] make undoable
-- [ ] add CTRL+D and CTRL+C functionality
-
 - [x] move more with WASD in vertex mode
+- [x] create a delete command in object mode
+    - [x] make undoable
+- [ ] add ability to swap between ortho and perspective camera
 
+- [ ] add CTRL+D and CTRL+C functionality
 
 - [ ] swap between transform controls handles, and parenting object to raycast
 - [ ] add ability of UI to change object size object panel

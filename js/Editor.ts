@@ -13,6 +13,7 @@ import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer
 import { WHITE } from './Colors';
 import { handleTransformControlsChange } from './EventHandlers';
 import { snapper } from './Snapping';
+import { DeleteObjectCommand } from './commands/DeleteObjectCommand';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -331,6 +332,12 @@ class Editor {
 
             case 'Escape':
                 this.selector.deselect();
+                break;
+
+            case 'Delete':
+                if (this.selector.currentSelectedObject) {
+                    this.execute(new DeleteObjectCommand(this.selector.currentSelectedObject, this))
+                }
                 break;
 
         }
