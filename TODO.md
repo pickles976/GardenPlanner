@@ -259,8 +259,8 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [x] add top toolbar
     - [x] import from example editor
     - [x] resolve bugs
+- [x] allow adding a bed with the top toolbar
 - [ ] allow adding a cube with the the top toolbar
-- [ ] allow adding a bed with the top toolbar
 
 - [ ] do ghosting when adding in a new object in raycast pose mode
 

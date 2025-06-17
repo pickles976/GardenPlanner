@@ -112,7 +112,7 @@ function createVertexHandle(): Mesh {
     return vertex
 }
 
-function createBed(vertices: Vector3[], height: number, material: Material) {
+function createBed(vertices: Vector3[], height: number, material: Material) : Mesh {
     /**
      * Create the 3D bed object from an array of points.
      */
@@ -208,7 +208,7 @@ function createPolygon(points: Vector3[]): Mesh {
     return polygon;
 }
 
-function createLinePreview(startPoint: Vector3, endPoint: Vector3) : Object3D {
+function createLinePreview(startPoint: Vector3, endPoint: Vector3) : Line2 {
     const geometry = new LineGeometry();
     geometry.setPositions(destructureVector3Array([startPoint, endPoint]))
     const material = new LineMaterial({ color: YELLOW, linewidth: LINE_WIDTH, depthWrite: false, depthTest: false });
@@ -488,7 +488,8 @@ class BedEditor {
             borderHeight: this.borderHeight,
             borderWidth: this.borderWidth,
             bedColor: this.bedColor,
-            borderColor: this.borderColor
+            borderColor: this.borderColor,
+            name: this.bedName,
         }
         mergedMesh.layers.set(LayerEnum.Objects)
         mergedMesh.position.set(...centroid)
