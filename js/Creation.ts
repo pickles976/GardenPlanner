@@ -4,21 +4,54 @@ import { CreateObjectCommand } from './commands/CreateObjectCommand';
 import { LayerEnum } from './Constants';
 
 export function createCube(editor: Editor): THREE.Mesh {
-    const boxMat = new THREE.MeshPhongMaterial({
+    const mat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
     })
-    const boxGeo = new THREE.BoxGeometry(0.3048, 0.3048, 0.3048);
-    const boxMesh = new THREE.Mesh(boxGeo, boxMat)
-    boxMesh.castShadow = true;
-    boxMesh.receiveShadow = true;
-    boxMesh.userData = {selectable: true}
-    boxMesh.layers.set(LayerEnum.Plants)
-    // TODO: make this dynamic
-    boxMesh.name = "Box";
+    const geo = new THREE.BoxGeometry(0.3048, 0.3048, 0.3048);
+    const mesh = new THREE.Mesh(geo, mat)
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.userData = {selectable: true}
+    mesh.layers.set(LayerEnum.Plants)
+    mesh.name = "Box";
 
-    editor.execute(new CreateObjectCommand(boxMesh, editor));
+    editor.execute(new CreateObjectCommand(mesh, editor));
 
-    return boxMesh
+    return mesh
+}
+
+export function createCylinder(editor: Editor): THREE.Mesh {
+    const mat = new THREE.MeshPhongMaterial({
+        color: 0xDDDDDD,
+    })
+    const geo = new THREE.CylinderGeometry(0.3048, 0.3048, 0.3048, 32);
+    const mesh = new THREE.Mesh(geo, mat)
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.userData = {selectable: true}
+    mesh.layers.set(LayerEnum.Plants)
+    mesh.name = "Cylinder";
+
+    editor.execute(new CreateObjectCommand(mesh, editor));
+
+    return mesh
+}
+
+export function createSphere(editor: Editor): THREE.Mesh {
+    const mat = new THREE.MeshPhongMaterial({
+        color: 0xDDDDDD,
+    })
+    const geo = new THREE.SphereGeometry(0.3048, 32, 16);
+    const mesh = new THREE.Mesh(geo, mat)
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.userData = {selectable: true}
+    mesh.layers.set(LayerEnum.Plants)
+    mesh.name = "Sphere";
+
+    editor.execute(new CreateObjectCommand(mesh, editor));
+
+    return mesh
 }
 
 export function createTorus(editor: Editor): THREE.Mesh {

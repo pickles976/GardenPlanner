@@ -5,7 +5,7 @@ import { UIPanel, UIRow } from '../libs/ui.js';
 import { CreateObjectCommand } from '../commands/CreateObjectCommand.js';
 import { Strings } from '../sidebar/Strings.js';
 import { eventBus, EventEnums } from '../EventBus.js';
-import { createCube, createTorus } from '../Creation.js';
+import { createCube, createCylinder, createSphere, createTorus } from '../Creation.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -127,11 +127,18 @@ function MenubarAdd( editor ) {
 	option.onClick( () => createCube(editor));
 	objectSubmenu.add( option );
 
-	// Torus
+	// Cylinder
 	option = new UIRow();
 	option.setClass( 'option' );
-	option.setTextContent( "Torus" );
-	option.onClick(() => createTorus(editor));
+	option.setTextContent( "Cylinder" );
+	option.onClick(() => createCylinder(editor));
+	objectSubmenu.add( option );
+
+	// Sphere
+	option = new UIRow();
+	option.setClass( 'option' );
+	option.setTextContent( "Sphere" );
+	option.onClick(() => createSphere(editor));
 	objectSubmenu.add( option );
 
 	return container;

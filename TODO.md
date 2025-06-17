@@ -230,12 +230,13 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [x] show grid
     - [x] top-down camera
 
-- [ ] create meshes 
+- [x] create meshes 
     - [x] cube
-    - [ ] cylinder
-    - [ ] sphere
+    - [x] sphere
+    - [x] cylinder
 
 - [ ] add plant configuration panel
+- [ ] add plant editor class
 - [ ] on plant select, populate panel
     - [ ] set size
     - [ ] set color
@@ -245,9 +246,15 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
 - [ ] plant browser UI with image preview
 
+- [ ] bug where toggling grid only toggles it for one camera
+
 #### OBJECT EDITOR
 - [ ] draw a fence
 - [ ] create a ruler object
+- [ ] swap between meters and inches on ui panel
+- [ ] controls specific features of geometry in UI panel
+    - [ ] specify radius in inches/ft/meters for sphere
+    - [ ] specify radius/height for cylinder
 
 #### Feedback
 - [ ] rotation in simple transform mode
@@ -311,6 +318,7 @@ MVP finished!
 - [ ] garden concept browser?
 - [ ] batch processing for sun location
 - [ ] payment system and stuff
+- [ ] texture ground with satellite view from google?
 
 # Stateful representation
 ```json
