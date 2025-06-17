@@ -7,12 +7,13 @@
  * 4. Save finalized mesh
  * 
  * TODO: make this all command-based at some point
+ * 1. create a mapping of vertex handle objects to vertices
+ * 2. add a callback to the vertex handles to update the vertices based on index
+ * 3. make everything command-based, use UUIDs to track
  */
 
 import { Object3D, ShapeGeometry, MeshBasicMaterial, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh, Vector2, Shape, Material, ExtrudeGeometry, Path, Float32BufferAttribute, Group } from "three";
 import * as THREE from "three";
-
-
 
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
@@ -202,7 +203,18 @@ function createPolygon(points: Vector3[]): Mesh {
     let polyShape = new Shape(points.map((coord) => new Vector2(coord.x, coord.y)))
     const polyGeometry = new ShapeGeometry(polyShape);
     polyGeometry.setAttribute("position", new Float32BufferAttribute(points.map(coord => [coord.x, coord.y, coord.z]).flat(), 3))
-    return new Mesh(polyGeometry, new MeshBasicMaterial({ color: GREEN, side: THREE.DoubleSide, transparent: true, opacity: POLYGON_OPACITY, depthWrite: false, depthTest: false }))
+    const polygon = new Mesh(polyGeometry, new MeshBasicMaterial({ color: GREEN, side: THREE.DoubleSide, transparent: true, opacity: POLYGON_OPACITY, depthWrite: false, depthTest: false }))
+    polygon.layers.set([LayerEnum.NoRaycast])
+    return polygon;
+}
+
+function createLinePreview(startPoint: Vector3, endPoint: Vector3) : Object3D {
+    const geometry = new LineGeometry();
+    geometry.setPositions(destructureVector3Array([startPoint, endPoint]))
+    const material = new LineMaterial({ color: YELLOW, linewidth: LINE_WIDTH, depthWrite: false, depthTest: false });
+    const linePreview = new Line2(geometry, material);
+    linePreview.renderOrder = 100000; // Always draw on top
+    return linePreview;
 }
 
 enum BedEditorMode {
@@ -350,6 +362,10 @@ class BedEditor {
         while (this.commandStack.stack.length > 0) {
             this.commandStack.undo()
         }
+
+        this.linePreview = undefined;
+        this.angleText = undefined;
+        this.distanceText = undefined;
 
     }
 
@@ -534,23 +550,30 @@ class BedEditor {
         const vertices = this.vertexHandles.map((item) => item.position.clone());
         const centroid = getCentroid(vertices);
 
-        this.editor.remove(this.saveButton)
-        this.saveButton = createButton(centroid, "/icons/check-circle.svg", UI_GREEN_COLOR)
-        this.saveButton.center.set(1.0, 0.5);
-        this.editor.add(this.saveButton)
+        if (this.saveButton === undefined) {
+            this.saveButton = createButton(centroid, "/icons/check-circle.svg", UI_GREEN_COLOR)
+            this.saveButton.center.set(1.0, 0.5);
+            this.saveButton.element.addEventListener('click', () => {
+                eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED)
+            });
+            this.editor.add(this.saveButton)
+        } else {
+            this.saveButton.position.set(...centroid);
+        }
 
-        this.saveButton.element.addEventListener('click', () => {
-            eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED)
-        });
+        if (this.cancelButton === undefined) {
+            this.cancelButton = createButton(centroid, "/icons/cancel.svg", UI_GRAY_COLOR)
+            this.cancelButton.center.set(0.0, 0.5);
+            this.editor.add(this.cancelButton)
 
-        this.editor.remove(this.cancelButton)
-        this.cancelButton = createButton(centroid, "/icons/cancel.svg", UI_GRAY_COLOR)
-        this.cancelButton.center.set(0.0, 0.5);
-        this.editor.add(this.cancelButton)
+            this.cancelButton.element.addEventListener('click', () => {
+                eventBus.emit(EventEnums.BED_EDITING_CANCELLED)
+            });
+        } else {
+            this.cancelButton.position.set(...centroid);
+        }
 
-        this.cancelButton.element.addEventListener('click', () => {
-            eventBus.emit(EventEnums.BED_EDITING_CANCELLED)
-        });
+
 
     }
 
@@ -600,10 +623,13 @@ class BedEditor {
         // Create line segment
         const lineSegment = createLineSegment(point, this.vertices[this.vertices.length - 2].clone());
         this.commandStack.execute(new CreateObjectCommand(lineSegment, this.editor));
+        // TODO: add a callback to this guy?
 
         // Remove previous labels
         this.editor.remove(this.angleText)
         this.editor.remove(this.distanceText)
+        this.angleText = undefined;
+        this.distanceText = undefined;
 
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
@@ -660,36 +686,45 @@ class BedEditor {
 
         this.lastPoint = point;
 
-        this.editor.remove(this.linePreview)
-        this.editor.remove(this.angleText)
-        this.editor.remove(this.distanceText)
-
         if (this.vertices.length == 0) {
             return
         }
 
         // Draw line preview to show what new line segment would look like
         const lastPoint = this.vertices[this.vertices.length - 1]
-        const geometry = new LineGeometry();
-        geometry.setPositions(destructureVector3Array([lastPoint, point]))
-        const material = new LineMaterial({ color: YELLOW, linewidth: LINE_WIDTH, depthWrite: false, depthTest: false });
-        this.linePreview = new Line2(geometry, material);
-        this.linePreview.renderOrder = 100000; // Always draw on top
-        this.editor.add(this.linePreview)
+        if (this.linePreview === undefined) {
+            this.linePreview = createLinePreview(lastPoint, point)
+            this.editor.add(this.linePreview)
+        } else {
+            this.linePreview.geometry.setPositions(destructureVector3Array([lastPoint, point]));
+        }
 
         // Angle text
         const segment = lastPoint.clone().sub(point)
         let angle = rad2deg(segment.angleTo(new Vector3(0, -1, 0)));
         let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-        this.angleText = getCSS2DText(`${angle.toFixed(2)}°`, fontSizeString(FONT_SIZE))
-        this.angleText.position.set(...textPos)
-        this.editor.add(this.angleText)
+
+        if (this.angleText === undefined) {
+            this.angleText = getCSS2DText(`${angle.toFixed(2)}°`, fontSizeString(FONT_SIZE))
+            this.angleText.position.set(...textPos)
+            this.editor.add(this.angleText)
+        } else {
+            this.angleText.element.textContent = `${angle.toFixed(2)}°`
+            this.angleText.position.set(...textPos)
+        }
+
 
         // Distance
         textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
-        this.distanceText = getCSS2DText(snapper.getText(lastPoint.distanceTo(point)), fontSizeString(-1 * FONT_SIZE))
-        this.distanceText.position.set(...textPos)
-        this.editor.add(this.distanceText)
+        if (this.distanceText === undefined) {
+            this.distanceText = getCSS2DText(snapper.getText(lastPoint.distanceTo(point)), fontSizeString(-1 * FONT_SIZE))
+            this.distanceText.position.set(...textPos)
+            this.editor.add(this.distanceText)
+        } else {
+            this.distanceText.element.textContent = snapper.getText(lastPoint.distanceTo(point));
+            this.distanceText.position.set(...textPos)
+        }
+
 
     }
 
@@ -737,7 +772,7 @@ class BedEditor {
                 break;
             case BedEditorMode.EDIT_VERTEX_MODE:
                 // call this function for free highlighting
-                handleMouseMoveObjectMode(editor, object, point);
+                handleMouseMoveObjectMode(editor, intersections);
                 this.handleMouseMoveEditVerticesMode(editor, object, point);
                 eventBus.emit(EventEnums.VERTEX_EDITING_UPDATED);
                 break;
@@ -815,7 +850,7 @@ class BedEditor {
             default:
                 break;
         }
-        this.handleMouseMove(this.editor, undefined, this.lastPoint);
+        this.handleMouseMove(this.editor, [{object: undefined, point: this.lastPoint}]);
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 

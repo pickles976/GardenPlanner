@@ -251,9 +251,9 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
 - [x] refactor
 
-- [ ] try refactor bed editor to use scene graph better
-
 #### PLANT EDITOR
+- [ ] add top toolbar
+
 - [ ] add UI for placing and removing objects
     - [ ] button for creating new plant
     - [ ] plant browser UI with image preview
@@ -319,6 +319,9 @@ Write up about
 - [ ] allow users to create their own plants
 
 - [ ] complete web client
+
+## REFACTORING
+- [ ] try refactor bed editor to use scene graph better
 
 MVP finished!
 
