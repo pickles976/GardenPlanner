@@ -15,12 +15,10 @@ class SidebarGlobals {
     editor: Editor;
     container: UIPanel;
 
-    cameraRow: UIRow;
     snapRow: UIRow;
     metricRow: UIRow;
     transformRow: UIRow;
 
-    cameraCheck: UICheckbox;
     snapCheck: UICheckbox;
     metricCheck: UICheckbox;
     transformCheck: UICheckbox;
@@ -33,13 +31,6 @@ class SidebarGlobals {
         this.container.setBorderTop( '0' );
         this.container.setPaddingTop( '20px' );
         this.container.setDisplay("Block")
-
-        this.cameraRow = new UIRow();
-        this.cameraCheck = new UICheckbox();
-        this.cameraCheck.setValue(false);
-        this.cameraRow.add(this.cameraCheck);
-        this.cameraRow.add(new UIText(" Top-Down Camera"));
-        this.cameraRow.add( new UIText( "SHIFT+C" ).setClass( 'key' ));
 
         this.snapRow = new UIRow();
         this.snapCheck = new UICheckbox();
@@ -67,12 +58,9 @@ class SidebarGlobals {
         this.container.add(this.metricRow)
         this.container.add(this.transformRow)
 
-        this.cameraCheck.onClick(() => eventBus.emit(EventEnums.CAMERA_CHANGED, this.cameraCheck.getValue()))
         this.snapCheck.onClick(() => eventBus.emit(EventEnums.SNAP_CHANGED, this.snapCheck.getValue()))
         this.metricCheck.onClick(() => eventBus.emit(EventEnums.METRIC_CHANGED, this.metricCheck.getValue()))
         this.transformCheck.onClick(() => eventBus.emit(EventEnums.TRANSFORM_MODE_CHANGED, this.transformCheck.getValue()))
-
-        eventBus.on(EventEnums.CHANGE_CAMERA_UI, (value) => this.cameraCheck.setValue(value))
     }
 
 }

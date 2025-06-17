@@ -64,7 +64,7 @@ const menubar = new Menubar( editor );
 document.body.appendChild( menubar.container.dom );
 
 window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
-window.addEventListener('keydown', (event) => handleKeyDown(event, editor, sidebar, menubarG));
+window.addEventListener('keydown', (event) => handleKeyDown(event, editor, sidebar, menubar));
 
 editor.canvas.addEventListener('mousemove', () => requestRenderIfNotRequested(editor));
 editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));

@@ -508,6 +508,7 @@ class BedEditor {
         setDefaultCursor()
         this.cleanUp()
         this.editor.setObjectMode()
+        eventBus.emit(EventEnums.CHANGE_CAMERA_UI, false)
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 

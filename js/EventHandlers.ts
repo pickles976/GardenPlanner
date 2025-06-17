@@ -203,6 +203,7 @@ export function handleKeyDown(event, editor: Editor, sidebar: Sidebar, menuBar: 
 
     // UI Keypress events
     menuBar.handleKeyDown(event)
+    sidebar.handleKeyDown(event)
 
     // Editor keypress events
     switch (editor.mode) {

@@ -413,7 +413,7 @@ select {
 			display: none;
 			padding: 5px 0;
 			background: #eee;
-			min-width: 150px;
+			min-width: 220px;
 			max-height: calc(100vh - 80px);
 			overflow: auto;
 		}

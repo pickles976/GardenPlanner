@@ -262,7 +262,9 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [x] allow adding a bed with the top toolbar
 - [x] allow adding a cube with the the top toolbar
 
-- [ ] move globals to "view"
+- [x] move globals to "view"
+    - [x] show grid
+    - [x] top-down camera
 
 - [ ] add plant configuration panel
     - [ ] set size

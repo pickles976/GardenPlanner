@@ -12,6 +12,7 @@ class MenubarView {
 	states: Object;
 
 	gridHelper: UIRow;
+	cameraHelper: UIRow;
 
 	constructor (editor: Editor) {
 		this.editor = editor;
@@ -28,12 +29,9 @@ class MenubarView {
 		this.container.add( options );
 
 		// Helpers
-
 		this.states = {
 			gridHelper: true,
-			cameraHelpers: true,
-			lightHelpers: true,
-			skeletonHelpers: true
+			cameraHelper: false
 		};
 
 		// Grid Helper
@@ -43,14 +41,34 @@ class MenubarView {
 		this.gridHelper.onClick(() => this.toggleGrid());
 		this.gridHelper.toggleClass('toggle-on', true)
 
-		options.add( this.gridHelper );
+		// Camera Helper
+		this.cameraHelper = new UIRow().addClass( 'option' ).addClass( 'toggle' ).setTextContent( "Top-Down Camera" )
+		this.cameraHelper.add( new UIText( "SHIFT+C" ).setClass( 'key' ));
+		this.cameraHelper.onClick(() => this.toggleCamera());
+		this.cameraHelper.toggleClass('toggle-on', false)
 
+		options.add( this.gridHelper );
+		options.add(this.cameraHelper)
+
+		eventBus.on(EventEnums.CHANGE_CAMERA_UI, (value) => this.setCamera(value))
+
+	}
+
+	public setCamera(value) {
+		this.states.cameraHelper = value;
+		this.cameraHelper.toggleClass('toggle-on', value)
 	}
 
 	public toggleGrid() {
 		this.states.gridHelper = ! this.states.gridHelper;
 		eventBus.emit(EventEnums.GRID_VISIBILITY_CHANGED, this.states.gridHelper)
 		this.gridHelper.toggleClass( 'toggle-on', this.states.gridHelper );
+	}
+
+	public toggleCamera() {
+		this.states.cameraHelper = !this.states.cameraHelper;
+		eventBus.emit(EventEnums.CAMERA_CHANGED, this.states.cameraHelper)
+		this.cameraHelper.toggleClass( 'toggle-on', this.states.cameraHelper );
 	}
 
 
@@ -207,24 +225,12 @@ class MenubarView {
         if (e.shiftKey) {
             switch (e.code) {
                 case 'KeyC':
-                    this.cameraCheck.setValue(!this.cameraCheck.getValue());
-                    eventBus.emit(EventEnums.CAMERA_CHANGED, this.cameraCheck.getValue());
+                    this.toggleCamera()
+                    eventBus.emit(EventEnums.GRID_VISIBILITY_CHANGED, this.states.cameraHelper);
                     break;
                 case 'KeyG':
 					this.toggleGrid()
                     eventBus.emit(EventEnums.GRID_VISIBILITY_CHANGED, this.states.gridHelper);
-                    break;
-                case 'KeyS':
-                    this.snapCheck.setValue(!this.snapCheck.getValue());
-                    eventBus.emit(EventEnums.SNAP_CHANGED, this.snapCheck.getValue());
-                    break;
-                case 'KeyM':
-                    this.metricCheck.setValue(!this.metricCheck.getValue());
-                    eventBus.emit(EventEnums.METRIC_CHANGED, this.metricCheck.getValue());
-                    break;
-                case 'KeyT':
-                    this.transformCheck.setValue(!this.transformCheck.getValue());
-                    eventBus.emit(EventEnums.TRANSFORM_MODE_CHANGED, this.transformCheck.getValue());
                     break;
             }
 
