@@ -33,7 +33,7 @@ import { Editor } from "./Editor";
 
 import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "./Colors";
 import { setCrossCursor, setDefaultCursor } from "./Cursors";
-import { handleMouseMoveObjectMode } from "./EventHandlers";
+import { handleMouseMoveObjectMode, processIntersections } from "./EventHandlers";
 import { snapper } from "./Snapping";
 
 const INITIAL_BED_HEIGHT = 0.15;
@@ -583,7 +583,9 @@ class BedEditor {
         return false;
     }
 
-    private handleMouseClickPlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
+    private handleMouseClickPlaceVerticesMode(editor: Editor, intersections) {
+
+        const [object, point] = processIntersections(intersections)
 
         // If loop is closed, go to `VERTEX_EDIT_MODE`
         if (this.tryCloseLoop(point)) {
@@ -608,7 +610,9 @@ class BedEditor {
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
-    private handleMouseClickEditVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
+    private handleMouseClickEditVerticesMode(editor: Editor, intersections) {
+
+        const [object, point] = processIntersections(intersections)
 
         if (this.selectedHandle === undefined) {
 
@@ -636,7 +640,9 @@ class BedEditor {
 
     }
 
-    public handleMouseClick(editor: Editor, object: Object3D, point: Vector3) {
+    public handleMouseClick(editor: Editor, intersections) {
+
+        const [object, point] = processIntersections(intersections)
 
         if (point === undefined) {
             return
@@ -654,7 +660,9 @@ class BedEditor {
         }
     }
 
-    private handleMouseMovePlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
+    private handleMouseMovePlaceVerticesMode(editor: Editor, intersections) {
+
+        const [object, point] = processIntersections(intersections)
 
         this.lastPoint = point;
 
@@ -690,7 +698,9 @@ class BedEditor {
         this.editor.add(this.distanceText)
     }
 
-    private handleMouseMoveEditVerticesMode(editor, object, point) {
+    private handleMouseMoveEditVerticesMode(editor, intersections) {
+
+        const [object, point] = processIntersections(intersections)
 
         setDefaultCursor();
 
@@ -717,7 +727,9 @@ class BedEditor {
         }
     }
 
-    public handleMouseMove(editor: Editor, object: Object3D, point: Vector3) {
+    public handleMouseMove(editor: Editor, intersections) {
+
+        const [object, point] = processIntersections(intersections)
 
         if (point === undefined) {
             return

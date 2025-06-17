@@ -9,29 +9,28 @@ import { SetPositionCommand } from './commands/SetPositionCommand';
 import { Vector3 } from 'three';
 import { snapper } from './Snapping';
 
+export function processIntersections(intersections) {
+    if (intersections.length > 0) {
+        const intersection = intersections[ 0 ];
+        return [intersection.object, intersection.point]
+    }
+    return [undefined, undefined];
+}
+
 // TODO: CLEAN THIS UP
 function performRaycast(event, editor, callback, layers){
 
     const selector = editor.selector;
     let intersections = selector.performRaycast(event, layers);
-    if ( intersections.length > 0 ) {
+    callback(editor, intersections);
 
-        const intersection = intersections[ 0 ];
-        const object = intersection.object;
-        const point = intersection.point;
-
-        callback(editor, object, point);
-        return true;
-
-    } else {
-
-        callback(editor, undefined, undefined);
-        return false;
-
-    }
+    return (intersections.length > 0) ? true : false;
 }
 
-function highlightMouseOverObject(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
+function highlightMouseOverObject(editor: Editor, intersections) {
+
+    const [object, point] = processIntersections(intersections)
+
     const selector = editor.selector;
 
     if (selector.currentMousedOverObject === object) {
@@ -71,7 +70,9 @@ function highlightMouseOverObject(editor: Editor, object?: THREE.Mesh, point?: T
     }
 }
 
-export function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3){
+export function handleMouseMoveObjectMode(editor: Editor, intersections){
+
+    const [object, point] = processIntersections(intersections)
 
     const selector = editor.selector;
 
@@ -91,7 +92,7 @@ export function handleMouseMoveObjectMode(editor: Editor, object?: THREE.Mesh, p
 
     } 
 
-    highlightMouseOverObject(editor, object, point)
+    highlightMouseOverObject(editor, intersections)
 
 }
 
@@ -111,7 +112,7 @@ export function handleMouseMove(event, editor) {
             callback = handleMouseMoveObjectMode;
             break;
         case EditorMode.BED:
-            callback = (editor, object, point) => editor.bedEditor.handleMouseMove(editor, object, point);;
+            callback = (editor, intersections) => editor.bedEditor.handleMouseMove(editor, intersections);;
             layers = [LayerEnum.Objects, LayerEnum.BedVertices]
             break;
         default:
@@ -122,7 +123,9 @@ export function handleMouseMove(event, editor) {
 
 }
 
-export function handleMouseClickObjectMode(editor: Editor, object?: THREE.Mesh, point?: THREE.Vector3) {
+export function handleMouseClickObjectMode(editor: Editor, intersections) {
+
+    const [object, point] = processIntersections(intersections)
 
     // Don't do anything if we are actively using the transform controls
     if (editor.selector.isUsingTransformControls === true) {
@@ -150,7 +153,7 @@ export function handleMouseClick(event, editor) {
             callback = handleMouseClickObjectMode;
             break;
         case EditorMode.BED:
-            callback = (editor, object, point) => editor.bedEditor.handleMouseClick(editor, object, point);
+            callback = (editor, intersections) => editor.bedEditor.handleMouseClick(editor, intersections);
             layers = [LayerEnum.Objects, LayerEnum.BedVertices]
             break;
         default:
