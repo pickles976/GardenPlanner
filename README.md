@@ -11,6 +11,9 @@ https://pictogrammers.com/library/mdi/
 
 https://github.com/Tencent-Hunyuan/Hunyuan3D-2
 
+Removing anti-aliasing
+https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
+
 - timeline?
 - ECS?
 - animations?
@@ -30,7 +33,7 @@ https://github.com/Tencent-Hunyuan/Hunyuan3D-2
 
 # Week 3
 - [x] 06/16/2025 -- minor improvements, hotkeys
-- [ ] 06/17/2025 -- refactor
+- [x] 06/17/2025 -- refactor
 - [ ] 06/18/2025 -- start on plant editor
 
 - [ ] object creator and editor

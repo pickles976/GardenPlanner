@@ -101,7 +101,7 @@ class Editor {
         // Perspective Camera
         const aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
 
-        this.perspectiveCamera = new THREE.PerspectiveCamera(60, aspect, 0.1, 2000000);
+        this.perspectiveCamera = new THREE.PerspectiveCamera(60, aspect, 0.01, 2000000);
         this.perspectiveCamera.name = "Perspective Camera"
         this.perspectiveCamera.position.set(0, -1, 1);
         this.perspectiveCamera.up.set(0, 0, 1);
@@ -113,7 +113,7 @@ class Editor {
         this.perspectiveCameraControls.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
         this.perspectiveCameraControls.dampingFactor = 0.05;
         this.perspectiveCameraControls.screenSpacePanning = false;
-        this.perspectiveCameraControls.minDistance = 1;
+        this.perspectiveCameraControls.minDistance = 0.1;
         this.perspectiveCameraControls.maxDistance = 16384;
         this.perspectiveCameraControls.maxPolarAngle = (Math.PI / 2) - (Math.PI / 360)
 
@@ -133,7 +133,7 @@ class Editor {
         this.orthoCameraControls = new OrbitControls(this.orthoCamera, this.canvas);
         this.orthoCameraControls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
         this.orthoCameraControls.screenSpacePanning = false;
-        this.orthoCameraControls.minDistance = 1;
+        this.orthoCameraControls.minDistance = 0.1;
         this.orthoCameraControls.maxDistance = 16384;
         this.orthoCameraControls.enableRotate = false
         this.orthoCameraControls.listenToKeyEvents(window); // optional

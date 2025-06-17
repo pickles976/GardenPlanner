@@ -2,8 +2,6 @@ import { UITabbedPanel, UISpan, UIPanel } from '../libs/ui.js';
 
 import { SidebarScene } from './Sidebar.Scene.js';
 import { SidebarProperties } from './Sidebar.Properties.js';
-import { SidebarProject } from './Sidebar.Project.js';
-import { SidebarSettings } from './Sidebar.Settings.js';
 import { SidebarGlobals } from './Sidebar.Globals.ts';
 
 import { Strings } from './Strings.js';
@@ -50,7 +48,7 @@ class Sidebar {
 	}
 
 	public handleKeyDown(event) {
-		// this.sidebarGlobals.handleKeyDown(event)
+		this.sidebarGlobals.handleKeyDown(event)
 	}
 
 

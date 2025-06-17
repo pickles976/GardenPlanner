@@ -53,7 +53,6 @@ class SidebarGlobals {
         this.transformRow.add(new UIText(" Advanced Transform"));
         this.transformRow.add( new UIText( "SHIFT+T" ).setClass( 'key' ));
 
-        this.container.add(this.cameraRow)
         this.container.add(this.snapRow)
         this.container.add(this.metricRow)
         this.container.add(this.transformRow)
@@ -61,6 +60,26 @@ class SidebarGlobals {
         this.snapCheck.onClick(() => eventBus.emit(EventEnums.SNAP_CHANGED, this.snapCheck.getValue()))
         this.metricCheck.onClick(() => eventBus.emit(EventEnums.METRIC_CHANGED, this.metricCheck.getValue()))
         this.transformCheck.onClick(() => eventBus.emit(EventEnums.TRANSFORM_MODE_CHANGED, this.transformCheck.getValue()))
+    }
+
+    public handleKeyDown(e) {
+        if (e.shiftKey) {
+            switch (e.code) {
+                case 'KeyS':
+                    this.snapCheck.setValue(!this.snapCheck.getValue());
+                    eventBus.emit(EventEnums.SNAP_CHANGED, this.snapCheck.getValue());
+                    break;
+                case 'KeyM':
+                    this.metricCheck.setValue(!this.metricCheck.getValue());
+                    eventBus.emit(EventEnums.METRIC_CHANGED, this.metricCheck.getValue());
+                    break;
+                case 'KeyT':
+                    this.transformCheck.setValue(!this.transformCheck.getValue());
+                    eventBus.emit(EventEnums.TRANSFORM_MODE_CHANGED, this.transformCheck.getValue());
+                    break;
+            }
+
+        }
     }
 
 }

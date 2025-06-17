@@ -33,9 +33,6 @@
     - [x] selecting object should update scene panel selection
     - [x] filter certain things out of the scene panel view
     - [x] only include selectable items
-
-
-
 - [x] reset transform controls when objects are deleted
 
 #### BED EDITOR
@@ -46,18 +43,14 @@
     - [x] place bed vertices
     - [x] draw polyline
     - [x] split out bedEditor
-
 - [x] add Layers
 - [x] update raycast layers based off of editor mode
-
 - [x] disable raycasting on axes helper
 - [x] allow drag and moving of vertices
-
 - [x] clone three js editor repo to study code
-
 - [x] close the loop
 - [x] create a mesh geometry from the loop
-- [ ] draw distance and angle of current mouse position
+- [x] draw distance and angle of current mouse position
     - [x] text-drawing utility
     - [x] draw text over lines
     - [x] leave text on the ground
@@ -66,7 +59,6 @@
         - [x] make it stateless
         - [x] add a cleanup function
 - [x] make lines easier to see
-
 - [x] add isometric camera
 - [x] swap cameras when going to vertex mode
 - [x] swap back when done with orbit controls
@@ -82,7 +74,6 @@
 - [x] add a dedicated command stack for the bed editor
 - [x] update line preview when CTRL+Z
 
-
 #### vertex edit mode
 - [x] highlight vertices on mouse over
 - [x] get vertex handles working
@@ -97,13 +88,10 @@
 - [x] cannot allow undoing insert vertices due to statefulness of vertices
 - [x] delete selected vertex with delete key
 - [x] refactor keyboard event propagation in event handler.ts
-
 - [x] add cancel button that becomes visible when "create new" is clicked
 - [x] implement cancel functionality
-
 - [x] change "create new" button to "save vertices?" when vertices are placed
 - [x] fill in polygon with transparent thing
-
 - [x] add clickable button like in manor lords to save vertices or cancel vertices
     - [x] add CSS 2D renderer to scene
     - [x] get literally anything rendering in 2D
@@ -118,7 +106,6 @@
         - [x] add mouse click callback
         - [x] make it erase itself between frames
 - [x] vertex edit mode finished!
-
 - [x] conslidate colors into file
 - [x] consolidate event bus messages into file w/ enums
 
@@ -127,16 +114,13 @@
 
 - [x] go to bed config mode
 - [x] draw ghosted preview of mesh
-
 - [x] create new UI element for configuring bed
 - [x] mesh extrusion
 - [x] control bed height
-
 - [x] get area calculations
 - [x] show in Bed UI during vertex editing step
 - [x] show in bed UI during bed config step
 - [x] calculate bed volume as well
-
 - [x] control border width
     - [x] draw border around bed
     - [x] use holes https://threejs.org/docs/#api/en/extras/core/Shape.holes
@@ -155,21 +139,18 @@
     - [x] add "save bed" button
     - [x] create mesh group and save
 - [x] merge meshes somehow
-
 - [x] get workflow working e2e with no bugs
     - [x] get cancel working from bed config mode
 - [x] clean up bed creation functions
     - [x] inject material
 - [x] pull cursors out into js file
 - [x] hide scene viewer in BED mode
-
 - [x] commandify value changes:
     `editor.execute( new SetValueCommand( editor, editor.selected, 'name', objectName.getValue() ) )`
 - [x] get ctrl-z working for bed config mode
 
 #### Bed Editor QOL improvements
 - [x] add some logic to update `BedEditingUpdateCommand` if the changed values are floats.
-
 - [x] enable/disable snap to grid
     - [x] add snapping class
     - [x] enable snapping functionality
@@ -180,11 +161,8 @@
 - [x] fix vertex size 
 - [x] fix text size for line previews (use CSS2D)
 - [x] show/hide grid
-
 - [x] change from meters to feet on UI
-
 - [x] fix bed editor z-fighting on ghost mesh
-
 - [x] add userData to bed object (or create bed class?)
 - [x] add ability to edit bed starting with vertex mode
 - [x] save original bed so that if the user cancels, the bed isn't permanently deleted
@@ -193,17 +171,11 @@
     - [x] if bed exists, update new bed with position and rotation
 - [x] bug when bed selected and "create new" clicked
 - [x] hide all Objects when entering bed edit mode
-
 - [x] refactor and cleanup
-
 - [x] TODO: clean up the stages and stuff, maybe use objects/ data structures for each state??
     - [x] clean up BedEditor TODOs
     - [x] remove any hardcoded values
     - [x] general cleanup
-
-BED EDITING FINISHED (FOR NOW)
-
-### Minor Improvements
 
 #### Rotation Widget
 - [x] draw angle when rotating an object
@@ -211,7 +183,6 @@ BED EDITING FINISHED (FOR NOW)
     - [x] draw arc
     - [x] draw angle text
 - [x] parent rotation widget while translating
-
 - [x] add rotation and translation snapping
 https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
@@ -222,19 +193,16 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [x] add ability to swap between ortho and perspective camera
 - [x] TODO: use the same controls for both cameras
 - [x] allow editing objects from ortho camera
-
 - [x] 2-way binding for top-down camera UI
     - [x] check button from editor if possible
 - [x] hide objects in bed editor mode only
     - [x] add hide layers function to editor
     - [x] call it
 - [x] 2-way binding for rotation in object mode
-
 - [x] add CTRL+D functionality
 - [x] swap between transform controls handles, and parenting object to raycast
     - [x] transform controls mode
     - [x] sims mode
-
 - [x] add hotkeys to toggle globals
 - [x] TODO: fix bug when duplicating selected item
 
@@ -242,15 +210,12 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [x] refactor event handling
     - [x] make a diagram of the events
     - [x] figure out how we want events to propagate
-
 - [x] refactor selector
     - [x] draw a state diagram
     - [x] pull as much out into functions as we can
     - [x] pattern matching?
     - [x] always deselect no matter what
-
 - [x] refactor
-
 - [x] parent objects to mouse and clamp to ground with raycast (no transform controls mode)
 - [x] toggle between transform controls and free move mode
 - [x] add commands for placing and removing objects
@@ -261,12 +226,17 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [x] resolve bugs
 - [x] allow adding a bed with the top toolbar
 - [x] allow adding a cube with the the top toolbar
-
 - [x] move globals to "view"
     - [x] show grid
     - [x] top-down camera
 
+- [ ] create meshes 
+    - [ ] cube
+    - [ ] cylinder
+    - [ ] sphere
+
 - [ ] add plant configuration panel
+- [ ] on plant select, populate panel
     - [ ] set size
     - [ ] set color
     - [ ] what else?
@@ -274,6 +244,9 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [ ] get a 3D asset generation pipeline
 
 - [ ] plant browser UI with image preview
+
+#### OBJECT EDITOR
+- [ ] draw a fence
 
 #### Feedback
 - [ ] rotation in simple transform mode
