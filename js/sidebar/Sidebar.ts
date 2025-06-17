@@ -50,7 +50,7 @@ class Sidebar {
 	}
 
 	public handleKeyDown(event) {
-		this.sidebarGlobals.handleKeyDown(event)
+		// this.sidebarGlobals.handleKeyDown(event)
 	}
 
 

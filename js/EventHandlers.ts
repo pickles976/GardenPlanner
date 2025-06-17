@@ -4,6 +4,8 @@ import { Editor } from './Editor';
 import { snapper } from './Snapping';
 import { EditorMode, LayerEnum } from './Constants';
 import { SetPositionCommand } from './commands/SetPositionCommand';
+import { Menubar } from './menubar/Menubar';
+import { Sidebar } from './sidebar/Sidebar';
 
 const raycaster = new THREE.Raycaster();
 
@@ -197,10 +199,10 @@ export function handleMouseClick(event, editor) {
 
 }
 
-export function handleKeyDown(event, editor: Editor, sidebar) {
+export function handleKeyDown(event, editor: Editor, sidebar: Sidebar, menuBar: Menubar) {
 
     // UI Keypress events
-    sidebar.handleKeyDown(event)
+    menuBar.handleKeyDown(event)
 
     // Editor keypress events
     switch (editor.mode) {

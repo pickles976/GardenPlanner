@@ -12,7 +12,7 @@ import { CreateObjectCommand } from './js/commands/CreateObjectCommand';
 import { LayerEnum } from './js/Constants';
 import { GROUND_COLOR } from './js/Colors';
 import { GridManager } from './js/GridManager';
-import { Menubar } from './js/menubar/Menubar.js';
+import { Menubar } from './js/menubar/Menubar';
 import { createCube } from './js/Creation';
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
@@ -61,10 +61,10 @@ document.body.appendChild( sidebar.container.dom );
 
 // Menubar
 const menubar = new Menubar( editor );
-document.body.appendChild( menubar.dom );
+document.body.appendChild( menubar.container.dom );
 
 window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
-window.addEventListener('keydown', (event) => handleKeyDown(event, editor, sidebar));
+window.addEventListener('keydown', (event) => handleKeyDown(event, editor, sidebar, menubarG));
 
 editor.canvas.addEventListener('mousemove', () => requestRenderIfNotRequested(editor));
 editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
