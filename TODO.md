@@ -239,9 +239,9 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [x] TODO: fix bug when duplicating selected item
 
 #### REFACTOR
-- [ ] refactor event handling
-    - [ ] make a diagram of the events
-    - [ ] figure out how we want events to propagate
+- [x] refactor event handling
+    - [x] make a diagram of the events
+    - [x] figure out how we want events to propagate
 
 - [ ] refactor selector
     - [ ] draw a state diagram

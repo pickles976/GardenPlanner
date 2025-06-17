@@ -160,9 +160,12 @@ export function handleMouseClick(event, editor) {
     performRaycast(event, editor, callback, layers)
 }
 
-// TODO: just propagate this to the children and let each of them handle it
-export function handleKeyDown(event, editor: Editor) {
+export function handleKeyDown(event, editor: Editor, sidebar) {
 
+    // UI Keypress events
+    sidebar.handleKeyDown(event)
+
+    // Editor keypress events
     switch (editor.mode) {
         case EditorMode.OBJECT:
             editor.handleKeyDown(event)

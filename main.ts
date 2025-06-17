@@ -69,8 +69,11 @@ editor.initThree();
 
 const gridManager = new GridManager(editor);
 
+const sidebar = new Sidebar( editor );
+document.body.appendChild( sidebar.container.dom );
+
 window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
-window.addEventListener('keydown', (event) => handleKeyDown(event, editor));
+window.addEventListener('keydown', (event) => handleKeyDown(event, editor, sidebar));
 
 editor.canvas.addEventListener('mousemove', () => requestRenderIfNotRequested(editor));
 editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
@@ -149,5 +152,4 @@ torus.position.set(1, 1, 0.3048)
 
 render(editor);
 
-const sidebar = Sidebar( editor );
-document.body.appendChild( sidebar.dom );
+
