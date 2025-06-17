@@ -38,33 +38,38 @@ class SidebarGlobals {
 
         this.cameraRow = new UIRow();
         this.cameraCheck = new UICheckbox();
-        this.cameraCheck.setValue(false)
-        this.cameraRow.add(this.cameraCheck)
-        this.cameraRow.add( new UIText( " Top-Down Camera (SHIFT+C)" ));
+        this.cameraCheck.setValue(false);
+        this.cameraRow.add(this.cameraCheck);
+        this.cameraRow.add(new UIText(" Top-Down Camera"));
+        this.cameraRow.add( new UIText( "SHIFT+C" ).setClass( 'key' ));
 
         this.showGridRow = new UIRow();
         this.showGridCheck = new UICheckbox();
-        this.showGridCheck.setValue(true)
-        this.showGridRow.add(this.showGridCheck)
-        this.showGridRow.add( new UIText( " Show Grid (SHIFT+G)" ));
+        this.showGridCheck.setValue(true);
+        this.showGridRow.add(this.showGridCheck);
+        this.showGridRow.add( new UIText( " Show Grid" ));
+        this.showGridRow.add( new UIText( "SHIFT+G" ).setClass( 'key' ));
 
         this.snapRow = new UIRow();
         this.snapCheck = new UICheckbox();
-        this.snapCheck.setValue(true)
-        this.snapRow.add(this.snapCheck)
-        this.snapRow.add( new UIText( " Snap to Grid (SHIFT+S)" ));
+        this.snapCheck.setValue(true);
+        this.snapRow.add(this.snapCheck);
+        this.snapRow.add( new UIText( " Snap to Grid" ));
+        this.snapRow.add( new UIText( "SHIFT+S" ).setClass( 'key' ));
 
         this.metricRow = new UIRow();
         this.metricCheck = new UICheckbox();
-        this.metricCheck.setValue(snapper.metric)
-        this.metricRow.add(this.metricCheck)
-        this.metricRow.add(new UIText(" Metric System (SHIFT+M)"))
+        this.metricCheck.setValue(snapper.metric);
+        this.metricRow.add(this.metricCheck);
+        this.metricRow.add(new UIText(" Metric System"));
+        this.metricRow.add( new UIText( "SHIFT+M" ).setClass( 'key' ));
 
         this.transformRow = new UIRow();
         this.transformCheck = new UICheckbox();
-        this.transformCheck.setValue(false)
-        this.transformRow.add(this.transformCheck)
-        this.transformRow.add(new UIText(" Advanced Transform (SHIFT+T)"))
+        this.transformCheck.setValue(false);
+        this.transformRow.add(this.transformCheck);
+        this.transformRow.add(new UIText(" Advanced Transform"));
+        this.transformRow.add( new UIText( "SHIFT+T" ).setClass( 'key' ));
 
         this.container.add(this.cameraRow)
         this.container.add(this.showGridRow)

@@ -12,6 +12,7 @@ import { CreateObjectCommand } from './js/commands/CreateObjectCommand';
 import { LayerEnum } from './js/Constants';
 import { GROUND_COLOR } from './js/Colors';
 import { GridManager } from './js/GridManager';
+import { Menubar } from './js/menubar/Menubar.js';
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
 
@@ -69,8 +70,13 @@ editor.initThree();
 
 const gridManager = new GridManager(editor);
 
+// Sidebar
 const sidebar = new Sidebar( editor );
 document.body.appendChild( sidebar.container.dom );
+
+// Menubar
+const menubar = new Menubar( editor );
+document.body.appendChild( menubar.dom );
 
 window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
 window.addEventListener('keydown', (event) => handleKeyDown(event, editor, sidebar));

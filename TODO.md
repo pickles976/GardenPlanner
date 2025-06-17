@@ -251,19 +251,22 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
 - [x] refactor
 
+- [x] parent objects to mouse and clamp to ground with raycast (no transform controls mode)
+- [x] toggle between transform controls and free move mode
+- [x] add commands for placing and removing objects
+
 #### PLANT EDITOR
-- [ ] add top toolbar
-
-- [ ] add UI for placing and removing objects
-    - [ ] button for creating new plant
-    - [ ] plant browser UI with image preview
-
-- [ ] add commands for placing and removing objects
-
-- [ ] parent objects to mouse and clamp to ground with raycast (no transform controls mode)
-- [ ] toggle between transform controls and free move mode
+- [x] add top toolbar
+    - [x] import from example editor
+    - [x] resolve bugs
+- [ ] allow adding a cube with the the top toolbar
+- [ ] allow adding a bed with the top toolbar
 
 - [ ] do ghosting when adding in a new object in raycast pose mode
+
+- [ ] add UI for placing and removing objects
+    - [ ] plant config UI panel
+    - [ ] plant browser UI with image preview
 
 - [ ] Azimuth and angle sun editor
 
@@ -283,6 +286,7 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [ ] fix polygon drawing bug
 - [ ] bug with clicking on line segments
 - [ ] let user set rotation from typing?
+- [ ] allow user to group things and edit the group
 
 #### Measurement Tools
 - [ ] placeable ruler
