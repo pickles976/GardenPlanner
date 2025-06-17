@@ -636,7 +636,7 @@ class BedEditor {
 
     }
 
-    public handleMouseClick(editor: Editor, intersections) {
+    public handleMouseClick(editor: Editor, intersections: THREE.Object3D[]) {
 
         let [object, point] = processIntersections(intersections)
 
@@ -690,6 +690,7 @@ class BedEditor {
         this.distanceText = getCSS2DText(snapper.getText(lastPoint.distanceTo(point)), fontSizeString(-1 * FONT_SIZE))
         this.distanceText.position.set(...textPos)
         this.editor.add(this.distanceText)
+
     }
 
     private handleMouseMoveEditVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
@@ -719,7 +720,9 @@ class BedEditor {
         }
     }
 
-    public handleMouseMove(editor: Editor, object: Object3D, point: Vector3) {
+    public handleMouseMove(editor: Editor, intersections: THREE.Object3D[]) {
+
+        let [object, point] = processIntersections(intersections);
 
         if (point === undefined) {
             return
@@ -727,15 +730,16 @@ class BedEditor {
 
         point = snapper.snap(point)
 
+
         switch (this.mode) {
             case BedEditorMode.PLACE_VERTEX_MODE:
-                this.handleMouseMovePlaceVerticesMode(editor, object, point)
+                this.handleMouseMovePlaceVerticesMode(editor, object, point);
                 break;
             case BedEditorMode.EDIT_VERTEX_MODE:
                 // call this function for free highlighting
-                handleMouseMoveObjectMode(editor, object, point)
-                this.handleMouseMoveEditVerticesMode(editor, object, point)
-                eventBus.emit(EventEnums.VERTEX_EDITING_UPDATED)
+                handleMouseMoveObjectMode(editor, object, point);
+                this.handleMouseMoveEditVerticesMode(editor, object, point);
+                eventBus.emit(EventEnums.VERTEX_EDITING_UPDATED);
                 break;
             default:
                 break;

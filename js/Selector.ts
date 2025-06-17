@@ -10,11 +10,8 @@ import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { Group } from 'three';
 
-const raycaster = new THREE.Raycaster();
 
 class Selector {
-
-    // TODO: move the TransformControls to here!
 
     editor: Editor
     currentMousedOverObject?: THREE.Object3D;
@@ -46,37 +43,6 @@ class Selector {
         } else {
             this.removeTransformControls()
         }
-    }
-
-    private getCanvasRelativePosition(event) {
-        const rect = this.editor.canvas.getBoundingClientRect();
-        return {
-            x: (event.clientX - rect.left) * this.editor.canvas.width  / rect.width,
-            y: (event.clientY - rect.top ) * this.editor.canvas.height / rect.height,
-        };
-    }
-
-    public performRaycast(event: Event, layers: LayerEnum[]) : THREE.Object3D[] {
-
-        // Set up layers        
-        if (layers.length > 0) {
-            raycaster.layers.disableAll();
-            layers.forEach((layer) => { raycaster.layers.enable(layer)});
-        } else {
-            raycaster.layers.enableAll();
-            raycaster.layers.disable(LayerEnum.NoRaycast);
-        }
-
-        // Get mouse position
-        const pos = this.getCanvasRelativePosition(event);
-        const pickPosition = new THREE.Vector2();
-        pickPosition.x = (pos.x / this.editor.canvas.width ) *  2 - 1;
-        pickPosition.y = (pos.y / this.editor.canvas.height) * -2 + 1;  // note we flip Y
-
-        raycaster.setFromCamera( pickPosition, this.editor.currentCamera );
-
-        return raycaster.intersectObjects(this.editor.scene.children);
-
     }
 
     private removeTransformControls(){

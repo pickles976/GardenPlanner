@@ -1,15 +1,17 @@
 import * as THREE from 'three';
-import { Editor } from './Editor';
-import { Selector } from './Selector';
-import { render } from './Rendering';
-import { eventBus } from './EventBus';
-import { EditorMode, LayerEnum } from './Constants';
-import { BLACK, YELLOW } from './Colors';
-import { SetPositionCommand } from './commands/SetPositionCommand';
 import { Vector3 } from 'three';
+import { Editor } from './Editor';
 import { snapper } from './Snapping';
+import { EditorMode, LayerEnum } from './Constants';
+import { SetPositionCommand } from './commands/SetPositionCommand';
 
-export function processIntersections(intersections) {
+const raycaster = new THREE.Raycaster();
+
+
+export function processIntersections(intersections: THREE.Object3D[]) {
+    /**
+     * Get the closest intersection
+     */
     if (intersections.length > 0) {
         const intersection = intersections[ 0 ];
         return [intersection.object, intersection.point]
@@ -17,7 +19,10 @@ export function processIntersections(intersections) {
     return [undefined, undefined];
 }
 
-function filterCurrentlySelected(intersections, editor) {
+function filterCurrentlySelected(intersections: THREE.Object3D[], editor: Editor): THREE.Object3D[] {
+    /**
+     * Filter out the currently selected object
+     */
     const selector = editor.selector;
 
     // Ignore selected object
@@ -28,17 +33,38 @@ function filterCurrentlySelected(intersections, editor) {
     return intersections
 }
 
-// TODO: CLEAN THIS UP
-function performRaycast(event, editor, callback, layers){
-
-    const selector = editor.selector;
-    let intersections = selector.performRaycast(event, layers);
-    callback(editor, intersections);
-
-    return (intersections.length > 0) ? true : false;
+function getCanvasRelativePosition(event, editor: Editor) {
+    const rect = editor.canvas.getBoundingClientRect();
+    return {
+        x: (event.clientX - rect.left) * editor.canvas.width  / rect.width,
+        y: (event.clientY - rect.top ) * editor.canvas.height / rect.height,
+    };
 }
 
-function highlightMouseOverObject(editor: Editor, intersections) {
+function performRaycast(event: Event, editor: Editor, layers: LayerEnum[]) : THREE.Object3D[] {
+
+    // Set up layers        
+    if (layers.length > 0) {
+        raycaster.layers.disableAll();
+        layers.forEach((layer) => { raycaster.layers.enable(layer)});
+    } else {
+        raycaster.layers.enableAll();
+        raycaster.layers.disable(LayerEnum.NoRaycast);
+    }
+
+    // Get mouse position
+    const pos = getCanvasRelativePosition(event, editor);
+    const pickPosition = new THREE.Vector2();
+    pickPosition.x = (pos.x / editor.canvas.width ) *  2 - 1;
+    pickPosition.y = (pos.y / editor.canvas.height) * -2 + 1;  // note we flip Y
+
+    raycaster.setFromCamera( pickPosition, editor.currentCamera );
+
+    return raycaster.intersectObjects(editor.scene.children);
+
+}
+
+function highlightMouseOverObject(editor: Editor, intersections: THREE.Object3D[]) {
 
     const [object, point] = processIntersections(intersections)
 
@@ -81,7 +107,7 @@ function highlightMouseOverObject(editor: Editor, intersections) {
     }
 }
 
-export function handleMouseMoveObjectMode(editor: Editor, intersections){
+export function handleMouseMoveObjectMode(editor: Editor, intersections: THREE.Object3D[]){
 
     intersections = filterCurrentlySelected(intersections, editor)
     const [object, point] = processIntersections(intersections)
@@ -92,6 +118,7 @@ export function handleMouseMoveObjectMode(editor: Editor, intersections){
         if (selector.advancedTransformMode) {
             // Transform handles already handle the transforming
         } else {
+            // Move the object to the raycast point
             const box = new THREE.Box3().setFromObject(selector.currentSelectedObject);
             const size = new THREE.Vector3();
             box.getSize(size);
@@ -113,43 +140,37 @@ export function handleTransformControlsChange(editor) {
 
 export function handleMouseMove(event, editor) {
     /**
-     * Function that highlights objects when the mouse is over them, and returns them to their original color once the mouse has left.
+     * Configure the raycaster, and pass intersections to the correct handler
      */
 
-    let callback;
-    let layers = []
     switch(editor.mode) {
         case EditorMode.OBJECT:
-            callback = handleMouseMoveObjectMode;
+            handleMouseMoveObjectMode(
+                editor, 
+                performRaycast(event, editor, []));
             break;
         case EditorMode.BED:
-            callback = (editor, intersections) => editor.bedEditor.handleMouseMove(editor, intersections);;
-            layers = [LayerEnum.Objects, LayerEnum.BedVertices]
+            editor.bedEditor.handleMouseMove(
+                editor, 
+                performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.BedVertices]))
             break;
         default:
             break
     }
-
-    performRaycast(event, editor, callback, layers)
-
 }
 
-export function handleMouseClickObjectMode(editor: Editor, intersections) {
+export function handleMouseClickObjectMode(editor: Editor, intersections: THREE.Object3D[]) {
 
-    // Ignore selected object
-    intersections = filterCurrentlySelected(intersections, editor)
-    const [object, point] = processIntersections(intersections)
+    // Ignore currently selected object
+    intersections = filterCurrentlySelected(intersections, editor);
+    const [object, point] = processIntersections(intersections);
 
     // Don't do anything if we are actively using the transform controls
     if (editor.selector.isUsingTransformControls === true) {
         return
     }
 
-    if (object.userData.selectable === true) {
-        editor.selector.select(object)
-    } else {
-        editor.selector.deselect()
-    }
+    (object.userData.selectable === true) ? editor.selector.select(object) : editor.selector.deselect();
 }
 
 export function handleMouseClick(event, editor) {
@@ -159,21 +180,21 @@ export function handleMouseClick(event, editor) {
         return
     }
 
-    let callback;
-    let layers = [];
     switch(editor.mode) {
         case EditorMode.OBJECT:
-            callback = handleMouseClickObjectMode;
+            handleMouseClickObjectMode(
+                editor, 
+                performRaycast(event, editor, []));
             break;
         case EditorMode.BED:
-            callback = (editor, intersections) => editor.bedEditor.handleMouseClick(editor, intersections);
-            layers = [LayerEnum.Objects, LayerEnum.BedVertices]
+            editor.bedEditor.handleMouseClick(
+                editor, 
+                performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.BedVertices]))
             break;
         default:
             break
     }
 
-    performRaycast(event, editor, callback, layers)
 }
 
 export function handleKeyDown(event, editor: Editor, sidebar) {

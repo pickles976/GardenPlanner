@@ -243,13 +243,13 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [x] make a diagram of the events
     - [x] figure out how we want events to propagate
 
-- [ ] refactor selector
-    - [ ] draw a state diagram
-    - [ ] pull as much out into functions as we can
-    - [ ] pattern matching?
-    - [ ] always deselect no matter what
+- [x] refactor selector
+    - [x] draw a state diagram
+    - [x] pull as much out into functions as we can
+    - [x] pattern matching?
+    - [x] always deselect no matter what
 
-- [ ] refactor
+- [x] refactor
 
 - [ ] try refactor bed editor to use scene graph better
 

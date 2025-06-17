@@ -92,7 +92,7 @@ editor.transformControls.addEventListener('mouseDown', function (event) {
 });
 
 editor.transformControls.addEventListener('change', function(event) {
-    eventBus.emit('objectChanged', editor.selector.currentSelectedObject);
+    eventBus.emit(EventEnums.OBJECT_CHANGED, editor.selector.currentSelectedObject);
 })
 
 editor.transformControls.addEventListener('mouseUp', function (event) {
