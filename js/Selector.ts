@@ -19,7 +19,6 @@ class Selector {
     editor: Editor
     currentMousedOverObject?: THREE.Object3D;
     currentSelectedObject?: THREE.Object3D;
-    originalLayers?: LayerEnum;
     transformControlsGizmo?: THREE.Object3D;
     isUsingTransformControls: boolean
 
@@ -30,7 +29,6 @@ class Selector {
     constructor (editor: Editor) {
         this.editor = editor;
         this.currentMousedOverObject = undefined;
-        this.originalLayers = undefined;
         this.currentSelectedObject = undefined;
 
         this.transformControlsGizmo = undefined;
@@ -143,10 +141,6 @@ class Selector {
             this.simpleTransformSelect(object)
         }
 
-        // Disable raycast on selected object
-        this.originalLayers = this.currentSelectedObject.layers.mask;
-        this.currentSelectedObject.layers.set(LayerEnum.NoRaycast)
-
         this.drawRotationVisualizer()
 
         eventBus.emit(EventEnums.OBJECT_SELECTED, object);
@@ -176,9 +170,6 @@ class Selector {
         } else {
             this.simpleTransformDeselect()
         }
-
-        // Restore layers
-        this.currentSelectedObject.layers.set(this.originalLayers.valueOf() >> 1)
 
         // Call callback if exists
         if (this.currentSelectedObject.userData.onDeselect) {

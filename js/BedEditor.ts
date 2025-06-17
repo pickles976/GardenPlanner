@@ -583,9 +583,7 @@ class BedEditor {
         return false;
     }
 
-    private handleMouseClickPlaceVerticesMode(editor: Editor, intersections) {
-
-        const [object, point] = processIntersections(intersections)
+    private handleMouseClickPlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
 
         // If loop is closed, go to `VERTEX_EDIT_MODE`
         if (this.tryCloseLoop(point)) {
@@ -610,9 +608,7 @@ class BedEditor {
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
-    private handleMouseClickEditVerticesMode(editor: Editor, intersections) {
-
-        const [object, point] = processIntersections(intersections)
+    private handleMouseClickEditVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
 
         if (this.selectedHandle === undefined) {
 
@@ -642,7 +638,7 @@ class BedEditor {
 
     public handleMouseClick(editor: Editor, intersections) {
 
-        const [object, point] = processIntersections(intersections)
+        let [object, point] = processIntersections(intersections)
 
         if (point === undefined) {
             return
@@ -660,9 +656,7 @@ class BedEditor {
         }
     }
 
-    private handleMouseMovePlaceVerticesMode(editor: Editor, intersections) {
-
-        const [object, point] = processIntersections(intersections)
+    private handleMouseMovePlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
 
         this.lastPoint = point;
 
@@ -698,9 +692,7 @@ class BedEditor {
         this.editor.add(this.distanceText)
     }
 
-    private handleMouseMoveEditVerticesMode(editor, intersections) {
-
-        const [object, point] = processIntersections(intersections)
+    private handleMouseMoveEditVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
 
         setDefaultCursor();
 
@@ -727,9 +719,7 @@ class BedEditor {
         }
     }
 
-    public handleMouseMove(editor: Editor, intersections) {
-
-        const [object, point] = processIntersections(intersections)
+    public handleMouseMove(editor: Editor, object: Object3D, point: Vector3) {
 
         if (point === undefined) {
             return

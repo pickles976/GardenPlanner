@@ -17,6 +17,17 @@ export function processIntersections(intersections) {
     return [undefined, undefined];
 }
 
+function filterCurrentlySelected(intersections, editor) {
+    const selector = editor.selector;
+
+    // Ignore selected object
+    if (selector.currentSelectedObject) {
+        intersections = intersections.filter((item) => item.object !== selector.currentSelectedObject)
+    }
+
+    return intersections
+}
+
 // TODO: CLEAN THIS UP
 function performRaycast(event, editor, callback, layers){
 
@@ -72,10 +83,10 @@ function highlightMouseOverObject(editor: Editor, intersections) {
 
 export function handleMouseMoveObjectMode(editor: Editor, intersections){
 
+    intersections = filterCurrentlySelected(intersections, editor)
     const [object, point] = processIntersections(intersections)
 
     const selector = editor.selector;
-
     if (selector.currentSelectedObject) {
 
         if (selector.advancedTransformMode) {
@@ -125,6 +136,8 @@ export function handleMouseMove(event, editor) {
 
 export function handleMouseClickObjectMode(editor: Editor, intersections) {
 
+    // Ignore selected object
+    intersections = filterCurrentlySelected(intersections, editor)
     const [object, point] = processIntersections(intersections)
 
     // Don't do anything if we are actively using the transform controls

@@ -309,10 +309,7 @@ class Editor {
             case 'd':
                 if (event.ctrlKey) {
                     if (this.selector.currentSelectedObject) {
-                        // TODO: CLEAN THIS UP!!!
-                        const newObject = deepClone(this.selector.currentSelectedObject);
-                        newObject.layers.set(this.selector.originalLayers >> 1)
-                        this.execute(new CreateObjectCommand(newObject, this))
+                        this.execute(new CreateObjectCommand(deepClone(this.selector.currentSelectedObject), this))
                     }
                 }
                 break;
