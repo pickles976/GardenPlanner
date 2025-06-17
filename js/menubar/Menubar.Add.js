@@ -5,6 +5,7 @@ import { UIPanel, UIRow } from '../libs/ui.js';
 import { CreateObjectCommand } from '../commands/CreateObjectCommand.js';
 import { Strings } from '../sidebar/Strings.js';
 import { eventBus, EventEnums } from '../EventBus.js';
+import { createCube } from '../Creation.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -30,6 +31,15 @@ function MenubarAdd( editor ) {
 	option.setClass( 'option' );
 	option.setTextContent( 'Bed' );
 	option.onClick(() => eventBus.emit(EventEnums.BED_CREATION_STARTED, undefined));
+	options.add( option );
+
+	// Plants
+	option = new UIRow();
+	option.setClass( 'option' );
+	option.setTextContent( 'Plant' );
+	option.onClick(() => {
+		createCube(editor);
+	});
 	options.add( option );
 
 	// Group

@@ -260,20 +260,18 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [x] import from example editor
     - [x] resolve bugs
 - [x] allow adding a bed with the top toolbar
-- [ ] allow adding a cube with the the top toolbar
+- [x] allow adding a cube with the the top toolbar
 
-- [ ] do ghosting when adding in a new object in raycast pose mode
+- [ ] move globals to "view"
 
-- [ ] add UI for placing and removing objects
-    - [ ] plant config UI panel
-    - [ ] plant browser UI with image preview
+- [ ] add plant configuration panel
+    - [ ] set size
+    - [ ] set color
+    - [ ] what else?
 
-- [ ] Azimuth and angle sun editor
+- [ ] get a 3D asset generation pipeline
 
-- [ ] save basic editor
-- [ ] get feedback from Erika, give her a task like "design my garden from layout" and watch her interaction with the software
-- [ ] Should probably refactor the CSS 2D stuff at some point to make it easier to use
-
+- [ ] plant browser UI with image preview
 
 #### Feedback
 - [ ] rotation in simple transform mode
@@ -298,8 +296,6 @@ Write up about
 - event flow/propagation
 - modularity
 - what else?
-
-
 
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
