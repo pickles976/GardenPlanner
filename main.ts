@@ -13,7 +13,7 @@ import { LayerEnum } from './js/Constants';
 import { GROUND_COLOR } from './js/Colors';
 import { GridManager } from './js/GridManager';
 import { Menubar } from './js/menubar/Menubar';
-import { createCube } from './js/Creation';
+import { createCube, createTorus } from './js/Creation';
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
 
@@ -28,26 +28,6 @@ function createGround(scene: THREE.Scene): THREE.Mesh {
     groundMesh.name = "Ground";
     scene.add(groundMesh)
     return groundMesh
-}
-
-
-
-function createTorus(editor: Editor): THREE.Mesh {
-    const torusMat = new THREE.MeshPhongMaterial({
-        color: 0x2A7AB0,
-    })
-    const torusGeo = new THREE.TorusGeometry(0.3048, 0.25 * 0.3048, 64, 64);
-    const torusMesh = new THREE.Mesh(torusGeo, torusMat)
-    torusMesh.castShadow = true;
-    torusMesh.receiveShadow = true;
-    torusMesh.userData = {selectable: true}
-    torusMesh.layers.set(LayerEnum.Plants)
-    // TODO: make this dynamic
-    torusMesh.name = "Torus"
-
-    editor.execute(new CreateObjectCommand(torusMesh, editor));
-
-    return torusMesh
 }
 
 const editor = new Editor();

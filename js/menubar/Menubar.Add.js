@@ -5,7 +5,7 @@ import { UIPanel, UIRow } from '../libs/ui.js';
 import { CreateObjectCommand } from '../commands/CreateObjectCommand.js';
 import { Strings } from '../sidebar/Strings.js';
 import { eventBus, EventEnums } from '../EventBus.js';
-import { createCube } from '../Creation.js';
+import { createCube, createTorus } from '../Creation.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -98,58 +98,41 @@ function MenubarAdd( editor ) {
 
 	// Camera
 
-	const cameraSubmenuTitle = new UIRow().setTextContent( strings.getKey( 'menubar/add/camera' ) ).addClass( 'option' ).addClass( 'submenu-title' );
-	cameraSubmenuTitle.onMouseOver( function () {
+	const objectSubmenuTitle = new UIRow().setTextContent( "Object" ).addClass( 'option' ).addClass( 'submenu-title' );
+	objectSubmenuTitle.onMouseOver( function () {
 
-		const { top, right } = cameraSubmenuTitle.dom.getBoundingClientRect();
+		const { top, right } = objectSubmenuTitle.dom.getBoundingClientRect();
 		const { paddingTop } = getComputedStyle( this.dom );
 
-		cameraSubmenu.setLeft( right + 'px' );
-		cameraSubmenu.setTop( top - parseFloat( paddingTop ) + 'px' );
-		cameraSubmenu.setStyle( 'max-height', [ `calc( 100vh - ${top}px )` ] );
-		cameraSubmenu.setDisplay( 'block' );
+		objectSubmenu.setLeft( right + 'px' );
+		objectSubmenu.setTop( top - parseFloat( paddingTop ) + 'px' );
+		objectSubmenu.setStyle( 'max-height', [ `calc( 100vh - ${top}px )` ] );
+		objectSubmenu.setDisplay( 'block' );
 
 	} );
-	cameraSubmenuTitle.onMouseOut( function () {
+	objectSubmenuTitle.onMouseOut( function () {
 
-		cameraSubmenu.setDisplay( 'none' );
+		objectSubmenu.setDisplay( 'none' );
 
 	} );
-	options.add( cameraSubmenuTitle );
+	options.add( objectSubmenuTitle );
 
-	const cameraSubmenu = new UIPanel().setPosition( 'fixed' ).addClass( 'options' ).setDisplay( 'none' );
-	cameraSubmenuTitle.add( cameraSubmenu );
+	const objectSubmenu = new UIPanel().setPosition( 'fixed' ).addClass( 'options' ).setDisplay( 'none' );
+	objectSubmenuTitle.add( objectSubmenu );
 
-	// Camera / Orthographic
-
+	// Cube
 	option = new UIRow();
 	option.setClass( 'option' );
-	option.setTextContent( strings.getKey( 'menubar/add/camera/orthographic' ) );
-	option.onClick( function () {
+	option.setTextContent( "Cube" );
+	option.onClick( () => createCube(editor));
+	objectSubmenu.add( option );
 
-		const aspect = editor.camera.aspect;
-		const camera = new THREE.OrthographicCamera( - aspect, aspect );
-		camera.name = 'OrthographicCamera';
-
-		editor.execute( new CreateObjectCommand( editor, camera ) );
-
-	} );
-	cameraSubmenu.add( option );
-
-	// Camera / Perspective
-
+	// Torus
 	option = new UIRow();
 	option.setClass( 'option' );
-	option.setTextContent( strings.getKey( 'menubar/add/camera/perspective' ) );
-	option.onClick( function () {
-
-		const camera = new THREE.PerspectiveCamera();
-		camera.name = 'PerspectiveCamera';
-
-		editor.execute( new CreateObjectCommand( editor, camera ) );
-
-	} );
-	cameraSubmenu.add( option );
+	option.setTextContent( "Torus" );
+	option.onClick(() => createTorus(editor));
+	objectSubmenu.add( option );
 
 	return container;
 

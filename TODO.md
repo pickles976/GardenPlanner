@@ -231,7 +231,7 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [x] top-down camera
 
 - [ ] create meshes 
-    - [ ] cube
+    - [x] cube
     - [ ] cylinder
     - [ ] sphere
 
@@ -247,6 +247,7 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
 #### OBJECT EDITOR
 - [ ] draw a fence
+- [ ] create a ruler object
 
 #### Feedback
 - [ ] rotation in simple transform mode
