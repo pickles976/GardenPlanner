@@ -10,10 +10,12 @@ import { Sidebar } from './js/sidebar/Sidebar';
 import { eventBus, EventEnums } from './js/EventBus';
 import { CreateObjectCommand } from './js/commands/CreateObjectCommand';
 import { LayerEnum } from './js/Constants';
-import { GROUND_COLOR } from './js/Colors';
+import { DARK_GRAY, GREEN, GROUND_COLOR, PEPPER_COLOR } from './js/Colors';
 import { GridManager } from './js/GridManager';
 import { Menubar } from './js/menubar/Menubar';
 import { createCube, createTorus } from './js/Creation';
+
+import { load_mesh, meshes } from './js/ModelLoader';
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
 
@@ -28,6 +30,31 @@ function createGround(scene: THREE.Scene): THREE.Mesh {
     groundMesh.name = "Ground";
     scene.add(groundMesh)
     return groundMesh
+}
+
+function createObject(editor, mesh): THREE.Mesh {
+
+    const mat = new THREE.MeshPhongMaterial({
+        color: PEPPER_COLOR,    // red (can also use a CSS color string here)
+    });
+    console.log(mesh.children[0])
+    const newMesh = mesh.children[0]
+    newMesh.layers.set(LayerEnum.Plants)
+    newMesh.castShadow = true;
+    newMesh.receiveShadow = true;
+    newMesh.name = "Pepper";
+    newMesh.rotation.x = Math.PI / 2; // 90 degrees in radians
+    newMesh.userData = {"selectable": true}
+    newMesh.scale.set(0.3, 0.3, 0.3)
+    newMesh.material = mat;
+    const box = new THREE.Box3().setFromObject(newMesh);
+    const size = new THREE.Vector3();
+    box.getSize(size);
+
+    let newPos = newMesh.position.add(new THREE.Vector3(0,0,size.z / 2))
+    newMesh.position.set(...newPos)
+    editor.scene.add(newMesh)
+    return newMesh
 }
 
 const editor = new Editor();
@@ -115,6 +142,9 @@ eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(
 
 
 createGround(editor.scene)
+
+load_mesh('models/peppers.obj', editor, createObject)
+
 let box = createCube(editor)
 box.position.set(0, 0, 0.3048)
 

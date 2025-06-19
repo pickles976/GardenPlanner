@@ -237,11 +237,16 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
 - [x] add plant configuration panel
 - [x] add plant editor class
-- [ ] get a 3D asset generation pipeline
+- [x] get a 3D asset generation pipeline
+    - [x] hunyuan thing
+    - [x] mesh cleanup
+- [x] load a basic mesh
 
 - [ ] plant browser UI with image preview
     - [ ] preset preview with scrolling
     - [ ] add new button
+- [ ] load meshes in background, populate panel as meshes load
+
 - [ ] on plant select, populate panel
     - [ ] set name
     - [ ] set size
@@ -249,6 +254,7 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [ ] what else?
 
 - [ ] bug where toggling grid only toggles it for one camera
+- [ ] object mode bugs :/
 
 #### OBJECT EDITOR
 - [ ] draw a fence

@@ -9,7 +9,9 @@ https://pictogrammers.com/library/mdi/
 [Transform Controls](https://threejs.org/docs/#examples/en/controls/TransformControls)
 [Mitt](https://www.npmjs.com/package/mitt)
 
+## Mesh Generation
 https://github.com/Tencent-Hunyuan/Hunyuan3D-2
+https://github.com/wjakob/instant-meshes
 
 Removing anti-aliasing
 https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7

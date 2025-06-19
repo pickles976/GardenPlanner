@@ -10,3 +10,5 @@ export const GREEN = "#00ff00"
 export const YELLOW = "#ffff00"
 export const WHITE = "#ffffff"
 export const BLACK = "#000000"
+
+export const PEPPER_COLOR = "#00bd58"
