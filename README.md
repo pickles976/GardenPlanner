@@ -34,7 +34,8 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 # Week 3
 - [x] 06/16/2025 -- minor improvements, hotkeys
 - [x] 06/17/2025 -- refactor
-- [ ] 06/18/2025 -- start on plant editor
+- [x] 06/18/2025 -- safelite
+- [ ] 06/19/2025 -- start on plant editor
 
 - [ ] object creator and editor
 - [ ] add objects to scene

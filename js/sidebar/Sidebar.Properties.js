@@ -5,6 +5,7 @@ import { SidebarObject } from './Sidebar.Object.js';
 import { Strings } from './Strings.js';
 import { SidebarBed } from './Sidebar.Bed.js'
 import { eventBus, EventEnums } from '../EventBus.js';
+import { SidebarPlant } from './Sidebar.Plant.js';
 // import { SidebarGeometry } from './Sidebar.Geometry.js';
 // import { SidebarMaterial } from './Sidebar.Material.js';
 
@@ -20,9 +21,11 @@ function SidebarProperties( editor ) {
 	container.addTab('objectTab', strings.getKey( 'sidebar/properties/object' ), new SidebarObject(editor));
 
 	container.addTab( 'bedTab', "Bed", new SidebarBed( editor ) );
+	container.addTab( 'plantTab', "Plant", new SidebarPlant( editor ) );
 	container.select( 'objectTab' );
 
 	eventBus.on(EventEnums.BED_CREATION_STARTED, () => {container.select('bedTab')});
+	eventBus.on(EventEnums.PLANT_CREATION_STARTED, () => {container.select('plantTab')});
 
 	return container;
 

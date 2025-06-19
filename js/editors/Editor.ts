@@ -1,21 +1,21 @@
 import * as THREE from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
-import { requestRenderIfNotRequested } from './Rendering';
-import { Command } from './commands/Command';
-import { Selector } from './Selector';
-import { EditorMode, FRUSTUM_SIZE, LayerEnum } from './Constants';
+import { requestRenderIfNotRequested } from '../Rendering';
+import { Command } from '../commands/Command';
+import { Selector } from '../Selector';
+import { EditorMode, FRUSTUM_SIZE, LayerEnum } from '../Constants';
 import { BedEditor } from './BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { CommandStack } from './CommandStack';
-import { eventBus, EventEnums } from './EventBus';
+import { CommandStack } from '../CommandStack';
+import { eventBus, EventEnums } from '../EventBus';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { WHITE } from './Colors';
-import { handleTransformControlsChange } from './EventHandlers';
-import { snapper } from './Snapping';
-import { DeleteObjectCommand } from './commands/DeleteObjectCommand';
-import { CreateObjectCommand } from './commands/CreateObjectCommand';
-import { deepClone } from './Utils';
+import { WHITE } from '../Colors';
+import { handleTransformControlsChange } from '../EventHandlers';
+import { snapper } from '../Snapping';
+import { DeleteObjectCommand } from '../commands/DeleteObjectCommand';
+import { CreateObjectCommand } from '../commands/CreateObjectCommand';
+import { deepClone } from '../Utils';
 
 
 const SHADOWMAP_WIDTH = 32;

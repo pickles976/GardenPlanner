@@ -37,9 +37,7 @@ function MenubarAdd( editor ) {
 	option = new UIRow();
 	option.setClass( 'option' );
 	option.setTextContent( 'Plant' );
-	option.onClick(() => {
-		createCube(editor);
-	});
+	option.onClick(() => eventBus.emit(EventEnums.PLANT_CREATION_STARTED, undefined));
 	options.add( option );
 
 	// Group

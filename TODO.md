@@ -235,16 +235,18 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [x] sphere
     - [x] cylinder
 
-- [ ] add plant configuration panel
-- [ ] add plant editor class
-- [ ] on plant select, populate panel
-    - [ ] set size
-    - [ ] set color
-    - [ ] what else?
-
+- [x] add plant configuration panel
+- [x] add plant editor class
 - [ ] get a 3D asset generation pipeline
 
 - [ ] plant browser UI with image preview
+    - [ ] preset preview with scrolling
+    - [ ] add new button
+- [ ] on plant select, populate panel
+    - [ ] set name
+    - [ ] set size
+    - [ ] set color
+    - [ ] what else?
 
 - [ ] bug where toggling grid only toggles it for one camera
 

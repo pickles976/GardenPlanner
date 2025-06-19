@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { Editor } from './js/Editor';
+import { Editor } from './js/editors/Editor';
 import { requestRenderIfNotRequested, render } from './js/Rendering';
 import { handleMouseMove, handleMouseClick, handleKeyDown } from './js/EventHandlers';
 import { Command } from './js/commands/Command';

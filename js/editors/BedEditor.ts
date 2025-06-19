@@ -24,18 +24,18 @@ import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import offsetPolygon from "offset-polygon";
 import "external-svg-loader";
 
-import { destructureVector3Array, getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial, rad2deg, fontSizeString, getCSS2DText } from "./Utils";
-import { CreateObjectCommand } from "./commands/CreateObjectCommand";
-import { SetPositionCommand } from "./commands/SetPositionCommand";
-import { eventBus, EventEnums } from "./EventBus";
-import { CommandStack } from "./CommandStack";
-import { FONT_SIZE, LayerEnum } from "./Constants";
+import { destructureVector3Array, getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial, rad2deg, fontSizeString, getCSS2DText } from "../Utils";
+import { CreateObjectCommand } from "../commands/CreateObjectCommand";
+import { SetPositionCommand } from "../commands/SetPositionCommand";
+import { eventBus, EventEnums } from "../EventBus";
+import { CommandStack } from "../CommandStack";
+import { FONT_SIZE, LayerEnum } from "../Constants";
 import { Editor } from "./Editor";
 
-import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "./Colors";
-import { setCrossCursor, setDefaultCursor } from "./Cursors";
-import { handleMouseMoveObjectMode, processIntersections } from "./EventHandlers";
-import { snapper } from "./Snapping";
+import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "../Colors";
+import { setCrossCursor, setDefaultCursor } from "../Cursors";
+import { handleMouseMoveObjectMode, processIntersections } from "../EventHandlers";
+import { snapper } from "../Snapping";
 
 const INITIAL_BED_HEIGHT = 0.15;
 const INITIAL_BORDER_WIDTH = 0.10;

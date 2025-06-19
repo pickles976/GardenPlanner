@@ -1,5 +1,5 @@
 import { Command } from './Command';
-import { BedEditor } from '../BedEditor';
+import { BedEditor } from '../editors/BedEditor';
 
 class BedEditingUpdateCommand extends Command {
 
