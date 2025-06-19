@@ -48,12 +48,12 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 - [ ] load scene as json
 
 # Milestones
-- [ ] Garden editor -- 06/15/2025
-- [ ] Sun calculator -- 06/22/2025
-- [ ] first deploy
+- [ ] Garden editor -- 06/30/2025
+- [ ] Sun calculator -- 07/14/2025
+- [ ] first deploy -- 07/21/2025
 
-- [ ] User accounts -- 07/07/2025
-- [ ] creation browser -- 07/30/2025
+- [ ] User accounts -- 08/14/2025
+- [ ] creation browser -- 09/14/2025
 - [ ] second deploy
 
 - [ ] batch sun jobs -- ???
