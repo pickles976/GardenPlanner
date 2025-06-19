@@ -143,7 +143,9 @@ eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(
 
 createGround(editor.scene)
 
-load_mesh('models/peppers.obj', editor, createObject)
+load_mesh('models/pepper.obj', editor, createObject)
+load_mesh('models/tomato.obj', editor, createObject)
+load_mesh('models/eggplant.obj', editor, createObject)
 
 let box = createCube(editor)
 box.position.set(0, 0, 0.3048)

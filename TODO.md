@@ -242,16 +242,26 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [x] mesh cleanup
 - [x] load a basic mesh
 
+
+#### Plant Browser
+- [ ] disable selection when already have selected object
+
 - [ ] plant browser UI with image preview
+    - [x] create json config with images and obj files
+    - [ ] create popup div for plant browser
+    - [ ] draw images in scrollable panel
+    - [ ] load meshes in background, populate panel as meshes load
     - [ ] preset preview with scrolling
     - [ ] add new button
-- [ ] load meshes in background, populate panel as meshes load
 
+#### Plant Editing
 - [ ] on plant select, populate panel
     - [ ] set name
     - [ ] set size
     - [ ] set color
     - [ ] what else?
+
+#### New Plant Creation
 
 - [ ] bug where toggling grid only toggles it for one camera
 - [ ] object mode bugs :/

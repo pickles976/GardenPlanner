@@ -11,6 +11,7 @@ https://pictogrammers.com/library/mdi/
 
 ## Mesh Generation
 https://github.com/Tencent-Hunyuan/Hunyuan3D-2
+Blender decimate geometry
 https://github.com/wjakob/instant-meshes
 
 Removing anti-aliasing
@@ -37,7 +38,8 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 - [x] 06/16/2025 -- minor improvements, hotkeys
 - [x] 06/17/2025 -- refactor
 - [x] 06/18/2025 -- safelite
-- [ ] 06/19/2025 -- start on plant editor
+- [x] 06/19/2025 -- start on plant editor
+- [ ] 06/20/2025 -- work on plant browser UI
 
 - [ ] object creator and editor
 - [ ] add objects to scene
