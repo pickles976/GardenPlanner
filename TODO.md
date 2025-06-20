@@ -242,12 +242,18 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [x] mesh cleanup
 - [x] load a basic mesh
 
-
 #### Plant Browser
-- [ ] disable selection when already have selected object
+- [x] disable selection when already have selected object
 
 - [x] create plant models
 - [x] convert all images to pngs
+- [ ] fix plant model rotation in blender (r,x,90)
+
+#### New Plant Creation
+- [ ] bug where toggling grid only toggles it for one camera
+- [ ] fix bugs with sidebar scene
+- [ ] fix bug where bed keeps going into bed editor mode?
+- [x] object mode bugs :/
 
 - [ ] plant browser UI with image preview
     - [x] create json config with images and obj files
@@ -263,11 +269,6 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [ ] set size
     - [ ] set color
     - [ ] what else?
-
-#### New Plant Creation
-
-- [ ] bug where toggling grid only toggles it for one camera
-- [ ] object mode bugs :/
 
 #### OBJECT EDITOR
 - [ ] draw a fence

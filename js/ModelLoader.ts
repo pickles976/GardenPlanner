@@ -1,6 +1,8 @@
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 
-const loader = new OBJLoader();
+// const loader = new OBJLoader();
+const loader = new GLTFLoader();
 
 export function load_mesh(filepath, editor, callback) {
     loader.load(

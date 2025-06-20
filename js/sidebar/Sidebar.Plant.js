@@ -21,49 +21,49 @@ function SidebarPlant( editor ) {
 	container.setPaddingTop( '20px' );
 	container.setDisplay("Block")
 
-	// Create
-	const createNewButton = new UIButton("+ Create New");
+	// // Create
+	// const createNewButton = new UIButton("+ Create New");
 
-	// Save Polygon
-	const saveButton = new UIButton("✓ Save Polygon")
-	saveButton.dom.style.color = "#AAFFAA"
-	saveButton.setDisplay("none")
+	// // Save Polygon
+	// const saveButton = new UIButton("✓ Save Polygon")
+	// saveButton.dom.style.color = "#AAFFAA"
+	// saveButton.setDisplay("none")
 
-	const buttonContainer = new UIPanel();
-	buttonContainer.setBorderTop( '1' );
-	buttonContainer.setPaddingTop( '20px' );
-	buttonContainer.add(createNewButton)
-	buttonContainer.add(saveButton)
+	// const buttonContainer = new UIPanel();
+	// buttonContainer.setBorderTop( '1' );
+	// buttonContainer.setPaddingTop( '20px' );
+	// buttonContainer.add(createNewButton)
+	// buttonContainer.add(saveButton)
 
-	const objectNameRow = new UIRow();
-	const objectName = new UIInput().setWidth( '150px' ).setFontSize( '12px' ).onChange(update);
-	objectName.setValue("New Plant")
-	objectNameRow.add( new UIText( "Plant Name" ).setClass( 'Label' ) );
-	objectNameRow.add( objectName );
+	// const objectNameRow = new UIRow();
+	// const objectName = new UIInput().setWidth( '150px' ).setFontSize( '12px' ).onChange(update);
+	// objectName.setValue("New Plant")
+	// objectNameRow.add( new UIText( "Plant Name" ).setClass( 'Label' ) );
+	// objectNameRow.add( objectName );
 
-	// Add sub-panels
-	container.add(buttonContainer)
-	container.add(objectNameRow)
+	// // Add sub-panels
+	// container.add(buttonContainer)
+	// container.add(objectNameRow)
 
-	eventBus.on(EventEnums.VERTEX_EDITING_UPDATED, () => {
-		updateFromEditor()
-	})
+	// eventBus.on(EventEnums.VERTEX_EDITING_UPDATED, () => {
+	// 	updateFromEditor()
+	// })
 
-	eventBus.on(EventEnums.BED_SELECTED, (value) => {
-		editButton.setDisplay(value ? "Block" : "none") 
-	})
+	// eventBus.on(EventEnums.BED_SELECTED, (value) => {
+	// 	editButton.setDisplay(value ? "Block" : "none") 
+	// })
 
-	eventBus.on(EventEnums.METRIC_CHANGED, () => {
-		updateFromEditor();
-	})
+	// eventBus.on(EventEnums.METRIC_CHANGED, () => {
+	// 	updateFromEditor();
+	// })
 
-	function update() {
+	// function update() {
 
-	}
+	// }
 
-	function updateFromEditor() {
+	// function updateFromEditor() {
 
-	}
+	// }
 
 	return container;
 

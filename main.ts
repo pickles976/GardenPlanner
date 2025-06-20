@@ -32,29 +32,30 @@ function createGround(scene: THREE.Scene): THREE.Mesh {
     return groundMesh
 }
 
-function createObject(editor, mesh): THREE.Mesh {
+function createObject(editor, gltf): THREE.Mesh {
 
-    const mat = new THREE.MeshPhongMaterial({
-        color: PEPPER_COLOR,    // red (can also use a CSS color string here)
+
+    const len = gltf.scene.children.length;
+    let mesh = gltf.scene.children[len - 1].children[0];
+
+    mesh.material = new THREE.MeshPhongMaterial({
+        map: mesh.material.map,
+        lightMapIntensity: 3
     });
-    console.log(mesh.children[0])
-    const newMesh = mesh.children[0]
-    newMesh.layers.set(LayerEnum.Plants)
-    newMesh.castShadow = true;
-    newMesh.receiveShadow = true;
-    newMesh.name = "Pepper";
-    newMesh.rotation.x = Math.PI / 2; // 90 degrees in radians
-    newMesh.userData = {"selectable": true}
-    newMesh.scale.set(0.3, 0.3, 0.3)
-    newMesh.material = mat;
-    const box = new THREE.Box3().setFromObject(newMesh);
+    mesh.layers.set(LayerEnum.Plants)
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.rotation.x = Math.PI / 2; // 90 degrees in radians
+    mesh.userData = {"selectable": true}
+    mesh.scale.set(0.3, 0.3, 0.3)
+    const box = new THREE.Box3().setFromObject(mesh);
     const size = new THREE.Vector3();
     box.getSize(size);
 
-    let newPos = newMesh.position.add(new THREE.Vector3(0,0,size.z / 2))
-    newMesh.position.set(...newPos)
-    editor.scene.add(newMesh)
-    return newMesh
+    let newPos = mesh.position.add(new THREE.Vector3(0,0,size.z / 2))
+    mesh.position.set(...newPos)
+    editor.scene.add(mesh)
+    return mesh
 }
 
 const editor = new Editor();
@@ -143,9 +144,9 @@ eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(
 
 createGround(editor.scene)
 
-load_mesh('models/pepper.obj', editor, createObject)
-load_mesh('models/tomato.obj', editor, createObject)
-load_mesh('models/eggplant.obj', editor, createObject)
+load_mesh('models/pepper/model_10k.glb', editor, createObject)
+load_mesh('models/tomato/model_10k.glb', editor, createObject)
+load_mesh('models/eggplant/model_10k.glb', editor, createObject)
 
 let box = createCube(editor)
 box.position.set(0, 0, 0.3048)

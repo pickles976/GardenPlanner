@@ -151,7 +151,7 @@ class Editor {
 
         // TODO: split this out into a lighting object
         // lighting
-        const intensity = 1.0;
+        const intensity = 1.5;
         this.directionalLight = new THREE.DirectionalLight(WHITE, intensity);
         this.directionalLight.position.set(-20, 20, 20);
         this.directionalLight.castShadow = true;
@@ -176,7 +176,7 @@ class Editor {
 
         this.directionalLight.name = "Directional Light";
 
-        const ambient = new THREE.AmbientLight(WHITE, 0.5);
+        const ambient = new THREE.AmbientLight(WHITE, 0.25);
         ambient.name = "Ambient Light"
         this.scene.add(ambient);
 

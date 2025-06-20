@@ -76,6 +76,16 @@ function highlightMouseOverObject(editor: Editor, intersections: THREE.Object3D[
         return
     }
 
+    // Un-highlight currently select object
+    if (selector.currentSelectedObject !== undefined) {
+        if (Array.isArray(selector.currentMousedOverObject.material)) {
+            selector.currentMousedOverObject.material.forEach((mat) => mat.emissive.setHex(0x000000));
+        } else {
+            selector.currentMousedOverObject.material.emissive.setHex(0x000000);
+        }
+        return
+    }
+
     // If object is selectable
     if (object.userData.selectable === true) {
 
@@ -130,8 +140,8 @@ export function handleMouseMoveObjectMode(editor: Editor, intersections: THREE.O
             editor.execute(new SetPositionCommand(selector.currentSelectedObject, selector.currentSelectedObject.position, newPos))
         }
 
-    } 
-
+    }
+    
     highlightMouseOverObject(editor, intersections)
 
 }
@@ -163,16 +173,19 @@ export function handleMouseMove(event, editor) {
 
 export function handleMouseClickObjectMode(editor: Editor, intersections: THREE.Object3D[]) {
 
-    // Ignore currently selected object
-    intersections = filterCurrentlySelected(intersections, editor);
-    const [object, point] = processIntersections(intersections);
-
     // Don't do anything if we are actively using the transform controls
     if (editor.selector.isUsingTransformControls === true) {
         return
     }
 
-    (object.userData.selectable === true) ? editor.selector.select(object) : editor.selector.deselect();
+    if (editor.selector.currentSelectedObject === undefined) {
+        const [object, point] = processIntersections(intersections);
+        (object.userData.selectable === true) ? editor.selector.select(object) : editor.selector.deselect();
+    } else {
+        editor.selector.deselect()
+    }
+
+
 }
 
 export function handleMouseClick(event, editor) {
