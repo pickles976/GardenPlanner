@@ -11,6 +11,22 @@ https://pictogrammers.com/library/mdi/
 
 ## Mesh Generation
 https://github.com/Tencent-Hunyuan/Hunyuan3D-2
+
+For GPU with less than 16GB VRAM:
+https://github.com/cocktailpeanut/Hunyuan3D-2GP
+How to fix missing GLIBC bug
+https://askubuntu.com/questions/1418016/glibcxx-3-4-30-not-found-in-conda-environment
+```
+conda update libstdcxx-ng
+ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6 ${CONDA_PREFIX}/lib
+```
+
+```
+conda activate Hunyuan3D-2GP
+python gradio_app.py --profile 5
+```
+
+
 Blender decimate geometry
 https://github.com/wjakob/instant-meshes
 
@@ -40,6 +56,8 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 - [x] 06/18/2025 -- safelite
 - [x] 06/19/2025 -- start on plant editor
 - [ ] 06/20/2025 -- work on plant browser UI
+
+# Week 4
 
 - [ ] object creator and editor
 - [ ] add objects to scene

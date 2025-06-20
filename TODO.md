@@ -246,6 +246,9 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 #### Plant Browser
 - [ ] disable selection when already have selected object
 
+- [x] create plant models
+- [x] convert all images to pngs
+
 - [ ] plant browser UI with image preview
     - [x] create json config with images and obj files
     - [ ] create popup div for plant browser
