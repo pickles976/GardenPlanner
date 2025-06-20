@@ -255,6 +255,8 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [ ] fix bug where bed keeps going into bed editor mode?
 - [x] object mode bugs :/
 
+- [ ] add a 5'10 human model to the world
+
 - [ ] plant browser UI with image preview
     - [x] create json config with images and obj files
     - [ ] create popup div for plant browser

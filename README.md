@@ -55,7 +55,8 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 - [x] 06/17/2025 -- refactor
 - [x] 06/18/2025 -- safelite
 - [x] 06/19/2025 -- start on plant editor
-- [ ] 06/20/2025 -- work on plant browser UI
+- [x] 06/20/2025 -- AI generated 3D model pipeline
+- [ ] 06/21/2025 -- work on plant browser UI
 
 # Week 4
 

@@ -20,6 +20,23 @@ export function createCube(editor: Editor): THREE.Mesh {
     return mesh
 }
 
+export function createHumanCube(editor: Editor): THREE.Mesh {
+    const mat = new THREE.MeshPhongMaterial({
+        color: 0xDDDDDD,
+    })
+    const geo = new THREE.BoxGeometry(0.6096, 0.3048, 1.8288);
+    const mesh = new THREE.Mesh(geo, mat)
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.userData = {selectable: true}
+    mesh.layers.set(LayerEnum.Plants)
+    mesh.name = "Box";
+
+    editor.execute(new CreateObjectCommand(mesh, editor));
+
+    return mesh
+}
+
 export function createCylinder(editor: Editor): THREE.Mesh {
     const mat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,

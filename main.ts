@@ -13,7 +13,7 @@ import { LayerEnum } from './js/Constants';
 import { DARK_GRAY, GREEN, GROUND_COLOR, PEPPER_COLOR } from './js/Colors';
 import { GridManager } from './js/GridManager';
 import { Menubar } from './js/menubar/Menubar';
-import { createCube, createTorus } from './js/Creation';
+import { createCube, createHumanCube, createTorus } from './js/Creation';
 
 import { load_mesh, meshes } from './js/ModelLoader';
 
@@ -148,11 +148,12 @@ load_mesh('models/pepper/model_10k.glb', editor, createObject)
 load_mesh('models/tomato/model_10k.glb', editor, createObject)
 load_mesh('models/eggplant/model_10k.glb', editor, createObject)
 
-let box = createCube(editor)
-box.position.set(0, 0, 0.3048)
+// let box = createCube(editor)
+let box = createHumanCube(editor)
+box.position.set(0, 0, 0.9144)
 
-let torus = createTorus(editor)
-torus.position.set(1, 1, 0.3048)
+// let torus = createTorus(editor)
+// torus.position.set(1, 1, 0.3048)
 
 render(editor);
 
