@@ -16,6 +16,7 @@ import { Menubar } from './js/menubar/Menubar';
 import { createCube, createHumanCube, createTorus } from './js/Creation';
 
 import { load_mesh, meshes } from './js/ModelLoader';
+import { createSearchPanel } from './js/Plants';
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
 
@@ -156,5 +157,7 @@ box.position.set(0, 0, 0.9144)
 // torus.position.set(1, 1, 0.3048)
 
 render(editor);
+
+createSearchPanel()
 
 

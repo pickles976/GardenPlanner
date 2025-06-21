@@ -250,6 +250,20 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [ ] fix plant model rotation in blender (r,x,90)
 
 #### New Plant Creation
+- [ ] plant browser UI with image preview
+    - [x] create json config with images and obj files
+    - [x] create popup div for plant browser
+    - [x] draw images in scrollable panel
+    - [ ] open panel with click of button
+    - [ ] add close panel button
+    - [ ] open and close panel
+
+    - [ ] load mesh on button click
+    - [ ] model preview  https://modelviewer.dev/
+
+    - [ ] add existing or create new button on top
+
+#### Bug fixing
 - [ ] bug where toggling grid only toggles it for one camera
 - [ ] fix bugs with sidebar scene
 - [ ] fix bug where bed keeps going into bed editor mode?
@@ -257,20 +271,15 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
 - [ ] add a 5'10 human model to the world
 
-- [ ] plant browser UI with image preview
-    - [x] create json config with images and obj files
-    - [ ] create popup div for plant browser
-    - [ ] draw images in scrollable panel
-    - [ ] load meshes in background, populate panel as meshes load
-    - [ ] preset preview with scrolling
-    - [ ] add new button
-
 #### Plant Editing
-- [ ] on plant select, populate panel
+- [ ] on plant creation, populate panel
     - [ ] set name
     - [ ] set size
     - [ ] set color
     - [ ] what else?
+
+- [ ] open editor?
+- [ ] drag and drop .glb file?
 
 #### OBJECT EDITOR
 - [ ] draw a fence
