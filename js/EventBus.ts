@@ -29,7 +29,9 @@ enum EventEnums {
     BED_CONFIG_UPDATED = "bedConfigUpdated", // 
 
     // PLANT CREATION
-    PLANT_CREATION_STARTED = "plantCreationStarted"
+    PLANT_CREATION_STARTED = "plantCreationStarted",
+
+    LOAD_PLANT = "loadPlant"
 
 
 

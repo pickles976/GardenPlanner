@@ -1,3 +1,4 @@
+import { eventBus, EventEnums } from "./EventBus";
 
 
 export const plants = {
@@ -91,9 +92,21 @@ function createListItem(plant) {
     return div
 }
 
-export function createSearchPanel() {
+export function createSearchPanel() : HTMLElement {
     const container = document.createElement("div");
     container.className = "search-panel";
+    container.id = "search-panel"
+
+    const button = document.createElement("button")
+    button.innerText = "Cancel";
+    button.style.fontSize = "16px";
+    button.style.color = "#FF0000"
+    
+    button.onclick = () => {
+        container.remove()
+    }
+
+    container.appendChild(button)
 
     const scrollable = document.createElement("div")
     scrollable.className = "scroll-container"
@@ -102,10 +115,17 @@ export function createSearchPanel() {
     grid.className = "grid"
 
     Object.values(plants).forEach((plant) => {
-        grid.appendChild(createListItem(plant))
+        const div = createListItem(plant);
+        grid.appendChild(div);
+        div.onclick = () => {
+            eventBus.emit(EventEnums.LOAD_PLANT, plant);
+            container.remove();
+        }
+
     });
 
     scrollable.appendChild(grid)
     container.appendChild(scrollable)
-    document.body.appendChild(container);
+
+    return container
 }

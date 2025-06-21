@@ -844,7 +844,14 @@ select {
   font-weight: bold;
   font-size: 32px;
   border: 1px solid #ccc;
+  cursor: pointer; /* changes the cursor */
 }
+
+.item:hover {
+  background-color: #2980b9;
+  transform: scale(1.02); /* subtle "pop" effect */
+}
+
 
 .plant-image {
 	width: 100%;

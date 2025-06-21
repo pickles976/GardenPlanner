@@ -254,14 +254,16 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [x] create json config with images and obj files
     - [x] create popup div for plant browser
     - [x] draw images in scrollable panel
-    - [ ] open panel with click of button
-    - [ ] add close panel button
-    - [ ] open and close panel
-
-    - [ ] load mesh on button click
+    - [x] add close panel button
+    - [x] open panel with click of button
+    - [x] open and close panel
+    - [x] load mesh on button click
+    - [x] add existing or create new button on top
+    - [ ] create a function to load model from a plant object
+        - [ ] create plant class
+        - [ ] ???
     - [ ] model preview  https://modelviewer.dev/
 
-    - [ ] add existing or create new button on top
 
 #### Bug fixing
 - [ ] bug where toggling grid only toggles it for one camera

@@ -16,7 +16,7 @@ import { Menubar } from './js/menubar/Menubar';
 import { createCube, createHumanCube, createTorus } from './js/Creation';
 
 import { load_mesh, meshes } from './js/ModelLoader';
-import { createSearchPanel } from './js/Plants';
+import { createSearchPanel, plants } from './js/Plants';
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
 
@@ -145,9 +145,9 @@ eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(
 
 createGround(editor.scene)
 
-load_mesh('models/pepper/model_10k.glb', editor, createObject)
-load_mesh('models/tomato/model_10k.glb', editor, createObject)
-load_mesh('models/eggplant/model_10k.glb', editor, createObject)
+// load_mesh('models/pepper/model_10k.glb', editor, createObject)
+// load_mesh('models/tomato/model_10k.glb', editor, createObject)
+// load_mesh('models/eggplant/model_10k.glb', editor, createObject)
 
 // let box = createCube(editor)
 let box = createHumanCube(editor)
@@ -158,6 +158,5 @@ box.position.set(0, 0, 0.9144)
 
 render(editor);
 
-createSearchPanel()
-
+eventBus.on(EventEnums.LOAD_PLANT, (plant) => load_mesh(plant.model, editor, createObject))
 
