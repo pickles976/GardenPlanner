@@ -261,9 +261,9 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [x] add existing or create new button on top
     - [ ] create a function to load model from a plant object
         - [ ] create plant class
-        - [ ] ???
-    - [ ] model preview  https://modelviewer.dev/
-
+        - [ ] add function to create plants from plant class
+        - [ ] fix plant rotation in blender
+    - [ ] model preview instead of plant image https://modelviewer.dev/
 
 #### Bug fixing
 - [ ] bug where toggling grid only toggles it for one camera
@@ -274,7 +274,7 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [ ] add a 5'10 human model to the world
 
 #### Plant Editing
-- [ ] on plant creation, populate panel
+- [ ] on plant selection, populate panel
     - [ ] set name
     - [ ] set size
     - [ ] set color
