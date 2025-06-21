@@ -38,13 +38,15 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
     });
 
     mesh.scale.set(...plant.scale)
+    mesh.rotation.x = mesh.rotation.x + (Math.PI / 2);
 
     // Bake in rotation and scale
     mesh = setCurrentTransformationAsDefault(mesh);    
-    mesh.layers.set(LayerEnum.Plants)
+    mesh.layers.set(LayerEnum.Plants);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-    mesh.userData = {"selectable": true}
+    mesh.userData = {"selectable": true};
+    mesh.name = plant.name;
 
     const box = new THREE.Box3().setFromObject(mesh);
     const size = new THREE.Vector3();
@@ -62,5 +64,5 @@ export function loadPlant(plant: Plant, editor: Editor) {
         ( gltf ) => { createPlantObject(editor, gltf, plant) },
         ( xhr ) => { console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' ); },
         ( error ) => { console.log( 'An error happened' );}
-);
+    );
 }

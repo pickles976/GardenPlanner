@@ -61,21 +61,38 @@ export const plants = {
 }
 
 function createListItem(plant) {
+    /**
+     * Single item in the search panel
+     */
 
     const div = document.createElement("div");
     div.className = "item";
 
-    const img = document.createElement("img");
-    img.src = plant.icon_path;
+    // const img = document.createElement("img");
+    // img.src = plant.icon_path;
+    
+    const img = document.createElement("model-viewer")
+    img.src = plant.model_path;
+    img.setAttribute('camera-controls', '');
+    img.style.touchAction="pan-y"
     img.className = "plant-image";
 
+
+    const button = document.createElement("button")
+    button.innerText = plant.name;
+    button.style.fontSize = "16px";
+
     div.appendChild(img)
-    div.appendChild(document.createTextNode(plant.name))
+    div.appendChild(button)
 
     return div
 }
 
 export function createSearchPanel() : HTMLElement {
+    /**
+     * Create search panel
+     */
+
     const container = document.createElement("div");
     container.className = "search-panel";
     container.id = "search-panel"
@@ -100,7 +117,7 @@ export function createSearchPanel() : HTMLElement {
     Object.values(plants).forEach((plant) => {
         const div = createListItem(plant);
         grid.appendChild(div);
-        div.onclick = () => {
+        div.lastChild.onclick = () => {
             eventBus.emit(EventEnums.LOAD_PLANT, plant);
             container.remove();
         }

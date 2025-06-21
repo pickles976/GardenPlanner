@@ -263,7 +263,14 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
         - [x] create plant class
         - [x] add function to create plants from plant class
         - [x] fix plant rotation in blender
-    - [ ] model preview instead of plant image https://modelviewer.dev/
+
+    - [x] model preview instead of plant image 
+        - [x] replace image in model list with this: https://modelviewer.dev/
+
+Read more about model viewer
+- [ ] bug where model viewer size is weird
+- [ ] return model to default location when mouse out
+- [ ] create some kind of preview mode?
 
 #### Bug fixing
 - [ ] bug where toggling grid only toggles it for one camera
