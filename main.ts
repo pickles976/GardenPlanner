@@ -15,7 +15,7 @@ import { GridManager } from './js/GridManager';
 import { Menubar } from './js/menubar/Menubar';
 import { createCube, createHumanCube, createTorus } from './js/Creation';
 
-import { load_mesh, meshes } from './js/ModelLoader';
+import { load_mesh, loadPlant, meshes } from './js/ModelLoader';
 
 function createGround(scene: THREE.Scene): THREE.Mesh {
 
@@ -30,32 +30,6 @@ function createGround(scene: THREE.Scene): THREE.Mesh {
     groundMesh.name = "Ground";
     scene.add(groundMesh)
     return groundMesh
-}
-
-function createObject(editor, gltf): THREE.Mesh {
-
-
-    const len = gltf.scene.children.length;
-    let mesh = gltf.scene.children[len - 1].children[0];
-
-    mesh.material = new THREE.MeshPhongMaterial({
-        map: mesh.material.map,
-        lightMapIntensity: 3
-    });
-    mesh.layers.set(LayerEnum.Plants)
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    mesh.rotation.x = Math.PI / 2; // 90 degrees in radians
-    mesh.userData = {"selectable": true}
-    mesh.scale.set(0.3, 0.3, 0.3)
-    const box = new THREE.Box3().setFromObject(mesh);
-    const size = new THREE.Vector3();
-    box.getSize(size);
-
-    let newPos = mesh.position.add(new THREE.Vector3(0,0,size.z / 2))
-    mesh.position.set(...newPos)
-    editor.scene.add(mesh)
-    return mesh
 }
 
 const editor = new Editor();
@@ -150,5 +124,5 @@ box.position.set(1, 1, 0.9144)
 
 render(editor);
 
-eventBus.on(EventEnums.LOAD_PLANT, (plant) => load_mesh(plant.model, editor, createObject))
+eventBus.on(EventEnums.LOAD_PLANT, (plant) => loadPlant(plant, editor))
 

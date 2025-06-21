@@ -1,79 +1,62 @@
+import * as THREE from 'three';
 import { eventBus, EventEnums } from "./EventBus";
 
+export class Plant {
+
+    name: string;
+    icon_path: string;
+    model_path: string;
+    scale: THREE.Vector3;
+
+    constructor(name, icon_path, model_path, scale) {
+        this.name = name;
+        this.icon_path = icon_path;
+        this.model_path = model_path;
+        this.scale = scale;
+    }
+}
 
 export const plants = {
-    brussels_sprouts: {
-        name: "Brussels Sprouts",
-        icon: 'models/brussels_sprouts/image.png',
-        model: 'models/brussels_sprouts/model_10k.glb',
-        plantData: {
-            height: 1.0,
-            radius: 0.5
-        }
-    },
-    cabbage: {
-        name: "Cabbage",
-        icon: 'models/cabbage/image.png',
-        model: 'models/cabbage/model_10k.glb',
-        plantData: {
-            height: 1.0,
-            radius: 0.5
-        }
-    },
-    corn: {
-        name: "Corn",
-        icon: 'models/corn/image.png',
-        model: 'models/corn/model_10k.glb',
-        plantData: {
-            height: 1.0,
-            radius: 0.5
-        }
-    },
-    eggplant: {
-        name: "Eggplant",
-        icon: 'models/eggplant/image.png',
-        model: 'models/eggplant/model_10k.glb',
-        plantData: {
-            height: 1.0,
-            radius: 0.5
-        }
-    },
-    onion: {
-        name: "Onion",
-        icon: 'models/onion/image.png',
-        model: 'models/onion/model_10k.glb',
-        plantData: {
-            height: 1.0,
-            radius: 0.5
-        }
-    },
-    pepper: {
-        name: "Jalapeño",
-        icon: 'models/pepper/image.png',
-        model: 'models/pepper/model_10k.glb',
-        plantData: {
-            height: 0.5,
-            radius: 0.3
-        }
-    },
-    potato: {
-        name: "Potato",
-        icon: 'models/potato/image.png',
-        model: 'models/potato/model_10k.glb',
-        plantData: {
-            height: 0.5,
-            radius: 0.3
-        }
-    },
-    tomato: {
-        name: "Tomato",
-        icon: 'models/tomato/image.png',
-        model: 'models/tomato/model_10k.glb',
-        plantData: {
-            height: 1.0,
-            radius: 0.5
-        }
-    },
+    brussels_sprouts: new Plant(
+        "Brussels Sprouts",
+        'models/brussels_sprouts/image.png',
+        'models/brussels_sprouts/model_10k.glb',
+        new THREE.Vector3(0.3, 0.3, 0.3)),
+    cabbage: new Plant(
+        "Cabbage",
+        'models/cabbage/image.png',
+        'models/cabbage/model_10k.glb',
+        new THREE.Vector3(0.2, 0.2, 0.2)),
+    corn: new Plant(
+        "Corn",
+        'models/corn/image.png',
+        'models/corn/model_10k.glb',
+        new THREE.Vector3(0.6, 0.6, 0.8)),
+    eggplant: new Plant(
+        "Eggplant",
+        'models/eggplant/image.png',
+        'models/eggplant/model_10k.glb',
+        new THREE.Vector3(0.3, 0.3, 0.3)),
+    onion: new Plant(
+        "Onion",
+        'models/onion/image.png',
+        'models/onion/model_10k.glb',
+        new THREE.Vector3(0.25, 0.25, 0.25)),
+    pepper: new Plant(
+        "Jalapeño",
+        'models/pepper/image.png',
+        'models/pepper/model_10k.glb',
+        new THREE.Vector3(0.3, 0.3, 0.3)),
+    potato: new Plant(
+        "Potato",
+        'models/potato/image.png',
+        'models/potato/model_10k.glb',
+        new THREE.Vector3(0.3, 0.3, 0.3)),
+    tomato: new Plant(
+        "Tomato",
+        'models/tomato/image.png',
+        'models/tomato/model_10k.glb',
+        new THREE.Vector3(0.5, 0.5, 0.5)),
 
 }
 
@@ -83,7 +66,7 @@ function createListItem(plant) {
     div.className = "item";
 
     const img = document.createElement("img");
-    img.src = plant.icon;
+    img.src = plant.icon_path;
     img.className = "plant-image";
 
     div.appendChild(img)

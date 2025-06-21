@@ -259,16 +259,17 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
     - [x] open and close panel
     - [x] load mesh on button click
     - [x] add existing or create new button on top
-    - [ ] create a function to load model from a plant object
-        - [ ] create plant class
-        - [ ] add function to create plants from plant class
-        - [ ] fix plant rotation in blender
+    - [x] create a function to load model from a plant object
+        - [x] create plant class
+        - [x] add function to create plants from plant class
+        - [x] fix plant rotation in blender
     - [ ] model preview instead of plant image https://modelviewer.dev/
 
 #### Bug fixing
 - [ ] bug where toggling grid only toggles it for one camera
 - [ ] fix bugs with sidebar scene
 - [ ] fix bug where bed keeps going into bed editor mode?
+- [ ] fix bug with plant rotation
 - [x] object mode bugs :/
 
 - [ ] add a 5'10 human model to the world
