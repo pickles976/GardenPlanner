@@ -16,8 +16,6 @@
 - [ ] draw state diagram and figure out states
 - [ ] clean up code
 
-
-
 #### OBJECT EDITOR
 - [ ] swap between meters and inches on ui panel
 - [ ] draw a fence

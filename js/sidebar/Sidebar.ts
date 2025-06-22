@@ -11,7 +11,7 @@ const strings = Strings({'language': 'en'});
 class Sidebar {
 
 	editor: Editor;
-	container: UITabbedPanel;
+	container: UIPanel;
 	sidebarGlobals: SidebarGlobals;
 	sidebarScene: UIPanel;
 	sidebarProperties: UITabbedPanel;
@@ -20,7 +20,7 @@ class Sidebar {
 
 	constructor (editor: Editor) {
 		this.editor = editor;
-		this.container = new UITabbedPanel();
+		this.container = new UIPanel();
 		this.container.setId( 'sidebar' );
 
 		this.sidebarGlobals = new SidebarGlobals( editor );
@@ -33,17 +33,17 @@ class Sidebar {
 			this.sidebarProperties
 		);
 
-		this.container.addTab( 'scene', strings.getKey( 'sidebar/scene' ), this.scene );
-		this.container.select( 'scene' );
+		this.container.add(this.scene );
+		// this.container.select( 'scene' );
 
 		// Need these to be local sothe callback will work (TODO: pull this out into a method?)
-		const container = this.container;
-		const sidebarProperties = this.sidebarProperties;
-		const sidebarPropertiesResizeObserver = new ResizeObserver( function () {
-			sidebarProperties.tabsDiv.setWidth( getComputedStyle( container.dom ).width );
-		} );
+		// const container = this.container;
+		// const sidebarProperties = this.sidebarProperties;
+		// const sidebarPropertiesResizeObserver = new ResizeObserver( function () {
+		// 	sidebarProperties.tabsDiv.setWidth( getComputedStyle( container.dom ).width );
+		// } );
 
-		sidebarPropertiesResizeObserver.observe( this.container.tabsDiv.dom );
+		// sidebarPropertiesResizeObserver.observe( this.container.tabsDiv.dom );
 
 	}
 
