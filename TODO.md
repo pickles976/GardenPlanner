@@ -250,7 +250,7 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 - [ ] fix plant model rotation in blender (r,x,90)
 
 #### New Plant Creation
-- [ ] plant browser UI with image preview
+- [x] plant browser UI with image preview
     - [x] create json config with images and obj files
     - [x] create popup div for plant browser
     - [x] draw images in scrollable panel
@@ -268,9 +268,8 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
         - [x] replace image in model list with this: https://modelviewer.dev/
 
 Read more about model viewer
-- [ ] bug where model viewer size is weird
-- [ ] return model to default location when mouse out
-- [ ] create some kind of preview mode?
+- [x] bug where model viewer size is weird
+- [x] return model to default location when mouse out
 
 #### Bug fixing
 - [ ] bug where toggling grid only toggles it for one camera
@@ -316,6 +315,19 @@ Read more about model viewer
 - [ ] placeable ruler
 - [ ] pen tool for area calculation
 - [ ] draw pointer to north as rotating UI element
+
+#### Visual Improvements
+
+##### Textures
+https://gamedevnexus.com/resources/assets/
+- [ ] dirt
+- [ ] stone
+- [ ] wood
+- [ ] chain link
+
+- [ ] grass
+https://codesandbox.io/p/sandbox/grass-shader-forked-okub75?file=%2Fsrc%2FGrass.js
+https://smythdesign.com/blog/stylized-grass-webgl/
 
 Write up about 
 - design philosophy

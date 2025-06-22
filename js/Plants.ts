@@ -73,9 +73,19 @@ function createListItem(plant) {
     
     const img = document.createElement("model-viewer")
     img.src = plant.model_path;
+    img.setAttribute('auto-rotate', '');
     img.setAttribute('camera-controls', '');
     img.style.touchAction="pan-y"
     img.className = "plant-image";
+
+    const initialCameraOrbit = img.cameraOrbit;
+    const fov = img.getFieldOfView();
+
+    img.addEventListener('mouseleave', () => {
+        // Reset to the initial camera orbit
+        img.cameraOrbit = initialCameraOrbit;
+        img.fieldOfView = `30deg`;
+    });
 
 
     const button = document.createElement("button")
