@@ -17,11 +17,21 @@ export class Plant {
 }
 
 export const plants = {
+    beet: new Plant(
+        "Beet",
+        'models/beet/image.png',
+        'models/beet/model_10k.glb',
+        new THREE.Vector3(0.3, 0.3, 0.3)),
     brussels_sprouts: new Plant(
         "Brussels Sprouts",
         'models/brussels_sprouts/image.png',
         'models/brussels_sprouts/model_10k.glb',
         new THREE.Vector3(0.3, 0.3, 0.3)),
+    bush_beans: new Plant(
+        "Bush Beans",
+        'models/bush_beans/image.png',
+        'models/bush_beans/model_10k.glb',
+        new THREE.Vector3(0.5, 0.5, 0.5)),
     cabbage: new Plant(
         "Cabbage",
         'models/cabbage/image.png',
@@ -37,6 +47,11 @@ export const plants = {
         'models/eggplant/image.png',
         'models/eggplant/model_10k.glb',
         new THREE.Vector3(0.3, 0.3, 0.3)),
+    marigold: new Plant(
+        "Marigold",
+        'models/marigold/image.png',
+        'models/marigold/model_10k.glb',
+        new THREE.Vector3(0.2, 0.2, 0.2)),
     onion: new Plant(
         "Onion",
         'models/onion/image.png',
@@ -68,6 +83,10 @@ function createListItem(plant) {
     const div = document.createElement("div");
     div.className = "item";
 
+    const title = document.createElement("div");
+    title.innerText = plant.name;
+    title.style.fontSize = "16px";
+
     // const img = document.createElement("img");
     // img.src = plant.icon_path;
     
@@ -79,19 +98,20 @@ function createListItem(plant) {
     img.className = "plant-image";
 
     const initialCameraOrbit = img.cameraOrbit;
-    const fov = img.getFieldOfView();
 
     img.addEventListener('mouseleave', () => {
         // Reset to the initial camera orbit
         img.cameraOrbit = initialCameraOrbit;
         img.fieldOfView = `30deg`;
+        img.cameraTarget = 'auto'; 
     });
 
-
     const button = document.createElement("button")
-    button.innerText = plant.name;
+    // button.innerText = plant.name;
+    button.innerText = "ADD"
     button.style.fontSize = "16px";
 
+    div.appendChild(title)
     div.appendChild(img)
     div.appendChild(button)
 
@@ -107,6 +127,9 @@ export function createSearchPanel() : HTMLElement {
     container.className = "search-panel";
     container.id = "search-panel"
 
+    const header = document.createElement('div');
+    header.className = "button-header";
+
     const button = document.createElement("button")
     button.innerText = "Cancel";
     button.style.fontSize = "16px";
@@ -116,7 +139,7 @@ export function createSearchPanel() : HTMLElement {
         container.remove()
     }
 
-    container.appendChild(button)
+    header.appendChild(button)
 
     const scrollable = document.createElement("div")
     scrollable.className = "scroll-container"
@@ -135,6 +158,7 @@ export function createSearchPanel() : HTMLElement {
     });
 
     scrollable.appendChild(grid)
+    container.appendChild(header)
     container.appendChild(scrollable)
 
     return container
