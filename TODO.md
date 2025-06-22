@@ -1,11 +1,11 @@
 - [x] clean up plant selection styles a bit
 
-- [ ] switch from tabs, to panels
-- [ ] hide panels when not active
-    - [ ] object
-    - [ ] bed
-    - [ ] planter
-    - [ ] scene
+- [x] switch from tabs, to panels
+- [x] hide panels when not active
+    - [x] bed
+        - [x] get rid of create button
+    - [x] plant
+    - [x] object
 
 - [ ] on plant selection, populate panel
     - [x] when plant selected, emit something
@@ -13,7 +13,19 @@
     - [ ] set size
     - [ ] what else?
 
+- [ ] remove redundant shit from object panel
+
 - [ ] draw state diagram and figure out states
+- [ ] re-think our object system
+    - selectables
+        - beds
+        - plants
+        - objects
+    - non-selectables
+        - ground
+        - handles
+        - visualizers
+
 - [ ] clean up code
 
 #### OBJECT EDITOR
@@ -21,11 +33,12 @@
 - [ ] draw a fence
 - [ ] create a ruler object
 - [ ] controls specific features of geometry in UI panel
+    - [ ] figure out a way to set the editable features from UI. Use proxies?
     - [ ] specify radius in inches/ft/meters for sphere
     - [ ] specify radius/height for cylinder
 
 #### Feedback
-- [ ] rotation in simple transform mode
+- [ ] rotation in simple transform mode (use Q/E to snap 90 degrees)
 - [ ] jump to selected object in scene w/ double click
 - [ ] type to set length of line in pen mode
 - [ ] esc to reset line

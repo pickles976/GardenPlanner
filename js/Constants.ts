@@ -5,8 +5,10 @@ export const METRIC = false;
 export const FONT_SIZE = 30;
 
 enum EditorMode {
+    NONE = "NONE",
     OBJECT = "OBJECT",
-    BED = "BED"
+    BED = "BED",
+    PLANT = "PLANT"
 }
 
 enum LayerEnum {

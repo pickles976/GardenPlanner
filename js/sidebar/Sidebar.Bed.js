@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-import { UIPanel, UIRow, UIInput, UIButton, UIColor, UICheckbox, UIInteger, UITextArea, UIText, UINumber } from '../libs/ui.js';
+import { UIPanel, UIRow, UIInput, UIButton, UIColor, UICheckbox, UIInteger, UITextArea, UIText, UINumber, UISpan } from '../libs/ui.js';
 import { UIBoolean } from '../libs/ui.three.js';
 
 import { SetPositionCommand } from '../commands/SetPositionCommand.js';
@@ -21,8 +21,8 @@ function SidebarBed( editor ) {
 	container.setPaddingTop( '20px' );
 	container.setDisplay("Block")
 
-	// Create
-	const createNewButton = new UIButton("+ Create New");
+	const label = new UIText("BED")
+	container.add(label)
 
 	// Save Polygon
 	const saveButton = new UIButton("✓ Save Polygon")
@@ -99,7 +99,6 @@ function SidebarBed( editor ) {
 	const buttonContainer = new UIPanel();
 	buttonContainer.setBorderTop( '1' );
 	buttonContainer.setPaddingTop( '20px' );
-	buttonContainer.add(createNewButton)
 	buttonContainer.add(saveButton)
 	buttonContainer.add(saveBedButton)
 	buttonContainer.add(cancelButton)
@@ -128,7 +127,6 @@ function SidebarBed( editor ) {
 	container.add(dimensionContainer)
 	container.add(buttonContainer)
 
-	createNewButton.onClick(() => eventBus.emit(EventEnums.BED_CREATION_STARTED, undefined))
 	saveButton.onClick(() => eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED))
 	saveBedButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_CANCELLED))
@@ -139,7 +137,6 @@ function SidebarBed( editor ) {
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
-		createNewButton.setDisplay("none");
 		dimensionContainer.setDisplay("none")
 		configContainer.setDisplay("none")
 	})
@@ -149,7 +146,6 @@ function SidebarBed( editor ) {
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("Block");
 		saveBedButton.setDisplay("none");
-		createNewButton.setDisplay("none");
 		dimensionContainer.setDisplay("Block")
 		configContainer.setDisplay("none")
 	})
@@ -163,7 +159,6 @@ function SidebarBed( editor ) {
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("none");
 		saveBedButton.setDisplay("Block");
-		createNewButton.setDisplay("none");
 		dimensionContainer.setDisplay("Block")
 		configContainer.setDisplay("Block")
 	})
@@ -173,7 +168,6 @@ function SidebarBed( editor ) {
 		cancelButton.setDisplay("none");
 		saveButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
-		createNewButton.setDisplay("Block");
 		dimensionContainer.setDisplay("none")
 		configContainer.setDisplay("none")
 	})
@@ -183,7 +177,6 @@ function SidebarBed( editor ) {
 		cancelButton.setDisplay("none");
 		saveButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
-		createNewButton.setDisplay("Block");
 		dimensionContainer.setDisplay("none")
 		configContainer.setDisplay("none")
 	})

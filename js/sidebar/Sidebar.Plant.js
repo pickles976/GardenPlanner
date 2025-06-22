@@ -21,6 +21,9 @@ function SidebarPlant( editor ) {
 	container.setPaddingTop( '20px' );
 	container.setDisplay("Block")
 
+	const label = new UIText("PLANT")
+	container.add(label)
+
 	// // Create
 	// const createNewButton = new UIButton("+ Create New");
 

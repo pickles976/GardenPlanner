@@ -24,7 +24,10 @@ function SidebarObject( editor ) {
 	const container = new UIPanel();
 	container.setBorderTop( '0' );
 	container.setPaddingTop( '20px' );
-	container.setDisplay( 'none' );
+
+	const label = new UIText("OBJECT")
+	container.add(label)
+
 
 	// Actions
 
