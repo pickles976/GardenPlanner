@@ -226,7 +226,7 @@ class MenubarView {
             switch (e.code) {
                 case 'KeyC':
                     this.toggleCamera()
-                    eventBus.emit(EventEnums.GRID_VISIBILITY_CHANGED, this.states.cameraHelper);
+                    eventBus.emit(EventEnums.CAMERA_CHANGED, this.states.cameraHelper);
                     break;
                 case 'KeyG':
 					this.toggleGrid()

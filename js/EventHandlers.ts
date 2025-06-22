@@ -77,7 +77,8 @@ function highlightMouseOverObject(editor: Editor, intersections: THREE.Object3D[
     }
 
     // Un-highlight currently select object
-    if (selector.currentSelectedObject !== undefined) {
+    if (selector.currentSelectedObject !== undefined &&
+        selector.currentMousedOverObject !== undefined) {
         if (Array.isArray(selector.currentMousedOverObject.material)) {
             selector.currentMousedOverObject.material.forEach((mat) => mat.emissive.setHex(0x000000));
         } else {

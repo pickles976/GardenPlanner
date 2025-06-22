@@ -3,6 +3,7 @@ import { Plant } from './Plants';
 import { Editor } from './editors/Editor';
 import * as THREE from 'three';
 import { LayerEnum } from './Constants';
+import { CreateObjectCommand } from './commands/CreateObjectCommand';
 
 const loader = new GLTFLoader();
 
@@ -54,7 +55,9 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
 
     let newPos = mesh.position.add(new THREE.Vector3(0,0,size.z / 2))
     mesh.position.set(...newPos)
-    editor.scene.add(mesh)
+
+    editor.execute(new CreateObjectCommand(mesh, editor))
+
     return mesh
 }
 

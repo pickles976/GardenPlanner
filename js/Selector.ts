@@ -32,7 +32,12 @@ class Selector {
         this.isUsingTransformControls = false;
         this.advancedTransformMode = false;
 
-        eventBus.on(EventEnums.OBJECT_CHANGED, () => this.drawRotationVisualizer());
+        eventBus.on(EventEnums.OBJECT_CHANGED, () => {
+            this.editor.remove(this.rotationAngleVisualizer)
+            if (!this.advancedTransformMode) return;
+            if (this.editor.transformControls.mode !== "rotate") return;
+            this.drawRotationVisualizer();
+        });
         eventBus.on(EventEnums.TRANSFORM_MODE_CHANGED, (value) => this.setTransformMode(value));
     }
 
@@ -77,6 +82,8 @@ class Selector {
                 object.userData.onSelect()
             }
 
+            this.drawRotationVisualizer()
+
         }
     }
 
@@ -93,6 +100,7 @@ class Selector {
             }
 
         }
+
     }
 
     public select(object: Object3D) {
@@ -106,8 +114,6 @@ class Selector {
         } else {
             this.simpleTransformSelect(object)
         }
-
-        this.drawRotationVisualizer()
 
         eventBus.emit(EventEnums.OBJECT_SELECTED, object);
     }

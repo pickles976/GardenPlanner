@@ -75,6 +75,11 @@ function SidebarScene( editor ) {
 
 	function escapeHTML( html ) {
 
+		// Handle empty string
+		if (!html) {
+			return "None"
+		}
+
 		return html
 			.replace( /&/g, '&amp;' )
 			.replace( /"/g, '&quot;' )

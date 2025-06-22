@@ -247,7 +247,7 @@ https://threejs.org/docs/#examples/en/controls/TransformControls.rotationSnap
 
 - [x] create plant models
 - [x] convert all images to pngs
-- [ ] fix plant model rotation in blender (r,x,90)
+- [x] fix plant model rotation in blender (r,x,90)
 
 #### New Plant Creation
 - [x] plant browser UI with image preview
@@ -272,13 +272,13 @@ Read more about model viewer
 - [x] return model to default location when mouse out
 
 #### Bug fixing
-- [ ] bug where toggling grid only toggles it for one camera
-- [ ] fix bugs with sidebar scene
-- [ ] fix bug where bed keeps going into bed editor mode?
-- [ ] fix bug with plant rotation
 - [x] object mode bugs :/
+- [x] bug where toggling grid only toggles it for one camera
+- [x] don't show object rotation helper when in simple mode
+- [x] fix bug with plant rotation
 
-- [ ] add a 5'10 human model to the world
+- [x] fix bugs with sidebar scene
+- [x] fix bug where bed keeps going into bed editor mode?
 
 #### Plant Editing
 - [ ] on plant selection, populate panel
@@ -328,6 +328,8 @@ https://gamedevnexus.com/resources/assets/
 - [ ] grass
 https://codesandbox.io/p/sandbox/grass-shader-forked-okub75?file=%2Fsrc%2FGrass.js
 https://smythdesign.com/blog/stylized-grass-webgl/
+
+- [ ] add a 5'10 human model to the world
 
 Write up about 
 - design philosophy
