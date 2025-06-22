@@ -7,13 +7,26 @@
     - [x] plant
     - [x] object
 
+#### Refactor Object Panel
+- [ ] only render editors for the enabled fields on the model
+userData:
+```json
+{
+    "editableFields": {
+        "position": true,
+        "rotation": true,
+        "name": true
+    }
+}
+```
+
+#### Plant Configuration
 - [ ] on plant selection, populate panel
     - [x] when plant selected, emit something
     - [x] set name
-    - [ ] set size
+    - [ ] set height
+    - [ ] set radius
     - [ ] what else?
-
-- [ ] remove redundant shit from object panel
 
 - [ ] draw state diagram and figure out states
 - [ ] re-think our object system
@@ -29,31 +42,35 @@
 - [ ] clean up code
 
 #### OBJECT EDITOR
+- [ ] add ability to add plane
 - [ ] swap between meters and inches on ui panel
-- [ ] draw a fence
 - [ ] create a ruler object
+- [ ] fence drawing utility
+
+#### Erika Feedback
+
+
+#### Improvements
+- [ ] rotation in simple transform mode (use Q/E to snap 90 degrees)
+- [ ] jump to selected object in scene w/ double click
+- [ ] draw pointer to north as rotating UI element
 - [ ] controls specific features of geometry in UI panel
     - [ ] figure out a way to set the editable features from UI. Use proxies?
     - [ ] specify radius in inches/ft/meters for sphere
     - [ ] specify radius/height for cylinder
 
-#### Feedback
-- [ ] rotation in simple transform mode (use Q/E to snap 90 degrees)
-- [ ] jump to selected object in scene w/ double click
-- [ ] type to set length of line in pen mode
+- [ ] type to set length of line in pen mode (Bed Editor)
 - [ ] esc to reset line
 - [ ] put a crosshair at bed editor path start to make closing easier
 - [ ] draw angle on completed line segments
-- [ ] shift+click to select multiple
 - [ ] fix polygon drawing bug
 - [ ] bug with clicking on line segments
-- [ ] let user set rotation from typing?
-- [ ] allow user to group things and edit the group
 
-#### Measurement Tools
-- [ ] placeable ruler
-- [ ] pen tool for area calculation
-- [ ] draw pointer to north as rotating UI element
+- [ ] create group-editing workflow?
+    - [ ] create a group
+    - [ ] add multiple objects to the group
+    - [ ] move the entire group
+    - [ ] remove objects from the group
 
 #### Visual Improvements
 
@@ -79,7 +96,7 @@ Write up about
 
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
-- [ ] load mesh resources, create thumbnails for them
+    - [ ] create a panel for 3D models the same way we have for plants
 
 ## SUN CONTROLS
 - [ ] lat/lon entry

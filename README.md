@@ -26,7 +26,6 @@ conda activate Hunyuan3D-2GP
 python gradio_app.py --profile 5
 ```
 
-
 Blender decimate geometry
 https://github.com/wjakob/instant-meshes
 
@@ -56,15 +55,20 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 - [x] 06/18/2025 -- safelite
 - [x] 06/19/2025 -- start on plant editor
 - [x] 06/20/2025 -- AI generated 3D model pipeline
-- [ ] 06/21/2025 -- work on plant browser UI
+- [x] 06/21/2025 -- work on plant browser UI
+- [ ] 06/22/2025 -- UI refactor
 
 # Week 4
+- [ ] 06/23/2025 -- French Fry appt
+- [ ] 06/24/2025 -- Object mode rework
+- [ ] 06/25/2025 -- QOL improvements
+- [ ] 06/26/2025 -- visual improvements
+- [ ] 06/27/2025 -- object creation panel (like plant selecotr panel)
 
-- [ ] object creator and editor
-- [ ] add objects to scene
-- [ ] draw fence
-- [ ] save scene as json
-- [ ] load scene as json
+- [ ] saving and loading json
+- [ ] sun calc feature
+- [ ] sun timeline
+- [ ] optimization
 
 # Milestones
 - [ ] Garden editor -- 06/30/2025
