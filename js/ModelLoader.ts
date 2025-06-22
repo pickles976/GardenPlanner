@@ -4,6 +4,7 @@ import { Editor } from './editors/Editor';
 import * as THREE from 'three';
 import { LayerEnum } from './Constants';
 import { CreateObjectCommand } from './commands/CreateObjectCommand';
+import { eventBus, EventEnums } from './EventBus';
 
 const loader = new GLTFLoader();
 
@@ -46,7 +47,11 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
     mesh.layers.set(LayerEnum.Plants);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-    mesh.userData = {"selectable": true};
+    mesh.userData = {
+        selectable: true,
+        onSelect: () => eventBus.emit(EventEnums.PLANT_SELECTED, true),
+        onDeselect: () => eventBus.emit(EventEnums.PLANT_SELECTED, false),
+    };
     mesh.name = plant.name;
 
     const box = new THREE.Box3().setFromObject(mesh);

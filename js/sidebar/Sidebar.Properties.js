@@ -20,12 +20,19 @@ function SidebarProperties( editor ) {
 
 	container.addTab('objectTab', strings.getKey( 'sidebar/properties/object' ), new SidebarObject(editor));
 
+	const plantTab = new SidebarPlant( editor );
+
 	container.addTab( 'bedTab', "Bed", new SidebarBed( editor ) );
-	container.addTab( 'plantTab', "Plant", new SidebarPlant( editor ) );
+	container.addTab( 'plantTab', "Plant", plantTab );
 	container.select( 'objectTab' );
 
 	eventBus.on(EventEnums.BED_CREATION_STARTED, () => {container.select('bedTab')});
 	eventBus.on(EventEnums.PLANT_CREATION_STARTED, () => {container.select('plantTab')});
+	eventBus.on(EventEnums.PLANT_SELECTED, (value) => {
+		if (value) {
+			container.select('plantTab');
+		}
+	})
 
 	return container;
 

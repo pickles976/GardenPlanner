@@ -1,17 +1,22 @@
-- [ ] clean up plant selection styles a bit
+- [x] clean up plant selection styles a bit
+
+- [ ] switch from tabs, to panels
+- [ ] hide panels when not active
+    - [ ] object
+    - [ ] bed
+    - [ ] planter
+    - [ ] scene
 
 - [ ] on plant selection, populate panel
-    - [ ] set name
+    - [x] when plant selected, emit something
+    - [x] set name
     - [ ] set size
     - [ ] what else?
 
-- [ ] hide tabs when not active
-    - [ ] object
-    - [ ] bed
-    - [ ] plantrr
+- [ ] draw state diagram and figure out states
+- [ ] clean up code
 
-- [ ] open editor?
-- [ ] drag and drop .glb file?
+
 
 #### OBJECT EDITOR
 - [ ] swap between meters and inches on ui panel

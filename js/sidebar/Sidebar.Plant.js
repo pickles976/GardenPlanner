@@ -35,35 +35,36 @@ function SidebarPlant( editor ) {
 	// buttonContainer.add(createNewButton)
 	// buttonContainer.add(saveButton)
 
-	// const objectNameRow = new UIRow();
-	// const objectName = new UIInput().setWidth( '150px' ).setFontSize( '12px' ).onChange(update);
-	// objectName.setValue("New Plant")
-	// objectNameRow.add( new UIText( "Plant Name" ).setClass( 'Label' ) );
-	// objectNameRow.add( objectName );
+	const objectNameRow = new UIRow();
+	const objectName = new UIInput().setWidth( '150px' ).setFontSize( '12px' ).onChange(update);
+	objectName.setValue("New Plant")
+	objectNameRow.add( new UIText( "Plant Name" ).setClass( 'Label' ) );
+	objectNameRow.add( objectName );
+	objectNameRow.setDisplay("none")
 
 	// // Add sub-panels
 	// container.add(buttonContainer)
-	// container.add(objectNameRow)
+	container.add(objectNameRow)
 
-	// eventBus.on(EventEnums.VERTEX_EDITING_UPDATED, () => {
-	// 	updateFromEditor()
-	// })
+	eventBus.on(EventEnums.PLANT_SELECTED, (value) => {
 
-	// eventBus.on(EventEnums.BED_SELECTED, (value) => {
-	// 	editButton.setDisplay(value ? "Block" : "none") 
-	// })
+		if (value) {
+			objectNameRow.setDisplay("Block")
+			const plant = editor.selector.currentSelectedObject;
+			objectName.setValue(plant.name);
+		} else {
+			objectNameRow.setDisplay("none")
+		}
 
-	// eventBus.on(EventEnums.METRIC_CHANGED, () => {
-	// 	updateFromEditor();
-	// })
+	})
 
-	// function update() {
+	function update() {
 
-	// }
+	}
 
-	// function updateFromEditor() {
+	function updateFromEditor() {
 
-	// }
+	}
 
 	return container;
 

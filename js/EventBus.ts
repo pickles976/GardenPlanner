@@ -31,7 +31,8 @@ enum EventEnums {
     // PLANT CREATION
     PLANT_CREATION_STARTED = "plantCreationStarted",
 
-    LOAD_PLANT = "loadPlant"
+    LOAD_PLANT = "loadPlant",
+    PLANT_SELECTED = "plantSelected"
 
 
 
