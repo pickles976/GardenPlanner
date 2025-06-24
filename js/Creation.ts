@@ -11,7 +11,15 @@ export function createCube(editor: Editor): THREE.Mesh {
     const mesh = new THREE.Mesh(geo, mat)
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-    mesh.userData = {selectable: true}
+    mesh.userData = {
+        selectable: true,
+        editableFields: {
+            name: true,
+            position: true,
+            rotation: true,
+            scale: true
+        }
+    }
     mesh.layers.set(LayerEnum.Plants)
     mesh.name = "Box";
 
@@ -28,7 +36,15 @@ export function createHumanCube(editor: Editor): THREE.Mesh {
     const mesh = new THREE.Mesh(geo, mat)
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-    mesh.userData = {selectable: true}
+    mesh.userData = {
+        selectable: true,
+        editableFields: {
+            name: true,
+            position: true,
+            rotation: true,
+            scale: true
+        }
+    }
     mesh.layers.set(LayerEnum.Plants)
     mesh.name = "Box";
 
@@ -45,7 +61,16 @@ export function createCylinder(editor: Editor): THREE.Mesh {
     const mesh = new THREE.Mesh(geo, mat)
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-    mesh.userData = {selectable: true}
+    mesh.userData = {
+        selectable: true,
+        editableFields: {
+                name: true,
+                position: true,
+                rotation: true,
+                radius: true,
+                height: true
+        }
+    }
     mesh.layers.set(LayerEnum.Plants)
     mesh.name = "Cylinder";
 

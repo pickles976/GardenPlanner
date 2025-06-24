@@ -59,7 +59,7 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 - [ ] 06/22/2025 -- UI refactor
 
 # Week 4
-- [ ] 06/23/2025 -- French Fry appt
+- [x] 06/23/2025 -- French Fry appt
 - [ ] 06/24/2025 -- Object mode rework
 - [ ] 06/25/2025 -- QOL improvements
 - [ ] 06/26/2025 -- visual improvements

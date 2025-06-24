@@ -1,14 +1,6 @@
-- [x] clean up plant selection styles a bit
-
-- [x] switch from tabs, to panels
-- [x] hide panels when not active
-    - [x] bed
-        - [x] get rid of create button
-    - [x] plant
-    - [x] object
 
 #### Refactor Object Panel
-- [ ] only render editors for the enabled fields on the model
+- [x] only render editors for the enabled fields on the model
 userData:
 ```json
 {
@@ -19,8 +11,13 @@ userData:
     }
 }
 ```
+- [x] change UI panel position to use ft/meters
 
 #### Plant Configuration
+
+- [ ] add radius and height for cylinder
+- [ ] create cylinder sub-panel?
+
 - [ ] on plant selection, populate panel
     - [x] when plant selected, emit something
     - [x] set name
