@@ -112,7 +112,7 @@ export function getCSS2DText(content: string, margin: string): CSS2DObject {
     return new CSS2DObject(text);
 }
 
-export function deepClone(object) {
+export function deepClone(object: THREE.Object3D) {
   const clone = object.clone(true); // true = recursive (deep) clone
 
   // Clone materials
@@ -128,4 +128,14 @@ export function deepClone(object) {
   });
 
   return clone;
+}
+
+export function getObjectSize(object: THREE.Mesh) : Vector3 {
+  const geometry = object.geometry;
+  geometry.computeBoundingBox(); // Ensure bounding box is up-to-date
+
+  const box = geometry.boundingBox; // Local-space AABB
+  const size = new THREE.Vector3();
+  box.getSize(size);
+  return size
 }

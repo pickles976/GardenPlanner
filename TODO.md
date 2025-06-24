@@ -1,58 +1,10 @@
-
-#### Refactor Object Panel
-- [x] only render editors for the enabled fields on the model
-userData:
-```json
-{
-    "editableFields": {
-        "position": true,
-        "rotation": true,
-        "name": true
-    }
-}
-```
-- [x] change UI panel position to use ft/meters
-
-#### Plant Configuration
-
-- [x] add radius and height for cylinder
-    - [x] radius
-    - [x] set radius
-    - [x] height
-    - [x] set height
-
-- [x] nfix bug where being in non-metric causes us to be unable to set scale and rotation
-- [x] switch between ft and meters radius and height
-
-- [ ] sphere controls
-
-- [ ] on plant selection, populate panel
-    - [x] when plant selected, emit something
-    - [x] set name
-    - [ ] set height
-    - [ ] set radius
-    - [ ] what else?
-
-- [ ] draw state diagram and figure out states
-- [ ] re-think our object system
-    - selectables
-        - beds
-        - plants
-        - objects
-    - non-selectables
-        - ground
-        - handles
-        - visualizers
-
-- [ ] clean up code
-
 #### OBJECT EDITOR
 - [ ] add ability to add plane
 - [ ] create a ruler object
 - [ ] fence drawing utility
 
 #### Erika Feedback
-
+Have Erika plan a garden
 
 #### Improvements
 - [ ] rotation in simple transform mode (use Q/E to snap 90 degrees)
@@ -62,7 +14,9 @@ userData:
     - [ ] figure out a way to set the editable features from UI. Use proxies?
     - [ ] specify radius in inches/ft/meters for sphere
     - [ ] specify radius/height for cylinder
+- [ ] improve shadows
 
+- [ ] hide bed objects in bed editor
 - [ ] type to set length of line in pen mode (Bed Editor)
 - [ ] esc to reset line
 - [ ] put a crosshair at bed editor path start to make closing easier
@@ -114,6 +68,11 @@ Write up about
     - [ ] autosave feature
     - [ ] export
     - [ ] load
+
+## PLANT EDITOR KEYFRAMING
+- [ ] set height and radius
+- [ ] enter height and radius at different time points
+- [ ] animate plant according to different time points
     
 ## DATA AND STUFF
 - [ ] in-browser sqlite engine for plants and stuff

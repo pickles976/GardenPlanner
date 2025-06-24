@@ -39,11 +39,11 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
         lightMapIntensity: 3
     });
 
+    // Bake in rotation and scale
     mesh.scale.set(...plant.scale)
     mesh.rotation.x = mesh.rotation.x + (Math.PI / 2);
-
-    // Bake in rotation and scale
     mesh = setCurrentTransformationAsDefault(mesh);    
+
     mesh.layers.set(LayerEnum.Plants);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -54,8 +54,6 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
         editableFields: {
 			name: true,
 			position: true,
-			rotation: true,
-			scale: true
 		}
     };
     mesh.name = plant.name;

@@ -490,6 +490,11 @@ class BedEditor {
             bedColor: this.bedColor,
             borderColor: this.borderColor,
             name: this.bedName,
+            editableFields: {
+                name: true,
+                position: true,
+                rotation: true,
+            }
         }
         mergedMesh.layers.set(LayerEnum.Objects)
         mergedMesh.position.set(...centroid)

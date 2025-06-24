@@ -3,7 +3,7 @@ import { UIPanel, UIRow } from '../libs/ui.js';
 
 import { Strings } from '../sidebar/Strings.js';
 import { eventBus, EventEnums } from '../EventBus.js';
-import { createCube, createCylinder, createSphere, createTorus } from '../Creation.js';
+import { createCube, createCylinder, createSphere } from '../Creation.js';
 import { createSearchPanel } from '../Plants.js';
 
 const strings = Strings({'language': 'en'});

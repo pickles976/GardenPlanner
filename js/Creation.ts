@@ -3,12 +3,13 @@ import { Editor } from './Editor';
 import { CreateObjectCommand } from './commands/CreateObjectCommand';
 import { LayerEnum } from './Constants';
 import { setCurrentTransformationAsDefault } from './ModelLoader';
+import { GROUND_COLOR } from './Colors';
 
-export function createCube(editor: Editor): THREE.Mesh {
+export function createHumanCube(editor: Editor): THREE.Mesh {
     const mat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
     })
-    const geo = new THREE.BoxGeometry(0.3048, 0.3048, 0.3048);
+    const geo = new THREE.BoxGeometry(0.6096, 0.3048, 1.8288);
     const mesh = new THREE.Mesh(geo, mat)
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -29,11 +30,11 @@ export function createCube(editor: Editor): THREE.Mesh {
     return mesh
 }
 
-export function createHumanCube(editor: Editor): THREE.Mesh {
+export function createCube(editor: Editor): THREE.Mesh {
     const mat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
     })
-    const geo = new THREE.BoxGeometry(0.6096, 0.3048, 1.8288);
+    const geo = new THREE.BoxGeometry(0.3048, 0.3048, 0.3048);
     const mesh = new THREE.Mesh(geo, mat)
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -88,11 +89,20 @@ export function createSphere(editor: Editor): THREE.Mesh {
     const mat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
     })
-    const geo = new THREE.SphereGeometry(0.3048, 32, 16);
+    const geo = new THREE.SphereGeometry(1, 32, 16);
     const mesh = new THREE.Mesh(geo, mat)
     mesh.castShadow = true;
     mesh.receiveShadow = true;
-    mesh.userData = {selectable: true}
+    mesh.userData = {
+        selectable: true,
+        editableFields: {
+                name: true,
+                position: true,
+                rotation: true,
+                radius: true,
+                height: true
+        }
+    }
     mesh.layers.set(LayerEnum.Plants)
     mesh.name = "Sphere";
 
@@ -101,20 +111,17 @@ export function createSphere(editor: Editor): THREE.Mesh {
     return mesh
 }
 
-export function createTorus(editor: Editor): THREE.Mesh {
-    const torusMat = new THREE.MeshPhongMaterial({
-        color: 0x2A7AB0,
-    })
-    const torusGeo = new THREE.TorusGeometry(0.3048, 0.25 * 0.3048, 64, 64);
-    const torusMesh = new THREE.Mesh(torusGeo, torusMat)
-    torusMesh.castShadow = true;
-    torusMesh.receiveShadow = true;
-    torusMesh.userData = {selectable: true}
-    torusMesh.layers.set(LayerEnum.Plants)
-    // TODO: make this dynamic
-    torusMesh.name = "Torus"
+export function createGround(scene: THREE.Scene): THREE.Mesh {
 
-    editor.execute(new CreateObjectCommand(torusMesh, editor));
-
-    return torusMesh
+    const groundMat = new THREE.MeshPhongMaterial({
+        color: GROUND_COLOR,    // red (can also use a CSS color string here)
+    });
+    const groundGeo = new THREE.PlaneGeometry(64, 64, 4, 4)
+    const groundMesh = new THREE.Mesh(groundGeo, groundMat)
+    groundMesh.layers.set(LayerEnum.Objects)
+    groundMesh.castShadow = false;
+    groundMesh.receiveShadow = true;
+    groundMesh.name = "Ground";
+    scene.add(groundMesh)
+    return groundMesh
 }

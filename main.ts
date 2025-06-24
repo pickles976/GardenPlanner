@@ -1,36 +1,16 @@
-import * as THREE from 'three';
-import { Editor } from './js/editors/Editor';
-import { requestRenderIfNotRequested, render } from './js/Rendering';
 import { handleMouseMove, handleMouseClick, handleKeyDown } from './js/EventHandlers';
-import { Command } from './js/commands/Command';
 import { SetPositionCommand } from './js/commands/SetPositionCommand';
 import { SetRotationCommand } from './js/commands/SetRotationCommand';
+import { requestRenderIfNotRequested, render } from './js/Rendering';
 import { SetScaleCommand } from './js/commands/SetScaleCommand';
-import { Sidebar } from './js/sidebar/Sidebar';
+import { createHumanCube, createGround } from './js/Creation';
 import { eventBus, EventEnums } from './js/EventBus';
-import { CreateObjectCommand } from './js/commands/CreateObjectCommand';
-import { LayerEnum } from './js/Constants';
-import { DARK_GRAY, GREEN, GROUND_COLOR, PEPPER_COLOR } from './js/Colors';
+import { Command } from './js/commands/Command';
 import { GridManager } from './js/GridManager';
 import { Menubar } from './js/menubar/Menubar';
-import { createCube, createHumanCube, createTorus } from './js/Creation';
-
-import { load_mesh, loadPlant, meshes } from './js/ModelLoader';
-
-function createGround(scene: THREE.Scene): THREE.Mesh {
-
-    const groundMat = new THREE.MeshPhongMaterial({
-        color: GROUND_COLOR,    // red (can also use a CSS color string here)
-    });
-    const groundGeo = new THREE.PlaneGeometry(64, 64, 4, 4)
-    const groundMesh = new THREE.Mesh(groundGeo, groundMat)
-    groundMesh.layers.set(LayerEnum.Objects)
-    groundMesh.castShadow = false;
-    groundMesh.receiveShadow = true;
-    groundMesh.name = "Ground";
-    scene.add(groundMesh)
-    return groundMesh
-}
+import { Sidebar } from './js/sidebar/Sidebar';
+import { loadPlant } from './js/ModelLoader';
+import { Editor } from './js/editors/Editor';
 
 const editor = new Editor();
 editor.initThree();
@@ -114,7 +94,6 @@ eventBus.on(EventEnums.REQUEST_RENDER, () => render(editor));
 eventBus.on(EventEnums.OBJECT_CHANGED, () => render(editor));
 eventBus.on(EventEnums.METRIC_CHANGED, (value) => gridManager.setMetric(value))
 eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(value))
-
 
 createGround(editor.scene)
 
