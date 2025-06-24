@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { Editor } from './Editor';
 import { CreateObjectCommand } from './commands/CreateObjectCommand';
 import { LayerEnum } from './Constants';
+import { setCurrentTransformationAsDefault } from './ModelLoader';
 
 export function createCube(editor: Editor): THREE.Mesh {
     const mat = new THREE.MeshPhongMaterial({
@@ -58,7 +59,11 @@ export function createCylinder(editor: Editor): THREE.Mesh {
         color: 0xDDDDDD,
     })
     const geo = new THREE.CylinderGeometry(0.3048, 0.3048, 0.3048, 32);
-    const mesh = new THREE.Mesh(geo, mat)
+    let mesh = new THREE.Mesh(geo, mat)
+
+    mesh.rotation.x = mesh.rotation.x + (Math.PI / 2);
+    mesh = setCurrentTransformationAsDefault(mesh);    
+
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.userData = {

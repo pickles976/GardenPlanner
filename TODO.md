@@ -16,7 +16,12 @@ userData:
 #### Plant Configuration
 
 - [ ] add radius and height for cylinder
-- [ ] create cylinder sub-panel?
+    - [x] radius
+    - [x] set radius
+    - [ ] height
+    - [ ] set height
+    - [ ] switch between ft and meters
+    - [ ] fix bug where transform handles are not working!!!
 
 - [ ] on plant selection, populate panel
     - [x] when plant selected, emit something
@@ -40,7 +45,6 @@ userData:
 
 #### OBJECT EDITOR
 - [ ] add ability to add plane
-- [ ] swap between meters and inches on ui panel
 - [ ] create a ruler object
 - [ ] fence drawing utility
 

@@ -8,7 +8,7 @@ import { eventBus, EventEnums } from './EventBus';
 
 const loader = new GLTFLoader();
 
-function setCurrentTransformationAsDefault(model: THREE.Object3D) : THREE.Object3D {
+export function setCurrentTransformationAsDefault(model: THREE.Object3D) : THREE.Object3D {
     model.updateMatrixWorld(true); // Ensure matrix is updated
     model.traverse((child) => {
     if (child.isMesh) {
@@ -51,6 +51,12 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
         selectable: true,
         onSelect: () => eventBus.emit(EventEnums.PLANT_SELECTED, true),
         onDeselect: () => eventBus.emit(EventEnums.PLANT_SELECTED, false),
+        editableFields: {
+			name: true,
+			position: true,
+			rotation: true,
+			scale: true
+		}
     };
     mesh.name = plant.name;
 

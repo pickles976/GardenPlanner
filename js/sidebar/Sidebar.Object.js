@@ -1,22 +1,15 @@
 import * as THREE from 'three';
 
 import { UIPanel, UIRow, UIInput, UIButton, UIColor, UICheckbox, UIInteger, UITextArea, UIText, UINumber } from '../libs/ui.js';
-import { UIBoolean } from '../libs/ui.three.js';
 
-// import { SetUuidCommand } from './commands/SetUuidCommand.js';
-// import { SetValueCommand } from './commands/SetValueCommand.js';
 import { SetPositionCommand } from '../commands/SetPositionCommand.js';
 import { SetRotationCommand } from '../commands/SetRotationCommand.js';
 import { SetScaleCommand } from '../commands/SetScaleCommand.js';
-// import { SetColorCommand } from './commands/SetColorCommand.js';
-// import { SetShadowValueCommand } from './commands/SetShadowValueCommand.js';
 import { Strings } from './Strings';
 import {eventBus, EventEnums} from '../EventBus.js';
 import { snapper } from '../Snapping.js'
 
 const strings = Strings({'language': 'en'});
-
-// import { SidebarObjectAnimation } from './Sidebar.Object.Animation.js';
 
 function SidebarObject( editor ) {
 
@@ -28,50 +21,6 @@ function SidebarObject( editor ) {
 
 	const label = new UIText("OBJECT")
 	container.add(label)
-
-
-	// Actions
-
-	/*
-	let objectActions = new UI.Select().setPosition( 'absolute' ).setRight( '8px' ).setFontSize( '11px' );
-	objectActions.setOptions( {
-
-		'Actions': 'Actions',
-		'Reset Position': 'Reset Position',
-		'Reset Rotation': 'Reset Rotation',
-		'Reset Scale': 'Reset Scale'
-
-	} );
-	objectActions.onClick( function ( event ) {
-
-		event.stopPropagation(); // Avoid panel collapsing
-
-	} );
-	objectActions.onChange( function ( event ) {
-
-		let object = editor.selected;
-
-		switch ( this.getValue() ) {
-
-			case 'Reset Position':
-				editor.execute( new SetPositionCommand( editor, object, new Vector3( 0, 0, 0 ) ) );
-				break;
-
-			case 'Reset Rotation':
-				editor.execute( new SetRotationCommand( editor, object, new Euler( 0, 0, 0 ) ) );
-				break;
-
-			case 'Reset Scale':
-				editor.execute( new SetScaleCommand( editor, object, new Vector3( 1, 1, 1 ) ) );
-				break;
-
-		}
-
-		this.setValue( 'Actions' );
-
-	} );
-	container.addStatic( objectActions );
-	*/
 
 	// type
 
@@ -150,6 +99,16 @@ function SidebarObject( editor ) {
 	objectScaleRow.add( objectScaleX, objectScaleY, objectScaleZ );
 
 	container.add( objectScaleRow );
+
+	// radius
+
+	const objectRadiusRow = new UIRow();
+	const objectRadius = new UINumber( 1 ).setPrecision( 3 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
+
+	objectRadiusRow.add( new UIText( "Radius" ).setClass( 'Label' ) );
+	objectRadiusRow.add( objectRadius );
+
+	container.add( objectRadiusRow );
 
 	// user data
 
@@ -230,6 +189,7 @@ function SidebarObject( editor ) {
 				snapper.inchesToMeters(newPosition.z)
 			)
 		}
+
 		if ( position.distanceTo( newPosition ) >= 0.01 ) {
 			editor.execute( new SetPositionCommand( object, object.position, newPosition ) );
 		}
@@ -239,10 +199,20 @@ function SidebarObject( editor ) {
 			editor.execute( new SetRotationCommand( object, object.quaternion.clone(), new THREE.Quaternion().setFromEuler(newRotation)));
 		}
 
-		const newScale = new THREE.Vector3( objectScaleX.getValue(), objectScaleY.getValue(), objectScaleZ.getValue() );
-		if ( object.scale.distanceTo( newScale ) >= 0.01 ) {
+		// const newScale = new THREE.Vector3( objectScaleX.getValue(), objectScaleY.getValue(), objectScaleZ.getValue() );
+		// if ( object.scale.distanceTo( newScale ) >= 0.01 ) {
+		// 	editor.execute( new SetScaleCommand( object, object.scale, newScale ) );
+		// }
+
+		const editableFields = object.userData.editableFields;
+		if (editableFields === undefined) return;
+
+		// Set Radius
+		const newScale = new THREE.Vector3(objectRadius.getValue(), objectRadius.getValue(), objectScaleZ.getValue())
+		if ( Math.abs(newScale.x - object.scale.x) >= 0.01 ) {
 			editor.execute( new SetScaleCommand( object, object.scale, newScale ) );
 		}
+
 		// try {
 
 		// 	const userData = JSON.parse( objectUserData.getValue() );
@@ -272,6 +242,7 @@ function SidebarObject( editor ) {
 			position: objectPositionRow,
 			rotation: objectRotationRow,
 			scale: objectScaleRow,
+			radius: objectRadiusRow,
 			userData: objectUserDataRow,
 			exportJson: exportJson
 		}
@@ -374,6 +345,8 @@ function SidebarObject( editor ) {
 		objectUUID.setValue( object.uuid );
 		objectName.setValue( object.name );
 
+		// Position
+
 		// Switch between metric and imperial
 		const x = snapper.metric ? object.position.x : snapper.metersToInches(object.position.x);
 		const y = snapper.metric ? object.position.y : snapper.metersToInches(object.position.y);
@@ -393,13 +366,16 @@ function SidebarObject( editor ) {
 		objectPositionY.setValue( y );
 		objectPositionZ.setValue( z );
 
+		// Rotation
 		objectRotationX.setValue( object.rotation.x * THREE.MathUtils.RAD2DEG );
 		objectRotationY.setValue( object.rotation.y * THREE.MathUtils.RAD2DEG );
 		objectRotationZ.setValue( object.rotation.z * THREE.MathUtils.RAD2DEG );
 
+		// Scale
 		objectScaleX.setValue( object.scale.x );
 		objectScaleY.setValue( object.scale.y );
 		objectScaleZ.setValue( object.scale.z );
+
 
 		try {
 
@@ -414,7 +390,16 @@ function SidebarObject( editor ) {
 		objectUserData.setBorderColor( 'transparent' );
 		objectUserData.setBackgroundColor( '' );
 
-		// updateTransformRows( object );
+		// TODO: why is this broken?
+		// // Custom fields for different objects
+		// const editableFields = object.userData.editableFields;
+		// if (editableFields === undefined) return;
+
+		// if (editableFields.radius)
+		// {
+		// 	object.scale.y = object.scale.x;
+		// 	objectRadius.setValue(object.scale.x);
+		// }
 
 	}
 
