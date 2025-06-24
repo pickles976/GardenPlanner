@@ -58,7 +58,7 @@ export function createCylinder(editor: Editor): THREE.Mesh {
     const mat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
     })
-    const geo = new THREE.CylinderGeometry(0.3048, 0.3048, 0.3048, 32);
+    const geo = new THREE.CylinderGeometry(1, 1, 1, 32);
     let mesh = new THREE.Mesh(geo, mat)
 
     mesh.rotation.x = mesh.rotation.x + (Math.PI / 2);

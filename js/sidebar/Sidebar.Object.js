@@ -100,16 +100,6 @@ function SidebarObject( editor ) {
 
 	container.add( objectScaleRow );
 
-	// radius
-
-	const objectRadiusRow = new UIRow();
-	const objectRadius = new UINumber( 1 ).setPrecision( 3 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
-
-	objectRadiusRow.add( new UIText( "Radius" ).setClass( 'Label' ) );
-	objectRadiusRow.add( objectRadius );
-
-	container.add( objectRadiusRow );
-
 	// user data
 
 	const objectUserDataRow = new UIRow();
@@ -164,9 +154,31 @@ function SidebarObject( editor ) {
 	} );
 	container.add( exportJson );
 
+	// CUSTOM FIELDS
+
+	// radius
+
+	const objectRadiusRow = new UIRow();
+	const objectRadius = new UINumber( 1 ).setPrecision( 3 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
+
+	objectRadiusRow.add( new UIText( "Radius" ).setClass( 'Label' ) );
+	objectRadiusRow.add( objectRadius );
+
+	container.add( objectRadiusRow );
+
+	// height
+
+	const objectHeightRow = new UIRow();
+	const objectHeight = new UINumber( 1 ).setPrecision( 3 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
+
+	objectHeightRow.add( new UIText( "Height" ).setClass( 'Label' ) );
+	objectHeightRow.add( objectHeight );
+
+	container.add( objectHeightRow );
+
 	function update() {
 		/**
-		 * Update UI from object
+		 * Update object from UI
 		 */
 
 		const object = editor.selector.currentSelectedObject;
@@ -177,12 +189,7 @@ function SidebarObject( editor ) {
 
 		// Handle Inches
 		let newPosition = new THREE.Vector3( objectPositionX.getValue(), objectPositionY.getValue(), objectPositionZ.getValue() );
-		let position = object.position.clone();
 		if (!snapper.metric) {
-			position = new THREE.Vector3(
-				snapper.metersToInches(newPosition.x),
-				snapper.metersToInches(newPosition.y),
-				snapper.metersToInches(newPosition.z))
 			newPosition = new THREE.Vector3(
 				snapper.inchesToMeters(newPosition.x),
 				snapper.inchesToMeters(newPosition.y),
@@ -190,27 +197,44 @@ function SidebarObject( editor ) {
 			)
 		}
 
-		if ( position.distanceTo( newPosition ) >= 0.01 ) {
+		if ( object.position.distanceTo( newPosition ) >= 0.01 ) {
 			editor.execute( new SetPositionCommand( object, object.position, newPosition ) );
 		}
 
+		// rotation
 		const newRotation = new THREE.Euler( objectRotationX.getValue() * THREE.MathUtils.DEG2RAD, objectRotationY.getValue() * THREE.MathUtils.DEG2RAD, objectRotationZ.getValue() * THREE.MathUtils.DEG2RAD );
 		if ( new THREE.Vector3().setFromEuler( object.rotation ).distanceTo( new THREE.Vector3().setFromEuler( newRotation ) ) >= 0.01 ) {
 			editor.execute( new SetRotationCommand( object, object.quaternion.clone(), new THREE.Quaternion().setFromEuler(newRotation)));
 		}
 
-		// const newScale = new THREE.Vector3( objectScaleX.getValue(), objectScaleY.getValue(), objectScaleZ.getValue() );
-		// if ( object.scale.distanceTo( newScale ) >= 0.01 ) {
-		// 	editor.execute( new SetScaleCommand( object, object.scale, newScale ) );
-		// }
+		// Scale
+		const newScale = new THREE.Vector3( objectScaleX.getValue(), objectScaleY.getValue(), objectScaleZ.getValue() );
+		if ( object.scale.distanceTo( newScale ) >= 0.01 ) {
+			editor.execute( new SetScaleCommand( object, object.scale, newScale ) );
+		}
 
+		// // Custom fields
 		const editableFields = object.userData.editableFields;
 		if (editableFields === undefined) return;
 
 		// Set Radius
-		const newScale = new THREE.Vector3(objectRadius.getValue(), objectRadius.getValue(), objectScaleZ.getValue())
-		if ( Math.abs(newScale.x - object.scale.x) >= 0.01 ) {
-			editor.execute( new SetScaleCommand( object, object.scale, newScale ) );
+		if (editableFields.radius) {
+
+			const radius = snapper.metric ? objectRadius.getValue() : snapper.inchesToMeters(objectRadius.getValue())
+			const newRadius = new THREE.Vector3(radius, radius, object.scale.z)
+			if ( Math.abs(newRadius.x - object.scale.x) >= 0.01 ) {
+				editor.execute( new SetScaleCommand( object, object.scale, newRadius ) );
+			}
+		}
+
+
+		// Set Height
+		if (editableFields.height) {
+			const height = snapper.metric ? objectHeight.getValue() : snapper.inchesToMeters(objectHeight.getValue())
+			const newHeight = new THREE.Vector3(object.scale.x, object.scale.y, height)
+			if ( Math.abs(newHeight.z - object.scale.z) >= 0.01 ) {
+				editor.execute( new SetScaleCommand( object, object.scale, newHeight ) );
+			}
 		}
 
 		// try {
@@ -243,6 +267,7 @@ function SidebarObject( editor ) {
 			rotation: objectRotationRow,
 			scale: objectScaleRow,
 			radius: objectRadiusRow,
+			height: objectHeightRow,
 			userData: objectUserDataRow,
 			exportJson: exportJson
 		}
@@ -330,28 +355,16 @@ function SidebarObject( editor ) {
 		updateUI( object );
 	})
 
-	// signals.refreshSidebarObject3D.add( function ( object ) {
-
-	// 	if ( object !== editor.selected ) return;
-
-	// 	updateUI( object );
-
-	// } );
-
 	function updateUI( object ) {
+		/**
+		 * Update UI from object
+		 */
 
 		objectType.setValue( object.type );
-
 		objectUUID.setValue( object.uuid );
 		objectName.setValue( object.name );
 
 		// Position
-
-		// Switch between metric and imperial
-		const x = snapper.metric ? object.position.x : snapper.metersToInches(object.position.x);
-		const y = snapper.metric ? object.position.y : snapper.metersToInches(object.position.y);
-		const z = snapper.metric ? object.position.z : snapper.metersToInches(object.position.z);
-
 		if (snapper.metric) {
 			objectPositionX.setUnit('m').setPrecision(3)
 			objectPositionY.setUnit('m').setPrecision(3)
@@ -362,9 +375,9 @@ function SidebarObject( editor ) {
 			objectPositionZ.setUnit('"').setPrecision(0)
 		}
 
-		objectPositionX.setValue( x );
-		objectPositionY.setValue( y );
-		objectPositionZ.setValue( z );
+		objectPositionX.setValue( snapper.metersToInches(object.position.x) );
+		objectPositionY.setValue( snapper.metersToInches(object.position.y) );
+		objectPositionZ.setValue( snapper.metersToInches(object.position.z) );
 
 		// Rotation
 		objectRotationX.setValue( object.rotation.x * THREE.MathUtils.RAD2DEG );
@@ -375,7 +388,6 @@ function SidebarObject( editor ) {
 		objectScaleX.setValue( object.scale.x );
 		objectScaleY.setValue( object.scale.y );
 		objectScaleZ.setValue( object.scale.z );
-
 
 		try {
 
@@ -390,16 +402,28 @@ function SidebarObject( editor ) {
 		objectUserData.setBorderColor( 'transparent' );
 		objectUserData.setBackgroundColor( '' );
 
-		// TODO: why is this broken?
-		// // Custom fields for different objects
-		// const editableFields = object.userData.editableFields;
-		// if (editableFields === undefined) return;
+		// Custom fields for different objects
+		const editableFields = object.userData.editableFields;
+		if (editableFields === undefined) return;
 
-		// if (editableFields.radius)
-		// {
-		// 	object.scale.y = object.scale.x;
-		// 	objectRadius.setValue(object.scale.x);
-		// }
+		if (snapper.metric) {
+			objectRadius.setUnit('m').setPrecision(3)
+			objectHeight.setUnit('m').setPrecision(3)
+		} else {
+			objectRadius.setUnit('"').setPrecision(0)
+			objectHeight.setUnit('"').setPrecision(0)
+		}
+
+		if (editableFields.radius)
+		{
+			object.scale.y = object.scale.x;
+			objectRadius.setValue(snapper.metersToInches(object.scale.x));
+		}
+
+		if (editableFields.height)
+		{
+			objectHeight.setValue(snapper.metersToInches(object.scale.z));
+		}
 
 	}
 

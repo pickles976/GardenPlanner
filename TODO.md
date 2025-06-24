@@ -15,13 +15,16 @@ userData:
 
 #### Plant Configuration
 
-- [ ] add radius and height for cylinder
+- [x] add radius and height for cylinder
     - [x] radius
     - [x] set radius
-    - [ ] height
-    - [ ] set height
-    - [ ] switch between ft and meters
-    - [ ] fix bug where transform handles are not working!!!
+    - [x] height
+    - [x] set height
+
+- [x] nfix bug where being in non-metric causes us to be unable to set scale and rotation
+- [x] switch between ft and meters radius and height
+
+- [ ] sphere controls
 
 - [ ] on plant selection, populate panel
     - [x] when plant selected, emit something
