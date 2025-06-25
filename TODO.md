@@ -8,16 +8,13 @@ PLANT // like object but with different properties
 
 #### Improvements
 
-- [x] create line editor
-- [x] refactor bed editor to use line editor
-- [x] bed editor
-- [ ] ruler editor
-    - [ ] save segments button
-    - [ ] save vertices button
-    - [ ] save ruler config
-    - [ ] create ruler
 - [ ] fence editor
 - [ ] path editor
+
+#### RULER
+- [ ] make ruler not a separate object, but just something that can be placed instantly
+    - [ ] add ruler sub-object to editor
+    - [ ] place ruler point with shift + click
 
 - [ ] create group-editing workflow?
     - [ ] create a group

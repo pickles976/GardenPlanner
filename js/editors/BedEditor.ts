@@ -12,7 +12,7 @@
  * 3. make everything command-based, use UUIDs to track
  */
 
-import { Object3D, Vector3, Mesh, Vector2, Shape, Material, ExtrudeGeometry, Path } from "three";
+import { Object3D, Vector3, Mesh, Vector2, Shape, Material, ExtrudeGeometry, Path, Box3 } from "three";
 
 import offsetPolygon from "offset-polygon";
 import "external-svg-loader";
@@ -27,6 +27,7 @@ import { Editor } from "./Editor";
 import { DARK_GRAY, VERTEX_COLOR } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
 import { LineEditor } from "./LineEditor";
+import { setCurrentTransformationAsDefault } from "../ModelLoader";
 
 const INITIAL_BED_HEIGHT = 0.15;
 const INITIAL_BORDER_WIDTH = 0.10;
@@ -294,7 +295,10 @@ class BedEditor {
         const border = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, createPhongMaterial(this.borderColor));
         const bed = createBed(this.vertices, this.bedHeight, createPhongMaterial(this.bedColor));
 
-        const mergedMesh = mergeMeshes([border, bed]);
+        let mergedMesh = mergeMeshes([border, bed]);
+        mergedMesh.geometry.computeBoundingBox();  
+        mergedMesh.geometry.center();             
+
         mergedMesh.castShadow = true;
         mergedMesh.receiveShadow = true;
         mergedMesh.userData = { // Give mesh the data used to create it, so it can be edited. Add selection callbacks
@@ -315,8 +319,14 @@ class BedEditor {
             }
         }
         mergedMesh.layers.set(LayerEnum.Bed)
-        mergedMesh.position.set(...centroid)
         mergedMesh.name = this.bedName;
+
+        // Move to position
+        const box = new Box3().setFromObject(mergedMesh);
+        const size = new Vector3();
+        box.getSize(size);
+        mergedMesh.position.set(...centroid.clone().add(new Vector3(0,0,size.z / 2)))
+
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
         if (this.oldBed) {
@@ -330,7 +340,6 @@ class BedEditor {
         // Reset cursor
         setDefaultCursor()
         this.cleanUp()
-        this.editor.setObjectMode()
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, false)
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }

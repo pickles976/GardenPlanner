@@ -62,6 +62,7 @@ function SidebarRuler( editor ) {
 	buttonContainer.setBorderTop( '1' );
 	buttonContainer.setPaddingTop( '20px' );
 	buttonContainer.add(saveLinesButton)
+	buttonContainer.add(saveVerticesbutton)
 	buttonContainer.add(saveRulerButton)
 	buttonContainer.add(cancelButton)
 	buttonContainer.add(editButton)
@@ -78,6 +79,7 @@ function SidebarRuler( editor ) {
 	container.add(buttonContainer)
 
 	saveLinesButton.onClick(() => editor.rulerEditor.lineEditor.setVertexEditMode()) // TODO: control this via enum?
+	saveVerticesbutton.onClick(() => eventBus.emit(EventEnums.RULER_VERTEX_EDITING_FINISHED)) // TODO: control this via enum?
 	saveRulerButton.onClick(() => eventBus.emit(EventEnums.RULER_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.RULER_EDITING_CANCELLED))
 	editButton.onClick(() => eventBus.emit(EventEnums.RULER_EDITING_STARTED, editor.selector.currentSelectedObject))

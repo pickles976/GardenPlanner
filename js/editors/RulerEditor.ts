@@ -12,24 +12,63 @@
  * 3. make everything command-based, use UUIDs to track
  */
 
-import { Object3D, Vector3, Mesh, Vector2, Shape, Material, ExtrudeGeometry, Path } from "three";
+import { Object3D, Vector3, Mesh, Vector2, Shape, Material, ExtrudeGeometry, Path, Group } from "three";
 
 import offsetPolygon from "offset-polygon";
 import "external-svg-loader";
 
-import { getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial } from "../Utils";
+import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
+
+import { getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial, destructureVector3Array, getCSS2DText, fontSizeString } from "../Utils";
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { eventBus, EventEnums } from "../EventBus";
 import { CommandStack } from "../CommandStack";
-import { LayerEnum } from "../Constants";
+import { FONT_SIZE, LayerEnum } from "../Constants";
 import { Editor } from "./Editor";
 
-import { DARK_GRAY, VERTEX_COLOR } from "../Colors";
+import { DARK_GRAY, VERTEX_COLOR, WHITE } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
 import { LineEditor } from "./LineEditor";
+import { snapper } from "../Snapping";
 
-const NUM_ARC_SEGMENTS = 1;
-const BED_CONFIG_CAMERA_OFFSET = new Vector3(0, -2, 2);
+const LINE_CONFIG_CAMERA_OFFSET = new Vector3(0, -2, 2);
+
+function createRuler(vertices: Vector3[]) : Group {
+    const group = new Group();
+
+    let len = vertices.length;
+    for (let i = 0; i < len - 1; i++) {
+        const p1 = vertices[i % len]
+        const p2 = vertices[(i + 1) % len]
+
+        let textPos = p1.clone().add(p2.clone()).divideScalar(2);
+        const lineLabel = getCSS2DText(snapper.getText(p1.distanceTo(p2)), fontSizeString(FONT_SIZE));
+        lineLabel.position.set(...textPos)
+        lineLabel.layers.set(LayerEnum.LineVertices)
+        group.add(lineLabel)
+    }
+
+    // Get line segments
+    const geometry = new LineGeometry();
+    const verts = vertices.map((v) => v.clone())
+    verts.forEach((v) => v.z = 0.01)
+
+    geometry.setPositions(destructureVector3Array(verts));
+    const material = new LineMaterial({ color: WHITE, linewidth: 5, depthWrite: false, depthTest: false });
+    const line = new Line2(geometry, material);
+
+    group.add(line);
+    group.userData = {
+        selectable: true
+    }
+
+    group.layers.set(LayerEnum.Objects)
+    return group;
+}
 
 
 enum RulerEditorMode {
@@ -45,7 +84,8 @@ class RulerEditor {
     commandStack: CommandStack;
     mode: RulerEditorMode;
 
-    vertices: Vector3[]; // Used during vertex placement mode and bed config mode
+    vertices: Vector3[];
+    rulerObject: Mesh;
 
     // Original ruler
     oldRuler?: Object3D;
@@ -68,11 +108,16 @@ class RulerEditor {
         this.vertices = [];
 
         eventBus.on(EventEnums.RULER_VERTEX_EDITING_FINISHED, () => {
-            this.cleanUp();
+            this.vertices = this.lineEditor.vertexHandles.map((item) => item.position.clone());
+            this.editor.setPerspectiveCamera()
+            this.createRulerPreview()
+            this.lineEditor.cleanUp();
         })
 
         eventBus.on(EventEnums.RULER_EDITING_FINISHED, (event) => {
-            this.createRuler()
+            const line = new CreateObjectCommand(createRuler(this.vertices), this.editor);
+            console.log(line);
+            this.editor.execute(line);
             this.cleanUp();
         })
 
@@ -82,9 +127,10 @@ class RulerEditor {
 
     }
 
-    private createRuler() {
-        // TODO: actually create ruler mesh
-        
+    private createRulerPreview() {
+        this.editor.remove(this.rulerObject);
+        this.rulerObject = createRuler(this.vertices);
+        this.editor.add(this.rulerObject);
     }
 
     public cancel() {
@@ -98,6 +144,7 @@ class RulerEditor {
     // Cleanup
     public cleanUp() {
         this.oldRuler = undefined;
+        this.editor.remove(this.rulerObject);
         this.lineEditor.cleanUp()
 
         eventBus.emit(EventEnums.REQUEST_RENDER)

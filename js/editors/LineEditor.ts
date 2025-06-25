@@ -360,6 +360,7 @@ class LineEditor {
             this.editor.add(this.polygon)
         } 
         this.drawEdges()
+        eventBus.emit(EventEnums.REQUEST_RENDER)
 
     }
 

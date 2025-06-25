@@ -219,10 +219,12 @@ class Editor {
 
         eventBus.on(EventEnums.BED_CREATION_STARTED, () => this.setBedMode())
         eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())
+        eventBus.on(EventEnums.BED_EDITING_FINISHED, () => this.setObjectMode())
         eventBus.on(EventEnums.BED_EDITING_STARTED, (bed) => this.setBedMode(bed))
 
         eventBus.on(EventEnums.RULER_CREATION_STARTED, () => this.setRulerMode())
         eventBus.on(EventEnums.RULER_EDITING_CANCELLED, () => this.setObjectMode())
+        eventBus.on(EventEnums.RULER_EDITING_FINISHED, () => this.setObjectMode())
         eventBus.on(EventEnums.RULER_EDITING_STARTED, (ruler) => this.setRulerMode(ruler))
 
         eventBus.on(EventEnums.SNAP_CHANGED, (value) => this.setSnapping(value))
