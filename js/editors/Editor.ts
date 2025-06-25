@@ -268,6 +268,16 @@ class Editor {
         }
     }
 
+    public focusByUUID(uuid: string) {
+        if (this.objectMap.hasOwnProperty(uuid)) {
+            const object = this.objectMap[uuid];
+            this.perspectiveCamera.position.set(...(object.position.clone().add(new THREE.Vector3(0, -2, 1))));
+            this.perspectiveCameraControls.target.copy(object.position);
+            this.perspectiveCameraControls.update();
+            eventBus.emit(EventEnums.REQUEST_RENDER)
+        }
+    }
+
     public execute(command: Command) {
         this.commandStack.execute(command);
     }

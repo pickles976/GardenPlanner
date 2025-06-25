@@ -40,6 +40,7 @@ function SidebarScene( editor ) {
 			}
 
 			opener.addEventListener( 'click', function () {
+				console.log("click")
 				nodeStates.set( object, nodeStates.get( object ) === false ); // toggle
 				refreshUI();
 
@@ -131,11 +132,9 @@ function SidebarScene( editor ) {
 		ignoreObjectSelectedSignal = false;
 
 	} );
-	// outliner.onDblClick( function () {
-
-	// 	editor.focusById( parseInt( outliner.getValue() ) );
-
-	// } );
+	outliner.onDblClick( function () {
+		editor.focusByUUID( outliner.getValue() );
+	} );
 	container.add( outliner );
 	container.add( new UIBreak() );
 

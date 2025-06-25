@@ -1,4 +1,6 @@
 #### OBJECT EDITOR
+- [x] jump to selected object in scene w/ double click
+
 - [ ] add ability to add plane
 - [ ] create a ruler object
 - [ ] fence drawing utility
@@ -8,7 +10,6 @@ Have Erika plan a garden
 
 #### Improvements
 - [ ] rotation in simple transform mode (use Q/E to snap 90 degrees)
-- [ ] jump to selected object in scene w/ double click
 - [ ] draw pointer to north as rotating UI element
 - [ ] controls specific features of geometry in UI panel
     - [ ] figure out a way to set the editable features from UI. Use proxies?
