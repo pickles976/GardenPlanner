@@ -1,10 +1,10 @@
 #### Improvements
-- [ ] radius/height in object panel
-    - [ ] get size of box from geometry and save as userData
-    - [ ] use this + scale to figure out the actual size of the model
-    - [ ] figure out a way to get this controllable from the UI
-    - [ ] specify radius in inches/ft/meters for sphere
-    - [ ] specify radius/height for cylinder
+- [x] radius/height in object panel
+    - [x] get size of box from geometry and save as userData
+    - [x] use this + scale to figure out the actual size of the model
+    - [x] figure out a way to get this controllable from the UI
+    - [x] specify radius in inches/ft/meters for sphere
+    - [x] specify radius/height for cylinder
 
 - [ ] drawing utilities
     - [ ] create a ruler object

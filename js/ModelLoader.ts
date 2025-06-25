@@ -54,6 +54,8 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
         editableFields: {
 			name: true,
 			position: true,
+            height: true,
+            radius: true
 		}
     };
     mesh.name = plant.name;

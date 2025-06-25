@@ -34,9 +34,9 @@ class Selector {
 
         eventBus.on(EventEnums.OBJECT_CHANGED, () => {
             this.editor.remove(this.rotationAngleVisualizer)
+            this.drawRotationVisualizer();
             if (!this.advancedTransformMode) return;
             if (this.editor.transformControls.mode !== "rotate") return;
-            this.drawRotationVisualizer();
         });
         eventBus.on(EventEnums.TRANSFORM_MODE_CHANGED, (value) => this.setTransformMode(value));
     }

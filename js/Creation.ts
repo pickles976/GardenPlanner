@@ -59,7 +59,7 @@ export function createCylinder(editor: Editor): THREE.Mesh {
     const mat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
     })
-    const geo = new THREE.CylinderGeometry(1, 1, 1, 32);
+    const geo = new THREE.CylinderGeometry(0.3048, 0.3048, 1, 32);
     let mesh = new THREE.Mesh(geo, mat)
 
     mesh.rotation.x = mesh.rotation.x + (Math.PI / 2);
@@ -89,7 +89,7 @@ export function createSphere(editor: Editor): THREE.Mesh {
     const mat = new THREE.MeshPhongMaterial({
         color: 0xDDDDDD,
     })
-    const geo = new THREE.SphereGeometry(1, 32, 16);
+    const geo = new THREE.SphereGeometry(0.3048, 32, 16);
     const mesh = new THREE.Mesh(geo, mat)
     mesh.castShadow = true;
     mesh.receiveShadow = true;

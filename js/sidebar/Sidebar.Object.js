@@ -8,6 +8,7 @@ import { SetScaleCommand } from '../commands/SetScaleCommand.js';
 import { Strings } from './Strings';
 import {eventBus, EventEnums} from '../EventBus.js';
 import { snapper } from '../Snapping.js'
+import { getObjectsize } from '../Utils.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -217,22 +218,26 @@ function SidebarObject( editor ) {
 		const editableFields = object.userData.editableFields;
 		if (editableFields === undefined) return;
 
+		// TODO: explain why this works!!!
+
 		// Set Radius
 		if (editableFields.radius) {
-
 			const radius = snapper.metric ? objectRadius.getValue() : snapper.inchesToMeters(objectRadius.getValue())
-			const newRadius = new THREE.Vector3(radius, radius, object.scale.z)
-			if ( Math.abs(newRadius.x - object.scale.x) >= 0.01 ) {
+			const size = getObjectsize(object);
+			if ( Math.abs(radius - (size.x / 2)) >= 0.01 ) {
+				const ratio = 2 * (radius / size.x);
+				const newRadius = new THREE.Vector3(object.scale.x * ratio, object.scale.x * ratio, object.scale.z)
 				editor.execute( new SetScaleCommand( object, object.scale, newRadius ) );
 			}
 		}
 
-
 		// Set Height
 		if (editableFields.height) {
 			const height = snapper.metric ? objectHeight.getValue() : snapper.inchesToMeters(objectHeight.getValue())
-			const newHeight = new THREE.Vector3(object.scale.x, object.scale.y, height)
-			if ( Math.abs(newHeight.z - object.scale.z) >= 0.01 ) {
+			const size = getObjectsize(object);
+			if ( Math.abs(height - size.z) >= 0.01 ) {
+				const ratio = (height / size.z);
+				const newHeight = new THREE.Vector3(object.scale.x, object.scale.y, object.scale.z * ratio)
 				editor.execute( new SetScaleCommand( object, object.scale, newHeight ) );
 			}
 		}
@@ -406,6 +411,8 @@ function SidebarObject( editor ) {
 		const editableFields = object.userData.editableFields;
 		if (editableFields === undefined) return;
 
+		const size = getObjectsize(object);
+
 		if (snapper.metric) {
 			objectRadius.setUnit('m').setPrecision(3)
 			objectHeight.setUnit('m').setPrecision(3)
@@ -417,12 +424,12 @@ function SidebarObject( editor ) {
 		if (editableFields.radius)
 		{
 			object.scale.y = object.scale.x;
-			objectRadius.setValue(snapper.metersToInches(object.scale.x));
+			objectRadius.setValue(snapper.metersToInches(size.x / 2.0));
 		}
 
 		if (editableFields.height)
 		{
-			objectHeight.setValue(snapper.metersToInches(object.scale.z));
+			objectHeight.setValue(snapper.metersToInches(size.z));
 		}
 
 	}

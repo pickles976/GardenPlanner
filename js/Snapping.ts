@@ -55,6 +55,20 @@ class Snapper {
         return value / INCHES_PER_METER;
     }
 
+    metersToInchesVector3(vector: Vector3) {
+        return new Vector3(
+            this.metersToInches(vector.x),
+            this.metersToInches(vector.y),
+            this.metersToInches(vector.z))
+    }
+
+    inchesToMetersVector3(vector: Vector3) {
+        return new Vector3(
+            this.inchesToMeters(vector.x),
+            this.inchesToMeters(vector.y),
+            this.inchesToMeters(vector.z))
+    }
+
     getText(distance: number) : string{
         if (this.metric) {
             return `${distance.toFixed(2)}m`

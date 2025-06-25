@@ -130,7 +130,7 @@ export function deepClone(object: THREE.Object3D) {
   return clone;
 }
 
-export function getObjectSize(object: THREE.Mesh) : Vector3 {
+export function getGeometrySize(object: THREE.Mesh) : Vector3 {
   const geometry = object.geometry;
   geometry.computeBoundingBox(); // Ensure bounding box is up-to-date
 
@@ -138,4 +138,15 @@ export function getObjectSize(object: THREE.Mesh) : Vector3 {
   const size = new THREE.Vector3();
   box.getSize(size);
   return size
+}
+
+export function getObjectsize(object: THREE.Mesh) : Vector3 {
+  /**
+   * Get the bounding box size of the geometry and multiply it by the scale of the object. 
+   * This will give us the actual size in meters of the object. We can use this to scale our object
+   * in units instead of just a dimensionless "scale" vector.
+   */
+  const scale = object.scale.clone();
+  const geoSize = getGeometrySize(object);
+  return new Vector3(geoSize.x * scale.x, geoSize.y * scale.y, geoSize.z * scale.z);
 }
