@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { Vector3 } from 'three';
-import { Editor } from './Editor';
+import { Editor, EditorMode } from './editors/Editor';
 import { snapper } from './Snapping';
-import { EditorMode, LayerEnum } from './Constants';
+import { LayerEnum } from './Constants';
 import { SetPositionCommand } from './commands/SetPositionCommand';
 import { Menubar } from './menubar/Menubar';
 import { Sidebar } from './sidebar/Sidebar';
@@ -169,8 +169,13 @@ export function handleMouseMove(event, editor) {
         case EditorMode.BED:
             editor.bedEditor.handleMouseMove(
                 editor, 
-                performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.BedVertices]))
+                performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.LineVertices]))
             break;
+        case EditorMode.RULER:
+            editor.rulerEditor.handleMouseMove(
+                editor, 
+                performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.LineVertices])
+            )
         default:
             break
     }
@@ -193,6 +198,7 @@ export function handleMouseClickObjectMode(editor: Editor, intersections: THREE.
 
 }
 
+// TODO: move this to editor
 export function handleMouseClick(event, editor) {
 
     // Only do a raycast if the LMB was used
@@ -209,8 +215,13 @@ export function handleMouseClick(event, editor) {
         case EditorMode.BED:
             editor.bedEditor.handleMouseClick(
                 editor, 
-                performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.BedVertices]))
+                performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.LineVertices]))
             break;
+        case EditorMode.RULER:
+            editor.rulerEditor.handleMouseClick(
+                editor, 
+                performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.LineVertices])
+            )
         default:
             break
     }
@@ -222,16 +233,5 @@ export function handleKeyDown(event, editor: Editor, sidebar: Sidebar, menuBar: 
     // UI Keypress events
     menuBar.handleKeyDown(event)
     sidebar.handleKeyDown(event)
-
-    // Editor keypress events
-    switch (editor.mode) {
-        case EditorMode.OBJECT:
-            editor.handleKeyDown(event)
-            break;
-        case EditorMode.BED:
-            editor.bedEditor.handleKeyDown(event)
-            break;
-        default:
-            break;
-    }
+    editor.handleKeyDown(event)
 }

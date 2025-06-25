@@ -17,6 +17,7 @@ import { DeleteObjectCommand } from '../commands/DeleteObjectCommand';
 import { CreateObjectCommand } from '../commands/CreateObjectCommand';
 import { deepClone } from '../Utils';
 import { SetRotationCommand } from '../commands/SetRotationCommand';
+import { RulerEditor } from './RulerEditor';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -28,6 +29,14 @@ const SCREEN_HEIGHT = window.innerHeight;
 
 const ROTATION_DEGREES = 0.008726639;
 const ORBIT_CONTROLS_PAN_SPEED = 20.0;
+
+enum EditorMode {
+    NONE = "NONE",
+    OBJECT = "OBJECT",
+    BED = "BED",
+    RULER = "RULER",
+    PLANT = "PLANT"
+}
 
 class Editor {
     /**
@@ -58,6 +67,7 @@ class Editor {
 
     selector: Selector;
     bedEditor: BedEditor;
+    rulerEditor: RulerEditor;
 
     mode: EditorMode;
 
@@ -66,6 +76,7 @@ class Editor {
         this.objectMap = {};
         this.selector = new Selector(this);
         this.bedEditor = new BedEditor(this);
+        this.rulerEditor = new RulerEditor(this);
         this.mode = EditorMode.OBJECT;
     }
 
@@ -209,6 +220,11 @@ class Editor {
         eventBus.on(EventEnums.BED_CREATION_STARTED, () => this.setBedMode())
         eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())
         eventBus.on(EventEnums.BED_EDITING_STARTED, (bed) => this.setBedMode(bed))
+
+        eventBus.on(EventEnums.RULER_CREATION_STARTED, () => this.setRulerMode())
+        eventBus.on(EventEnums.RULER_EDITING_CANCELLED, () => this.setObjectMode())
+        eventBus.on(EventEnums.RULER_EDITING_STARTED, (ruler) => this.setRulerMode(ruler))
+
         eventBus.on(EventEnums.SNAP_CHANGED, (value) => this.setSnapping(value))
         eventBus.on(EventEnums.CAMERA_CHANGED, (value) => value ? this.setOrthoCamera() : this.setPerspectiveCamera())
     }
@@ -303,6 +319,15 @@ class Editor {
         this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Bed])
     }
 
+    public setRulerMode(ruler?: THREE.Object3D) {
+        this.mode = EditorMode.RULER;
+        this.setOrthoCamera()
+        eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true) // change UI
+        this.rulerEditor.beginRulerEditing(ruler);
+        this.selector.deselect();
+        // this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Bed])
+    }
+
     public setObjectMode() {
         this.selector.deselect();
         this.mode = EditorMode.OBJECT;
@@ -320,7 +345,8 @@ class Editor {
         })
     }
 
-    public handleKeyDown(event) {
+    private handleKeyDownObjectMode(event) {
+
         switch (event.key) {
 
             // Duplicate object
@@ -415,5 +441,20 @@ class Editor {
         }
     }
 
+    public handleKeyDown(event) {
+        switch (this.mode) {
+            case EditorMode.OBJECT:
+                this.handleKeyDownObjectMode(event)
+                break;
+            case EditorMode.BED:
+                this.bedEditor.handleKeyDown(event)
+                break;
+            case EditorMode.RULER:
+                this.rulerEditor.handleKeyDown(event)
+            default:
+                break;
+        }
+    }
+
 }
-export { Editor };
+export { Editor, EditorMode };

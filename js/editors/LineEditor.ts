@@ -50,7 +50,7 @@ function createVertexHandle(): Mesh {
     const vertex = new Mesh(
         new BoxGeometry(VERTEX_SIZE, VERTEX_SIZE, VERTEX_SIZE),
         new MeshPhongMaterial({ color: VERTEX_COLOR }))
-    vertex.layers.set(LayerEnum.BedVertices);
+    vertex.layers.set(LayerEnum.LineVertices);
     vertex.userData = { selectable: true, isVertexHandle: true }
     vertex.renderOrder = 100001; // Always draw on top
     return vertex
@@ -142,9 +142,12 @@ enum LineEditorMode {
     EDIT_VERTEX_MODE = "EDIT_VERTEX_MODE"
 }
 
-
 class LineEditor {
 
+    vertex_editing_started_enum: EventEnums;
+    vertex_editing_updated_enum: EventEnums;
+    vertex_editing_finished_enum: EventEnums;
+    cancelled_enum: EventEnums;  
     closedLoop: boolean;
 
     editor: Editor;
@@ -169,8 +172,16 @@ class LineEditor {
 
     constructor(
         editor: Editor, 
-
+        vertex_editing_started_enum: EventEnums,
+        vertex_editing_updated_enum: EventEnums,
+        vertex_editing_finished_enum: EventEnums,
+        cancelled_enum: EventEnums,  
         closedLoop: boolean = false) {
+
+        this.vertex_editing_started_enum = vertex_editing_started_enum;
+        this.vertex_editing_updated_enum = vertex_editing_updated_enum;
+        this.vertex_editing_finished_enum = vertex_editing_finished_enum;
+        this.cancelled_enum = cancelled_enum;
 
         this.closedLoop = closedLoop;
         this.editor = editor;
@@ -195,7 +206,7 @@ class LineEditor {
 
         eventBus.on(EventEnums.METRIC_CHANGED, () => {
             if (this.mode === LineEditorMode.EDIT_VERTEX_MODE) {
-                this.drawPolygon()
+                this.drawPreview()
             }
             // TODO: figure out how to change text when in vertex placement mode
         })
@@ -274,14 +285,12 @@ class LineEditor {
         setDefaultCursor()
         this.createVertexHandles();
         this.cleanUpVertexPlacementState()
-        this.drawPolygon();
+        this.drawPreview();
         this.mode = LineEditorMode.EDIT_VERTEX_MODE;
-        eventBus.emit(EventEnums.BED_VERTEX_EDITING_STARTED)
+        eventBus.emit(this.vertex_editing_started_enum) // TODO: change
     }
 
-    // Drawing
-
-    private drawPolygon() {
+    private drawEdges() {
         /**
          * Draw line segments between vertex handles, with a transparent polygon + labels
          */
@@ -293,8 +302,9 @@ class LineEditor {
 
         this.lineSegments = []
 
-        const len = this.vertexHandles.length;
-        for (let i = 0; i < len; i++) {
+        let len = this.vertexHandles.length;
+        let iter = this.closedLoop ? len : len - 1;
+        for (let i = 0; i < iter; i++) {
             const p1 = this.vertexHandles[i % len].position
             const p2 = this.vertexHandles[(i + 1) % len].position
             const lineSegment = createLineSegment(p1, p2)
@@ -304,18 +314,13 @@ class LineEditor {
                 p1: i % len,
                 p2: (i + 1) % len
             }
-            line.layers.set(LayerEnum.BedVertices)
+            line.layers.set(LayerEnum.LineVertices)
             this.lineSegments.push(lineSegment)
         }
 
         for (const segment of this.lineSegments) {
             this.editor.add(segment)
         }
-
-        // Redraw Polygon
-        this.editor.remove(this.polygon)
-        this.polygon = createPolygon(this.vertexHandles.map((item) => item.position));
-        this.editor.add(this.polygon)
 
         // Redraw buttons
         const vertices = this.vertexHandles.map((item) => item.position.clone());
@@ -325,7 +330,7 @@ class LineEditor {
             this.saveButton = createButton(centroid, "/icons/check-circle.svg", UI_GREEN_COLOR)
             this.saveButton.center.set(1.0, 0.5);
             this.saveButton.element.addEventListener('click', () => {
-                eventBus.emit(EventEnums.BED_VERTEX_EDITING_FINISHED)
+                eventBus.emit(this.vertex_editing_finished_enum)
             });
             this.editor.add(this.saveButton)
         } else {
@@ -338,13 +343,23 @@ class LineEditor {
             this.editor.add(this.cancelButton)
 
             this.cancelButton.element.addEventListener('click', () => {
-                eventBus.emit(EventEnums.BED_EDITING_CANCELLED)
+                eventBus.emit(this.cancelled_enum)
             });
         } else {
             this.cancelButton.position.set(...centroid);
         }
+    }
 
 
+    // Drawing
+    private drawPreview() {
+        if (this.closedLoop) {
+            // Redraw Polygon
+            this.editor.remove(this.polygon)
+            this.polygon = createPolygon(this.vertexHandles.map((item) => item.position));
+            this.editor.add(this.polygon)
+        } 
+        this.drawEdges()
 
     }
 
@@ -363,7 +378,6 @@ class LineEditor {
     }
 
     // Event Handling
-
     private tryCloseLoop(point: Vector3): boolean {
 
         if (this.vertices.length > 0) {
@@ -380,14 +394,16 @@ class LineEditor {
     private handleMouseClickPlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
 
         // If loop is closed, go to `VERTEX_EDIT_MODE`
-        if (this.tryCloseLoop(point)) {
-            eventBus.emit(EventEnums.REQUEST_RENDER)
-            return
+        if (this.closedLoop) {
+            if (this.tryCloseLoop(point)) {
+                eventBus.emit(EventEnums.REQUEST_RENDER)
+                return
+            }
         }
 
         this.vertices.push(point);
 
-        if (this.vertices.length == 1) {
+        if (this.closedLoop && this.vertices.length == 1) {
             const startPoint = createVertexHandle();
             startPoint.position.set(...point);
             this.commandStack.execute(new CreateObjectCommand(startPoint, this.editor))
@@ -422,7 +438,7 @@ class LineEditor {
                 this.editor.add(vertex)
                 vertex.position.set(...point)
                 this.vertexHandles.splice(object.userData.p1 + 1, 0, vertex)
-                this.drawPolygon()
+                this.drawPreview()
                 return
             }
 
@@ -534,7 +550,7 @@ class LineEditor {
             }
         } else { // vertex selected
             this.commandStack.execute(new SetPositionCommand(this.selectedHandle, this.selectedHandle.position, point))
-            this.drawPolygon()
+            this.drawPreview()
         }
     }
 
@@ -557,7 +573,7 @@ class LineEditor {
                 // call this function for free highlighting
                 handleMouseMoveObjectMode(editor, intersections);
                 this.handleMouseMoveEditVerticesMode(editor, object, point);
-                eventBus.emit(EventEnums.BED_VERTEX_EDITING_UPDATED);
+                eventBus.emit(this.vertex_editing_updated_enum); // TODO: change this
                 break;
             default:
                 break;
@@ -575,7 +591,10 @@ class LineEditor {
                     this.undo();
                 }
                 break;
-
+            case 'Enter':
+                if (!this.closedLoop && this.mode === LineEditorMode.PLACE_VERTEX_MODE) {
+                    this.setVertexEditMode();
+                }
             case 'Escape':
                 // Deselect vertex handle
                 this.editor.selector.deselect();
@@ -613,7 +632,7 @@ class LineEditor {
             }
         }
 
-        this.drawPolygon()
+        this.drawPreview()
         eventBus.emit(EventEnums.REQUEST_RENDER)
 
     }
@@ -625,7 +644,7 @@ class LineEditor {
                 this.vertices.pop();
                 break;
             case LineEditorMode.EDIT_VERTEX_MODE:
-                this.drawPolygon();
+                this.drawPreview();
                 break;
             default:
                 break;

@@ -10,10 +10,11 @@ PLANT // like object but with different properties
 
 - [x] create line editor
 - [x] refactor bed editor to use line editor
-
 - [x] bed editor
-
 - [ ] ruler editor
+    - [ ] save ruler vertices
+    - [ ] save ruler config
+    - [ ] create ruler
 - [ ] fence editor
 - [ ] path editor
 

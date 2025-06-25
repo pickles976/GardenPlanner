@@ -4,19 +4,12 @@ export const METRIC = false;
 
 export const FONT_SIZE = 30;
 
-enum EditorMode {
-    NONE = "NONE",
-    OBJECT = "OBJECT",
-    BED = "BED",
-    PLANT = "PLANT"
-}
-
 enum LayerEnum {
     NoRaycast = 0,
     Objects = 1,
     Plants = 2,
-    BedVertices = 3,
+    LineVertices = 3,
     Bed = 4,
 }
 
-export { EditorMode, LayerEnum };
+export { LayerEnum };

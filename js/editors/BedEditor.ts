@@ -144,7 +144,13 @@ class BedEditor {
     constructor(editor: Editor) {
 
         this.editor = editor;
-        this.lineEditor = new LineEditor(editor, true);
+        this.lineEditor = new LineEditor(
+            editor, 
+            EventEnums.BED_VERTEX_EDITING_STARTED, 
+            EventEnums.BED_VERTEX_EDITING_UPDATED, 
+            EventEnums.BED_VERTEX_EDITING_FINISHED, 
+            EventEnums.BED_EDITING_CANCELLED,
+            true);
 
         this.commandStack = new CommandStack();
         this.mode = BedEditorMode.INACTIVE;

@@ -53,7 +53,13 @@ class RulerEditor {
     constructor(editor: Editor) {
 
         this.editor = editor;
-        this.lineEditor = new LineEditor(editor, false);
+        this.lineEditor = new LineEditor(
+            editor, 
+            EventEnums.RULER_VERTEX_EDITING_STARTED, 
+            EventEnums.RULER_VERTEX_EDITING_UPDATED, 
+            EventEnums.RULER_VERTEX_EDITING_FINISHED, 
+            EventEnums.RULER_EDITING_CANCELLED,
+            false);
 
         this.commandStack = new CommandStack();
         this.mode = RulerEditorMode.INACTIVE;
