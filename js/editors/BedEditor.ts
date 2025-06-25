@@ -41,7 +41,7 @@ const INITIAL_BED_HEIGHT = 0.15;
 const INITIAL_BORDER_WIDTH = 0.10;
 
 const VERTEX_SIZE = 0.05;
-const POLYGON_CLOSE_THRESH = 0.1;
+const POLYGON_CLOSE_THRESH = VERTEX_SIZE;
 const NUM_ARC_SEGMENTS = 1;
 const BED_CONFIG_CAMERA_OFFSET = new Vector3(0, -2, 2);
 const LINE_WIDTH = 5;
@@ -153,7 +153,11 @@ function createLineSegment(point: Vector3, lastPoint: Vector3): Object3D {
 
     // Get line segment
     const geometry = new LineGeometry();
-    geometry.setPositions(destructureVector3Array([point, lastPoint]));
+    const p1 = point.clone();
+    const p2 = lastPoint.clone();
+    p1.z = 0.01;
+    p2.z = 0.01;
+    geometry.setPositions(destructureVector3Array([p1, p2]));
     const material = new LineMaterial({ color: GREEN, linewidth: 5, depthWrite: false, depthTest: false });
     const line = new Line2(geometry, material);
 
@@ -230,6 +234,7 @@ class BedEditor {
     editor: Editor;
     commandStack: CommandStack;
     mode: BedEditorMode;
+    buffer: string;
 
     vertices: Vector3[]; // Used during vertex placement mode and bed config mode
 
@@ -237,6 +242,7 @@ class BedEditor {
     oldBed?: Object3D;
 
     // Vertex Placement mode
+    startPoint?: TextGeometry;
     lastPoint?: Vector3;
     linePreview?: Line;
     angleText?: TextGeometry;
@@ -356,6 +362,7 @@ class BedEditor {
         this.editor.remove(this.linePreview)
         this.editor.remove(this.angleText)
         this.editor.remove(this.distanceText)
+        this.editor.remove(this.startPoint)
 
         this.vertices = []
 
@@ -623,6 +630,12 @@ class BedEditor {
 
         this.vertices.push(point);
 
+        if (this.vertices.length == 1) {
+            this.startPoint = createVertexHandle();
+            this.startPoint.position.set(...point);
+            this.editor.add(this.startPoint);
+        }
+
         if (this.vertices.length < 2) {
             return
         }
@@ -791,6 +804,7 @@ class BedEditor {
     }
 
     public handleKeyDown(event) {
+
         switch (event.key) {
 
             case 'z':
@@ -814,7 +828,6 @@ class BedEditor {
                         break;
                 }
                 break;
-
         }
     }
 

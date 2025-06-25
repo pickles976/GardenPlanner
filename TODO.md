@@ -6,17 +6,15 @@
     - [x] specify radius in inches/ft/meters for sphere
     - [x] specify radius/height for cylinder
 
+- [x] Bed editor improvements
+    - [x] bug with clicking on line segments
+    - [x] put a crosshair at bed editor path start to make closing easier
+
 - [ ] drawing utilities
+- [ ] create submenu for Bed/ruler/fence/path drawing utilities
     - [ ] create a ruler object
     - [ ] fence drawing utility
     - [ ] path drawing utility?
-
-- [ ] Bed editor improvements
-    - [ ] type to set length of line in pen mode (Bed Editor)
-    - [ ] esc to reset line
-    - [ ] put a crosshair at bed editor path start to make closing easier
-    - [ ] draw angle on completed line segments
-    - [ ] bug with clicking on line segments
 
 - [ ] create group-editing workflow?
     - [ ] create a group
