@@ -24,8 +24,16 @@ function SidebarRuler( editor ) {
 	const label = new UIText("RULER")
 	container.add(label)
 
+	// Save Lines
+	const saveLinesButton = new UIButton("Save Lines")
+	saveLinesButton.setDisplay("none")
+
+	// Save Vertices
+	const saveVerticesbutton = new UIButton("Save Vertices")
+	saveVerticesbutton.setDisplay("none")
+
 	// Save Bed
-	const saveRulerButton = new UIButton("✓ Save Bed")
+	const saveRulerButton = new UIButton("✓ Save Ruler")
 	saveRulerButton.setDisplay("none")
 
 	// Cancel
@@ -53,6 +61,7 @@ function SidebarRuler( editor ) {
 	const buttonContainer = new UIPanel();
 	buttonContainer.setBorderTop( '1' );
 	buttonContainer.setPaddingTop( '20px' );
+	buttonContainer.add(saveLinesButton)
 	buttonContainer.add(saveRulerButton)
 	buttonContainer.add(cancelButton)
 	buttonContainer.add(editButton)
@@ -68,6 +77,7 @@ function SidebarRuler( editor ) {
 	container.add(configContainer)
 	container.add(buttonContainer)
 
+	saveLinesButton.onClick(() => editor.rulerEditor.lineEditor.setVertexEditMode()) // TODO: control this via enum?
 	saveRulerButton.onClick(() => eventBus.emit(EventEnums.RULER_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.RULER_EDITING_CANCELLED))
 	editButton.onClick(() => eventBus.emit(EventEnums.RULER_EDITING_STARTED, editor.selector.currentSelectedObject))
@@ -75,6 +85,8 @@ function SidebarRuler( editor ) {
 	eventBus.on(EventEnums.RULER_CREATION_STARTED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
+		saveLinesButton.setDisplay("Block")
+		saveVerticesbutton.setDisplay("none")
 		saveRulerButton.setDisplay("none");
 		configContainer.setDisplay("none")
 	})
@@ -82,6 +94,8 @@ function SidebarRuler( editor ) {
 	eventBus.on(EventEnums.RULER_VERTEX_EDITING_STARTED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
+		saveLinesButton.setDisplay("none")
+		saveVerticesbutton.setDisplay("Block")
 		saveRulerButton.setDisplay("none");
 		configContainer.setDisplay("none")
 	})
@@ -93,6 +107,8 @@ function SidebarRuler( editor ) {
 	eventBus.on(EventEnums.RULER_VERTEX_EDITING_FINISHED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
+		saveLinesButton.setDisplay("none")
+		saveVerticesbutton.setDisplay("none")
 		saveRulerButton.setDisplay("Block");
 		configContainer.setDisplay("Block")
 	})
@@ -100,6 +116,8 @@ function SidebarRuler( editor ) {
 	eventBus.on(EventEnums.RULER_EDITING_FINISHED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("none");
+		saveLinesButton.setDisplay("none")
+		saveVerticesbutton.setDisplay("none")
 		saveRulerButton.setDisplay("none");
 		configContainer.setDisplay("none")
 	})
@@ -107,6 +125,8 @@ function SidebarRuler( editor ) {
 	eventBus.on(EventEnums.RULER_EDITING_CANCELLED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("none");
+		saveLinesButton.setDisplay("none")
+		saveVerticesbutton.setDisplay("none")
 		saveRulerButton.setDisplay("none");
 		configContainer.setDisplay("none")
 	})

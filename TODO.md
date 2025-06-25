@@ -12,7 +12,8 @@ PLANT // like object but with different properties
 - [x] refactor bed editor to use line editor
 - [x] bed editor
 - [ ] ruler editor
-    - [ ] save ruler vertices
+    - [ ] save segments button
+    - [ ] save vertices button
     - [ ] save ruler config
     - [ ] create ruler
 - [ ] fence editor

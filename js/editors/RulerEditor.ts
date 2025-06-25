@@ -84,6 +84,7 @@ class RulerEditor {
 
     private createRuler() {
         // TODO: actually create ruler mesh
+        
     }
 
     public cancel() {

@@ -25,9 +25,9 @@ function SidebarBed( editor ) {
 	container.add(label)
 
 	// Save Polygon
-	const saveButton = new UIButton("✓ Save Polygon")
-	saveButton.dom.style.color = "#AAFFAA"
-	saveButton.setDisplay("none")
+	const savePolygonButton = new UIButton("✓ Save Polygon")
+	savePolygonButton.dom.style.color = "#AAFFAA"
+	savePolygonButton.setDisplay("none")
 
 	// Save Bed
 	const saveBedButton = new UIButton("✓ Save Bed")
@@ -99,7 +99,7 @@ function SidebarBed( editor ) {
 	const buttonContainer = new UIPanel();
 	buttonContainer.setBorderTop( '1' );
 	buttonContainer.setPaddingTop( '20px' );
-	buttonContainer.add(saveButton)
+	buttonContainer.add(savePolygonButton)
 	buttonContainer.add(saveBedButton)
 	buttonContainer.add(cancelButton)
 	buttonContainer.add(editButton)
@@ -127,7 +127,7 @@ function SidebarBed( editor ) {
 	container.add(dimensionContainer)
 	container.add(buttonContainer)
 
-	saveButton.onClick(() => eventBus.emit(EventEnums.BED_VERTEX_EDITING_FINISHED))
+	savePolygonButton.onClick(() => eventBus.emit(EventEnums.BED_VERTEX_EDITING_FINISHED))
 	saveBedButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_CANCELLED))
 	editButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_STARTED, editor.selector.currentSelectedObject))
@@ -135,7 +135,7 @@ function SidebarBed( editor ) {
 	eventBus.on(EventEnums.BED_CREATION_STARTED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
-		saveButton.setDisplay("none");
+		savePolygonButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
 		dimensionContainer.setDisplay("none")
 		configContainer.setDisplay("none")
@@ -144,7 +144,7 @@ function SidebarBed( editor ) {
 	eventBus.on(EventEnums.BED_VERTEX_EDITING_STARTED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
-		saveButton.setDisplay("Block");
+		savePolygonButton.setDisplay("Block");
 		saveBedButton.setDisplay("none");
 		dimensionContainer.setDisplay("Block")
 		configContainer.setDisplay("none")
@@ -157,7 +157,7 @@ function SidebarBed( editor ) {
 	eventBus.on(EventEnums.BED_VERTEX_EDITING_FINISHED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
-		saveButton.setDisplay("none");
+		savePolygonButton.setDisplay("none");
 		saveBedButton.setDisplay("Block");
 		dimensionContainer.setDisplay("Block")
 		configContainer.setDisplay("Block")
@@ -166,7 +166,7 @@ function SidebarBed( editor ) {
 	eventBus.on(EventEnums.BED_EDITING_FINISHED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("none");
-		saveButton.setDisplay("none");
+		savePolygonButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
 		dimensionContainer.setDisplay("none")
 		configContainer.setDisplay("none")
@@ -175,7 +175,7 @@ function SidebarBed( editor ) {
 	eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("none");
-		saveButton.setDisplay("none");
+		savePolygonButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
 		dimensionContainer.setDisplay("none")
 		configContainer.setDisplay("none")
