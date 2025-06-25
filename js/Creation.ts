@@ -22,7 +22,7 @@ export function createHumanCube(editor: Editor): THREE.Mesh {
             scale: true
         }
     }
-    mesh.layers.set(LayerEnum.Plants)
+    mesh.layers.set(LayerEnum.Objects)
     mesh.name = "Box";
 
     editor.execute(new CreateObjectCommand(mesh, editor));
@@ -47,7 +47,7 @@ export function createCube(editor: Editor): THREE.Mesh {
             scale: true
         }
     }
-    mesh.layers.set(LayerEnum.Plants)
+    mesh.layers.set(LayerEnum.Objects)
     mesh.name = "Box";
 
     editor.execute(new CreateObjectCommand(mesh, editor));
@@ -77,7 +77,7 @@ export function createCylinder(editor: Editor): THREE.Mesh {
                 height: true
         }
     }
-    mesh.layers.set(LayerEnum.Plants)
+    mesh.layers.set(LayerEnum.Objects)
     mesh.name = "Cylinder";
 
     editor.execute(new CreateObjectCommand(mesh, editor));
@@ -103,7 +103,7 @@ export function createSphere(editor: Editor): THREE.Mesh {
                 height: true
         }
     }
-    mesh.layers.set(LayerEnum.Plants)
+    mesh.layers.set(LayerEnum.Objects)
     mesh.name = "Sphere";
 
     editor.execute(new CreateObjectCommand(mesh, editor));
@@ -111,7 +111,34 @@ export function createSphere(editor: Editor): THREE.Mesh {
     return mesh
 }
 
-export function createGround(scene: THREE.Scene): THREE.Mesh {
+export function createPlane(editor: Editor): THREE.Mesh {
+
+    const mat = new THREE.MeshPhongMaterial({
+        color: 0xDDDDDD,
+        side: THREE.DoubleSide
+
+    })
+    const geo = new THREE.PlaneGeometry(1, 1, 4, 4)
+    const mesh = new THREE.Mesh(geo, mat)
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.userData = {
+        selectable: true,
+        editableFields: {
+                name: true,
+                position: true,
+                rotation: true,
+                scale: true
+        }
+    }
+    mesh.layers.set(LayerEnum.Objects)
+    mesh.name = "Plane";
+    mesh.position.set(0,0,0.3)
+
+    editor.execute(new CreateObjectCommand(mesh, editor));
+}
+
+export function createGround(editor: Editor): THREE.Mesh {
 
     const groundMat = new THREE.MeshPhongMaterial({
         color: GROUND_COLOR,    // red (can also use a CSS color string here)
@@ -122,6 +149,6 @@ export function createGround(scene: THREE.Scene): THREE.Mesh {
     groundMesh.castShadow = false;
     groundMesh.receiveShadow = true;
     groundMesh.name = "Ground";
-    scene.add(groundMesh)
+    editor.scene.add(groundMesh)
     return groundMesh
 }

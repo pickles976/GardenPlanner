@@ -22,6 +22,7 @@ class CreateObjectCommand extends Command {
 
     public execute() {
         this.editor.add(this.object);
+        eventBus.emit(EventEnums.OBJECT_ADDED)
         eventBus.emit(EventEnums.REQUEST_RENDER, this.object);
     }
 
@@ -33,6 +34,7 @@ class CreateObjectCommand extends Command {
         }
 
         this.editor.remove(this.object);
+        eventBus.emit(EventEnums.OBJECT_REMOVED)
         eventBus.emit(EventEnums.REQUEST_RENDER, this.object);
     }
 

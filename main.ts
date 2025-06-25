@@ -95,7 +95,7 @@ eventBus.on(EventEnums.OBJECT_CHANGED, () => render(editor));
 eventBus.on(EventEnums.METRIC_CHANGED, (value) => gridManager.setMetric(value))
 eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(value))
 
-createGround(editor.scene)
+createGround(editor)
 
 // let box = createCube(editor)
 let box = createHumanCube(editor)

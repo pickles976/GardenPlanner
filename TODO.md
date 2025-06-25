@@ -1,29 +1,22 @@
-#### OBJECT EDITOR
-- [x] jump to selected object in scene w/ double click
-
-- [ ] add ability to add plane
-- [ ] create a ruler object
-- [ ] fence drawing utility
-
-#### Erika Feedback
-Have Erika plan a garden
-
 #### Improvements
-- [ ] rotation in simple transform mode (use Q/E to snap 90 degrees)
-- [ ] draw pointer to north as rotating UI element
-- [ ] controls specific features of geometry in UI panel
-    - [ ] figure out a way to set the editable features from UI. Use proxies?
+- [ ] radius/height in object panel
+    - [ ] get size of box from geometry and save as userData
+    - [ ] use this + scale to figure out the actual size of the model
+    - [ ] figure out a way to get this controllable from the UI
     - [ ] specify radius in inches/ft/meters for sphere
     - [ ] specify radius/height for cylinder
-- [ ] improve shadows
 
-- [ ] hide bed objects in bed editor
-- [ ] type to set length of line in pen mode (Bed Editor)
-- [ ] esc to reset line
-- [ ] put a crosshair at bed editor path start to make closing easier
-- [ ] draw angle on completed line segments
-- [ ] fix polygon drawing bug
-- [ ] bug with clicking on line segments
+- [ ] drawing utilities
+    - [ ] create a ruler object
+    - [ ] fence drawing utility
+    - [ ] path drawing utility?
+
+- [ ] Bed editor improvements
+    - [ ] type to set length of line in pen mode (Bed Editor)
+    - [ ] esc to reset line
+    - [ ] put a crosshair at bed editor path start to make closing easier
+    - [ ] draw angle on completed line segments
+    - [ ] bug with clicking on line segments
 
 - [ ] create group-editing workflow?
     - [ ] create a group
@@ -33,9 +26,12 @@ Have Erika plan a garden
 
 #### Visual Improvements
 
+- [ ] draw pointer to north as rotating UI element
+
 ##### Textures
 https://gamedevnexus.com/resources/assets/
 - [ ] dirt
+- [ ] mulch
 - [ ] stone
 - [ ] wood
 - [ ] chain link
@@ -47,15 +43,10 @@ https://smythdesign.com/blog/stylized-grass-webgl/
 
 - [ ] add a 5'10 human model to the world
 
-Write up about 
-- design philosophy
-- event flow/propagation
-- modularity
-- what else?
-
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
     - [ ] create a panel for 3D models the same way we have for plants
+- [ ] add ability to set textures for 3D models from object panels
 
 ## SUN CONTROLS
 - [ ] lat/lon entry
@@ -81,10 +72,23 @@ Write up about
 
 - [ ] complete web client
 
-## REFACTORING
-- [ ] try refactor bed editor to use scene graph better
+# BUGS
+- [ ] bed panel does not hide when bed is deselected from scene panel
+
+# REFACTOR
+
+
+Write up about 
+- design philosophy
+- event flow/propagation
+- modularity
+- what else?
 
 MVP finished!
+
+
+#### Erika Feedback
+Have Erika plan a garden
 
 ## USER FEEDBACK
 - [ ] friends and family

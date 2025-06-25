@@ -87,6 +87,10 @@ function highlightMouseOverObject(editor: Editor, intersections: THREE.Object3D[
         return
     }
 
+    if (object.userData === undefined) {
+        return
+    }
+
     // If object is selectable
     if (object.userData.selectable === true) {
 

@@ -16,6 +16,7 @@ enum LayerEnum {
     Objects = 1,
     Plants = 2,
     BedVertices = 3,
+    Bed = 4,
 }
 
 export { EditorMode, LayerEnum };

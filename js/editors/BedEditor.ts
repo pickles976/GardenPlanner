@@ -496,7 +496,7 @@ class BedEditor {
                 rotation: true,
             }
         }
-        mergedMesh.layers.set(LayerEnum.Objects)
+        mergedMesh.layers.set(LayerEnum.Bed)
         mergedMesh.position.set(...centroid)
         mergedMesh.name = this.bedName;
 

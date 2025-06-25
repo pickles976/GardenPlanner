@@ -16,10 +16,11 @@ import { snapper } from '../Snapping';
 import { DeleteObjectCommand } from '../commands/DeleteObjectCommand';
 import { CreateObjectCommand } from '../commands/CreateObjectCommand';
 import { deepClone } from '../Utils';
+import { SetRotationCommand } from '../commands/SetRotationCommand';
 
 
 const SHADOWMAP_WIDTH = 32;
-const SHADOWMAP_RESOLUTION = 1024;
+const SHADOWMAP_RESOLUTION = 2048;
 const ANTI_ALIASING = true;
 
 const SCREEN_WIDTH = window.innerWidth;
@@ -163,16 +164,23 @@ class Editor {
 
         // Prevent shadow acne artifacts
         // https://mofu-dev.com/en/blog/threejs-shadow-map/
-        this.directionalLight.shadow.bias = -0.001;
-        this.directionalLight.shadow.mapSize.width = SHADOWMAP_RESOLUTION; // default
-        this.directionalLight.shadow.mapSize.height = SHADOWMAP_RESOLUTION; // default
-        this.directionalLight.shadow.camera.near = 0.5; // default
-        this.directionalLight.shadow.camera.far = 500; // default
+        this.directionalLight.shadow.bias = -0.0001;
+        this.directionalLight.shadow.normalBias = 0.1;
 
+        // size of the map
         this.directionalLight.shadow.camera.left = -SHADOWMAP_WIDTH;
         this.directionalLight.shadow.camera.right = SHADOWMAP_WIDTH;
         this.directionalLight.shadow.camera.top = -SHADOWMAP_WIDTH;
         this.directionalLight.shadow.camera.bottom = SHADOWMAP_WIDTH;
+
+        // map resolution
+        this.directionalLight.shadow.mapSize.width = SHADOWMAP_RESOLUTION;
+        this.directionalLight.shadow.mapSize.height = SHADOWMAP_RESOLUTION;
+        this.directionalLight.shadow.camera.near = 0.5; // default
+        this.directionalLight.shadow.camera.far = 500; // default
+        this.directionalLight.shadow.radius = 1.5; // blur shadows
+
+
 
         this.directionalLight.name = "Directional Light";
 
@@ -292,7 +300,7 @@ class Editor {
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true) // change UI
         this.bedEditor.beginBedEditing(bed);
         this.selector.deselect();
-        this.hideCameraLayers([LayerEnum.Plants])
+        this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Bed])
     }
 
     public setObjectMode() {
@@ -323,7 +331,7 @@ class Editor {
                     }
                 }
                 break;
-
+            // Transform
             case 't':
                 this.transformControls.setMode('translate');
                 break;
@@ -340,12 +348,10 @@ class Editor {
             case '=':
                 this.transformControls.setSize(this.transformControls.size + 0.1);
                 break;
-
             case '-':
             case '_':
                 this.transformControls.setSize(Math.max(this.transformControls.size - 0.1, 0.1));
                 break;
-
             case 'x':
                 this.transformControls.showX = !this.transformControls.showX;
                 break;
@@ -375,6 +381,34 @@ class Editor {
             case 'Delete':
                 if (this.selector.currentSelectedObject) {
                     this.execute(new DeleteObjectCommand(this.selector.currentSelectedObject, this))
+                }
+                break;
+            // Rotation in simple mode
+            // TODO: clean this up
+            case 'q':
+                if (this.selector.advancedTransformMode) break;
+                if (this.selector.currentSelectedObject) {
+                    const object = this.selector.currentSelectedObject;                
+                    const axis = new THREE.Vector3(0, 0, 1); 
+                    const angle = Math.PI / 2;
+
+                    const quaternion = new THREE.Quaternion();
+                    quaternion.setFromAxisAngle(axis, angle);
+                    const newQuaternion = object.quaternion.clone().multiply(quaternion);
+                    this.execute(new SetRotationCommand(object, object.quaternion, newQuaternion));
+                }
+                break;
+            case 'e':
+                if (this.selector.advancedTransformMode) break;
+                if (this.selector.currentSelectedObject) {
+                    const object = this.selector.currentSelectedObject;                
+                    const axis = new THREE.Vector3(0, 0, 1); 
+                    const angle = -Math.PI / 2;
+
+                    const quaternion = new THREE.Quaternion();
+                    quaternion.setFromAxisAngle(axis, angle);
+                    const newQuaternion = object.quaternion.clone().multiply(quaternion);
+                    this.execute(new SetRotationCommand(object, object.quaternion, newQuaternion));
                 }
                 break;
 

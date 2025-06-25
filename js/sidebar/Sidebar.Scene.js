@@ -202,6 +202,12 @@ function SidebarScene( editor ) {
 		container.setDisplay("Block")
 		refreshUI()
 	})
+	eventBus.on(EventEnums.OBJECT_ADDED, () => {
+		refreshUI()
+	})
+	eventBus.on(EventEnums.OBJECT_REMOVED, () => {
+		refreshUI()
+	})
 
 	return container;
 
