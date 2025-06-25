@@ -17,8 +17,16 @@ enum EventEnums {
     CAMERA_CHANGED = "cameraChanged",
     CHANGE_CAMERA_UI = "changeCameraUI",
 
-    // LINE CREATION
-    
+    // RULER CREATION/EDITING EVENTS
+    RULER_SELECTED = "rulerSelected",
+    RULER_CREATION_STARTED = "rulerCreationStarted",
+    RULER_EDITING_STARTED = "rulerEditingStarted",
+    RULER_EDITING_FINISHED = "rulerEditingFinished",
+    RULER_EDITING_CANCELLED = "rulerEditingCancelled",
+
+    RULER_VERTEX_EDITING_STARTED = "rulerVertexEditingStarted",
+    RULER_VERTEX_EDITING_UPDATED = "rulerVertexEditingUpdated",
+    RULER_VERTEX_EDITING_FINISHED = "rulerVertexEditingFinished",
 
     // BED CREATION/EDITING EVENTS
     BED_SELECTED = "bedSelected",
@@ -27,9 +35,9 @@ enum EventEnums {
     BED_EDITING_FINISHED = "bedEditingFinished",
     BED_EDITING_CANCELLED = "bedEditingCancelled",
 
-    VERTEX_EDITING_STARTED = "vertexEditingStarted",
-    VERTEX_EDITING_UPDATED = "vertexEditingUpdated",
-    VERTEX_EDITING_FINISHED = "vertexEditingFinished",
+    BED_VERTEX_EDITING_STARTED = "bedVertexEditingStarted",
+    BED_VERTEX_EDITING_UPDATED = "bedVertexEditingUpdated",
+    BED_VERTEX_EDITING_FINISHED = "bedVertexEditingFinished",
 
     BED_CONFIG_UPDATED = "bedConfigUpdated", // 
 

@@ -61,7 +61,21 @@ function MenubarAdd( editor ) {
 	option = new UIRow();
 	option.setClass( 'option' );
 	option.setTextContent( "Fence" );
-	option.onClick(() => eventBus.emit(EventEnums.LINE_CREATION_STARTED, undefined));
+	option.onClick(() => eventBus.emit(EventEnums.FENCE_CREATION_STARTED, undefined));
+	pathSubmenu.add( option );
+
+	// Ruler
+	option = new UIRow();
+	option.setClass( 'option' );
+	option.setTextContent( "Ruler" );
+	option.onClick(() => eventBus.emit(EventEnums.RULER_CREATION_STARTED, undefined));
+	pathSubmenu.add( option );
+
+	// Path
+	option = new UIRow();
+	option.setClass( 'option' );
+	option.setTextContent( "Path" );
+	option.onClick(() => eventBus.emit(EventEnums.PATH_CREATION_STARTED, undefined));
 	pathSubmenu.add( option );
 
 	// Plants

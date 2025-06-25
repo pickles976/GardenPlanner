@@ -8,10 +8,11 @@ PLANT // like object but with different properties
 
 #### Improvements
 
-- [ ] create line editor
-- [ ] refactor bed editor to use line editor
+- [x] create line editor
+- [x] refactor bed editor to use line editor
 
-- [ ] bed editor
+- [x] bed editor
+
 - [ ] ruler editor
 - [ ] fence editor
 - [ ] path editor

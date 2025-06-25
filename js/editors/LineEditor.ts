@@ -3,8 +3,6 @@
  *  a. insert and undo
  *  b. close loop by clicking on start vertex
  * 2. Edit Vertices
- * 3. Configure Bed
- * 4. Save finalized mesh
  * 
  * TODO: make this all command-based at some point
  * 1. create a mapping of vertex handle objects to vertices
@@ -169,7 +167,10 @@ class LineEditor {
     saveButton?: CSS2DObject;
     cancelButton?: CSS2DObject;
 
-    constructor(editor: Editor, closedLoop: boolean = false) {
+    constructor(
+        editor: Editor, 
+
+        closedLoop: boolean = false) {
 
         this.closedLoop = closedLoop;
         this.editor = editor;
@@ -191,16 +192,6 @@ class LineEditor {
 
         this.saveButton = undefined;
         this.cancelButton = undefined;
-
-        eventBus.on(EventEnums.VERTEX_EDITING_FINISHED, () => this.cleanUp())
-
-        // eventBus.on(EventEnums.BED_EDITING_FINISHED, (event) => {
-        //     this.cleanUp();
-        // })
-
-        // eventBus.on(EventEnums.BED_EDITING_CANCELLED, (event) => {
-        //     this.cancel();
-        // })
 
         eventBus.on(EventEnums.METRIC_CHANGED, () => {
             if (this.mode === LineEditorMode.EDIT_VERTEX_MODE) {
@@ -285,7 +276,7 @@ class LineEditor {
         this.cleanUpVertexPlacementState()
         this.drawPolygon();
         this.mode = LineEditorMode.EDIT_VERTEX_MODE;
-        eventBus.emit(EventEnums.VERTEX_EDITING_STARTED)
+        eventBus.emit(EventEnums.BED_VERTEX_EDITING_STARTED)
     }
 
     // Drawing
@@ -334,7 +325,7 @@ class LineEditor {
             this.saveButton = createButton(centroid, "/icons/check-circle.svg", UI_GREEN_COLOR)
             this.saveButton.center.set(1.0, 0.5);
             this.saveButton.element.addEventListener('click', () => {
-                eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED)
+                eventBus.emit(EventEnums.BED_VERTEX_EDITING_FINISHED)
             });
             this.editor.add(this.saveButton)
         } else {
@@ -566,7 +557,7 @@ class LineEditor {
                 // call this function for free highlighting
                 handleMouseMoveObjectMode(editor, intersections);
                 this.handleMouseMoveEditVerticesMode(editor, object, point);
-                eventBus.emit(EventEnums.VERTEX_EDITING_UPDATED);
+                eventBus.emit(EventEnums.BED_VERTEX_EDITING_UPDATED);
                 break;
             default:
                 break;

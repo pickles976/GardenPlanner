@@ -127,7 +127,7 @@ function SidebarBed( editor ) {
 	container.add(dimensionContainer)
 	container.add(buttonContainer)
 
-	saveButton.onClick(() => eventBus.emit(EventEnums.VERTEX_EDITING_FINISHED))
+	saveButton.onClick(() => eventBus.emit(EventEnums.BED_VERTEX_EDITING_FINISHED))
 	saveBedButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_CANCELLED))
 	editButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_STARTED, editor.selector.currentSelectedObject))
@@ -141,7 +141,7 @@ function SidebarBed( editor ) {
 		configContainer.setDisplay("none")
 	})
 
-	eventBus.on(EventEnums.VERTEX_EDITING_STARTED, () => {
+	eventBus.on(EventEnums.BED_VERTEX_EDITING_STARTED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("Block");
@@ -150,11 +150,11 @@ function SidebarBed( editor ) {
 		configContainer.setDisplay("none")
 	})
 
-	eventBus.on(EventEnums.VERTEX_EDITING_UPDATED, () => {
+	eventBus.on(EventEnums.BED_VERTEX_EDITING_UPDATED, () => {
 		updateFromEditor()
 	})
 
-	eventBus.on(EventEnums.VERTEX_EDITING_FINISHED, () => {
+	eventBus.on(EventEnums.BED_VERTEX_EDITING_FINISHED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
 		saveButton.setDisplay("none");
