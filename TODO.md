@@ -1,15 +1,4 @@
 #### Improvements
-- [x] radius/height in object panel
-    - [x] get size of box from geometry and save as userData
-    - [x] use this + scale to figure out the actual size of the model
-    - [x] figure out a way to get this controllable from the UI
-    - [x] specify radius in inches/ft/meters for sphere
-    - [x] specify radius/height for cylinder
-
-- [x] Bed editor improvements
-    - [x] bug with clicking on line segments
-    - [x] put a crosshair at bed editor path start to make closing easier
-
 - [ ] drawing utilities
 - [ ] create submenu for Bed/ruler/fence/path drawing utilities
     - [ ] create a ruler object

@@ -234,7 +234,6 @@ class BedEditor {
     editor: Editor;
     commandStack: CommandStack;
     mode: BedEditorMode;
-    buffer: string;
 
     vertices: Vector3[]; // Used during vertex placement mode and bed config mode
 
@@ -242,7 +241,6 @@ class BedEditor {
     oldBed?: Object3D;
 
     // Vertex Placement mode
-    startPoint?: TextGeometry;
     lastPoint?: Vector3;
     linePreview?: Line;
     angleText?: TextGeometry;
@@ -362,7 +360,6 @@ class BedEditor {
         this.editor.remove(this.linePreview)
         this.editor.remove(this.angleText)
         this.editor.remove(this.distanceText)
-        this.editor.remove(this.startPoint)
 
         this.vertices = []
 
@@ -631,9 +628,9 @@ class BedEditor {
         this.vertices.push(point);
 
         if (this.vertices.length == 1) {
-            this.startPoint = createVertexHandle();
-            this.startPoint.position.set(...point);
-            this.editor.add(this.startPoint);
+            const startPoint = createVertexHandle();
+            startPoint.position.set(...point);
+            this.commandStack.execute(new CreateObjectCommand(startPoint, this.editor))
         }
 
         if (this.vertices.length < 2) {
@@ -707,6 +704,12 @@ class BedEditor {
         this.lastPoint = point;
 
         if (this.vertices.length == 0) {
+            this.editor.remove(this.linePreview)
+            this.editor.remove(this.angleText)
+            this.editor.remove(this.distanceText)
+            this.linePreview = undefined;
+            this.angleText = undefined;
+            this.distanceText = undefined;
             return
         }
 
