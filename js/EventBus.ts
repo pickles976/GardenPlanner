@@ -17,6 +17,9 @@ enum EventEnums {
     CAMERA_CHANGED = "cameraChanged",
     CHANGE_CAMERA_UI = "changeCameraUI",
 
+    // LINE CREATION
+    
+
     // BED CREATION/EDITING EVENTS
     BED_SELECTED = "bedSelected",
     BED_CREATION_STARTED = "bedCreationStarted", // Create new bed

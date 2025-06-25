@@ -27,10 +27,42 @@ function MenubarAdd( editor ) {
 	// Bed
 
 	let option = new UIRow();
+
+	const pathSubmenuTitle = new UIRow().setTextContent( "Path" ).addClass( 'option' ).addClass( 'submenu-title' );
+	pathSubmenuTitle.onMouseOver( function () {
+
+		const { top, right } = pathSubmenuTitle.dom.getBoundingClientRect();
+		const { paddingTop } = getComputedStyle( this.dom );
+
+		pathSubmenu.setLeft( right + 'px' );
+		pathSubmenu.setTop( top - parseFloat( paddingTop ) + 'px' );
+		pathSubmenu.setStyle( 'max-height', [ `calc( 100vh - ${top}px )` ] );
+		pathSubmenu.setDisplay( 'block' );
+
+	} );
+	pathSubmenuTitle.onMouseOut( function () {
+
+		pathSubmenu.setDisplay( 'none' );
+
+	} );
+	options.add( pathSubmenuTitle );
+
+	const pathSubmenu = new UIPanel().setPosition( 'fixed' ).addClass( 'options' ).setDisplay( 'none' );
+	pathSubmenuTitle.add( pathSubmenu );
+
+	// Bed
+	option = new UIRow();
 	option.setClass( 'option' );
-	option.setTextContent( 'Bed' );
+	option.setTextContent( "Bed" );
 	option.onClick(() => eventBus.emit(EventEnums.BED_CREATION_STARTED, undefined));
-	options.add( option );
+	pathSubmenu.add( option );
+
+	// Fence
+	option = new UIRow();
+	option.setClass( 'option' );
+	option.setTextContent( "Fence" );
+	option.onClick(() => eventBus.emit(EventEnums.LINE_CREATION_STARTED, undefined));
+	pathSubmenu.add( option );
 
 	// Plants
 

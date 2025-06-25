@@ -1,15 +1,33 @@
+Layers 
+NO_RAYCAST // not raycastable
+WORLD // raycastable but not selectable
+OBJECTS // raycast + selectable 
+VERTEX // raycastable only in line editor mode
+PLANT // like object but with different properties
+
+
 #### Improvements
-- [ ] drawing utilities
-- [ ] create submenu for Bed/ruler/fence/path drawing utilities
-    - [ ] create a ruler object
-    - [ ] fence drawing utility
-    - [ ] path drawing utility?
+
+- [ ] create line editor
+- [ ] refactor bed editor to use line editor
+
+- [ ] bed editor
+- [ ] ruler editor
+- [ ] fence editor
+- [ ] path editor
 
 - [ ] create group-editing workflow?
     - [ ] create a group
     - [ ] add multiple objects to the group
     - [ ] move the entire group
     - [ ] remove objects from the group
+
+# Garden Design Utilities
+- [ ] panel UI with pre-built models for drag and drop
+    - [ ] create a panel for 3D models the same way we have for plants
+
+#### Erika Feedback
+Have Erika plan a garden
 
 #### Visual Improvements
 
@@ -22,6 +40,7 @@ https://gamedevnexus.com/resources/assets/
 - [ ] stone
 - [ ] wood
 - [ ] chain link
+- [ ] add ability to set textures for 3D models from object panels
 
 - [ ] grass
 https://codesandbox.io/p/sandbox/grass-shader-forked-okub75?file=%2Fsrc%2FGrass.js
@@ -29,11 +48,6 @@ https://smythdesign.com/blog/stylized-grass-webgl/
 - [ ] sky view
 
 - [ ] add a 5'10 human model to the world
-
-# Garden Design Utilities
-- [ ] panel UI with pre-built models for drag and drop
-    - [ ] create a panel for 3D models the same way we have for plants
-- [ ] add ability to set textures for 3D models from object panels
 
 ## SUN CONTROLS
 - [ ] lat/lon entry
@@ -73,9 +87,6 @@ Write up about
 
 MVP finished!
 
-
-#### Erika Feedback
-Have Erika plan a garden
 
 ## USER FEEDBACK
 - [ ] friends and family
