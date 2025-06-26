@@ -77,6 +77,7 @@ class FenceEditor {
     fenceHeight: number;
     fenceColor: string;
     fenceName: string;
+    shadow: boolean;
 
     constructor(editor: Editor) {
 
@@ -100,6 +101,7 @@ class FenceEditor {
         this.fenceHeight = INITIAL_FENCE_HEIGHT;
         this.fenceColor = WHITE;
         this.fenceName = "New Fence";
+        this.shadow = true;
 
         eventBus.on(EventEnums.FENCE_CONFIG_UPDATED, (command) => {
             this.commandStack.execute(command)
@@ -130,6 +132,7 @@ class FenceEditor {
         this.fenceHeight = props.fenceHeight;
         this.fenceColor = props.fenceColor;
         this.fenceName = props.fenceName;
+        this.shadow = props.shadow;
     }
 
     public cancel() {
@@ -198,7 +201,8 @@ class FenceEditor {
         this.editor.remove(this.fencePreviewMesh)
 
         this.fencePreviewMesh = createFence(this.vertices, this.fenceHeight, createPreviewMaterial(this.fenceColor))
-        // this.bedPreviewMesh = createBed(this.vertices, this.bedHeight, createPreviewMaterial(this.bedColor))
+        this.fencePreviewMesh.castShadow = this.shadow;
+
         this.editor.add(this.fencePreviewMesh)
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
@@ -216,7 +220,7 @@ class FenceEditor {
         fence.geometry.computeBoundingBox();  
         fence.geometry.center();  
 
-        fence.castShadow = true;
+        fence.castShadow = this.shadow;
         fence.receiveShadow = true;
         fence.userData = { // Give mesh the data used to create it, so it can be edited. Add selection callbacks
             selectable: true,
@@ -226,6 +230,7 @@ class FenceEditor {
             fenceHeight: this.fenceHeight,
             fenceColor: this.fenceColor,
             name: this.fenceName,
+            shadow: this.shadow,
             editableFields: {
                 name: true,
                 position: true,
@@ -267,7 +272,7 @@ class FenceEditor {
             case FenceEditorMode.LINE_EDITOR_MODE:
                 this.lineEditor.undo();
                 break;
-            case FenceEditorMode.FENCE_CONFIG_MODE:
+            case FenceEditorMode.CONFIG_MODE:
                 this.createPreviewMesh()
                 break;
             default:

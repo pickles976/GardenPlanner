@@ -9,21 +9,17 @@ PLANT // like object but with different properties
 #### Improvements
 
 - [x] fence editor
-    -  [ ] enable/disable shadows
+    - [x] enable/disable shadows
 - [ ] path editor
-    -  [ ] path width
-    -  [ ] path color
+    - [ ] path width
+    - [ ] path height
+    - [ ] path color
 
 #### RULER
 - [ ] make ruler not a separate object, but just something that can be placed instantly
     - [ ] add ruler sub-object to editor
-    - [ ] place ruler point with shift + click
-
-- [ ] create group-editing workflow?
-    - [ ] create a group
-    - [ ] add multiple objects to the group
-    - [ ] move the entire group
-    - [ ] remove objects from the group
+    - [ ] click + shift - place point (p1, p2)
+    - [ ] shift release, clear ruler state
 
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
@@ -33,6 +29,7 @@ PLANT // like object but with different properties
 Have Erika plan a garden
 
 #### Visual Improvements
+- [ ] bug where bed is not visible immediately after placement
 
 - [ ] draw pointer to north as rotating UI element
 
@@ -44,6 +41,11 @@ https://gamedevnexus.com/resources/assets/
 - [ ] wood
 - [ ] chain link
 - [ ] add ability to set textures for 3D models from object panels
+
+- [ ] add texture configuration
+    - [ ] bed/bed border
+    - [ ] path
+    - [ ] fence
 
 - [ ] grass
 https://codesandbox.io/p/sandbox/grass-shader-forked-okub75?file=%2Fsrc%2FGrass.js
@@ -65,6 +67,13 @@ https://smythdesign.com/blog/stylized-grass-webgl/
     - [ ] export
     - [ ] load
 
+#### GROUPS
+- [ ] create group-editing workflow?
+    - [ ] create a group
+    - [ ] add multiple objects to the group
+    - [ ] move the entire group
+    - [ ] remove objects from the group
+
 ## PLANT EDITOR KEYFRAMING
 - [ ] set height and radius
 - [ ] enter height and radius at different time points
@@ -81,7 +90,6 @@ https://smythdesign.com/blog/stylized-grass-webgl/
 
 # REFACTOR
 
-
 Write up about 
 - design philosophy
 - event flow/propagation
@@ -89,7 +97,6 @@ Write up about
 - what else?
 
 MVP finished!
-
 
 ## USER FEEDBACK
 - [ ] friends and family

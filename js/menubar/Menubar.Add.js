@@ -28,7 +28,7 @@ function MenubarAdd( editor ) {
 
 	let option = new UIRow();
 
-	const pathSubmenuTitle = new UIRow().setTextContent( "Path" ).addClass( 'option' ).addClass( 'submenu-title' );
+	const pathSubmenuTitle = new UIRow().setTextContent( "Drawables" ).addClass( 'option' ).addClass( 'submenu-title' );
 	pathSubmenuTitle.onMouseOver( function () {
 
 		const { top, right } = pathSubmenuTitle.dom.getBoundingClientRect();

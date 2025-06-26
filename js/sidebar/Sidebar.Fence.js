@@ -47,7 +47,7 @@ function SidebarFence( editor ) {
 	const editButton = new UIButton("Edit");
 	editButton.setDisplay("none")
 
-	// Bed Config
+	// Config
 	const objectNameRow = new UIRow();
 	const objectName = new UIInput().setWidth( '150px' ).setFontSize( '12px' ).onChange(update);
 	objectName.setValue("New Fence")
@@ -63,8 +63,14 @@ function SidebarFence( editor ) {
 	const fenceColorRow = new UIRow();
 	const fenceColor = new UIColor().onInput( update );
 	fenceColor.setValue(editor.fenceEditor.fenceColor)
-	fenceColorRow.add( new UIText( "Fence Color" ).setClass( 'Border Color' ) );
+	fenceColorRow.add( new UIText( "Fence Color" ).setClass( "Label" ) );
 	fenceColorRow.add(fenceColor)
+
+	const shadowRow = new UIRow();
+	const shadowCheck = new UICheckbox().onInput(update);
+	shadowCheck.setValue(true);
+	shadowRow.add(new UIText("Cast Shadow").setClass("Label"));
+	shadowRow.add(shadowCheck);
 
 	const buttonContainer = new UIPanel();
 	buttonContainer.setBorderTop( '1' );
@@ -81,6 +87,7 @@ function SidebarFence( editor ) {
 	configContainer.add( objectNameRow );
 	configContainer.add( fenceHeightRow );
 	configContainer.add(fenceColorRow);
+	configContainer.add(shadowRow);
 	configContainer.setDisplay("none");
 
 	// Add sub-panels
@@ -157,12 +164,14 @@ function SidebarFence( editor ) {
 				"name": objectName.value,
 				"fenceHeight": fenceHeight.value, 
 				"fenceColor": fenceColor.value, 
+				"shadow": shadowCheck.getValue()
 			};
 		} else {
 			props = {
 				"name": objectName.value,
 				"fenceHeight": snapper.inchesToMeters(fenceHeight.value), 
 				"fenceColor": fenceColor.dom.value,
+				"shadow": shadowCheck.getValue()
 			};
 		}
 
@@ -185,6 +194,7 @@ function SidebarFence( editor ) {
 		}
 		
 		fenceColor.setValue(editor.fenceEditor.fenceColor)
+		shadowCheck.setValue(editor.fenceEditor.shadow)
 
 	}
 
