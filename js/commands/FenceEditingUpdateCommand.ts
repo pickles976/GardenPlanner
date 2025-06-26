@@ -18,6 +18,7 @@ class FenceEditingUpdateCommand extends Command {
             "name": fenceEditor.fenceName,
 			"fenceHeight": fenceEditor.fenceHeight, 
 			"fenceColor": fenceEditor.fenceColor,
+            "shadow": fenceEditor.shadow
 		}
         this.uiCallback = uiCallback
     }
@@ -33,7 +34,8 @@ class FenceEditingUpdateCommand extends Command {
         
         // Non-numeric values are not updateable
         if (!(this.oldProps.name === this.newProps.name &&
-            this.oldProps.fenceColor === this.newProps.fenceColor)) {
+            this.oldProps.fenceColor === this.newProps.fenceColor &&
+            this.oldProps.shadow === this.newProps.shadow)) {
                 return false
         }
 
