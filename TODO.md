@@ -6,15 +6,23 @@ VERTEX // raycastable only in line editor mode
 PLANT // like object but with different properties
 
 #### RULER
-- [ ] make ruler not a separate object, but just something that can be placed instantly
+- [x] make ruler not a separate object, but just something that can be placed instantly
+    - [x] click + shift - place point (p1, p2)
+    - [x] shift release, clear ruler state
+
+- [ ] Refactor ruler
     - [ ] add ruler sub-object to editor
-    - [ ] click + shift - place point (p1, p2)
-    - [ ] shift release, clear ruler state
+- [ ] refactor event handlers to live in editor where it makes sense
 
 # BUGS
 - [ ] bug with path placement
 - [ ] bug with fence placement 
 - [ ] bug where bed is not visible immediately after placement
+
+### REFACTOR!!!
+- [ ] rename editors to have similar methods
+- [ ] make props a typed object!!!
+- [ ] come up with conventions for importing stuff from three (always use THREE.Object instead of `import { Object } from "three"`)
 
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
@@ -47,10 +55,6 @@ https://smythdesign.com/blog/stylized-grass-webgl/
 - [ ] sky view
 
 - [ ] add a 5'10 human model to the world
-
-### REFACTOR!!!
-- [ ] rename editors to have similar methods
-- [ ] come up with conventions for importing stuff from three (always use THREE.Object instead of `import { Object } from "three"`)
 
 ## SUN CONTROLS
 - [ ] lat/lon entry

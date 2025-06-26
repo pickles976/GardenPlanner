@@ -1,4 +1,4 @@
-import { handleMouseMove, handleMouseClick, handleKeyDown } from './js/EventHandlers';
+import { handleMouseMove, handleMouseClick, handleKeyDown, handleKeyUp } from './js/EventHandlers';
 import { SetPositionCommand } from './js/commands/SetPositionCommand';
 import { SetRotationCommand } from './js/commands/SetRotationCommand';
 import { requestRenderIfNotRequested, render } from './js/Rendering';
@@ -27,6 +27,7 @@ document.body.appendChild( menubar.container.dom );
 
 window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
 window.addEventListener('keydown', (event) => handleKeyDown(event, editor, sidebar, menubar));
+window.addEventListener('keyup', (event) => handleKeyUp(event, editor, sidebar, menubar));
 
 editor.canvas.addEventListener('mousemove', () => requestRenderIfNotRequested(editor));
 editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));

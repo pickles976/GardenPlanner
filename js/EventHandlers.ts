@@ -160,6 +160,11 @@ export function handleMouseMove(event, editor) {
      * Configure the raycaster, and pass intersections to the correct handler
      */
 
+    if (event.shiftKey) {
+        editor.handleMouseMove(editor, performRaycast(event, editor, [LayerEnum.World]))
+        return;
+    }
+
     switch(editor.mode) {
         case EditorMode.OBJECT:
             handleMouseMoveObjectMode(
@@ -193,6 +198,7 @@ export function handleMouseMove(event, editor) {
     }
 }
 
+// TODO: move into editor
 export function handleMouseClickObjectMode(editor: Editor, intersections: THREE.Object3D[]) {
 
     // Don't do anything if we are actively using the transform controls
@@ -216,6 +222,11 @@ export function handleMouseClick(event, editor) {
     // Only do a raycast if the LMB was used
     if (event.button !== 0) {
         return
+    }
+
+    if (event.shiftKey) {
+        editor.handleRulerClick(editor, performRaycast(event, editor, [LayerEnum.World]))
+        return;
     }
 
     switch(editor.mode) {
@@ -257,4 +268,12 @@ export function handleKeyDown(event, editor: Editor, sidebar: Sidebar, menuBar: 
     menuBar.handleKeyDown(event)
     sidebar.handleKeyDown(event)
     editor.handleKeyDown(event)
+}
+
+export function handleKeyUp(event, editor: Editor, sidebar: Sidebar, menuBar: Menubar) {
+
+    // UI Keypress events
+    // menuBar.handleKeyUp(event)
+    // sidebar.handleKeyUp(event)
+    editor.handleKeyUp(event)
 }

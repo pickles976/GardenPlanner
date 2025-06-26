@@ -4,22 +4,28 @@ import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { requestRenderIfNotRequested } from '../Rendering';
 import { Command } from '../commands/Command';
 import { Selector } from '../Selector';
-import { EditorMode, FRUSTUM_SIZE, LayerEnum } from '../Constants';
+import { FONT_SIZE, FRUSTUM_SIZE, LayerEnum } from '../Constants';
 import { BedEditor } from './BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from '../CommandStack';
 import { eventBus, EventEnums } from '../EventBus';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { WHITE } from '../Colors';
-import { handleTransformControlsChange } from '../EventHandlers';
+import { handleTransformControlsChange, processIntersections } from '../EventHandlers';
 import { snapper } from '../Snapping';
 import { DeleteObjectCommand } from '../commands/DeleteObjectCommand';
 import { CreateObjectCommand } from '../commands/CreateObjectCommand';
-import { deepClone } from '../Utils';
+import { deepClone, destructureVector3Array, fontSizeString, getCSS2DText } from '../Utils';
 import { SetRotationCommand } from '../commands/SetRotationCommand';
 import { RulerEditor } from './RulerEditor';
 import { FenceEditor } from './FenceEditor';
 import { PathEditor } from './PathEditor';
+import { Vector3 } from 'three';
+
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { Group } from 'three';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -40,6 +46,28 @@ enum EditorMode {
     PATH = "PATH",
     RULER = "RULER",
     PLANT = "PLANT"
+}
+
+const LINE_WIDTH = 5;
+
+function createLinePreview(startPoint: Vector3, endPoint: Vector3) : Line2 {
+
+    // Get Distance Text
+    let textPos = startPoint.clone().add(endPoint.clone()).divideScalar(2);
+    const lineLabel = getCSS2DText(snapper.getText(startPoint.distanceTo(endPoint)), fontSizeString(FONT_SIZE));
+    lineLabel.position.set(...textPos)
+
+    const geometry = new LineGeometry();
+    geometry.setPositions(destructureVector3Array([startPoint, endPoint]))
+    const material = new LineMaterial({ color: WHITE, linewidth: LINE_WIDTH, depthWrite: false, depthTest: false });
+    const linePreview = new Line2(geometry, material);
+    linePreview.renderOrder = 100000; // Always draw on top
+
+    const group = new Group();
+    group.add(linePreview);
+    group.add(lineLabel);
+
+    return group;
 }
 
 class Editor {
@@ -76,6 +104,9 @@ class Editor {
 
     mode: EditorMode;
 
+    rulerStart?: Vector3;
+    linePreview?: Line2;
+
     constructor() {
         this.commandStack = new CommandStack();
         this.objectMap = {};
@@ -84,6 +115,8 @@ class Editor {
         this.fenceEditor = new FenceEditor(this);
         this.pathEditor = new PathEditor(this);
         this.mode = EditorMode.OBJECT;
+
+        this.rulerStart = undefined;
     }
 
     public initThree() {
@@ -475,6 +508,47 @@ class Editor {
             default:
                 break;
         }
+    }
+
+    private rulerCleanup() {
+        this.remove(this.linePreview);
+        this.rulerStart = undefined;
+    }
+
+    public handleMouseMove(editor: Editor, intersections: THREE.Object3D[]) {
+
+        if (this.rulerStart === undefined) return;
+
+        // draw ruler
+        let [object, point] = processIntersections(intersections)
+        point = snapper.snap(point)
+
+        this.remove(this.linePreview)
+        this.linePreview = createLinePreview(this.rulerStart, point);
+        this.add(this.linePreview)
+    }
+
+    public handleRulerClick(editor: Editor, intersections: THREE.Object3D[]) {
+        let [object, point] = processIntersections(intersections)
+        point = snapper.snap(point)
+
+        if (this.rulerStart === undefined) {
+            this.rulerStart = point;
+        } else {
+            const ruler = createLinePreview(this.rulerStart, point);
+            ruler.layers.set(LayerEnum.Objects)
+            ruler.userData = {
+                selectable: true
+            }
+            ruler.name = "Ruler"
+            this.execute(new CreateObjectCommand(ruler, this))
+            this.rulerCleanup()
+        }
+
+    }   
+
+    public handleKeyUp(event) {
+        this.rulerCleanup()
     }
 
 }
