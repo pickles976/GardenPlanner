@@ -23,7 +23,7 @@ export function createHumanCube(editor: Editor): THREE.Mesh {
         }
     }
     mesh.layers.set(LayerEnum.Objects)
-    mesh.name = "Box";
+    mesh.name = "Human-sized box";
 
     editor.execute(new CreateObjectCommand(mesh, editor));
 
@@ -145,7 +145,7 @@ export function createGround(editor: Editor): THREE.Mesh {
     });
     const groundGeo = new THREE.PlaneGeometry(64, 64, 4, 4)
     const groundMesh = new THREE.Mesh(groundGeo, groundMat)
-    groundMesh.layers.set(LayerEnum.Objects)
+    groundMesh.layers.set(LayerEnum.World)
     groundMesh.castShadow = false;
     groundMesh.receiveShadow = true;
     groundMesh.name = "Ground";

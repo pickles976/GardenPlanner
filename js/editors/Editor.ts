@@ -328,7 +328,7 @@ class Editor {
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true) // change UI
         this.bedEditor.beginBedEditing(bed);
         this.selector.deselect();
-        this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Bed])
+        this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Objects])
     }
 
     public setFenceMode(fence?: THREE.Object3D) {

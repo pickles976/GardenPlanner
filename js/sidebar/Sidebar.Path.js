@@ -3,10 +3,9 @@ import { UIPanel, UIRow, UIInput, UIButton, UIColor, UIText, UINumber } from '..
 import { Strings } from './Strings.js';
 import { eventBus, EventEnums } from '../EventBus.js';
 import { snapper } from '../Snapping.js';
-import { FenceEditingUpdateCommand } from '../commands/FenceEditingUpdateCommand.js';
+import { PathEditingUpdateCommand } from '../commands/PathEditingUpdateCommand.js';
 
 const strings = Strings({ 'language': 'en' });
-
 
 function SidebarPath(editor) {
 
@@ -66,6 +65,12 @@ function SidebarPath(editor) {
 	pathColorRow.add(new UIText("Fence Color").setClass("Label"));
 	pathColorRow.add(pathColor)
 
+	const numArcSegmentsRow = new UIRow();
+	const numArcSegments = new UINumber().setStep(1).setWidth('50px').onChange(update).setPrecision(0);
+	numArcSegments.setValue(editor.pathEditor.numArcSegments);
+	numArcSegmentsRow.add(new UIText("Bend Segments").setClass('Label'));
+	numArcSegmentsRow.add(numArcSegments);
+
 	const buttonContainer = new UIPanel();
 	buttonContainer.setBorderTop('1');
 	buttonContainer.setPaddingTop('20px');
@@ -82,6 +87,7 @@ function SidebarPath(editor) {
 	configContainer.add(pathWidthRow);
 	configContainer.add(pathHeightRow);
 	configContainer.add(pathColorRow);
+	configContainer.add(numArcSegmentsRow)
 	configContainer.setDisplay("none");
 
 	// Add sub-panels
@@ -156,6 +162,7 @@ function SidebarPath(editor) {
 		if (snapper.metric) {
 			props = {
 				"name": objectName.value,
+				"numArcSegments": numArcSegments.value,
 				"pathWidth": pathWidth.value,
 				"pathHeight": pathHeight.value,
 				"pathColor": pathColor.value,
@@ -163,13 +170,14 @@ function SidebarPath(editor) {
 		} else {
 			props = {
 				"name": objectName.value,
+				"numArcSegments": numArcSegments.value,
 				"pathWidth": snapper.inchesToMeters(pathWidth.value),
 				"pathHeight": snapper.inchesToMeters(pathHeight.value),
 				"pathColor": pathColor.dom.value,
 			};
 		}
 
-		const command = new FenceEditingUpdateCommand(props, editor.pathEditor, updateFromEditor)
+		const command = new PathEditingUpdateCommand(props, editor.pathEditor, updateFromEditor)
 		eventBus.emit(EventEnums.PATH_CONFIG_UPDATED, command)
 	}
 
@@ -197,6 +205,7 @@ function SidebarPath(editor) {
 			pathWidth.setPrecision(0)
 		}
 
+		numArcSegments.setValue(editor.pathEditor.numArcSegments)
 		pathColor.setValue(editor.pathEditor.pathColor)
 
 	}

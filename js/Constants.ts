@@ -6,10 +6,10 @@ export const FONT_SIZE = 30;
 
 enum LayerEnum {
     NoRaycast = 0,
-    Objects = 1,
-    Plants = 2,
-    LineVertices = 3,
-    Bed = 4,
+    World = 1,
+    Objects = 2,
+    Plants = 3,
+    LineVertices = 4,
 }
 
 export { LayerEnum };

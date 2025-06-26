@@ -1,25 +1,20 @@
-import { Object3D, Vector3, Mesh, Material, Box3, BufferGeometry, Float32BufferAttribute, Vector2, ExtrudeGeometry, Shape } from "three";
+import { Object3D, Vector3, Mesh, Material, Box3, Vector2, ExtrudeGeometry, Shape } from "three";
 
-import { getCentroid, createPhongMaterial, createPreviewMaterial, destructureVector3Array } from "../Utils";
+import { getCentroid, createPhongMaterial, createPreviewMaterial } from "../Utils";
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { eventBus, EventEnums } from "../EventBus";
 import { CommandStack } from "../CommandStack";
 import { LayerEnum } from "../Constants";
 import { Editor } from "./Editor";
 
-import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
-import { Line2 } from 'three/addons/lines/Line2.js';
-import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
-
 import { WHITE } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
-import { createPolygon, LineEditor } from "./LineEditor";
+import { LineEditor } from "./LineEditor";
 import offsetPolygon from "offset-polygon";
 
 const INITIAL_PATH_HEIGHT = 0.03;
 const INITIAL_PATH_WIDTH = 0.3;
 const CONFIG_CAMERA_OFFSET = new Vector3(0, -2, 2);
-const NUM_ARC_SEGMENTS = 1;
 
 enum PathEditorMode {
     INACTIVE = "INACTIVE",
@@ -27,7 +22,7 @@ enum PathEditorMode {
     CONFIG_MODE = "CONFIG_MODE"
 }
 
-function createPath(vertices: Vector3[], width: number, height: number, material: Material) : Mesh {
+function createPath(vertices: Vector3[], width: number, height: number, numArcSegments: number, material: Material) : Mesh {
     /**
      * Take the vertices and extrude them vertically to create a path
      */
@@ -35,7 +30,7 @@ function createPath(vertices: Vector3[], width: number, height: number, material
     const verts = vertices.map((v) => ({ "x": v.x, "y": v.y }));
     verts.push(...verts.slice(1, verts.length - 1).reverse())
 
-    let border = offsetPolygon(verts, width / 2, 1).map((v) => new Vector2(v.x, v.y));
+    let border = offsetPolygon(verts, width / 2, numArcSegments).map((v) => new Vector2(v.x, v.y));
     border.push(border[0])
     const shape = new Shape(border);
 
@@ -63,10 +58,11 @@ class PathEditor {
     vertices: Vector3[]; // Used during vertex placement mode and bed config mode
 
     // Original Fence
-    oldPath?: Object3D;
+    oldObject?: Object3D;
 
     // Config Mode
-    pathPreviewMesh?: Mesh;
+    previewMesh?: Mesh;
+    numArcSegments: number;
     pathWidth: number;
     pathHeight: number;
     pathColor: string;
@@ -86,11 +82,12 @@ class PathEditor {
         this.commandStack = new CommandStack();
         this.mode = PathEditorMode.INACTIVE;
 
-        this.oldPath = undefined;
+        this.oldObject = undefined;
         this.vertices = [];
 
         // Config
-        this.pathPreviewMesh = undefined;
+        this.previewMesh = undefined;
+        this.numArcSegments = 1;
         this.pathWidth = INITIAL_PATH_WIDTH;
         this.pathHeight = INITIAL_PATH_HEIGHT;
         this.pathColor = WHITE;
@@ -122,6 +119,7 @@ class PathEditor {
         /**
          * Update bed config from properties
          */
+        this.numArcSegments = props.numArcSegments;
         this.pathWidth = props.pathWidth;
         this.pathHeight = props.pathHeight;
         this.pathColor = props.pathColor;
@@ -129,8 +127,8 @@ class PathEditor {
     }
 
     public cancel() {
-        if (this.oldPath) {
-            this.editor.execute(new CreateObjectCommand(this.oldPath, this.editor))
+        if (this.oldObject) {
+            this.editor.execute(new CreateObjectCommand(this.oldObject, this.editor))
         }
         this.cleanUp();
         this.lineEditor.cancel();
@@ -138,7 +136,7 @@ class PathEditor {
 
     // Cleanup
     public cleanUp() {
-        this.oldPath = undefined;
+        this.oldObject = undefined;
         this.lineEditor.cleanUp()
         this.cleanUpBedConfigState()
 
@@ -146,8 +144,8 @@ class PathEditor {
     }
 
     private cleanUpBedConfigState() {
-        this.editor.remove(this.pathPreviewMesh)
-        this.pathPreviewMesh = undefined;
+        this.editor.remove(this.previewMesh)
+        this.previewMesh = undefined;
     }
 
     // Change modes
@@ -160,7 +158,7 @@ class PathEditor {
         } else { // Edit existing bed
             this.lineEditor.beginLineEditing(path.userData.vertices);
             this.updateFromProps(path.userData)
-            this.oldPath = path;
+            this.oldObject = path;
             this.editor.remove(path);
         }
     }
@@ -191,16 +189,16 @@ class PathEditor {
 
     private createPreviewMesh() {
 
-        this.editor.remove(this.pathPreviewMesh)
+        this.editor.remove(this.previewMesh)
 
-        this.pathPreviewMesh = createPath(this.vertices, this.pathWidth, this.pathHeight, createPreviewMaterial(this.pathColor))
+        this.previewMesh = createPath(this.vertices, this.pathWidth, this.pathHeight, this.numArcSegments, createPreviewMaterial(this.pathColor))
 
-        this.editor.add(this.pathPreviewMesh)
+        this.editor.add(this.previewMesh)
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices);
         centroid.add(new Vector3(0, 0, 0.01)) // prevent z-fighting
-        this.pathPreviewMesh.position.set(...centroid);
+        this.previewMesh.position.set(...centroid);
     }
 
     private createMesh() {
@@ -208,7 +206,7 @@ class PathEditor {
         // Create and merge border + bed meshes
         const centroid = getCentroid(this.vertices);
 
-        const path = createPath(this.vertices, this.pathWidth, this.pathHeight, createPhongMaterial(this.pathColor));
+        const path = createPath(this.vertices, this.pathWidth, this.pathHeight, this.numArcSegments, createPhongMaterial(this.pathColor));
         path.geometry.computeBoundingBox();  
         path.geometry.center();  
 
@@ -218,6 +216,8 @@ class PathEditor {
             onSelect: () => eventBus.emit(EventEnums.PATH_SELECTED, true),
             onDeselect: () => eventBus.emit(EventEnums.PATH_SELECTED, false),
             vertices: this.vertices,
+            numArcSegments: this.numArcSegments,
+            pathWidth: this.pathWidth,
             pathHeight: this.pathHeight,
             pathColor: this.pathColor,
             name: this.pathName,
@@ -237,10 +237,10 @@ class PathEditor {
         path.position.set(...centroid.clone().add(new Vector3(0,0,size.z / 2)))
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
-        if (this.oldPath) {
-            path.position.copy(this.oldPath.position)
-            path.rotation.copy(this.oldPath.rotation)
-            path.scale.copy(this.oldPath.scale)
+        if (this.oldObject) {
+            path.position.copy(this.oldObject.position)
+            path.rotation.copy(this.oldObject.rotation)
+            path.scale.copy(this.oldObject.scale)
         }
 
         this.editor.execute(new CreateObjectCommand(path, this.editor));

@@ -5,22 +5,16 @@ OBJECTS // raycast + selectable
 VERTEX // raycastable only in line editor mode
 PLANT // like object but with different properties
 
-
-#### Improvements
-
-- [x] fence editor
-    - [x] enable/disable shadows
-- [ ] path editor
-    - [x] path width
-    - [x] path height
-    - [x] path color
-    - [ ] control num path segments
-
 #### RULER
 - [ ] make ruler not a separate object, but just something that can be placed instantly
     - [ ] add ruler sub-object to editor
     - [ ] click + shift - place point (p1, p2)
     - [ ] shift release, clear ruler state
+
+# BUGS
+- [ ] bug with path placement
+- [ ] bug with fence placement 
+- [ ] bug where bed is not visible immediately after placement
 
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
@@ -30,7 +24,6 @@ PLANT // like object but with different properties
 Have Erika plan a garden
 
 #### Visual Improvements
-- [ ] bug where bed is not visible immediately after placement
 
 - [ ] draw pointer to north as rotating UI element
 
@@ -55,6 +48,10 @@ https://smythdesign.com/blog/stylized-grass-webgl/
 
 - [ ] add a 5'10 human model to the world
 
+### REFACTOR!!!
+- [ ] rename editors to have similar methods
+- [ ] come up with conventions for importing stuff from three (always use THREE.Object instead of `import { Object } from "three"`)
+
 ## SUN CONTROLS
 - [ ] lat/lon entry
 - [ ] absolute time entry
@@ -65,8 +62,10 @@ https://smythdesign.com/blog/stylized-grass-webgl/
 ## SAVING
 - [ ] saving configurations as json
     - [ ] autosave feature
-    - [ ] export
-    - [ ] load
+    - [ ] load from web storage
+    - [ ] export to json
+    - [ ] load from json
+    - [ ] save a preview image from the canvas
 
 #### GROUPS
 - [ ] create group-editing workflow?

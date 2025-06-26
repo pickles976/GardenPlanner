@@ -302,7 +302,7 @@ class BedEditor {
                 rotation: true,
             }
         }
-        mergedMesh.layers.set(LayerEnum.Bed)
+        mergedMesh.layers.set(LayerEnum.Objects)
         mergedMesh.name = this.bedName;
 
         // Move to position
