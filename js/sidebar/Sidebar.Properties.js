@@ -6,6 +6,7 @@ import { SidebarBed } from './Sidebar.Bed.js'
 import { SidebarFence } from './Sidebar.Fence.js';
 import { eventBus, EventEnums } from '../EventBus.js';
 import { SidebarPlant } from './Sidebar.Plant.js';
+import { SidebarPath } from './Sidebar.Path.js';
 
 const strings = new Strings({});
 
@@ -25,9 +26,13 @@ function SidebarProperties( editor ) {
 
 	const fenceTab = new SidebarFence( editor );
 	fenceTab.setDisplay("none")
+
+	const pathTab = new SidebarPath( editor );
+	pathTab.setDisplay("none")
 	
 	container.add(bedTab);
 	container.add(fenceTab);
+	container.add(pathTab);
 	container.add(plantTab);
 	container.add(objectTab);
 
@@ -42,6 +47,12 @@ function SidebarProperties( editor ) {
 	eventBus.on(EventEnums.FENCE_EDITING_STARTED, () => {fenceTab.setDisplay("Block")});
 	eventBus.on(EventEnums.FENCE_EDITING_FINISHED, () => {fenceTab.setDisplay("none")});
 	eventBus.on(EventEnums.FENCE_EDITING_CANCELLED, () => {fenceTab.setDisplay("none")});
+
+	eventBus.on(EventEnums.PATH_SELECTED, (value) => {pathTab.setDisplay(value ? "Block" : "none")});
+	eventBus.on(EventEnums.PATH_CREATION_STARTED, () => {pathTab.setDisplay("Block")});
+	eventBus.on(EventEnums.PATH_EDITING_STARTED, () => {pathTab.setDisplay("Block")});
+	eventBus.on(EventEnums.PATH_EDITING_FINISHED, () => {pathTab.setDisplay("none")});
+	eventBus.on(EventEnums.PATH_EDITING_CANCELLED, () => {pathTab.setDisplay("none")});
 
 	eventBus.on(EventEnums.PLANT_SELECTED, (value) => {plantTab.setDisplay(value ? "Block" : "none")})
 

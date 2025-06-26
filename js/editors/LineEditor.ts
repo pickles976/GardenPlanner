@@ -117,7 +117,7 @@ function createButton(position: Vector3, icon: string, color: string): CSS2DObje
     return label;
 }
 
-function createPolygon(points: Vector3[]): Mesh {
+export function createPolygon(points: Vector3[]): Mesh {
     /** Create a Polygon from an array of points */
     let polyShape = new Shape(points.map((coord) => new Vector2(coord.x, coord.y)))
     const polyGeometry = new ShapeGeometry(polyShape);

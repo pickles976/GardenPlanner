@@ -11,9 +11,10 @@ PLANT // like object but with different properties
 - [x] fence editor
     - [x] enable/disable shadows
 - [ ] path editor
-    - [ ] path width
-    - [ ] path height
-    - [ ] path color
+    - [x] path width
+    - [x] path height
+    - [x] path color
+    - [ ] control num path segments
 
 #### RULER
 - [ ] make ruler not a separate object, but just something that can be placed instantly

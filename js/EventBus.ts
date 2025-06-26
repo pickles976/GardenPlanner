@@ -32,8 +32,8 @@ enum EventEnums {
 
     // FENCE CREATION/EDITING EVENTS
     FENCE_SELECTED = "fenceSelected",
-    FENCE_CREATION_STARTED = "fenceCreationStarted", // Create new bed
-    FENCE_EDITING_STARTED = "fenceEditingStarted", // Edit existing bed
+    FENCE_CREATION_STARTED = "fenceCreationStarted", 
+    FENCE_EDITING_STARTED = "fenceEditingStarted",
     FENCE_EDITING_FINISHED = "fenceEditingFinished",
     FENCE_EDITING_CANCELLED = "fenceEditingCancelled",
 
@@ -41,7 +41,20 @@ enum EventEnums {
     FENCE_VERTEX_EDITING_UPDATED = "fenceVertexEditingUpdated",
     FENCE_VERTEX_EDITING_FINISHED = "fenceVertexEditingFinished",
 
-    FENCE_CONFIG_UPDATED = "fenceConfigUpdated", // 
+    FENCE_CONFIG_UPDATED = "fenceConfigUpdated",
+
+    // PATH CREATION/EDITING EVENTS
+    PATH_SELECTED = "pathSelected",
+    PATH_CREATION_STARTED = "pathCreationStarted",
+    PATH_EDITING_STARTED = "pathEditingStarted",
+    PATH_EDITING_FINISHED = "pathEditingFinished",
+    PATH_EDITING_CANCELLED = "pathEditingCancelled",
+
+    PATH_VERTEX_EDITING_STARTED = "pathVertexEditingStarted",
+    PATH_VERTEX_EDITING_UPDATED = "pathVertexEditingUpdated",
+    PATH_VERTEX_EDITING_FINISHED = "pathVertexEditingFinished",
+
+    PATH_CONFIG_UPDATED = "pathConfigUpdated",
 
     // PLANT CREATION
     PLANT_CREATION_STARTED = "plantCreationStarted",

@@ -19,6 +19,7 @@ import { deepClone } from '../Utils';
 import { SetRotationCommand } from '../commands/SetRotationCommand';
 import { RulerEditor } from './RulerEditor';
 import { FenceEditor } from './FenceEditor';
+import { PathEditor } from './PathEditor';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -36,6 +37,7 @@ enum EditorMode {
     OBJECT = "OBJECT",
     BED = "BED",
     FENCE = "FENCE",
+    PATH = "PATH",
     RULER = "RULER",
     PLANT = "PLANT"
 }
@@ -70,6 +72,7 @@ class Editor {
     selector: Selector;
     bedEditor: BedEditor;
     fenceEditor: FenceEditor;
+    pathEditor: PathEditor;
 
     mode: EditorMode;
 
@@ -79,6 +82,7 @@ class Editor {
         this.selector = new Selector(this);
         this.bedEditor = new BedEditor(this);
         this.fenceEditor = new FenceEditor(this);
+        this.pathEditor = new PathEditor(this);
         this.mode = EditorMode.OBJECT;
     }
 
@@ -93,7 +97,6 @@ class Editor {
 
         // TODO: only one canvas?
         this.canvas = document.body.appendChild(this.renderer.domElement);
-
 
         this.labelRenderer = new CSS2DRenderer();
         this.labelRenderer.setSize(window.innerWidth, window.innerHeight);
@@ -229,6 +232,11 @@ class Editor {
         eventBus.on(EventEnums.FENCE_EDITING_FINISHED, () => this.setObjectMode())
         eventBus.on(EventEnums.FENCE_EDITING_STARTED, (fence) => this.setFenceMode(fence))
 
+        eventBus.on(EventEnums.PATH_CREATION_STARTED, () => this.setPathMode())
+        eventBus.on(EventEnums.PATH_EDITING_CANCELLED, () => this.setObjectMode())
+        eventBus.on(EventEnums.PATH_EDITING_FINISHED, () => this.setObjectMode())
+        eventBus.on(EventEnums.PATH_EDITING_STARTED, (path) => this.setPathMode(path))
+
         eventBus.on(EventEnums.SNAP_CHANGED, (value) => this.setSnapping(value))
         eventBus.on(EventEnums.CAMERA_CHANGED, (value) => value ? this.setOrthoCamera() : this.setPerspectiveCamera())
     }
@@ -326,10 +334,17 @@ class Editor {
     public setFenceMode(fence?: THREE.Object3D) {
         this.mode = EditorMode.FENCE;
         this.setOrthoCamera()
-        eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true) // change UI
+        eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true)
         this.fenceEditor.beginFenceEditing(fence);
         this.selector.deselect();
-        // this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Bed])
+    }
+
+    public setPathMode(path?: THREE.Object3D) {
+        this.mode = EditorMode.PATH;
+        this.setOrthoCamera()
+        eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true)
+        this.pathEditor.beginEditing(path);
+        this.selector.deselect();
     }
 
     public setObjectMode() {
@@ -455,6 +470,8 @@ class Editor {
                 break;
             case EditorMode.FENCE:
                 this.fenceEditor.handleKeyDown(event)
+            case EditorMode.PATH:
+                this.pathEditor.handleKeyDown(event)
             default:
                 break;
         }
