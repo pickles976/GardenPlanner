@@ -18,6 +18,7 @@ import { CreateObjectCommand } from '../commands/CreateObjectCommand';
 import { deepClone } from '../Utils';
 import { SetRotationCommand } from '../commands/SetRotationCommand';
 import { RulerEditor } from './RulerEditor';
+import { FenceEditor } from './FenceEditor';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -34,6 +35,7 @@ enum EditorMode {
     NONE = "NONE",
     OBJECT = "OBJECT",
     BED = "BED",
+    FENCE = "FENCE",
     RULER = "RULER",
     PLANT = "PLANT"
 }
@@ -67,7 +69,7 @@ class Editor {
 
     selector: Selector;
     bedEditor: BedEditor;
-    rulerEditor: RulerEditor;
+    fenceEditor: FenceEditor;
 
     mode: EditorMode;
 
@@ -76,7 +78,7 @@ class Editor {
         this.objectMap = {};
         this.selector = new Selector(this);
         this.bedEditor = new BedEditor(this);
-        this.rulerEditor = new RulerEditor(this);
+        this.fenceEditor = new FenceEditor(this);
         this.mode = EditorMode.OBJECT;
     }
 
@@ -222,10 +224,10 @@ class Editor {
         eventBus.on(EventEnums.BED_EDITING_FINISHED, () => this.setObjectMode())
         eventBus.on(EventEnums.BED_EDITING_STARTED, (bed) => this.setBedMode(bed))
 
-        eventBus.on(EventEnums.RULER_CREATION_STARTED, () => this.setRulerMode())
-        eventBus.on(EventEnums.RULER_EDITING_CANCELLED, () => this.setObjectMode())
-        eventBus.on(EventEnums.RULER_EDITING_FINISHED, () => this.setObjectMode())
-        eventBus.on(EventEnums.RULER_EDITING_STARTED, (ruler) => this.setRulerMode(ruler))
+        eventBus.on(EventEnums.FENCE_CREATION_STARTED, () => this.setFenceMode())
+        eventBus.on(EventEnums.FENCE_EDITING_CANCELLED, () => this.setObjectMode())
+        eventBus.on(EventEnums.FENCE_EDITING_FINISHED, () => this.setObjectMode())
+        eventBus.on(EventEnums.FENCE_EDITING_STARTED, (fence) => this.setFenceMode(fence))
 
         eventBus.on(EventEnums.SNAP_CHANGED, (value) => this.setSnapping(value))
         eventBus.on(EventEnums.CAMERA_CHANGED, (value) => value ? this.setOrthoCamera() : this.setPerspectiveCamera())
@@ -321,11 +323,11 @@ class Editor {
         this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Bed])
     }
 
-    public setRulerMode(ruler?: THREE.Object3D) {
-        this.mode = EditorMode.RULER;
+    public setFenceMode(fence?: THREE.Object3D) {
+        this.mode = EditorMode.FENCE;
         this.setOrthoCamera()
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true) // change UI
-        this.rulerEditor.beginRulerEditing(ruler);
+        this.fenceEditor.beginFenceEditing(fence);
         this.selector.deselect();
         // this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Bed])
     }
@@ -451,8 +453,8 @@ class Editor {
             case EditorMode.BED:
                 this.bedEditor.handleKeyDown(event)
                 break;
-            case EditorMode.RULER:
-                this.rulerEditor.handleKeyDown(event)
+            case EditorMode.FENCE:
+                this.fenceEditor.handleKeyDown(event)
             default:
                 break;
         }

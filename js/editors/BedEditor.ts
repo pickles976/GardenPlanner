@@ -1,21 +1,6 @@
-/**
- * 1. Place Vertices
- *  a. insert and undo
- *  b. close loop by clicking on start vertex
- * 2. Edit Vertices
- * 3. Configure Bed
- * 4. Save finalized mesh
- * 
- * TODO: make this all command-based at some point
- * 1. create a mapping of vertex handle objects to vertices
- * 2. add a callback to the vertex handles to update the vertices based on index
- * 3. make everything command-based, use UUIDs to track
- */
-
 import { Object3D, Vector3, Mesh, Vector2, Shape, Material, ExtrudeGeometry, Path, Box3 } from "three";
 
 import offsetPolygon from "offset-polygon";
-import "external-svg-loader";
 
 import { getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial } from "../Utils";
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
@@ -27,7 +12,6 @@ import { Editor } from "./Editor";
 import { DARK_GRAY, VERTEX_COLOR } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
 import { LineEditor } from "./LineEditor";
-import { setCurrentTransformationAsDefault } from "../ModelLoader";
 
 const INITIAL_BED_HEIGHT = 0.15;
 const INITIAL_BORDER_WIDTH = 0.10;

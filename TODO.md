@@ -8,8 +8,11 @@ PLANT // like object but with different properties
 
 #### Improvements
 
-- [ ] fence editor
+- [x] fence editor
+    -  [ ] enable/disable shadows
 - [ ] path editor
+    -  [ ] path width
+    -  [ ] path color
 
 #### RULER
 - [ ] make ruler not a separate object, but just something that can be placed instantly

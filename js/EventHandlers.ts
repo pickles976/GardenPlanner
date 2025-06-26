@@ -171,11 +171,17 @@ export function handleMouseMove(event, editor) {
                 editor, 
                 performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.LineVertices]))
             break;
-        case EditorMode.RULER:
-            editor.rulerEditor.handleMouseMove(
+        case EditorMode.FENCE:
+            editor.fenceEditor.handleMouseMove(
                 editor, 
                 performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.LineVertices])
             )
+            break;
+        // case EditorMode.RULER:
+        //     editor.rulerEditor.handleMouseMove(
+        //         editor, 
+        //         performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.LineVertices])
+        //     )
         default:
             break
     }
@@ -217,11 +223,17 @@ export function handleMouseClick(event, editor) {
                 editor, 
                 performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.LineVertices]))
             break;
+        case EditorMode.FENCE:
+            editor.fenceEditor.handleMouseClick(
+                editor, 
+                performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.LineVertices]))
+            break;
         case EditorMode.RULER:
             editor.rulerEditor.handleMouseClick(
                 editor, 
                 performRaycast(event, editor, [LayerEnum.Objects, LayerEnum.LineVertices])
             )
+            break;
         default:
             break
     }

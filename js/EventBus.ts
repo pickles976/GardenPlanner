@@ -17,17 +17,6 @@ enum EventEnums {
     CAMERA_CHANGED = "cameraChanged",
     CHANGE_CAMERA_UI = "changeCameraUI",
 
-    // RULER CREATION/EDITING EVENTS
-    RULER_SELECTED = "rulerSelected",
-    RULER_CREATION_STARTED = "rulerCreationStarted",
-    RULER_EDITING_STARTED = "rulerEditingStarted",
-    RULER_EDITING_FINISHED = "rulerEditingFinished",
-    RULER_EDITING_CANCELLED = "rulerEditingCancelled",
-
-    RULER_VERTEX_EDITING_STARTED = "rulerVertexEditingStarted",
-    RULER_VERTEX_EDITING_UPDATED = "rulerVertexEditingUpdated",
-    RULER_VERTEX_EDITING_FINISHED = "rulerVertexEditingFinished",
-
     // BED CREATION/EDITING EVENTS
     BED_SELECTED = "bedSelected",
     BED_CREATION_STARTED = "bedCreationStarted", // Create new bed
@@ -40,6 +29,19 @@ enum EventEnums {
     BED_VERTEX_EDITING_FINISHED = "bedVertexEditingFinished",
 
     BED_CONFIG_UPDATED = "bedConfigUpdated", // 
+
+    // FENCE CREATION/EDITING EVENTS
+    FENCE_SELECTED = "fenceSelected",
+    FENCE_CREATION_STARTED = "fenceCreationStarted", // Create new bed
+    FENCE_EDITING_STARTED = "fenceEditingStarted", // Edit existing bed
+    FENCE_EDITING_FINISHED = "fenceEditingFinished",
+    FENCE_EDITING_CANCELLED = "fenceEditingCancelled",
+
+    FENCE_VERTEX_EDITING_STARTED = "fenceVertexEditingStarted",
+    FENCE_VERTEX_EDITING_UPDATED = "fenceVertexEditingUpdated",
+    FENCE_VERTEX_EDITING_FINISHED = "fenceVertexEditingFinished",
+
+    FENCE_CONFIG_UPDATED = "fenceConfigUpdated", // 
 
     // PLANT CREATION
     PLANT_CREATION_STARTED = "plantCreationStarted",
