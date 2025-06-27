@@ -330,7 +330,7 @@ class Editor {
         this.mode = EditorMode.BED;
         this.setOrthoCamera()
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true) // change UI
-        this.bedEditor.beginBedEditing(bed);
+        this.bedEditor.beginEditing(bed);
         this.selector.deselect();
         this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Objects])
     }
@@ -339,7 +339,7 @@ class Editor {
         this.mode = EditorMode.FENCE;
         this.setOrthoCamera()
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true)
-        this.fenceEditor.beginFenceEditing(fence);
+        this.fenceEditor.beginEditing(fence);
         this.selector.deselect();
     }
 

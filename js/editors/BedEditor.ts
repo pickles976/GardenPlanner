@@ -9,7 +9,7 @@ import { CommandStack } from "../CommandStack";
 import { LayerEnum } from "../Constants";
 import { Editor } from "../Editor";
 
-import { DARK_GRAY, VERTEX_COLOR } from "../Colors";
+import { DARK_GRAY, VERTEX_COLOR, WHITE } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
 import { LineEditor } from "./LineEditor";
 
@@ -99,7 +99,39 @@ function createBed(vertices: Vector3[], height: number, material: Material) : Me
 enum BedEditorMode {
     INACTIVE = "INACTIVE",
     LINE_EDITOR_MODE = "LINE_EDITOR_MODE",
-    BED_CONFIG_MODE = "BED_CONFIG_MODE"
+    CONFIG_MODE = "CONFIG_MODE"
+}
+
+export class BedProps {
+
+    bedHeight: number;
+    borderHeight: number;
+    borderWidth: number;
+
+    bedColor: string;
+    borderColor: string;
+    name: string;
+
+    constructor(bedHeight, borderHeight, borderWidth, bedColor, borderColor, name) {
+        this.bedHeight = bedHeight;
+        this.borderHeight = borderHeight;
+        this.borderWidth = borderWidth;
+        this.bedColor = bedColor;
+        this.borderColor = borderColor;
+        this.name = name;
+    }
+
+    public clone() {
+        return new BedProps(
+            this.bedHeight,
+            this.borderHeight,
+            this.borderWidth,
+            this.bedColor,
+            this.borderColor,
+            this.name
+        )
+    }
+
 }
 
 
@@ -118,13 +150,8 @@ class BedEditor {
     // Bed Config Mode
     bedPreviewMesh?: Mesh;
     bedPreviewBorder?: Mesh;
-    bedHeight: number;
-    borderHeight: number;
-    borderWidth: number;
-
-    bedColor: string;
-    borderColor: string;
-    bedName: string;
+    
+    props: BedProps;
 
     constructor(editor: Editor) {
 
@@ -148,13 +175,14 @@ class BedEditor {
         this.bedPreviewBorder = undefined;
 
         // Default values
-        this.bedHeight = INITIAL_BED_HEIGHT;
-        this.borderHeight = INITIAL_BED_HEIGHT;
-        this.borderWidth = INITIAL_BORDER_WIDTH;
-
-        this.bedColor = DARK_GRAY;
-        this.borderColor = VERTEX_COLOR;
-        this.bedName = "New Bed";
+        this.props = new BedProps(
+            INITIAL_BED_HEIGHT,
+            INITIAL_BED_HEIGHT,
+            INITIAL_BORDER_WIDTH,
+            DARK_GRAY,
+            VERTEX_COLOR,
+            "New Bed"
+        )
 
         eventBus.on(EventEnums.BED_CONFIG_UPDATED, (command) => {
             this.commandStack.execute(command)
@@ -163,7 +191,7 @@ class BedEditor {
         });
 
         eventBus.on(EventEnums.BED_VERTEX_EDITING_FINISHED, () => {
-            this.setBedConfigMode();
+            this.setConfigMode();
             this.lineEditor.cleanUp();
         })
 
@@ -178,16 +206,8 @@ class BedEditor {
 
     }
 
-    public updateBed(props: Object) {
-        /**
-         * Update bed config from properties
-         */
-        this.bedHeight = props.bedHeight;
-        this.borderHeight = props.borderHeight;
-        this.borderWidth = props.borderWidth;
-        this.bedColor = props.bedColor;
-        this.borderColor = props.borderColor;
-        this.bedName = props.name;
+    public updateFromProps(props: BedProps) {
+        this.props = props
     }
 
     public cancel() {
@@ -215,24 +235,24 @@ class BedEditor {
     }
 
     // Change modes
-    public beginBedEditing(bed?: Object3D) {
+    public beginEditing(bed?: Object3D) {
         this.cleanUp();
         this.mode = BedEditorMode.LINE_EDITOR_MODE;
 
         if (bed === undefined) { // Create new bed
-            this.lineEditor.beginLineEditing()
+            this.lineEditor.beginEditing()
         } else { // Edit existing bed
-            this.lineEditor.beginLineEditing(bed.userData.vertices);
-            this.updateBed(bed.userData)
+            this.lineEditor.beginEditing(bed.userData.vertices);
+            this.updateFromProps(bed.userData.props)
             this.oldBed = bed;
             this.editor.remove(bed);
         }
     }
 
-    private setBedConfigMode() {
+    private setConfigMode() {
 
         this.vertices = this.lineEditor.vertexHandles.map((item) => item.position.clone());
-        this.mode = BedEditorMode.BED_CONFIG_MODE;
+        this.mode = BedEditorMode.CONFIG_MODE;
 
         // Reset cursor
         setDefaultCursor()
@@ -258,10 +278,10 @@ class BedEditor {
         this.editor.remove(this.bedPreviewBorder)
         this.editor.remove(this.bedPreviewMesh)
 
-        this.bedPreviewBorder = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, createPreviewMaterial(this.borderColor));
+        this.bedPreviewBorder = createBedBorder(this.vertices, this.props.borderWidth, this.props.borderHeight, createPreviewMaterial(this.props.borderColor));
         this.editor.add(this.bedPreviewBorder)
 
-        this.bedPreviewMesh = createBed(this.vertices, this.bedHeight, createPreviewMaterial(this.bedColor))
+        this.bedPreviewMesh = createBed(this.vertices, this.props.bedHeight, createPreviewMaterial(this.props.bedColor))
         this.editor.add(this.bedPreviewMesh)
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
@@ -276,8 +296,8 @@ class BedEditor {
         // Create and merge border + bed meshes
         const centroid = getCentroid(this.vertices);
 
-        const border = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, createPhongMaterial(this.borderColor));
-        const bed = createBed(this.vertices, this.bedHeight, createPhongMaterial(this.bedColor));
+        const border = createBedBorder(this.vertices, this.props.borderWidth, this.props.borderHeight, createPhongMaterial(this.props.borderColor));
+        const bed = createBed(this.vertices, this.props.bedHeight, createPhongMaterial(this.props.bedColor));
 
         // Set origin at the halfway point of the bed object
         let mergedMesh = mergeMeshes([border, bed]);
@@ -295,12 +315,7 @@ class BedEditor {
             onSelect: () => eventBus.emit(EventEnums.BED_SELECTED, true),
             onDeselect: () => eventBus.emit(EventEnums.BED_SELECTED, false),
             vertices: this.vertices,
-            bedHeight: this.bedHeight,
-            borderHeight: this.borderHeight,
-            borderWidth: this.borderWidth,
-            bedColor: this.bedColor,
-            borderColor: this.borderColor,
-            name: this.bedName,
+            props: this.props,
             editableFields: {
                 name: true,
                 position: true,
@@ -308,7 +323,7 @@ class BedEditor {
             }
         }
         mergedMesh.layers.set(LayerEnum.Objects)
-        mergedMesh.name = this.bedName;
+        mergedMesh.name = this.props.name;
 
         // Move to position
         mergedMesh.position.set(...centroid.clone().add(new Vector3(0,0,size.z / 2)))
@@ -338,7 +353,7 @@ class BedEditor {
             case BedEditorMode.LINE_EDITOR_MODE:
                 this.lineEditor.undo();
                 break;
-            case BedEditorMode.BED_CONFIG_MODE:
+            case BedEditorMode.CONFIG_MODE:
                 this.createPreviewMesh()
                 break;
             default:

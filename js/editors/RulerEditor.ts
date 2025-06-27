@@ -82,7 +82,12 @@ class RulerEditor {
             const ruler = createLinePreview(this.rulerStart, point);
             ruler.layers.set(LayerEnum.Objects)
             ruler.userData = {
-                selectable: true
+                selectable: true,
+                editableFields: {
+                    name: true,
+                    position: true,
+                    rotation: true
+                }
             }
             ruler.name = "Ruler"
             this.editor.execute(new CreateObjectCommand(ruler, this.editor))

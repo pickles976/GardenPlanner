@@ -5,8 +5,11 @@
 - [ ] bug with ruler origin
 
 ### REFACTOR!!!
-- [ ] rename editors to have similar methods
+- [x] rename editors to have similar methods
 - [ ] make props a typed object!!!
+    - [ ] Bed Editor
+    - [ ] Fence Editor
+    - [ ] Path Editor
 - [ ] come up with conventions for importing stuff from three (always use THREE.Object instead of `import { Object } from "three"`)
 
 # Garden Design Utilities

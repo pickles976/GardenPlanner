@@ -157,9 +157,9 @@ class PathEditor {
         this.mode = PathEditorMode.LINE_EDITOR_MODE;
 
         if (path === undefined) { // Create new bed
-            this.lineEditor.beginLineEditing()
+            this.lineEditor.beginEditing()
         } else { // Edit existing bed
-            this.lineEditor.beginLineEditing(path.userData.vertices);
+            this.lineEditor.beginEditing(path.userData.vertices);
             this.updateFromProps(path.userData)
             this.oldObject = path;
             this.editor.remove(path);

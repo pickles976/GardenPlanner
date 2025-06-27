@@ -9,6 +9,7 @@ import {eventBus, EventEnums} from '../EventBus.js';
 import { contain } from 'three/src/extras/TextureUtils.js';
 import { BedEditingUpdateCommand } from '../commands/BedEditingUpdateCommand.js';
 import { snapper } from '../Snapping.js';
+import { BedProps } from '../editors/BedEditor.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -192,23 +193,23 @@ function SidebarBed( editor ) {
 	function update() {
 		let props = {};
 		if (snapper.metric) {
-			props = {
-				"name": objectName.value,
-				"bedHeight": bedHeight.value, 
-				"borderHeight": borderHeight.value, 
-				"borderWidth": borderWidth.value,
-				"bedColor": bedColor.dom.value,
-				"borderColor": borderColor.dom.value
-			};
+			props = new BedProps(
+				bedHeight.value, 
+				borderHeight.value, 
+				borderWidth.value,
+				bedColor.dom.value,
+				borderColor.dom.value,
+				objectName.value
+			)
 		} else {
-			props = {
-				"name": objectName.value,
-				"bedHeight": snapper.inchesToMeters(bedHeight.value), 
-				"borderHeight": snapper.inchesToMeters(borderHeight.value), 
-				"borderWidth": snapper.inchesToMeters(borderWidth.value),
-				"bedColor": bedColor.dom.value,
-				"borderColor": borderColor.dom.value
-			};
+			props = new BedProps(
+				snapper.inchesToMeters(bedHeight.value), 
+				snapper.inchesToMeters(borderHeight.value), 
+				snapper.inchesToMeters(borderWidth.value),
+				bedColor.dom.value,
+				borderColor.dom.value,
+				objectName.value
+			)
 		}
 
 		const command = new BedEditingUpdateCommand(props, editor.bedEditor, updateFromEditor)
@@ -219,15 +220,17 @@ function SidebarBed( editor ) {
 
 		let a = editor.bedEditor.getBedArea();
 
+		const props = editor.bedEditor.props;
+
 		if (snapper.metric) {
 			area.setValue(a)
-			volume.setValue(a * editor.bedEditor.bedHeight)
+			volume.setValue(a * props.bedHeight)
 			area.setUnit( 'm²' )
 			volume.setUnit( 'm³' )
 
-			bedHeight.setValue(editor.bedEditor.bedHeight)
-			borderHeight.setValue(editor.bedEditor.borderHeight)
-			borderWidth.setValue(editor.bedEditor.borderWidth)
+			bedHeight.setValue(props.bedHeight)
+			borderHeight.setValue(props.borderHeight)
+			borderWidth.setValue(props.borderWidth)
 
 			bedHeight.setUnit('m')
 			borderHeight.setUnit('m')
@@ -239,20 +242,19 @@ function SidebarBed( editor ) {
 			area.setUnit( 'ft²' )
 			volume.setUnit( 'ft³' )
 
-			volume.setValue(a * (snapper.metersToInches(editor.bedEditor.bedHeight) / 12.0))
+			volume.setValue(a * (snapper.metersToInches(props.bedHeight) / 12.0))
 
-			bedHeight.setValue(snapper.metersToInches(editor.bedEditor.bedHeight))
-			borderHeight.setValue(snapper.metersToInches(editor.bedEditor.borderHeight))
-			borderWidth.setValue(snapper.metersToInches(editor.bedEditor.borderWidth))
+			bedHeight.setValue(snapper.metersToInches(props.bedHeight))
+			borderHeight.setValue(snapper.metersToInches(props.borderHeight))
+			borderWidth.setValue(snapper.metersToInches(props.borderWidth))
 
 			bedHeight.setUnit('in')
 			borderHeight.setUnit('in')
 			borderWidth.setUnit('in')
 		}
 
-		
-		bedColor.setValue(editor.bedEditor.bedColor)
-		borderColor.setValue(editor.bedEditor.borderColor)
+		bedColor.setValue(props.bedColor)
+		borderColor.setValue(props.borderColor)
 
 
 	}

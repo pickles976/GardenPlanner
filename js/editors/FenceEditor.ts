@@ -159,14 +159,14 @@ class FenceEditor {
     }
 
     // Change modes
-    public beginFenceEditing(fence?: Object3D) {
+    public beginEditing(fence?: Object3D) {
         this.cleanUp();
         this.mode = FenceEditorMode.LINE_EDITOR_MODE;
 
         if (fence === undefined) { // Create new bed
-            this.lineEditor.beginLineEditing()
+            this.lineEditor.beginEditing()
         } else { // Edit existing bed
-            this.lineEditor.beginLineEditing(fence.userData.vertices);
+            this.lineEditor.beginEditing(fence.userData.vertices);
             this.updateFromProps(fence.userData)
             this.oldFence = fence;
             this.editor.remove(fence);

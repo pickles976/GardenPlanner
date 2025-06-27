@@ -263,7 +263,7 @@ class LineEditor {
     }
 
     // // Change modes
-    public beginLineEditing(vertices?: Vector3[]) {
+    public beginEditing(vertices?: Vector3[]) {
         if (vertices === undefined || vertices.length === 0) { // Create new bed
             this.setVertexPlacementMode()
         } else { // Edit existing bed

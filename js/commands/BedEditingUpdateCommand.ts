@@ -1,27 +1,20 @@
 import { Command } from './Command';
-import { BedEditor } from '../editors/BedEditor';
+import { BedEditor, BedProps } from '../editors/BedEditor';
 
 class BedEditingUpdateCommand extends Command {
 
-    newProps: Object;
-    oldProps: Object;
+    newProps: BedProps;
+    oldProps: BedProps;
     bedEditor: BedEditor;
     uiCallback: CallableFunction;
 
-    constructor (newProps: Object, bedEditor: BedEditor, uiCallback: CallableFunction) {
+    constructor (newProps: BedProps, bedEditor: BedEditor, uiCallback: CallableFunction) {
         super();
         this.name = "BedEditingUpdateCommand"
         this.updateable = true
-        this.newProps = newProps;
+        this.newProps = newProps.clone();
         this.bedEditor = bedEditor;
-        this.oldProps = {
-            "name": bedEditor.bedName,
-			"bedHeight": bedEditor.bedHeight, 
-			"borderHeight": bedEditor.borderHeight, 
-			"borderWidth": bedEditor.borderWidth,
-			"bedColor": bedEditor.bedColor,
-			"borderColor": bedEditor.borderColor
-		}
+        this.oldProps = bedEditor.props.clone();
         this.uiCallback = uiCallback
     }
 
@@ -75,12 +68,12 @@ class BedEditingUpdateCommand extends Command {
     }
 
     public execute() {
-        this.bedEditor.updateBed(this.newProps);
+        this.bedEditor.updateFromProps(this.newProps);
         this.uiCallback()
     }
 
     public undo() {
-        this.bedEditor.updateBed(this.oldProps);
+        this.bedEditor.updateFromProps(this.oldProps);
         this.uiCallback()
     }
 
