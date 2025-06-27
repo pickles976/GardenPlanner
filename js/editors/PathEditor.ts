@@ -27,6 +27,9 @@ function createPath(vertices: Vector3[], width: number, height: number, numArcSe
      * Take the vertices and extrude them vertically to create a path
      */
 
+    const centroid = getCentroid(vertices);
+    vertices = vertices.map((v) => v.clone().sub(centroid));
+
     const verts = vertices.map((v) => ({ "x": v.x, "y": v.y }));
     verts.push(...verts.slice(1, verts.length - 1).reverse())
 
@@ -197,18 +200,14 @@ class PathEditor {
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices);
+        console.log(centroid)
         centroid.add(new Vector3(0, 0, 0.01)) // prevent z-fighting
         this.previewMesh.position.set(...centroid);
     }
 
     private createMesh() {
 
-        // Create and merge border + bed meshes
-        const centroid = getCentroid(this.vertices);
-
         const path = createPath(this.vertices, this.pathWidth, this.pathHeight, this.numArcSegments, createPhongMaterial(this.pathColor));
-        path.geometry.computeBoundingBox();  
-        path.geometry.center();  
 
         path.receiveShadow = true;
         path.userData = { // Give mesh the data used to create it, so it can be edited. Add selection callbacks
@@ -234,6 +233,10 @@ class PathEditor {
         const box = new Box3().setFromObject(path);
         const size = new Vector3();
         box.getSize(size);
+
+        // Create and merge border + bed meshes
+        const centroid = getCentroid(this.vertices);
+        console.log(centroid)
         path.position.set(...centroid.clone().add(new Vector3(0,0,size.z / 2)))
 
         // update mesh position, rotation, and scale if editing a pre-existing bed

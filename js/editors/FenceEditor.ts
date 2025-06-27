@@ -54,6 +54,7 @@ function createFence(vertices: Vector3[], height: number, material: Material) : 
     geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
     geometry.setIndex(indices);
     geometry.computeVertexNormals();
+    geometry.translate(0,0, -height / 2);
 
     return new Mesh(geometry, material);
 
@@ -206,19 +207,12 @@ class FenceEditor {
         this.editor.add(this.fencePreviewMesh)
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
-        const centroid = getCentroid(this.vertices);
-        centroid.add(new Vector3(0, 0, 0.01)) // prevent z-fighting
-        this.fencePreviewMesh.position.set(...centroid);
+        const centroid = getCentroid(this.vertices)
+        this.fencePreviewMesh.position.set(...centroid.add(new Vector3(0, 0, this.fenceHeight / 2)));
     }
 
     private createMesh() {
-
-        // Create and merge border + bed meshes
-        const centroid = getCentroid(this.vertices);
-
         const fence = createFence(this.vertices, this.fenceHeight, createPhongMaterial(this.fenceColor));
-        fence.geometry.computeBoundingBox();  
-        fence.geometry.center();  
 
         fence.castShadow = this.shadow;
         fence.receiveShadow = true;
@@ -244,7 +238,8 @@ class FenceEditor {
         const box = new Box3().setFromObject(fence);
         const size = new Vector3();
         box.getSize(size);
-        fence.position.set(...centroid.clone().add(new Vector3(0,0,size.z / 2)))
+        const centroid = getCentroid(this.vertices);
+        fence.position.set(...centroid.add(new Vector3(0,0,size.z / 2)))
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
         if (this.oldFence) {

@@ -1,7 +1,7 @@
 # BUGS
-- [ ] bug with path placement
-- [ ] bug with fence placement 
-- [ ] bug where bed is not visible immediately after placement
+- [x] bug with path placement
+- [x] bug with fence placement 
+- [x] bug where bed is not visible immediately after placement
 - [ ] bug with ruler origin
 
 ### REFACTOR!!!

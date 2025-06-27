@@ -279,9 +279,14 @@ class BedEditor {
         const border = createBedBorder(this.vertices, this.borderWidth, this.borderHeight, createPhongMaterial(this.borderColor));
         const bed = createBed(this.vertices, this.bedHeight, createPhongMaterial(this.bedColor));
 
+        // Set origin at the halfway point of the bed object
         let mergedMesh = mergeMeshes([border, bed]);
-        mergedMesh.geometry.computeBoundingBox();  
-        mergedMesh.geometry.center();             
+
+        const box = new Box3().setFromObject(mergedMesh);
+        const size = new Vector3();
+        box.getSize(size);
+
+        mergedMesh.geometry.translate(0,0,-size.z / 2)
 
         mergedMesh.castShadow = true;
         mergedMesh.receiveShadow = true;
@@ -306,11 +311,7 @@ class BedEditor {
         mergedMesh.name = this.bedName;
 
         // Move to position
-        const box = new Box3().setFromObject(mergedMesh);
-        const size = new Vector3();
-        box.getSize(size);
         mergedMesh.position.set(...centroid.clone().add(new Vector3(0,0,size.z / 2)))
-
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
         if (this.oldBed) {
@@ -325,7 +326,6 @@ class BedEditor {
         setDefaultCursor()
         this.cleanUp()
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, false)
-        eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
     public handleKeyDown(event) {
