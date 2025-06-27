@@ -10,7 +10,7 @@ import { GridManager } from './js/GridManager';
 import { Menubar } from './js/menubar/Menubar';
 import { Sidebar } from './js/sidebar/Sidebar';
 import { loadPlant } from './js/ModelLoader';
-import { Editor } from './js/editors/Editor';
+import { Editor } from './js/Editor';
 
 const editor = new Editor();
 editor.initThree();

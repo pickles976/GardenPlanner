@@ -27,11 +27,11 @@ import { SetPositionCommand } from "../commands/SetPositionCommand";
 import { eventBus, EventEnums } from "../EventBus";
 import { CommandStack } from "../CommandStack";
 import { FONT_SIZE, LayerEnum } from "../Constants";
-import { Editor } from "./Editor";
+import { Editor } from "../Editor";
 
 import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "../Colors";
 import { setCrossCursor, setDefaultCursor } from "../Cursors";
-import { handleMouseMoveObjectMode, processIntersections } from "../EventHandlers";
+import { processIntersections } from "../EventHandlers";
 import { snapper } from "../Snapping";
 
 const VERTEX_SIZE = 0.05;
@@ -392,7 +392,7 @@ class LineEditor {
         return false;
     }
 
-    private handleMouseClickPlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
+    private handleMouseClickPlaceVerticesMode(object: Object3D, point: Vector3) {
 
         // If loop is closed, go to `VERTEX_EDIT_MODE`
         if (this.closedLoop) {
@@ -428,7 +428,7 @@ class LineEditor {
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
-    private handleMouseClickEditVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
+    private handleMouseClickEditVerticesMode(object: Object3D, point: Vector3) {
 
         if (this.selectedHandle === undefined) {
 
@@ -456,7 +456,7 @@ class LineEditor {
 
     }
 
-    public handleMouseClick(editor: Editor, intersections: THREE.Object3D[]) {
+    public handleMouseClick(intersections: THREE.Object3D[]) {
 
         let [object, point] = processIntersections(intersections)
 
@@ -468,15 +468,15 @@ class LineEditor {
 
         switch (this.mode) {
             case LineEditorMode.PLACE_VERTEX_MODE:
-                this.handleMouseClickPlaceVerticesMode(editor, object, point)
+                this.handleMouseClickPlaceVerticesMode(object, point)
                 break;
             default:
-                this.handleMouseClickEditVerticesMode(editor, object, point)
+                this.handleMouseClickEditVerticesMode(object, point)
                 break;
         }
     }
 
-    private handleMouseMovePlaceVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
+    private handleMouseMovePlaceVerticesMode(object: Object3D, point: Vector3) {
 
         this.lastPoint = point;
 
@@ -528,7 +528,7 @@ class LineEditor {
 
     }
 
-    private handleMouseMoveEditVerticesMode(editor: Editor, object: Object3D, point: Vector3) {
+    private handleMouseMoveEditVerticesMode(object: Object3D, point: Vector3) {
 
         setDefaultCursor();
 
@@ -555,7 +555,7 @@ class LineEditor {
         }
     }
 
-    public handleMouseMove(editor: Editor, intersections: THREE.Object3D[]) {
+    public handleMouseMove(intersections: THREE.Object3D[]) {
 
         let [object, point] = processIntersections(intersections);
 
@@ -568,12 +568,12 @@ class LineEditor {
 
         switch (this.mode) {
             case LineEditorMode.PLACE_VERTEX_MODE:
-                this.handleMouseMovePlaceVerticesMode(editor, object, point);
+                this.handleMouseMovePlaceVerticesMode(object, point);
                 break;
             case LineEditorMode.EDIT_VERTEX_MODE:
                 // call this function for free highlighting
-                handleMouseMoveObjectMode(editor, intersections);
-                this.handleMouseMoveEditVerticesMode(editor, object, point);
+                this.editor.handleMouseMoveObjectMode(intersections);
+                this.handleMouseMoveEditVerticesMode(object, point);
                 eventBus.emit(this.vertex_editing_updated_enum); // TODO: change this
                 break;
             default:

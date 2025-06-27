@@ -1,31 +1,27 @@
 import * as THREE from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
-import { requestRenderIfNotRequested } from '../Rendering';
-import { Command } from '../commands/Command';
-import { Selector } from '../Selector';
-import { FONT_SIZE, FRUSTUM_SIZE, LayerEnum } from '../Constants';
-import { BedEditor } from './BedEditor';
+import { requestRenderIfNotRequested } from './Rendering';
+import { Command } from './commands/Command';
+import { Selector } from './Selector';
+import { FRUSTUM_SIZE, LayerEnum } from './Constants';
+import { BedEditor } from './editors/BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { CommandStack } from '../CommandStack';
-import { eventBus, EventEnums } from '../EventBus';
+import { CommandStack } from './CommandStack';
+import { eventBus, EventEnums } from './EventBus';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { WHITE } from '../Colors';
-import { handleTransformControlsChange, processIntersections } from '../EventHandlers';
-import { snapper } from '../Snapping';
-import { DeleteObjectCommand } from '../commands/DeleteObjectCommand';
-import { CreateObjectCommand } from '../commands/CreateObjectCommand';
-import { deepClone, destructureVector3Array, fontSizeString, getCSS2DText } from '../Utils';
-import { SetRotationCommand } from '../commands/SetRotationCommand';
-import { RulerEditor } from './RulerEditor';
-import { FenceEditor } from './FenceEditor';
-import { PathEditor } from './PathEditor';
+import { WHITE } from './Colors';
+import { filterCurrentlySelected, handleTransformControlsChange, highlightMouseOverObject, performRaycast, processIntersections } from './EventHandlers';
+import { snapper } from './Snapping';
+import { DeleteObjectCommand } from './commands/DeleteObjectCommand';
+import { CreateObjectCommand } from './commands/CreateObjectCommand';
+import { deepClone, destructureVector3Array, fontSizeString, getCSS2DText } from './Utils';
+import { SetRotationCommand } from './commands/SetRotationCommand';
+import { RulerEditor } from './editors/RulerEditor';
+import { FenceEditor } from './editors/FenceEditor';
+import { PathEditor } from './editors/PathEditor';
 import { Vector3 } from 'three';
-
-import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
-import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
-import { Line2 } from 'three/addons/lines/Line2.js';
-import { Group } from 'three';
+import { SetPositionCommand } from './commands/SetPositionCommand';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -44,31 +40,9 @@ enum EditorMode {
     BED = "BED",
     FENCE = "FENCE",
     PATH = "PATH",
-    RULER = "RULER",
     PLANT = "PLANT"
 }
 
-const LINE_WIDTH = 5;
-
-function createLinePreview(startPoint: Vector3, endPoint: Vector3) : Line2 {
-
-    // Get Distance Text
-    let textPos = startPoint.clone().add(endPoint.clone()).divideScalar(2);
-    const lineLabel = getCSS2DText(snapper.getText(startPoint.distanceTo(endPoint)), fontSizeString(FONT_SIZE));
-    lineLabel.position.set(...textPos)
-
-    const geometry = new LineGeometry();
-    geometry.setPositions(destructureVector3Array([startPoint, endPoint]))
-    const material = new LineMaterial({ color: WHITE, linewidth: LINE_WIDTH, depthWrite: false, depthTest: false });
-    const linePreview = new Line2(geometry, material);
-    linePreview.renderOrder = 100000; // Always draw on top
-
-    const group = new Group();
-    group.add(linePreview);
-    group.add(lineLabel);
-
-    return group;
-}
 
 class Editor {
     /**
@@ -101,11 +75,11 @@ class Editor {
     bedEditor: BedEditor;
     fenceEditor: FenceEditor;
     pathEditor: PathEditor;
+    rulerEditor: RulerEditor;
 
     mode: EditorMode;
 
-    rulerStart?: Vector3;
-    linePreview?: Line2;
+
 
     constructor() {
         this.commandStack = new CommandStack();
@@ -114,9 +88,8 @@ class Editor {
         this.bedEditor = new BedEditor(this);
         this.fenceEditor = new FenceEditor(this);
         this.pathEditor = new PathEditor(this);
+        this.rulerEditor = new RulerEditor(this);
         this.mode = EditorMode.OBJECT;
-
-        this.rulerStart = undefined;
     }
 
     public initThree() {
@@ -228,8 +201,6 @@ class Editor {
         this.directionalLight.shadow.camera.near = 0.5; // default
         this.directionalLight.shadow.camera.far = 500; // default
         this.directionalLight.shadow.radius = 1.5; // blur shadows
-
-
 
         this.directionalLight.name = "Directional Light";
 
@@ -397,6 +368,10 @@ class Editor {
         })
     }
 
+
+
+    // Input handling
+
     private handleKeyDownObjectMode(event) {
 
         switch (event.key) {
@@ -510,45 +485,105 @@ class Editor {
         }
     }
 
-    private rulerCleanup() {
-        this.remove(this.linePreview);
-        this.rulerStart = undefined;
+    public handleKeyUp(event) {
+        this.rulerEditor.cleanup()
     }
 
-    public handleMouseMove(editor: Editor, intersections: THREE.Object3D[]) {
+    private handleMouseClickObjectMode(intersections: THREE.Object3D[]) {
 
-        if (this.rulerStart === undefined) return;
-
-        // draw ruler
-        let [object, point] = processIntersections(intersections)
-        point = snapper.snap(point)
-
-        this.remove(this.linePreview)
-        this.linePreview = createLinePreview(this.rulerStart, point);
-        this.add(this.linePreview)
-    }
-
-    public handleRulerClick(editor: Editor, intersections: THREE.Object3D[]) {
-        let [object, point] = processIntersections(intersections)
-        point = snapper.snap(point)
-
-        if (this.rulerStart === undefined) {
-            this.rulerStart = point;
-        } else {
-            const ruler = createLinePreview(this.rulerStart, point);
-            ruler.layers.set(LayerEnum.Objects)
-            ruler.userData = {
-                selectable: true
-            }
-            ruler.name = "Ruler"
-            this.execute(new CreateObjectCommand(ruler, this))
-            this.rulerCleanup()
+        // Don't do anything if we are actively using the transform controls
+        if (this.selector.isUsingTransformControls === true) {
+            return
         }
 
-    }   
+        if (this.selector.currentSelectedObject === undefined) {
+            const [object, point] = processIntersections(intersections);
+            (object.userData.selectable === true) ? this.selector.select(object) : this.selector.deselect();
+        } else {
+            this.selector.deselect()
+        }
 
-    public handleKeyUp(event) {
-        this.rulerCleanup()
+    }
+
+    public handleMouseClick(event) {
+
+        // Only do a raycast if the LMB was used
+        if (event.button !== 0) return;
+
+        if (event.shiftKey) {
+            this.rulerEditor.handleMouseClick(performRaycast(event, this, [LayerEnum.World]))
+            return;
+        }
+
+        switch(this.mode) {
+            case EditorMode.OBJECT:
+                this.handleMouseClickObjectMode(performRaycast(event, this, []));
+                break;
+            case EditorMode.BED:
+                this.bedEditor.handleMouseClick(performRaycast(event, this, [LayerEnum.World, LayerEnum.LineVertices]))
+                break;
+            case EditorMode.FENCE:
+                this.fenceEditor.handleMouseClick(performRaycast(event, this, [LayerEnum.World, LayerEnum.LineVertices]))
+                break;
+            case EditorMode.PATH:
+                this.pathEditor.handleMouseClick(performRaycast(event, this, [LayerEnum.World, LayerEnum.LineVertices]))
+                break;
+            default:
+                break
+        }
+
+    }
+
+    public handleMouseMoveObjectMode(intersections: THREE.Object3D[]){
+
+        intersections = filterCurrentlySelected(intersections, this)
+        const [object, point] = processIntersections(intersections)
+
+        const selector = this.selector;
+        if (selector.currentSelectedObject) {
+
+            if (selector.advancedTransformMode) {
+                // Transform handles already handle the transforming
+            } else {
+                // Move the object to the raycast point
+                const box = new THREE.Box3().setFromObject(selector.currentSelectedObject);
+                const size = new THREE.Vector3();
+                box.getSize(size);
+
+                let newPos = point.add(new Vector3(0,0,size.z / 2))
+                newPos = snapper.snap(newPos);
+                this.execute(new SetPositionCommand(selector.currentSelectedObject, selector.currentSelectedObject.position, newPos))
+            }
+
+        }
+        
+        highlightMouseOverObject(this, intersections)
+
+    }
+
+    public handleMouseMove(event) {
+
+        if (event.shiftKey) {
+            this.rulerEditor.handleMouseMove(performRaycast(event, this, [LayerEnum.World]))
+            return;
+        }
+
+        switch(this.mode) {
+            case EditorMode.OBJECT:
+                this.handleMouseMoveObjectMode(performRaycast(event, this, []));
+                break;
+            case EditorMode.BED:
+                this.bedEditor.handleMouseMove(performRaycast(event, this, [LayerEnum.World, LayerEnum.LineVertices]))
+                break;
+            case EditorMode.FENCE:
+                this.fenceEditor.handleMouseMove(performRaycast(event, this, [LayerEnum.World, LayerEnum.LineVertices]))
+                break;
+            case EditorMode.PATH:
+                this.pathEditor.handleMouseMove(performRaycast(event, this, [LayerEnum.World, LayerEnum.LineVertices]))
+                break;
+            default:
+                break
+        }
     }
 
 }

@@ -1,23 +1,8 @@
-Layers 
-NO_RAYCAST // not raycastable
-WORLD // raycastable but not selectable
-OBJECTS // raycast + selectable 
-VERTEX // raycastable only in line editor mode
-PLANT // like object but with different properties
-
-#### RULER
-- [x] make ruler not a separate object, but just something that can be placed instantly
-    - [x] click + shift - place point (p1, p2)
-    - [x] shift release, clear ruler state
-
-- [ ] Refactor ruler
-    - [ ] add ruler sub-object to editor
-- [ ] refactor event handlers to live in editor where it makes sense
-
 # BUGS
 - [ ] bug with path placement
 - [ ] bug with fence placement 
 - [ ] bug where bed is not visible immediately after placement
+- [ ] bug with ruler origin
 
 ### REFACTOR!!!
 - [ ] rename editors to have similar methods

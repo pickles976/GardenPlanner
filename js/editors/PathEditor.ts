@@ -5,7 +5,7 @@ import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { eventBus, EventEnums } from "../EventBus";
 import { CommandStack } from "../CommandStack";
 import { LayerEnum } from "../Constants";
-import { Editor } from "./Editor";
+import { Editor } from "../Editor";
 
 import { WHITE } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
@@ -271,12 +271,12 @@ class PathEditor {
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
-    public handleMouseMove(editor: Editor, intersections: Object3D[]) {
-        this.lineEditor.handleMouseMove(editor, intersections)
+    public handleMouseMove(intersections: Object3D[]) {
+        this.lineEditor.handleMouseMove(intersections)
     }
 
-    public handleMouseClick(editor: Editor, intersections: Object3D[]) {
-        this.lineEditor.handleMouseClick(editor, intersections);
+    public handleMouseClick(intersections: Object3D[]) {
+        this.lineEditor.handleMouseClick(intersections);
     }
 
 }

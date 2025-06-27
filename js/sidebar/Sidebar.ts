@@ -5,7 +5,7 @@ import { SidebarProperties } from './Sidebar.Properties.js';
 import { SidebarGlobals } from './Sidebar.Globals.ts';
 
 import { Strings } from './Strings.js';
-import { Editor } from '../editors/Editor.ts';
+import { Editor } from '../Editor.ts';
 const strings = Strings({'language': 'en'});
 
 class Sidebar {
