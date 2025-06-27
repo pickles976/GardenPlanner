@@ -501,7 +501,7 @@ class LineEditor {
 
         // Angle text
         const segment = lastPoint.clone().sub(point)
-        let angle = rad2deg(segment.angleTo(new Vector3(0, -1, 0)));
+        let angle = rad2deg(segment.angleTo(new THREE.Vector3(0, -1, 0)));
         let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
 
         if (this.angleText === undefined) {

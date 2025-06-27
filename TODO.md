@@ -1,13 +1,3 @@
-### REFACTOR!!!
-- [x] always start in simple object mode
-- [x] bug with ruler origin
-- [ ] add angle visualizer to ruler
-
-# Garden Design Utilities
-- [ ] panel UI with pre-built models for drag and drop
-    - [ ] create a panel for 3D models the same way we have for plants
-- [ ] draw angle between lines, not angle between north for line editor
-
 #### Visual Improvements
 
 ##### Textures
@@ -30,6 +20,11 @@ https://smythdesign.com/blog/stylized-grass-webgl/
 - [ ] sky view
 
 - [ ] add a 5'10 human model to the world
+
+# Garden Design Utilities
+- [ ] panel UI with pre-built models for drag and drop
+    - [ ] create a panel for 3D models the same way we have for plants
+- [ ] draw angle between lines, not angle between north for line editor
 
 ## SUN CONTROLS
 - [ ] lat/lon entry
