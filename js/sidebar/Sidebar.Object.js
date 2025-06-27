@@ -411,7 +411,6 @@ function SidebarObject( editor ) {
 		const editableFields = object.userData.editableFields;
 		if (editableFields === undefined) return;
 
-		const size = getObjectsize(object);
 
 		if (snapper.metric) {
 			objectRadius.setUnit('m').setPrecision(3)
@@ -423,12 +422,14 @@ function SidebarObject( editor ) {
 
 		if (editableFields.radius)
 		{
+			const size = getObjectsize(object);
 			object.scale.y = object.scale.x;
 			objectRadius.setValue(snapper.metersToInches(size.x / 2.0));
 		}
 
 		if (editableFields.height)
 		{
+			const size = getObjectsize(object);
 			objectHeight.setValue(snapper.metersToInches(size.z));
 		}
 

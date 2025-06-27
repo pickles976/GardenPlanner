@@ -1,8 +1,7 @@
 ### REFACTOR!!!
-- [ ] bug with ruler origin
+- [x] always start in simple object mode
+- [x] bug with ruler origin
 - [ ] add angle visualizer to ruler
-
-- [ ] require a button press to move objects? (select and then press M)
 
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
@@ -10,7 +9,6 @@
 - [ ] draw angle between lines, not angle between north for line editor
 
 #### Visual Improvements
-- [ ] draw pointer to north as rotating UI element
 
 ##### Textures
 https://gamedevnexus.com/resources/assets/
@@ -67,8 +65,17 @@ https://smythdesign.com/blog/stylized-grass-webgl/
 
 - [ ] complete web client
 
+# QOL
+- [ ] draw pointer to north as rotating UI element
+- [ ] let user hide objects from object panel
+- [ ] in line editor mode, draw all other objects as lines?
+- [ ] ESC = cancel for line editor/object editor modes
+- [ ] set length of line from key input?
+
 # BUGS
 - [ ] bed panel does not hide when bed is deselected from scene panel
+
+# Fuzz Testing
 
 # REFACTOR
 
@@ -94,3 +101,8 @@ MVP finished!
 ## Optimization
 - [ ] isntancing
 - [ ] ???
+
+# HELP FOR USERS
+- [ ] press "m" to move objects
+- [ ] shift + click to place down rulers
+- [ ] change transform modes (R, T, S)

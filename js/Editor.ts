@@ -367,8 +367,6 @@ class Editor {
         })
     }
 
-
-
     // Input handling
 
     private handleKeyDownObjectMode(event) {
@@ -384,6 +382,12 @@ class Editor {
                 }
                 break;
             // Transform
+            case 'm': // toggle between transform modes
+                if (event.shiftKey) {
+                    break;
+                }
+                eventBus.emit(EventEnums.TRANSFORM_MODE_CHANGED, !this.selector.advancedTransformMode);
+                break;
             case 't':
                 this.transformControls.setMode('translate');
                 break;

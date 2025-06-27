@@ -134,7 +134,7 @@ export function getGeometrySize(object: THREE.Mesh) : THREE.Vector3 {
   geometry.computeBoundingBox(); // Ensure bounding box is up-to-date
 
   const box = geometry.boundingBox; // Local-space AABB
-  const size = new THREE.THREE.Vector3();
+  const size = new THREE.Vector3();
   box.getSize(size);
   return size
 }

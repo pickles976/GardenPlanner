@@ -107,11 +107,8 @@ class Selector {
             return;
         }
 
-        if (this.advancedTransformMode) {
-            this.advancedTransformSelect(object)
-        } else {
-            this.simpleTransformSelect(object)
-        }
+        this.advancedTransformMode = true;
+        this.advancedTransformSelect(object);
 
         eventBus.emit(EventEnums.OBJECT_SELECTED, object);
     }
@@ -158,6 +155,7 @@ class Selector {
     public drawRotationVisualizer() {
 
         if (this.currentSelectedObject === undefined) { return }
+        if (this.currentSelectedObject.userData.hideRotationWidget !== undefined) { return }
 
         const object = this.currentSelectedObject;
         const origin = object.position.clone();

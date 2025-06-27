@@ -13,7 +13,7 @@ import { Editor } from "../Editor";
 
 import { WHITE } from "../Colors";
 import { snapper } from "../Snapping";
-import { performRaycast, processIntersections } from "../EventHandlers";
+import { processIntersections } from "../EventHandlers";
 
 
 
@@ -21,13 +21,16 @@ const LINE_WIDTH = 5;
 
 function createLinePreview(startPoint: THREE.Vector3, endPoint: THREE.Vector3) : Line2 {
 
+    const startCorrected = new THREE.Vector3(0,0,0);
+    const endCorrected = endPoint.clone().sub(startPoint);
+
     // Get Distance Text
-    let textPos = startPoint.clone().add(endPoint.clone()).divideScalar(2);
+    let textPos = startCorrected.clone().add(endCorrected.clone()).divideScalar(2);
     const lineLabel = getCSS2DText(snapper.getText(startPoint.distanceTo(endPoint)), fontSizeString(FONT_SIZE));
     lineLabel.position.set(...textPos)
 
     const geometry = new LineGeometry();
-    geometry.setPositions(destructureVector3Array([startPoint, endPoint]))
+    geometry.setPositions(destructureVector3Array([startCorrected, endCorrected]))
     const material = new LineMaterial({ color: WHITE, linewidth: LINE_WIDTH, depthWrite: false, depthTest: false });
     const linePreview = new Line2(geometry, material);
     linePreview.renderOrder = 100000; // Always draw on top
@@ -35,6 +38,7 @@ function createLinePreview(startPoint: THREE.Vector3, endPoint: THREE.Vector3) :
     const group = new THREE.Group();
     group.add(linePreview);
     group.add(lineLabel);
+    group.position.set(...startPoint)
 
     return group;
 }
@@ -82,6 +86,7 @@ class RulerEditor {
             const ruler = createLinePreview(this.rulerStart, point);
             ruler.layers.set(LayerEnum.Objects)
             ruler.userData = {
+                hideRotationWidget: true,
                 selectable: true,
                 editableFields: {
                     name: true,
