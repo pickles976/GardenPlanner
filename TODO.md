@@ -80,10 +80,9 @@ https://smythdesign.com/blog/stylized-grass-webgl/
 # REFACTOR
 
 Write up about 
-- design philosophy
-- event flow/propagation
-- modularity
-- what else?
+- [x] event flow/propagation
+- [ ] design philosophy
+- [ ] modularity
 
 MVP finished!
 

@@ -6,6 +6,7 @@ import { Sidebar } from './sidebar/Sidebar';
 
 const raycaster = new THREE.Raycaster();
 
+// Utility functions
 
 export function processIntersections(intersections: THREE.Object3D[]) {
     /**
@@ -121,6 +122,9 @@ export function highlightMouseOverObject(editor: Editor, intersections: THREE.Ob
     }
 }
 
+
+// Handlers
+
 export function handleTransformControlsChange(editor) {
     editor.selector.drawRotationVisualizer()
 }
@@ -134,16 +138,12 @@ export function handleMouseClick(event, editor) {
 }
 
 export function handleKeyDown(event, editor: Editor, sidebar: Sidebar, menuBar: Menubar) {
-
-    // UI Keypress events
     menuBar.handleKeyDown(event)
     sidebar.handleKeyDown(event)
     editor.handleKeyDown(event)
 }
 
 export function handleKeyUp(event, editor: Editor, sidebar: Sidebar, menuBar: Menubar) {
-
-    // UI Keypress events
     // menuBar.handleKeyUp(event)
     // sidebar.handleKeyUp(event)
     editor.handleKeyUp(event)
