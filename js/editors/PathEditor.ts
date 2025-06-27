@@ -163,6 +163,7 @@ class PathEditor {
         this.oldObject = undefined;
         this.lineEditor.cleanUp()
         this.cleanUpBedConfigState()
+        this.commandStack.clear()
 
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }

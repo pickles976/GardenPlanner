@@ -224,6 +224,7 @@ class BedEditor {
         this.oldBed = undefined;
         this.lineEditor.cleanUp()
         this.cleanUpBedConfigState()
+        this.commandStack.clear()
 
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }

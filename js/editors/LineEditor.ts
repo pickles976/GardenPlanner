@@ -222,6 +222,7 @@ class LineEditor {
     public cleanUp() {
         this.cleanUpVertexPlacementState()
         this.cleanUpVertexEditingState()
+        this.commandStack.clear()
 
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }

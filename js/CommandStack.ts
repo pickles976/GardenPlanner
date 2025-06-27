@@ -30,6 +30,10 @@ class CommandStack {
         const command = this.stack.pop();
         command?.undo();
     }
+
+    public clear() {
+        this.stack = [];
+    }
 }
 
 export { CommandStack };

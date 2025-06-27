@@ -36,13 +36,13 @@ class MenubarView {
 
 		// Grid Helper
 
-		this.gridHelper = new UIRow().addClass( 'option' ).addClass( 'toggle' ).setTextContent( strings.getKey( 'menubar/view/gridHelper' ) )
+		this.gridHelper = new UIRow().addClass( 'option' ).addClass( 'toggle' ).setTextContent( "Grid" ) 
 		this.gridHelper.add( new UIText( "SHIFT+G" ).setClass( 'key' ));
 		this.gridHelper.onClick(() => this.toggleGrid());
 		this.gridHelper.toggleClass('toggle-on', true)
 
 		// Camera Helper
-		this.cameraHelper = new UIRow().addClass( 'option' ).addClass( 'toggle' ).setTextContent( "Top-Down Camera" )
+		this.cameraHelper = new UIRow().addClass( 'option' ).addClass( 'toggle' ).setTextContent( "Top-Down" )
 		this.cameraHelper.add( new UIText( "SHIFT+C" ).setClass( 'key' ));
 		this.cameraHelper.onClick(() => this.toggleCamera());
 		this.cameraHelper.toggleClass('toggle-on', false)

@@ -1,6 +1,7 @@
 ### REFACTOR!!!
+- [x] get input working for editor again
+- [ ] require a button press to move objects? (select and then press M)
 - [ ] come up with conventions for importing stuff from three (always use THREE.Object instead of `import { Object } from "three"`)
-
 - [ ] bug with ruler origin
 
 # Garden Design Utilities
@@ -41,6 +42,7 @@ https://smythdesign.com/blog/stylized-grass-webgl/
 - [ ] suncalc
 - [ ] position sun based on time
 - [ ] ~~steal~~ copy shademap timeline widget
+- [ ] set north from angle
 
 ## SAVING
 - [ ] saving configurations as json
