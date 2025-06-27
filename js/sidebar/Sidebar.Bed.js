@@ -7,7 +7,7 @@ import { SetPositionCommand } from '../commands/SetPositionCommand.js';
 import { Strings } from './Strings.js';
 import {eventBus, EventEnums} from '../EventBus.js';
 import { contain } from 'three/src/extras/TextureUtils.js';
-import { BedEditingUpdateCommand } from '../commands/BedEditingUpdateCommand.js';
+import { PropUpdateCommand } from '../commands/PropUpdateCommand.js';
 import { snapper } from '../Snapping.js';
 import { BedProps } from '../editors/BedEditor.js';
 
@@ -212,7 +212,7 @@ function SidebarBed( editor ) {
 			)
 		}
 
-		const command = new BedEditingUpdateCommand(props, editor.bedEditor, updateFromEditor)
+		const command = new PropUpdateCommand("BED", props, editor.bedEditor, updateFromEditor)
 		eventBus.emit(EventEnums.BED_CONFIG_UPDATED, command)
 	}
 

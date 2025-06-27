@@ -6,7 +6,6 @@ import { UIBoolean } from '../libs/ui.three.js';
 import { SetPositionCommand } from '../commands/SetPositionCommand.js';
 import { Strings } from './Strings.js';
 import {eventBus, EventEnums} from '../EventBus.js';
-import { BedEditingUpdateCommand } from '../commands/BedEditingUpdateCommand.js';
 import { snapper } from '../Snapping.js';
 import { contain } from 'three/src/extras/TextureUtils.js';
 

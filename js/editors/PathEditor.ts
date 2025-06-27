@@ -4,7 +4,7 @@ import { getCentroid, createPhongMaterial, createPreviewMaterial } from "../Util
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { eventBus, EventEnums } from "../EventBus";
 import { CommandStack } from "../CommandStack";
-import { LayerEnum } from "../Constants";
+import { LayerEnum, Props } from "../Constants";
 import { Editor } from "../Editor";
 
 import { WHITE } from "../Colors";
@@ -50,6 +50,33 @@ function createPath(vertices: Vector3[], width: number, height: number, numArcSe
 
 }
 
+export class PathProps extends Props {
+    numArcSegments: number;
+    pathWidth: number;
+    pathHeight: number;
+    pathColor: string;
+    name: string;
+
+    constructor (numArcSegments, pathWidth, pathHeight, pathColor, name) {
+        super(["numArcSegments", "pathColor", "name"])
+        this.numArcSegments = numArcSegments;
+        this.pathWidth = pathWidth;
+        this.pathHeight = pathHeight;
+        this.pathColor = pathColor;
+        this.name = name;
+    }
+
+    public clone() {
+        return new PathProps(
+            this.numArcSegments,
+            this.pathWidth,
+            this.pathHeight,
+            this.pathColor,
+            this.name
+        )
+    }
+}
+
 
 class PathEditor {
 
@@ -65,11 +92,7 @@ class PathEditor {
 
     // Config Mode
     previewMesh?: Mesh;
-    numArcSegments: number;
-    pathWidth: number;
-    pathHeight: number;
-    pathColor: string;
-    pathName: string;
+    props: PathProps;
 
     constructor(editor: Editor) {
 
@@ -90,11 +113,13 @@ class PathEditor {
 
         // Config
         this.previewMesh = undefined;
-        this.numArcSegments = 1;
-        this.pathWidth = INITIAL_PATH_WIDTH;
-        this.pathHeight = INITIAL_PATH_HEIGHT;
-        this.pathColor = WHITE;
-        this.pathName = "New Fence";
+        this.props = new PathProps(
+            1,
+            INITIAL_PATH_WIDTH,
+            INITIAL_PATH_HEIGHT,
+            WHITE,
+            "New Path"
+        )
 
         eventBus.on(EventEnums.PATH_CONFIG_UPDATED, (command) => {
             this.commandStack.execute(command)
@@ -118,15 +143,11 @@ class PathEditor {
 
     }
 
-    public updateFromProps(props: Object) {
+    public updateFromProps(props: PathProps) {
         /**
          * Update bed config from properties
          */
-        this.numArcSegments = props.numArcSegments;
-        this.pathWidth = props.pathWidth;
-        this.pathHeight = props.pathHeight;
-        this.pathColor = props.pathColor;
-        this.pathName = props.pathName;
+        this.props = props;
     }
 
     public cancel() {
@@ -160,7 +181,7 @@ class PathEditor {
             this.lineEditor.beginEditing()
         } else { // Edit existing bed
             this.lineEditor.beginEditing(path.userData.vertices);
-            this.updateFromProps(path.userData)
+            this.updateFromProps(path.userData.props)
             this.oldObject = path;
             this.editor.remove(path);
         }
@@ -192,22 +213,25 @@ class PathEditor {
 
     private createPreviewMesh() {
 
+        const props = this.props;
+
         this.editor.remove(this.previewMesh)
 
-        this.previewMesh = createPath(this.vertices, this.pathWidth, this.pathHeight, this.numArcSegments, createPreviewMaterial(this.pathColor))
+        this.previewMesh = createPath(this.vertices, props.pathWidth, props.pathHeight, props.numArcSegments, createPreviewMaterial(props.pathColor))
 
         this.editor.add(this.previewMesh)
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices);
-        console.log(centroid)
         centroid.add(new Vector3(0, 0, 0.01)) // prevent z-fighting
         this.previewMesh.position.set(...centroid);
     }
 
     private createMesh() {
 
-        const path = createPath(this.vertices, this.pathWidth, this.pathHeight, this.numArcSegments, createPhongMaterial(this.pathColor));
+        const props = this.props;
+
+        const path = createPath(this.vertices, props.pathWidth, props.pathHeight, props.numArcSegments, createPhongMaterial(props.pathColor));
 
         path.receiveShadow = true;
         path.userData = { // Give mesh the data used to create it, so it can be edited. Add selection callbacks
@@ -215,11 +239,7 @@ class PathEditor {
             onSelect: () => eventBus.emit(EventEnums.PATH_SELECTED, true),
             onDeselect: () => eventBus.emit(EventEnums.PATH_SELECTED, false),
             vertices: this.vertices,
-            numArcSegments: this.numArcSegments,
-            pathWidth: this.pathWidth,
-            pathHeight: this.pathHeight,
-            pathColor: this.pathColor,
-            name: this.pathName,
+            props: this.props.clone(),
             editableFields: {
                 name: true,
                 position: true,
@@ -227,7 +247,7 @@ class PathEditor {
             }
         }
         path.layers.set(LayerEnum.Objects)
-        path.name = this.pathName;
+        path.name = this.props.name;
 
         // Move to position
         const box = new Box3().setFromObject(path);
@@ -236,7 +256,6 @@ class PathEditor {
 
         // Create and merge border + bed meshes
         const centroid = getCentroid(this.vertices);
-        console.log(centroid)
         path.position.set(...centroid.clone().add(new Vector3(0,0,size.z / 2)))
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
@@ -256,22 +275,25 @@ class PathEditor {
     }
 
     public handleKeyDown(event) {
-        this.lineEditor.handleKeyDown(event)
+        switch (this.mode) {
+            case PathEditorMode.LINE_EDITOR_MODE:
+                this.lineEditor.handleKeyDown(event)
+                break;
+            case PathEditorMode.CONFIG_MODE:
+                switch (event.key) {
+                    case 'z':
+                        if (event.ctrlKey) {
+                            this.undo();
+                        } 
+                        break;
+                }
+        }
     }
 
     public undo() {
         this.commandStack.undo();
-        switch (this.mode) {
-            case PathEditorMode.LINE_EDITOR_MODE:
-                this.lineEditor.undo();
-                break;
-            case PathEditorMode.CONFIG_MODE:
-                this.createPreviewMesh()
-                break;
-            default:
-                break;
-        }
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        this.createPreviewMesh();
+        eventBus.emit(EventEnums.REQUEST_RENDER);
     }
 
     public handleMouseMove(intersections: Object3D[]) {

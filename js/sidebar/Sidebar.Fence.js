@@ -8,7 +8,8 @@ import { Strings } from './Strings.js';
 import {eventBus, EventEnums} from '../EventBus.js';
 import { contain } from 'three/src/extras/TextureUtils.js';
 import { snapper } from '../Snapping.js';
-import { FenceEditingUpdateCommand } from '../commands/FenceEditingUpdateCommand.js';
+import { PropUpdateCommand } from '../commands/PropUpdateCommand.js';
+import { FenceProps } from '../editors/FenceEditor.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -158,43 +159,46 @@ function SidebarFence( editor ) {
 	})
 
 	function update() {
-		let props = {};
+		let props;
 		if (snapper.metric) {
-			props = {
-				"name": objectName.value,
-				"fenceHeight": fenceHeight.value, 
-				"fenceColor": fenceColor.value, 
-				"shadow": shadowCheck.getValue()
-			};
+			props = new FenceProps(
+				fenceHeight.value, 
+				fenceColor.value, 
+				objectName.value,
+				shadowCheck.getValue()
+			)
 		} else {
-			props = {
-				"name": objectName.value,
-				"fenceHeight": snapper.inchesToMeters(fenceHeight.value), 
-				"fenceColor": fenceColor.dom.value,
-				"shadow": shadowCheck.getValue()
-			};
+			props = new FenceProps(
+				snapper.inchesToMeters(fenceHeight.value),
+				fenceColor.dom.value,
+				objectName.value,
+				shadowCheck.getValue()
+			)
 		}
 
-		const command = new FenceEditingUpdateCommand(props, editor.fenceEditor, updateFromEditor)
+		const command = new PropUpdateCommand("FENCE", props, editor.fenceEditor, updateFromEditor)
 		eventBus.emit(EventEnums.FENCE_CONFIG_UPDATED, command)
 	}
 
 	function updateFromEditor() {
 
+		const props = editor.fenceEditor.props;
+
 		if (snapper.metric) {
-			fenceHeight.setValue(editor.fenceEditor.fenceHeight)
+			fenceHeight.setValue(props.fenceHeight)
 			fenceHeight.setUnit('m')
 			fenceHeight.setStep(0.1)
 			fenceHeight.setPrecision(2)
 		} else {
-			fenceHeight.setValue(snapper.metersToInches(editor.fenceEditor.fenceHeight))
+			fenceHeight.setValue(snapper.metersToInches(props.fenceHeight))
 			fenceHeight.setUnit('in')
 			fenceHeight.setStep(1.0)
 			fenceHeight.setPrecision(0)
 		}
 		
-		fenceColor.setValue(editor.fenceEditor.fenceColor)
-		shadowCheck.setValue(editor.fenceEditor.shadow)
+		fenceColor.setValue(props.fenceColor)
+		shadowCheck.setValue(props.shadow)
+		objectName.setValue(props.name)
 
 	}
 

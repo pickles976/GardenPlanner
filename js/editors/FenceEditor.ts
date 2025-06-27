@@ -4,7 +4,7 @@ import { getCentroid, createPhongMaterial, createPreviewMaterial } from "../Util
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { eventBus, EventEnums } from "../EventBus";
 import { CommandStack } from "../CommandStack";
-import { LayerEnum } from "../Constants";
+import { LayerEnum, Props } from "../Constants";
 import { Editor } from "../Editor";
 
 import { WHITE } from "../Colors";
@@ -44,11 +44,9 @@ function createFence(vertices: Vector3[], height: number, material: Material) : 
         const i2 = i * 2 + 2;
         const i3 = i * 2 + 3;
 
-        // Triangle 1: i0, i2, i1
-        // Triangle 2: i2, i3, i1
-        indices.push(i0, i2, i1);
-        indices.push(i2, i3, i1);
-    }
+        indices.push(i0, i2, i1); // Triangle 1: i0, i2, i1
+        indices.push(i2, i3, i1); // Triangle 2: i2, i3, i1
+    } 
 
     const geometry = new BufferGeometry();
     geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
@@ -60,6 +58,31 @@ function createFence(vertices: Vector3[], height: number, material: Material) : 
 
 }
 
+class FenceProps extends Props {
+
+    fenceHeight: number;
+    fenceColor: string;
+    name: string;
+    shadow: boolean;
+
+    constructor (fenceHeight, fenceColor, name, shadow) {
+        super(["fenceColor", "name", "shadow"])
+        this.fenceHeight = fenceHeight;
+        this.fenceColor = fenceColor;
+        this.name = name;
+        this.shadow = shadow;
+    }
+
+    public clone() {
+        return new FenceProps(
+            this.fenceHeight,
+            this.fenceColor,
+            this.name, 
+            this.shadow
+        )
+    }
+}
+
 
 class FenceEditor {
 
@@ -68,17 +91,16 @@ class FenceEditor {
     commandStack: CommandStack;
     mode: FenceEditorMode;
 
-    vertices: Vector3[]; // Used during vertex placement mode and bed config mode
+    vertices: Vector3[];
 
-    // Original Fence
-    oldFence?: Object3D;
+    // Original Fence, used for editing existing objects
+    oldObject?: Object3D;
 
     // Config Mode
     fencePreviewMesh?: Mesh;
-    fenceHeight: number;
-    fenceColor: string;
-    fenceName: string;
-    shadow: boolean;
+
+    props: FenceProps;
+
 
     constructor(editor: Editor) {
 
@@ -94,15 +116,18 @@ class FenceEditor {
         this.commandStack = new CommandStack();
         this.mode = FenceEditorMode.INACTIVE;
 
-        this.oldFence = undefined;
+        this.oldObject = undefined;
         this.vertices = [];
 
         // Config
         this.fencePreviewMesh = undefined;
-        this.fenceHeight = INITIAL_FENCE_HEIGHT;
-        this.fenceColor = WHITE;
-        this.fenceName = "New Fence";
-        this.shadow = true;
+
+        this.props = new FenceProps(
+            INITIAL_FENCE_HEIGHT,
+            WHITE,
+            "New Fence",
+            true
+        )
 
         eventBus.on(EventEnums.FENCE_CONFIG_UPDATED, (command) => {
             this.commandStack.execute(command)
@@ -126,19 +151,13 @@ class FenceEditor {
 
     }
 
-    public updateFromProps(props: Object) {
-        /**
-         * Update bed config from properties
-         */
-        this.fenceHeight = props.fenceHeight;
-        this.fenceColor = props.fenceColor;
-        this.fenceName = props.fenceName;
-        this.shadow = props.shadow;
+    public updateFromProps(props: FenceProps) {
+        this.props = props;
     }
 
     public cancel() {
-        if (this.oldFence) {
-            this.editor.execute(new CreateObjectCommand(this.oldFence, this.editor))
+        if (this.oldObject) {
+            this.editor.execute(new CreateObjectCommand(this.oldObject, this.editor))
         }
         this.cleanUp();
         this.lineEditor.cancel();
@@ -146,7 +165,7 @@ class FenceEditor {
 
     // Cleanup
     public cleanUp() {
-        this.oldFence = undefined;
+        this.oldObject = undefined;
         this.lineEditor.cleanUp()
         this.cleanUpBedConfigState()
 
@@ -164,11 +183,11 @@ class FenceEditor {
         this.mode = FenceEditorMode.LINE_EDITOR_MODE;
 
         if (fence === undefined) { // Create new bed
-            this.lineEditor.beginEditing()
+            this.lineEditor.beginEditing();
         } else { // Edit existing bed
             this.lineEditor.beginEditing(fence.userData.vertices);
-            this.updateFromProps(fence.userData)
-            this.oldFence = fence;
+            this.updateFromProps(fence.userData.props);
+            this.oldObject = fence;
             this.editor.remove(fence);
         }
     }
@@ -199,32 +218,32 @@ class FenceEditor {
 
     private createPreviewMesh() {
 
+        const props = this.props;
+
         this.editor.remove(this.fencePreviewMesh)
 
-        this.fencePreviewMesh = createFence(this.vertices, this.fenceHeight, createPreviewMaterial(this.fenceColor))
-        this.fencePreviewMesh.castShadow = this.shadow;
+        this.fencePreviewMesh = createFence(this.vertices, props.fenceHeight, createPreviewMaterial(props.fenceColor))
+        this.fencePreviewMesh.castShadow = props.shadow;
 
         this.editor.add(this.fencePreviewMesh)
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices)
-        this.fencePreviewMesh.position.set(...centroid.add(new Vector3(0, 0, this.fenceHeight / 2)));
+        this.fencePreviewMesh.position.set(...centroid.add(new Vector3(0, 0, props.fenceHeight / 2)));
     }
 
     private createMesh() {
-        const fence = createFence(this.vertices, this.fenceHeight, createPhongMaterial(this.fenceColor));
+        const props = this.props;
+        const fence = createFence(this.vertices, props.fenceHeight, createPhongMaterial(props.fenceColor));
 
-        fence.castShadow = this.shadow;
+        fence.castShadow = props.shadow;
         fence.receiveShadow = true;
         fence.userData = { // Give mesh the data used to create it, so it can be edited. Add selection callbacks
             selectable: true,
             onSelect: () => eventBus.emit(EventEnums.FENCE_SELECTED, true),
             onDeselect: () => eventBus.emit(EventEnums.FENCE_SELECTED, false),
             vertices: this.vertices,
-            fenceHeight: this.fenceHeight,
-            fenceColor: this.fenceColor,
-            name: this.fenceName,
-            shadow: this.shadow,
+            props: this.props,
             editableFields: {
                 name: true,
                 position: true,
@@ -232,7 +251,7 @@ class FenceEditor {
             }
         }
         fence.layers.set(LayerEnum.Objects)
-        fence.name = this.fenceName;
+        fence.name = props.name;
 
         // Move to position
         const box = new Box3().setFromObject(fence);
@@ -242,10 +261,10 @@ class FenceEditor {
         fence.position.set(...centroid.add(new Vector3(0,0,size.z / 2)))
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
-        if (this.oldFence) {
-            fence.position.copy(this.oldFence.position)
-            fence.rotation.copy(this.oldFence.rotation)
-            fence.scale.copy(this.oldFence.scale)
+        if (this.oldObject) {
+            fence.position.copy(this.oldObject.position)
+            fence.rotation.copy(this.oldObject.rotation)
+            fence.scale.copy(this.oldObject.scale)
         }
 
         this.editor.execute(new CreateObjectCommand(fence, this.editor));
@@ -258,22 +277,25 @@ class FenceEditor {
     }
 
     public handleKeyDown(event) {
-        this.lineEditor.handleKeyDown(event)
+        switch (this.mode) {
+            case FenceEditorMode.LINE_EDITOR_MODE:
+                this.lineEditor.handleKeyDown(event)
+                break;
+            case FenceEditorMode.CONFIG_MODE:
+                switch (event.key) {
+                    case 'z':
+                        if (event.ctrlKey) {
+                            this.undo();
+                        } 
+                        break;
+                }
+        }
     }
 
     public undo() {
         this.commandStack.undo();
-        switch (this.mode) {
-            case FenceEditorMode.LINE_EDITOR_MODE:
-                this.lineEditor.undo();
-                break;
-            case FenceEditorMode.CONFIG_MODE:
-                this.createPreviewMesh()
-                break;
-            default:
-                break;
-        }
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        this.createPreviewMesh();
+        eventBus.emit(EventEnums.REQUEST_RENDER);
     }
 
     public handleMouseMove(intersections: Object3D[]) {
@@ -286,4 +308,4 @@ class FenceEditor {
 
 }
 
-export { FenceEditor, FenceEditorMode };
+export { FenceEditor, FenceEditorMode, FenceProps };

@@ -6,7 +6,7 @@ import { getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPrevi
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { eventBus, EventEnums } from "../EventBus";
 import { CommandStack } from "../CommandStack";
-import { LayerEnum } from "../Constants";
+import { LayerEnum, Props } from "../Constants";
 import { Editor } from "../Editor";
 
 import { DARK_GRAY, VERTEX_COLOR, WHITE } from "../Colors";
@@ -102,7 +102,7 @@ enum BedEditorMode {
     CONFIG_MODE = "CONFIG_MODE"
 }
 
-export class BedProps {
+export class BedProps extends Props {
 
     bedHeight: number;
     borderHeight: number;
@@ -113,6 +113,7 @@ export class BedProps {
     name: string;
 
     constructor(bedHeight, borderHeight, borderWidth, bedColor, borderColor, name) {
+        super(["bedColor", "borderColor", "name"])
         this.bedHeight = bedHeight;
         this.borderHeight = borderHeight;
         this.borderWidth = borderWidth;
@@ -344,22 +345,25 @@ class BedEditor {
     }
 
     public handleKeyDown(event) {
-        this.lineEditor.handleKeyDown(event)
+        switch (this.mode) {
+            case BedEditorMode.LINE_EDITOR_MODE:
+                this.lineEditor.handleKeyDown(event)
+                break;
+            case BedEditorMode.CONFIG_MODE:
+                switch (event.key) {
+                    case 'z':
+                        if (event.ctrlKey) {
+                            this.undo();
+                        } 
+                        break;
+                }
+        }
     }
 
     public undo() {
         this.commandStack.undo();
-        switch (this.mode) {
-            case BedEditorMode.LINE_EDITOR_MODE:
-                this.lineEditor.undo();
-                break;
-            case BedEditorMode.CONFIG_MODE:
-                this.createPreviewMesh()
-                break;
-            default:
-                break;
-        }
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        this.createPreviewMesh();
+        eventBus.emit(EventEnums.REQUEST_RENDER);
     }
 
     public getBedArea(): number {

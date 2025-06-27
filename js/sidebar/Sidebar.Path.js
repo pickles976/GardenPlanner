@@ -3,7 +3,8 @@ import { UIPanel, UIRow, UIInput, UIButton, UIColor, UIText, UINumber } from '..
 import { Strings } from './Strings.js';
 import { eventBus, EventEnums } from '../EventBus.js';
 import { snapper } from '../Snapping.js';
-import { PathEditingUpdateCommand } from '../commands/PathEditingUpdateCommand.js';
+import { PropUpdateCommand } from '../commands/PropUpdateCommand.js';
+import { PathProps } from '../editors/PathEditor.js';
 
 const strings = Strings({ 'language': 'en' });
 
@@ -62,7 +63,7 @@ function SidebarPath(editor) {
 	const pathColorRow = new UIRow();
 	const pathColor = new UIColor().onInput(update);
 	pathColor.setValue(editor.pathEditor.pathColor)
-	pathColorRow.add(new UIText("Fence Color").setClass("Label"));
+	pathColorRow.add(new UIText("Path Color").setClass("Label"));
 	pathColorRow.add(pathColor)
 
 	const numArcSegmentsRow = new UIRow();
@@ -158,55 +159,57 @@ function SidebarPath(editor) {
 	})
 
 	function update() {
-		let props = {};
+		let props ;
 		if (snapper.metric) {
-			props = {
-				"name": objectName.value,
-				"numArcSegments": numArcSegments.value,
-				"pathWidth": pathWidth.value,
-				"pathHeight": pathHeight.value,
-				"pathColor": pathColor.value,
-			};
+			props = new PathProps(
+				numArcSegments.value,
+				pathWidth.value,
+				pathHeight.value,
+				pathColor.value,
+				objectName.value
+			);
 		} else {
-			props = {
-				"name": objectName.value,
-				"numArcSegments": numArcSegments.value,
-				"pathWidth": snapper.inchesToMeters(pathWidth.value),
-				"pathHeight": snapper.inchesToMeters(pathHeight.value),
-				"pathColor": pathColor.dom.value,
-			};
+			props = new PathProps(
+				numArcSegments.value,
+				snapper.inchesToMeters(pathWidth.value),
+				snapper.inchesToMeters(pathHeight.value),
+				pathColor.dom.value,
+				objectName.value
+			);
 		}
 
-		const command = new PathEditingUpdateCommand(props, editor.pathEditor, updateFromEditor)
+		const command = new PropUpdateCommand("PATH", props, editor.pathEditor, updateFromEditor)
 		eventBus.emit(EventEnums.PATH_CONFIG_UPDATED, command)
 	}
 
 	function updateFromEditor() {
 
+		const props = editor.pathEditor.props;
+
 		if (snapper.metric) {
-			pathHeight.setValue(editor.pathEditor.pathHeight)
+			pathHeight.setValue(props.pathHeight)
 			pathHeight.setUnit('m')
 			pathHeight.setStep(0.1)
 			pathHeight.setPrecision(2)
 
-			pathWidth.setValue(editor.pathEditor.pathWidth)
+			pathWidth.setValue(propspathWidth)
 			pathWidth.setUnit('m')
 			pathWidth.setStep(0.1)
 			pathWidth.setPrecision(2)
 		} else {
-			pathHeight.setValue(snapper.metersToInches(editor.pathEditor.pathHeight))
+			pathHeight.setValue(snapper.metersToInches(props.pathHeight))
 			pathHeight.setUnit('in')
 			pathHeight.setStep(1.0)
 			pathHeight.setPrecision(0)
 
-			pathWidth.setValue(snapper.metersToInches(editor.pathEditor.pathWidth))
+			pathWidth.setValue(snapper.metersToInches(props.pathWidth))
 			pathWidth.setUnit('in')
 			pathWidth.setStep(1.0)
 			pathWidth.setPrecision(0)
 		}
 
-		numArcSegments.setValue(editor.pathEditor.numArcSegments)
-		pathColor.setValue(editor.pathEditor.pathColor)
+		numArcSegments.setValue(props.numArcSegments)
+		pathColor.setValue(props.pathColor)
 
 	}
 
