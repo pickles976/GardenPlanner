@@ -1,4 +1,3 @@
-import { Vector3 } from "three";
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import * as THREE from "three";
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
@@ -8,8 +7,8 @@ export function rad2deg(radians: number) : number {
   return radians * 180 / Math.PI;
 }
 
-export function getCentroid(points: Vector3[]) {
-  const centroid = new Vector3(0, 0, 0);
+export function getCentroid(points: THREE.Vector3[]) {
+  const centroid = new THREE.Vector3(0, 0, 0);
   if (points.length === 0) return centroid;
 
   for (const p of points) {
@@ -39,7 +38,7 @@ export function getTextGeometry(text: string): THREE.Mesh {
   return mesh
 }
 
-export function destructureVector3Array(array: Vector3[]): number[] {
+export function destructureVector3Array(array: THREE.Vector3[]): number[] {
   let newArray = [];
   for (const item of array) {
     newArray.push(...item)
@@ -50,7 +49,7 @@ export function destructureVector3Array(array: Vector3[]): number[] {
   return newArray
 }
 
-export function polygonArea(vertices: Vector3[]): number {
+export function polygonArea(vertices: THREE.Vector3[]): number {
   let area = 0;
   for (let i = 0; i < vertices.length; i++) {
     const v1 = vertices[i];
@@ -130,17 +129,17 @@ export function deepClone(object: THREE.Object3D) {
   return clone;
 }
 
-export function getGeometrySize(object: THREE.Mesh) : Vector3 {
+export function getGeometrySize(object: THREE.Mesh) : THREE.Vector3 {
   const geometry = object.geometry;
   geometry.computeBoundingBox(); // Ensure bounding box is up-to-date
 
   const box = geometry.boundingBox; // Local-space AABB
-  const size = new THREE.Vector3();
+  const size = new THREE.THREE.Vector3();
   box.getSize(size);
   return size
 }
 
-export function getObjectsize(object: THREE.Mesh) : Vector3 {
+export function getObjectsize(object: THREE.Mesh) : THREE.Vector3 {
   /**
    * Get the bounding box size of the geometry and multiply it by the scale of the object. 
    * This will give us the actual size in meters of the object. We can use this to scale our object
@@ -148,5 +147,5 @@ export function getObjectsize(object: THREE.Mesh) : Vector3 {
    */
   const scale = object.scale.clone();
   const geoSize = getGeometrySize(object);
-  return new Vector3(geoSize.x * scale.x, geoSize.y * scale.y, geoSize.z * scale.z);
+  return new THREE.Vector3(geoSize.x * scale.x, geoSize.y * scale.y, geoSize.z * scale.z);
 }

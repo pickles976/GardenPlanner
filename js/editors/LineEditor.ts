@@ -10,7 +10,6 @@
  * 3. make everything command-based, use UUIDs to track
  */
 
-import { Object3D, ShapeGeometry, MeshBasicMaterial, MeshPhongMaterial, BoxGeometry, Line, Vector3, Mesh, Vector2, Shape, Float32BufferAttribute, Group } from "three";
 import * as THREE from "three";
 
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
@@ -43,20 +42,20 @@ const SVG_SIZE = '50px';
 const POLYGON_OPACITY = 0.2;
 
 
-function createVertexHandle(): Mesh {
+function createVertexHandle(): THREE.Mesh {
     /**
      * Create a grabbable and moveable 3D vertex object
      */
-    const vertex = new Mesh(
-        new BoxGeometry(VERTEX_SIZE, VERTEX_SIZE, VERTEX_SIZE),
-        new MeshPhongMaterial({ color: VERTEX_COLOR }))
+    const vertex = new THREE.Mesh(
+        new THREE.BoxGeometry(VERTEX_SIZE, VERTEX_SIZE, VERTEX_SIZE),
+        new THREE.MeshPhongMaterial({ color: VERTEX_COLOR }))
     vertex.layers.set(LayerEnum.LineVertices);
     vertex.userData = { selectable: true, isVertexHandle: true }
     vertex.renderOrder = 100001; // Always draw on top
     return vertex
 }
 
-function createLineSegment(point: Vector3, lastPoint: Vector3): Object3D {
+function createLineSegment(point: THREE.Vector3, lastPoint: THREE.Vector3): THREE.Object3D {
     /**
      * Create a line segment object from 2 points. Includes label for the length of the line.
      */
@@ -76,7 +75,7 @@ function createLineSegment(point: Vector3, lastPoint: Vector3): Object3D {
     const material = new LineMaterial({ color: GREEN, linewidth: 5, depthWrite: false, depthTest: false });
     const line = new Line2(geometry, material);
 
-    const group = new Group();
+    const group = new THREE.Group();
     group.add(line);
     group.add(lineLabel);
 
@@ -84,7 +83,7 @@ function createLineSegment(point: Vector3, lastPoint: Vector3): Object3D {
 
 }
 
-function createButton(position: Vector3, icon: string, color: string): CSS2DObject {
+function createButton(position: THREE.Vector3, icon: string, color: string): CSS2DObject {
     /**
      * Create a clickable button as a CSS2DObject
      */
@@ -117,17 +116,17 @@ function createButton(position: Vector3, icon: string, color: string): CSS2DObje
     return label;
 }
 
-export function createPolygon(points: Vector3[]): Mesh {
+export function createPolygon(points: THREE.Vector3[]): THREE.Mesh {
     /** Create a Polygon from an array of points */
-    let polyShape = new Shape(points.map((coord) => new Vector2(coord.x, coord.y)))
-    const polyGeometry = new ShapeGeometry(polyShape);
-    polyGeometry.setAttribute("position", new Float32BufferAttribute(points.map(coord => [coord.x, coord.y, coord.z]).flat(), 3))
-    const polygon = new Mesh(polyGeometry, new MeshBasicMaterial({ color: GREEN, side: THREE.DoubleSide, transparent: true, opacity: POLYGON_OPACITY, depthWrite: false, depthTest: false }))
+    let polyShape = new THREE.Shape(points.map((coord) => new THREE.Vector2(coord.x, coord.y)))
+    const polyGeometry = new THREE.ShapeGeometry(polyShape);
+    polyGeometry.setAttribute("position", new THREE.Float32BufferAttribute(points.map(coord => [coord.x, coord.y, coord.z]).flat(), 3))
+    const polygon = new THREE.Mesh(polyGeometry, new THREE.MeshBasicMaterial({ color: GREEN, side: THREE.DoubleSide, transparent: true, opacity: POLYGON_OPACITY, depthWrite: false, depthTest: false }))
     polygon.layers.set([LayerEnum.NoRaycast])
     return polygon;
 }
 
-function createLinePreview(startPoint: Vector3, endPoint: Vector3) : Line2 {
+function createLinePreview(startPoint: THREE.Vector3, endPoint: THREE.Vector3) : Line2 {
     const geometry = new LineGeometry();
     geometry.setPositions(destructureVector3Array([startPoint, endPoint]))
     const material = new LineMaterial({ color: YELLOW, linewidth: LINE_WIDTH, depthWrite: false, depthTest: false });
@@ -154,19 +153,19 @@ class LineEditor {
     commandStack: CommandStack;
     mode: LineEditorMode;
 
-    vertices: Vector3[]; // Used during vertex placement mode and bed config mode
+    vertices: THREE.Vector3[]; // Used during vertex placement mode and bed config mode
 
     // Vertex Placement mode
-    lastPoint?: Vector3;
-    linePreview?: Line;
+    lastPoint?: THREE.Vector3;
+    linePreview?: THREE.Line;
     angleText?: TextGeometry;
     distanceText?: TextGeometry;
 
     // Vertex Edit mode
-    vertexHandles: Object3D[];
-    lineSegments: Object3D[];
-    polygon?: Object3D;
-    selectedHandle?: Object3D;
+    vertexHandles: THREE.Object3D[];
+    lineSegments: THREE.Object3D[];
+    polygon?: THREE.Object3D;
+    selectedHandle?: THREE.Object3D;
     saveButton?: CSS2DObject;
     cancelButton?: CSS2DObject;
 
@@ -264,7 +263,7 @@ class LineEditor {
     }
 
     // // Change modes
-    public beginEditing(vertices?: Vector3[]) {
+    public beginEditing(vertices?: THREE.Vector3[]) {
         if (vertices === undefined || vertices.length === 0) { // Create new bed
             this.setVertexPlacementMode()
         } else { // Edit existing bed
@@ -380,7 +379,7 @@ class LineEditor {
     }
 
     // Event Handling
-    private tryCloseLoop(point: Vector3): boolean {
+    private tryCloseLoop(point: THREE.Vector3): boolean {
 
         if (this.vertices.length > 0) {
             const startVertex = this.vertices[0];
@@ -393,7 +392,7 @@ class LineEditor {
         return false;
     }
 
-    private handleMouseClickPlaceVerticesMode(object: Object3D, point: Vector3) {
+    private handleMouseClickPlaceVerticesMode(object: THREE.Object3D, point: THREE.Vector3) {
 
         // If loop is closed, go to `VERTEX_EDIT_MODE`
         if (this.closedLoop) {
@@ -429,7 +428,7 @@ class LineEditor {
         eventBus.emit(EventEnums.REQUEST_RENDER)
     }
 
-    private handleMouseClickEditVerticesMode(object: Object3D, point: Vector3) {
+    private handleMouseClickEditVerticesMode(object: THREE.Object3D, point: THREE.Vector3) {
 
         if (this.selectedHandle === undefined) {
 
@@ -477,7 +476,7 @@ class LineEditor {
         }
     }
 
-    private handleMouseMovePlaceVerticesMode(object: Object3D, point: Vector3) {
+    private handleMouseMovePlaceVerticesMode(object: THREE.Object3D, point: THREE.Vector3) {
 
         this.lastPoint = point;
 
@@ -529,7 +528,7 @@ class LineEditor {
 
     }
 
-    private handleMouseMoveEditVerticesMode(object: Object3D, point: Vector3) {
+    private handleMouseMoveEditVerticesMode(object: THREE.Object3D, point: THREE.Vector3) {
 
         setDefaultCursor();
 

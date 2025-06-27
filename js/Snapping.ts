@@ -1,4 +1,4 @@
-import {Vector3} from "three";
+import * as THREE from "three"
 import { eventBus, EventEnums } from "./EventBus";
 import { METRIC } from "./Constants";
 
@@ -20,14 +20,14 @@ class Snapper {
         this.setMetric(this.metric)
     }
 
-    snap(p: Vector3) : Vector3 {
+    snap(p: THREE.Vector3) : THREE.Vector3 {
 
         if (!this.snapEnabled) {
             return p;
         }
 
         const temp = p.multiplyScalar(1.0/this.snapAmount)
-        const newVec = new Vector3(Math.round(temp.x),Math.round(temp.y),Math.round(temp.z));
+        const newVec = new THREE.Vector3(Math.round(temp.x),Math.round(temp.y),Math.round(temp.z));
         return newVec.multiplyScalar(this.snapAmount);
     }
 
@@ -55,15 +55,15 @@ class Snapper {
         return value / INCHES_PER_METER;
     }
 
-    metersToInchesVector3(vector: Vector3) {
-        return new Vector3(
+    metersToInchesVector3(vector: THREE.Vector3) {
+        return new THREE.Vector3(
             this.metersToInches(vector.x),
             this.metersToInches(vector.y),
             this.metersToInches(vector.z))
     }
 
-    inchesToMetersVector3(vector: Vector3) {
-        return new Vector3(
+    inchesToMetersVector3(vector: THREE.Vector3) {
+        return new THREE.Vector3(
             this.inchesToMeters(vector.x),
             this.inchesToMeters(vector.y),
             this.inchesToMeters(vector.z))

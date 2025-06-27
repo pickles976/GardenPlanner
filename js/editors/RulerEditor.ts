@@ -1,4 +1,4 @@
-import { Object3D, Vector3, Group } from "three";
+import * as THREE from "three";
 
 import "external-svg-loader";
 
@@ -19,7 +19,7 @@ import { performRaycast, processIntersections } from "../EventHandlers";
 
 const LINE_WIDTH = 5;
 
-function createLinePreview(startPoint: Vector3, endPoint: Vector3) : Line2 {
+function createLinePreview(startPoint: THREE.Vector3, endPoint: THREE.Vector3) : Line2 {
 
     // Get Distance Text
     let textPos = startPoint.clone().add(endPoint.clone()).divideScalar(2);
@@ -32,7 +32,7 @@ function createLinePreview(startPoint: Vector3, endPoint: Vector3) : Line2 {
     const linePreview = new Line2(geometry, material);
     linePreview.renderOrder = 100000; // Always draw on top
 
-    const group = new Group();
+    const group = new THREE.Group();
     group.add(linePreview);
     group.add(lineLabel);
 
@@ -44,7 +44,7 @@ class RulerEditor {
 
     editor: Editor;
     
-    rulerStart?: Vector3;
+    rulerStart?: THREE.Vector3;
     linePreview?: Line2;
 
     constructor(editor: Editor) {
@@ -59,7 +59,7 @@ class RulerEditor {
         this.linePreview = undefined;
     }
 
-    public handleMouseMove(intersections: Object3D[]) {
+    public handleMouseMove(intersections: THREE.Object3D[]) {
 
         if (this.rulerStart === undefined) return;
 
@@ -72,7 +72,7 @@ class RulerEditor {
         this.editor.add(this.linePreview)
     }
 
-    public handleMouseClick(intersections: Object3D[]) {
+    public handleMouseClick(intersections: THREE.Object3D[]) {
         let [object, point] = processIntersections(intersections)
         point = snapper.snap(point)
 

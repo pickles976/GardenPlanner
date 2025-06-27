@@ -1,4 +1,4 @@
-import { Object3D, Vector3, Mesh, Material, Box3, Vector2, ExtrudeGeometry, Shape } from "three";
+import * as THREE from "three";
 
 import { getCentroid, createPhongMaterial, createPreviewMaterial } from "../Utils";
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
@@ -14,7 +14,7 @@ import offsetPolygon from "offset-polygon";
 
 const INITIAL_PATH_HEIGHT = 0.03;
 const INITIAL_PATH_WIDTH = 0.3;
-const CONFIG_CAMERA_OFFSET = new Vector3(0, -2, 2);
+const CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, -2, 2);
 
 enum PathEditorMode {
     INACTIVE = "INACTIVE",
@@ -22,7 +22,7 @@ enum PathEditorMode {
     CONFIG_MODE = "CONFIG_MODE"
 }
 
-function createPath(vertices: Vector3[], width: number, height: number, numArcSegments: number, material: Material) : Mesh {
+function createPath(vertices: THREE.Vector3[], width: number, height: number, numArcSegments: number, material: THREE.Material) : THREE.Mesh {
     /**
      * Take the vertices and extrude them vertically to create a path
      */
@@ -33,9 +33,9 @@ function createPath(vertices: Vector3[], width: number, height: number, numArcSe
     const verts = vertices.map((v) => ({ "x": v.x, "y": v.y }));
     verts.push(...verts.slice(1, verts.length - 1).reverse())
 
-    let border = offsetPolygon(verts, width / 2, numArcSegments).map((v) => new Vector2(v.x, v.y));
+    let border = offsetPolygon(verts, width / 2, numArcSegments).map((v) => new THREE.Vector2(v.x, v.y));
     border.push(border[0])
-    const shape = new Shape(border);
+    const shape = new THREE.Shape(border);
 
     const extrudeSettings = {
         depth: height,
@@ -46,7 +46,7 @@ function createPath(vertices: Vector3[], width: number, height: number, numArcSe
         bevelThickness: 1
     };
 
-    return new Mesh(new ExtrudeGeometry(shape, extrudeSettings), material);
+    return new THREE.Mesh(new THREE.ExtrudeGeometry(shape, extrudeSettings), material);
 
 }
 
@@ -85,13 +85,13 @@ class PathEditor {
     commandStack: CommandStack;
     mode: PathEditorMode;
 
-    vertices: Vector3[]; // Used during vertex placement mode and bed config mode
+    vertices: THREE.Vector3[]; // Used during vertex placement mode and bed config mode
 
     // Original Fence
-    oldObject?: Object3D;
+    oldObject?: THREE.Object3D;
 
     // Config Mode
-    previewMesh?: Mesh;
+    previewMesh?: THREE.Mesh;
     props: PathProps;
 
     constructor(editor: Editor) {
@@ -174,7 +174,7 @@ class PathEditor {
     }
 
     // Change modes
-    public beginEditing(path?: Object3D) {
+    public beginEditing(path?: THREE.Object3D) {
         this.cleanUp();
         this.mode = PathEditorMode.LINE_EDITOR_MODE;
 
@@ -224,7 +224,7 @@ class PathEditor {
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices);
-        centroid.add(new Vector3(0, 0, 0.01)) // prevent z-fighting
+        centroid.add(new THREE.Vector3(0, 0, 0.01)) // prevent z-fighting
         this.previewMesh.position.set(...centroid);
     }
 
@@ -251,13 +251,13 @@ class PathEditor {
         path.name = this.props.name;
 
         // Move to position
-        const box = new Box3().setFromObject(path);
-        const size = new Vector3();
+        const box = new THREE.Box3().setFromObject(path);
+        const size = new THREE.Vector3();
         box.getSize(size);
 
         // Create and merge border + bed meshes
         const centroid = getCentroid(this.vertices);
-        path.position.set(...centroid.clone().add(new Vector3(0,0,size.z / 2)))
+        path.position.set(...centroid.clone().add(new THREE.Vector3(0,0,size.z / 2)))
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
         if (this.oldObject) {
@@ -297,11 +297,11 @@ class PathEditor {
         eventBus.emit(EventEnums.REQUEST_RENDER);
     }
 
-    public handleMouseMove(intersections: Object3D[]) {
+    public handleMouseMove(intersections: THREE.Object3D[]) {
         this.lineEditor.handleMouseMove(intersections)
     }
 
-    public handleMouseClick(intersections: Object3D[]) {
+    public handleMouseClick(intersections: THREE.Object3D[]) {
         this.lineEditor.handleMouseClick(intersections);
     }
 

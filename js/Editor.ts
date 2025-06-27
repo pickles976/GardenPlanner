@@ -15,12 +15,11 @@ import { filterCurrentlySelected, handleTransformControlsChange, highlightMouseO
 import { snapper } from './Snapping';
 import { DeleteObjectCommand } from './commands/DeleteObjectCommand';
 import { CreateObjectCommand } from './commands/CreateObjectCommand';
-import { deepClone, destructureVector3Array, fontSizeString, getCSS2DText } from './Utils';
+import { deepClone } from './Utils';
 import { SetRotationCommand } from './commands/SetRotationCommand';
 import { RulerEditor } from './editors/RulerEditor';
 import { FenceEditor } from './editors/FenceEditor';
 import { PathEditor } from './editors/PathEditor';
-import { Vector3 } from 'three';
 import { SetPositionCommand } from './commands/SetPositionCommand';
 
 
@@ -550,7 +549,7 @@ class Editor {
                 const size = new THREE.Vector3();
                 box.getSize(size);
 
-                let newPos = point.add(new Vector3(0,0,size.z / 2))
+                let newPos = point.add(new THREE.Vector3(0,0,size.z / 2))
                 newPos = snapper.snap(newPos);
                 this.execute(new SetPositionCommand(selector.currentSelectedObject, selector.currentSelectedObject.position, newPos))
             }

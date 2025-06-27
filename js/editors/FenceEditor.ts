@@ -1,4 +1,4 @@
-import { Object3D, Vector3, Mesh, Material, Box3, BufferGeometry, Float32BufferAttribute } from "three";
+import * as THREE from "three";
 
 import { getCentroid, createPhongMaterial, createPreviewMaterial } from "../Utils";
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
@@ -12,7 +12,7 @@ import { setDefaultCursor } from "../Cursors";
 import { LineEditor } from "./LineEditor";
 
 const INITIAL_FENCE_HEIGHT = 2.0;
-const CONFIG_CAMERA_OFFSET = new Vector3(0, -2, 2);
+const CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, -2, 2);
 
 enum FenceEditorMode {
     INACTIVE = "INACTIVE",
@@ -20,14 +20,14 @@ enum FenceEditorMode {
     CONFIG_MODE = "CONFIG_MODE"
 }
 
-function createFence(vertices: Vector3[], height: number, material: Material) : Mesh {
+function createFence(vertices: THREE.Vector3[], height: number, material: THREE.Material) : THREE.Mesh {
     /**
      * Take the vertices and extrude them vertically to create a fence
      */
 
     const centroid = getCentroid(vertices);
     const bottom = vertices.map((v) => v.clone().sub(centroid));
-    const top = bottom.map((v) => new Vector3(v.x, v.y, height));
+    const top = bottom.map((v) => new THREE.Vector3(v.x, v.y, height));
 
     const positions = [];
     for (let i = 0; i < bottom.length; i++) {
@@ -48,13 +48,13 @@ function createFence(vertices: Vector3[], height: number, material: Material) : 
         indices.push(i2, i3, i1); // Triangle 2: i2, i3, i1
     } 
 
-    const geometry = new BufferGeometry();
-    geometry.setAttribute('position', new Float32BufferAttribute(positions, 3));
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
     geometry.setIndex(indices);
     geometry.computeVertexNormals();
     geometry.translate(0,0, -height / 2);
 
-    return new Mesh(geometry, material);
+    return new THREE.Mesh(geometry, material);
 
 }
 
@@ -91,13 +91,13 @@ class FenceEditor {
     commandStack: CommandStack;
     mode: FenceEditorMode;
 
-    vertices: Vector3[];
+    vertices: THREE.Vector3[];
 
     // Original Fence, used for editing existing objects
-    oldObject?: Object3D;
+    oldObject?: THREE.Object3D;
 
     // Config Mode
-    fencePreviewMesh?: Mesh;
+    fencePreviewMesh?: THREE.Mesh;
 
     props: FenceProps;
 
@@ -178,7 +178,7 @@ class FenceEditor {
     }
 
     // Change modes
-    public beginEditing(fence?: Object3D) {
+    public beginEditing(fence?: THREE.Object3D) {
         this.cleanUp();
         this.mode = FenceEditorMode.LINE_EDITOR_MODE;
 
@@ -229,7 +229,7 @@ class FenceEditor {
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices)
-        this.fencePreviewMesh.position.set(...centroid.add(new Vector3(0, 0, props.fenceHeight / 2)));
+        this.fencePreviewMesh.position.set(...centroid.add(new THREE.Vector3(0, 0, props.fenceHeight / 2)));
     }
 
     private createMesh() {
@@ -254,11 +254,11 @@ class FenceEditor {
         fence.name = props.name;
 
         // Move to position
-        const box = new Box3().setFromObject(fence);
-        const size = new Vector3();
+        const box = new THREE.Box3().setFromObject(fence);
+        const size = new THREE.Vector3();
         box.getSize(size);
         const centroid = getCentroid(this.vertices);
-        fence.position.set(...centroid.add(new Vector3(0,0,size.z / 2)))
+        fence.position.set(...centroid.add(new THREE.Vector3(0,0,size.z / 2)))
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
         if (this.oldObject) {
@@ -298,11 +298,11 @@ class FenceEditor {
         eventBus.emit(EventEnums.REQUEST_RENDER);
     }
 
-    public handleMouseMove(intersections: Object3D[]) {
+    public handleMouseMove(intersections: THREE.Object3D[]) {
         this.lineEditor.handleMouseMove(intersections)
     }
 
-    public handleMouseClick(intersections: Object3D[]) {
+    public handleMouseClick(intersections: THREE.Object3D[]) {
         this.lineEditor.handleMouseClick(intersections);
     }
 

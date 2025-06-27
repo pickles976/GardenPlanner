@@ -1,18 +1,15 @@
 ### REFACTOR!!!
-- [x] get input working for editor again
-- [ ] require a button press to move objects? (select and then press M)
-- [ ] come up with conventions for importing stuff from three (always use THREE.Object instead of `import { Object } from "three"`)
 - [ ] bug with ruler origin
+- [ ] add angle visualizer to ruler
+
+- [ ] require a button press to move objects? (select and then press M)
 
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
     - [ ] create a panel for 3D models the same way we have for plants
-
-#### Erika Feedback
-Have Erika plan a garden
+- [ ] draw angle between lines, not angle between north for line editor
 
 #### Visual Improvements
-
 - [ ] draw pointer to north as rotating UI element
 
 ##### Textures

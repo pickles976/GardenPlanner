@@ -1,4 +1,4 @@
-import { Object3D, Vector3, Mesh, Vector2, Shape, Material, ExtrudeGeometry, Path, Box3 } from "three";
+import * as THREE from "three";
 
 import offsetPolygon from "offset-polygon";
 
@@ -17,10 +17,10 @@ const INITIAL_BED_HEIGHT = 0.15;
 const INITIAL_BORDER_WIDTH = 0.10;
 
 const NUM_ARC_SEGMENTS = 1;
-const BED_CONFIG_CAMERA_OFFSET = new Vector3(0, -2, 2);
+const BED_CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, -2, 2);
 
 
-function createBedBorder(vertices: Vector3[], width: number, height: number, material: Material): Mesh {
+function createBedBorder(vertices: THREE.Vector3[], width: number, height: number, material: THREE.Material): THREE.Mesh {
     /**
      * Create the border of the bed in 3D from a series of points defining the inner bed, plus the border width. 
      * This will be a "donut" shape with an inner-loop the shape of the bed, and the outer loop 
@@ -32,9 +32,9 @@ function createBedBorder(vertices: Vector3[], width: number, height: number, mat
     // Grow the border polygon by `width`
     // Depending on if the vertices were placed CW or CCW, the polygon will shrink or grow. If the border area is smaller than the bed area, 
     // then we need to re-calculate the offset with a flipped sign
-    let border = offsetPolygon(verts, width, 1).map((v) => new Vector3(v.x, v.y, 0.0));
-    if (polygonArea(border.map((v) => new Vector3(v["x"], v["y"], 0.0))) < polygonArea(vertices)) {
-        border = offsetPolygon(verts, -width, NUM_ARC_SEGMENTS).map((v) => new Vector3(v.x, v.y, 0.0));
+    let border = offsetPolygon(verts, width, 1).map((v) => new THREE.Vector3(v.x, v.y, 0.0));
+    if (polygonArea(border.map((v) => new THREE.Vector3(v["x"], v["y"], 0.0))) < polygonArea(vertices)) {
+        border = offsetPolygon(verts, -width, NUM_ARC_SEGMENTS).map((v) => new THREE.Vector3(v.x, v.y, 0.0));
     }
     border.push(border[0]); // close loop
 
@@ -42,17 +42,17 @@ function createBedBorder(vertices: Vector3[], width: number, height: number, mat
 
     const points = border.map((p) => {
         const temp = p.clone().sub(centroid);
-        return new Vector2(temp.x, temp.y);
+        return new THREE.Vector2(temp.x, temp.y);
     });
 
     const holes = vertices.map((p) => {
         const temp = p.clone().sub(centroid);
-        return new Vector2(temp.x, temp.y);
+        return new THREE.Vector2(temp.x, temp.y);
     });
 
     // Create a "donut" polygon
-    const shape = new Shape(points);
-    shape.holes.push(new Path(holes));
+    const shape = new THREE.Shape(points);
+    shape.holes.push(new THREE.Path(holes));
 
     const extrudeSettings = {
         depth: height,
@@ -64,10 +64,10 @@ function createBedBorder(vertices: Vector3[], width: number, height: number, mat
     };
 
     // Extrude 2D polygon to 3D mesh
-    return new Mesh(new ExtrudeGeometry(shape, extrudeSettings), material);
+    return new THREE.Mesh(new THREE.ExtrudeGeometry(shape, extrudeSettings), material);
 }
 
-function createBed(vertices: Vector3[], height: number, material: Material) : Mesh {
+function createBed(vertices: THREE.Vector3[], height: number, material: THREE.Material) : THREE.Mesh {
     /**
      * Create the 3D bed object from an array of points.
      */
@@ -78,10 +78,10 @@ function createBed(vertices: Vector3[], height: number, material: Material) : Me
     verts.push(vertices[0]);
     const points = verts.map((p) => {
         const temp = p.clone().sub(centroid);
-        return new Vector2(temp.x, temp.y);
+        return new THREE.Vector2(temp.x, temp.y);
     });
 
-    const shape = new Shape(points);
+    const shape = new THREE.Shape(points);
 
     const extrudeSettings = {
         depth: height,
@@ -92,7 +92,7 @@ function createBed(vertices: Vector3[], height: number, material: Material) : Me
         bevelThickness: 1
     };
 
-    return new Mesh(new ExtrudeGeometry(shape, extrudeSettings), material);
+    return new THREE.Mesh(new THREE.ExtrudeGeometry(shape, extrudeSettings), material);
 }
 
 
@@ -143,14 +143,14 @@ class BedEditor {
     commandStack: CommandStack;
     mode: BedEditorMode;
 
-    vertices: Vector3[]; // Used during vertex placement mode and bed config mode
+    vertices: THREE.Vector3[]; // Used during vertex placement mode and bed config mode
 
     // Original bed
-    oldBed?: Object3D;
+    oldBed?: THREE.Object3D;
 
     // Bed Config Mode
-    bedPreviewMesh?: Mesh;
-    bedPreviewBorder?: Mesh;
+    bedPreviewMesh?: THREE.Mesh;
+    bedPreviewBorder?: THREE.Mesh;
     
     props: BedProps;
 
@@ -237,7 +237,7 @@ class BedEditor {
     }
 
     // Change modes
-    public beginEditing(bed?: Object3D) {
+    public beginEditing(bed?: THREE.Object3D) {
         this.cleanUp();
         this.mode = BedEditorMode.LINE_EDITOR_MODE;
 
@@ -288,7 +288,7 @@ class BedEditor {
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices);
-        centroid.add(new Vector3(0, 0, 0.01)) // prevent z-fighting
+        centroid.add(new THREE.Vector3(0, 0, 0.01)) // prevent z-fighting
         this.bedPreviewBorder.position.set(...centroid);
         this.bedPreviewMesh.position.set(...centroid);
     }
@@ -304,8 +304,8 @@ class BedEditor {
         // Set origin at the halfway point of the bed object
         let mergedMesh = mergeMeshes([border, bed]);
 
-        const box = new Box3().setFromObject(mergedMesh);
-        const size = new Vector3();
+        const box = new THREE.Box3().setFromObject(mergedMesh);
+        const size = new THREE.Vector3();
         box.getSize(size);
 
         mergedMesh.geometry.translate(0,0,-size.z / 2)
@@ -328,7 +328,7 @@ class BedEditor {
         mergedMesh.name = this.props.name;
 
         // Move to position
-        mergedMesh.position.set(...centroid.clone().add(new Vector3(0,0,size.z / 2)))
+        mergedMesh.position.set(...centroid.clone().add(new THREE.Vector3(0,0,size.z / 2)))
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
         if (this.oldBed) {
@@ -378,11 +378,11 @@ class BedEditor {
         }
     }
 
-    public handleMouseMove(intersections: Object3D[]) {
+    public handleMouseMove(intersections: THREE.Object3D[]) {
         this.lineEditor.handleMouseMove(intersections)
     }
 
-    public handleMouseClick(intersections: Object3D[]) {
+    public handleMouseClick(intersections: THREE.Object3D[]) {
         this.lineEditor.handleMouseClick(intersections);
     }
 

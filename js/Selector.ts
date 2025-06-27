@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import { Editor } from "./Editor";
-import { Object3D } from 'three';
 import { eventBus, EventEnums } from './EventBus';
 import { FONT_SIZE, LayerEnum } from './Constants';
 import { destructureVector3Array, fontSizeString, getCSS2DText, rad2deg } from './Utils';
@@ -8,7 +7,6 @@ import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { GREEN, WHITE } from './Colors';
 import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
-import { Group } from 'three';
 
 
 class Selector {
@@ -57,7 +55,7 @@ class Selector {
         this.transformControlsGizmo = undefined;
     }
 
-    private attachTransformControls(object: Object3D) {
+    private attachTransformControls(object: THREE.Object3D) {
         // Attach controls and gizmo
         this.editor.transformControls.visible = true;
         this.editor.transformControls.attach(object);
@@ -66,7 +64,7 @@ class Selector {
         this.transformControlsGizmo.layers.set(LayerEnum.NoRaycast)
     }
 
-    private advancedTransformSelect(object: Object3D) {
+    private advancedTransformSelect(object: THREE.Object3D) {
 
         this.removeTransformControls()
 
@@ -87,7 +85,7 @@ class Selector {
         }
     }
 
-    private simpleTransformSelect(object: Object3D) {
+    private simpleTransformSelect(object: THREE.Object3D) {
         if (object === undefined) { // hide controls
             this.currentSelectedObject = undefined
         } else { // show controls
@@ -103,7 +101,7 @@ class Selector {
 
     }
 
-    public select(object: Object3D) {
+    public select(object: THREE.Object3D) {
 
         if (object === this.currentSelectedObject) {
             return;
@@ -209,7 +207,7 @@ class Selector {
 
         // Create Group
         this.editor.remove(this.rotationAngleVisualizer)
-        const group = new Group();
+        const group = new THREE.Group();
         group.add(north, angle, arcLine, angleLabel)
         this.rotationAngleVisualizer = group
         this.editor.add(this.rotationAngleVisualizer)
