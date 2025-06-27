@@ -20,6 +20,11 @@ export class Props {
     }
 
     public nonDifferentiableFieldChanged(otherProps: Props) : boolean {
+        /**
+         * Changes to props can be combined in Command objects, but only if the field that was changed in the prop
+         * is differentiable. Like a float number. This method checks to see if a non-differentiable field was changed, in which case 
+         * treat the prop as discrete and not-updatable.
+         */
 
         for (const key of this.nonDifferentiableFields) {
             if (this[key]!== otherProps[key]) return true;
@@ -30,6 +35,8 @@ export class Props {
     }
 
     public moreThanOneFieldChanged(otherProps: Props) : boolean {
+        /* To merge commands, we need to make sure that only one prop was changed between commands. This is a helper for that. */
+
         // Make sure that only one field has changed between updates
         let diffCount = 0;
 

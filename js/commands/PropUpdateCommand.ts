@@ -19,6 +19,9 @@ class PropUpdateCommand extends Command {
     }
 
     private arePropsUpdateable() : boolean {
+        /**
+         * We can merge together prop changes if the changes occured for the same field, and if that field was differentiable.
+         */
 
         if (this.oldProps.nonDifferentiableFieldChanged(this.newProps)) {
             return false;

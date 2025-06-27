@@ -1,16 +1,4 @@
-# BUGS
-- [x] bug with path placement
-- [x] bug with fence placement 
-- [x] bug where bed is not visible immediately after placement
-
 ### REFACTOR!!!
-- [x] rename editors to have similar methods
-- [x] make props a typed object!!!
-    - [x] Bed Editor
-    - [x] Fence Editor
-    - [x] Path Editor
-- [x] make props base class
-    - [x] make all configs use the same command
 - [ ] come up with conventions for importing stuff from three (always use THREE.Object instead of `import { Object } from "three"`)
 
 - [ ] bug with ruler origin
