@@ -22,6 +22,8 @@ import { FenceEditor } from './editors/FenceEditor';
 import { PathEditor } from './editors/PathEditor';
 import { SetPositionCommand } from './commands/SetPositionCommand';
 
+import { Sky } from 'three/addons/objects/Sky.js';
+
 
 const SHADOWMAP_WIDTH = 32;
 const SHADOWMAP_RESOLUTION = 2048;
@@ -78,6 +80,8 @@ class Editor {
 
     mode: EditorMode;
 
+    sky: Sky;
+
 
 
     constructor() {
@@ -110,14 +114,36 @@ class Editor {
         this.labelRenderer.domElement.style.pointerEvents = 'none'; // don't want any events coming from the CSS renderer guy
         document.body.appendChild(this.labelRenderer.domElement);
 
+        const newLocal = this;
         // renderer.outputEncoding = THREE.sRGBEncoding;
-        // renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        // renderer.toneMappingExposure = 1.0;
-        this.renderer.shadowMap.enabled = true;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMappingExposure = 1.0;
+        newLocal.renderer.shadowMap.enabled = true;
 
         // scene
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(0xEBE2DB, 0.00003);
+
+        // Sky
+        this.sky = new Sky();
+        this.sky.material.uniforms.up.value.set( 0, 0, 1 ); // set z as up
+        this.sky.scale.setScalar(4500000);
+        this.sky.layers.set(LayerEnum.NoRaycast)
+
+        // const elevation = 7;
+        // const azimuth = 180;
+        // const phi = THREE.MathUtils.degToRad( 180 - elevation );
+        // const theta = THREE.MathUtils.degToRad( azimuth );
+        // const sunPosition = new THREE.Vector3().setFromSphericalCoords( 1, phi, theta );
+
+        this.sky.material.uniforms.sunPosition.value = new THREE.Vector3(-1,1,0.1);
+        // this.sky.material.uniforms.turbidity = 10;
+        // this.sky.material.uniforms.rayleigh = 3;
+        // this.sky.material.uniforms.mieCoefficient = 0.1;
+        this.sky.material.uniforms.mieDirectionalG.value = 0.85; // Sun diffusion amount
+        this.sky.material.uniforms.exposure = 0.5;
+
+        this.scene.add( this.sky );
 
 
         // Perspective Camera
@@ -175,7 +201,7 @@ class Editor {
         // lighting
         const intensity = 1.5;
         this.directionalLight = new THREE.DirectionalLight(WHITE, intensity);
-        this.directionalLight.position.set(-20, 20, 20);
+        this.directionalLight.position.set(-20, 20, 10);
         this.directionalLight.castShadow = true;
         this.scene.add(this.directionalLight);
         this.scene.name = "Scene"
@@ -213,7 +239,7 @@ class Editor {
         axesHelper.name = "Axes Helper"
         this.scene.add(axesHelper);
 
-        this.scene.background = new THREE.Color(WHITE);
+        // this.scene.background = new THREE.Color(WHITE);
 
         this.perspectiveCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
         this.orthoCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))

@@ -1,6 +1,11 @@
 #### Visual Improvements
 
 ##### Textures
+- [x] sky view
+- [ ] grass
+https://codesandbox.io/p/sandbox/grass-shader-forked-okub75?file=%2Fsrc%2FGrass.js
+https://smythdesign.com/blog/stylized-grass-webgl/
+
 https://gamedevnexus.com/resources/assets/
 - [ ] dirt
 - [ ] mulch
@@ -14,10 +19,7 @@ https://gamedevnexus.com/resources/assets/
     - [ ] path
     - [ ] fence
 
-- [ ] grass
-https://codesandbox.io/p/sandbox/grass-shader-forked-okub75?file=%2Fsrc%2FGrass.js
-https://smythdesign.com/blog/stylized-grass-webgl/
-- [ ] sky view
+
 
 - [ ] add a 5'10 human model to the world
 
@@ -65,7 +67,9 @@ https://smythdesign.com/blog/stylized-grass-webgl/
 - [ ] let user hide objects from object panel
 - [ ] in line editor mode, draw all other objects as lines?
 - [ ] ESC = cancel for line editor/object editor modes
-- [ ] set length of line from key input?
+- [ ] allow user to edit each vertex from the UI in vertex edit mode
+- [ ] fix issue with ctrl + d
+
 
 # BUGS
 - [ ] bed panel does not hide when bed is deselected from scene panel
