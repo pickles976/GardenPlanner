@@ -2,14 +2,15 @@
 
 - [x] sky view
 - [x] grass
-https://codesandbox.io/p/sandbox/grass-shader-forked-okub75?file=%2Fsrc%2FGrass.js
-https://smythdesign.com/blog/stylized-grass-webgl/
-https://freepbr.com/product/stylized-grass1/
-https://marmoset.co/posts/basic-theory-of-physically-based-rendering/
+
+
+- [ ] allow grass to receive shadows
+https://www.maya-ndljk.com/blog/threejs-basic-toon-shader
 
 - [ ] disable render-on-demand
 - [ ] show/hide grass
-
+    - [ ] perform raycasts to figure out where to place grass
+    - [ ] clean up grass each time
 
 - [ ] add FXAA pass to anti-alias grids
 
@@ -31,12 +32,15 @@ composer.addPass(fxaaPass);
 
 ##### Textures
 https://gamedevnexus.com/resources/assets/
+- [ ] pbr texture-loading
 - [ ] dirt
 - [ ] mulch
 - [ ] stone
 - [ ] wood
 - [ ] chain link
 - [ ] add ability to set textures for 3D models from object panels
+https://freepbr.com/product/stylized-grass1/
+
 
 - [ ] add texture configuration
     - [ ] bed/bed border
