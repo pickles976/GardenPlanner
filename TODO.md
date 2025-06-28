@@ -1,11 +1,35 @@
 #### Visual Improvements
 
-##### Textures
 - [x] sky view
-- [ ] grass
+- [x] grass
 https://codesandbox.io/p/sandbox/grass-shader-forked-okub75?file=%2Fsrc%2FGrass.js
 https://smythdesign.com/blog/stylized-grass-webgl/
+https://freepbr.com/product/stylized-grass1/
+https://marmoset.co/posts/basic-theory-of-physically-based-rendering/
 
+- [ ] disable render-on-demand
+- [ ] show/hide grass
+
+
+- [ ] add FXAA pass to anti-alias grids
+
+```javascript
+import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
+import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
+import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
+
+const composer = new EffectComposer(renderer);
+composer.addPass(new RenderPass(scene, camera));
+
+const fxaaPass = new ShaderPass(FXAAShader);
+fxaaPass.material.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
+composer.addPass(fxaaPass);
+
+// Then use composer.render() instead of renderer.render()
+```
+
+##### Textures
 https://gamedevnexus.com/resources/assets/
 - [ ] dirt
 - [ ] mulch
@@ -18,8 +42,6 @@ https://gamedevnexus.com/resources/assets/
     - [ ] bed/bed border
     - [ ] path
     - [ ] fence
-
-
 
 - [ ] add a 5'10 human model to the world
 

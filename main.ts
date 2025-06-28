@@ -11,6 +11,8 @@ import { Menubar } from './js/menubar/Menubar';
 import { Sidebar } from './js/sidebar/Sidebar';
 import { loadPlant } from './js/ModelLoader';
 import { Editor } from './js/Editor';
+import { createGrass } from './js/Grass';
+import { WORLD_SIZE } from './js/Constants';
 
 const editor = new Editor();
 editor.initThree();
@@ -97,6 +99,7 @@ eventBus.on(EventEnums.METRIC_CHANGED, (value) => gridManager.setMetric(value))
 eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(value))
 
 createGround(editor)
+createGrass(editor, 5000000, WORLD_SIZE, WORLD_SIZE)
 
 // let box = createCube(editor)
 let box = createHumanCube(editor)

@@ -99,7 +99,7 @@ class Editor {
 
         // renderer
         this.renderer = new THREE.WebGLRenderer({
-            logarithmicDepthBuffer: true,
+            // logarithmicDepthBuffer: true, DISABLED DUE TO ISSUES WITH GRASS
             antialias: ANTI_ALIASING
         });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -130,17 +130,17 @@ class Editor {
         this.sky.scale.setScalar(4500000);
         this.sky.layers.set(LayerEnum.NoRaycast)
 
-        // const elevation = 7;
-        // const azimuth = 180;
-        // const phi = THREE.MathUtils.degToRad( 180 - elevation );
-        // const theta = THREE.MathUtils.degToRad( azimuth );
-        // const sunPosition = new THREE.Vector3().setFromSphericalCoords( 1, phi, theta );
+        const elevation = 15;
+        const azimuth = 45;
+        const phi = THREE.MathUtils.degToRad( 180 - elevation );
+        const theta = THREE.MathUtils.degToRad( azimuth );
+        const sunPosition = new THREE.Vector3().setFromSphericalCoords( 1, phi, theta );
 
-        this.sky.material.uniforms.sunPosition.value = new THREE.Vector3(-1,1,0.1);
+        this.sky.material.uniforms.sunPosition.value =new THREE.Vector3().setFromSphericalCoords( 1, phi, theta );
         // this.sky.material.uniforms.turbidity = 10;
         // this.sky.material.uniforms.rayleigh = 3;
         // this.sky.material.uniforms.mieCoefficient = 0.1;
-        this.sky.material.uniforms.mieDirectionalG.value = 0.85; // Sun diffusion amount
+        this.sky.material.uniforms.mieDirectionalG.value = 0.5; // Sun diffusion amount
         this.sky.material.uniforms.exposure = 0.5;
 
         this.scene.add( this.sky );

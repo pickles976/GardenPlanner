@@ -1,10 +1,10 @@
 import * as THREE from 'three';
-import { LayerEnum} from './Constants';
+import { LayerEnum, WORLD_SIZE} from './Constants';
 import { WHITE } from './Colors';
 import { eventBus, EventEnums } from './EventBus';
 import { snapper } from './Snapping';
 
-const GRID_SIZE = 64;
+const GRID_SIZE = WORLD_SIZE;
 const FEET_PER_METER = 3.280839895;
 
 class GridManager {
@@ -32,6 +32,7 @@ class GridManager {
         this.decimeterGrid.layers.set(LayerEnum.NoRaycast)
         this.decimeterGrid.rotateX(Math.PI / 2)
         this.decimeterGrid.position.set(0, 0, 0.001)
+        this.decimeterGrid.material.linewidth = 0.1;
         editor.scene.add(this.decimeterGrid);
 
         let footDivisions = FEET_PER_METER * GRID_SIZE;
@@ -45,6 +46,7 @@ class GridManager {
         this.inchGrid.layers.set(LayerEnum.NoRaycast)
         this.inchGrid.rotateX(Math.PI / 2)
         this.inchGrid.position.set(0, 0, 0.001)
+        this.inchGrid.material.linewidth = 0.1;
         editor.scene.add(this.inchGrid);
 
         this.setMetric(this.metric)

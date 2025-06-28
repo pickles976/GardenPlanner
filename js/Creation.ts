@@ -1,9 +1,10 @@
 import * as THREE from 'three';
 import { Editor } from './Editor';
 import { CreateObjectCommand } from './commands/CreateObjectCommand';
-import { LayerEnum } from './Constants';
+import { LayerEnum, WORLD_SIZE } from './Constants';
 import { setCurrentTransformationAsDefault } from './ModelLoader';
 import { GROUND_COLOR } from './Colors';
+import { GrassMaterial, grassTexture } from './Materials';
 
 export function createHumanCube(editor: Editor): THREE.Mesh {
     const mat = new THREE.MeshPhongMaterial({
@@ -138,12 +139,15 @@ export function createPlane(editor: Editor): THREE.Mesh {
     editor.execute(new CreateObjectCommand(mesh, editor));
 }
 
+
+
 export function createGround(editor: Editor): THREE.Mesh {
 
     const groundMat = new THREE.MeshPhongMaterial({
         color: GROUND_COLOR,    // red (can also use a CSS color string here)
     });
-    const groundGeo = new THREE.PlaneGeometry(64, 64, 4, 4)
+
+    const groundGeo = new THREE.PlaneGeometry(WORLD_SIZE, WORLD_SIZE, 4, 4)
     const groundMesh = new THREE.Mesh(groundGeo, groundMat)
     groundMesh.layers.set(LayerEnum.World)
     groundMesh.castShadow = false;

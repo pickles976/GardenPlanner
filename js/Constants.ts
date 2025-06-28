@@ -4,6 +4,8 @@ export const METRIC = false;
 
 export const FONT_SIZE = 30;
 
+export const WORLD_SIZE = 32;
+
 enum LayerEnum {
     NoRaycast = 0, // not raycastable
     World = 1, // raycastable but not selectable (ground)

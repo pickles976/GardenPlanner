@@ -192,7 +192,7 @@ function SidebarPath(editor) {
 			pathHeight.setStep(0.1)
 			pathHeight.setPrecision(2)
 
-			pathWidth.setValue(propspathWidth)
+			pathWidth.setValue(props.pathWidth)
 			pathWidth.setUnit('m')
 			pathWidth.setStep(0.1)
 			pathWidth.setPrecision(2)
