@@ -1,7 +1,7 @@
 import * as THREE from "three"
 import { FRUSTUM_SIZE } from './Constants';
 import { Editor } from './Editor';
-import { leavesMaterial } from './Grass';
+import { grassMaterial } from './Grass';
 
 let renderRequested = false;
 
@@ -20,8 +20,8 @@ function resizeRendererToDisplaySize(renderer) {
 
 export async function render(editor: Editor) {
 
-  leavesMaterial.uniforms.time.value = clock.getElapsedTime();
-  leavesMaterial.uniformsNeedUpdate = true;
+  grassMaterial.uniforms.time.value = clock.getElapsedTime();
+  grassMaterial.uniformsNeedUpdate = true;
 
   renderRequested = false;
 

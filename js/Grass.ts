@@ -7,12 +7,23 @@ import { LayerEnum } from "./Constants";
 import { Editor } from "./Editor";
 import * as THREE from "three";
 
+// https://www.maya-ndljk.com/blog/threejs-basic-toon-shader
 const vertexShader = `
+
+  #include <common>
+  #include <shadowmap_pars_vertex>
 
   varying vec2 vUv;
   uniform float time;
 
 	void main() {
+    #include <beginnormal_vertex>
+    #include <defaultnormal_vertex>
+
+    #include <begin_vertex>
+
+    #include <worldpos_vertex>
+    #include <shadowmap_vertex>
 
     vUv = uv;
     
@@ -40,23 +51,39 @@ const vertexShader = `
 `;
 
 const fragmentShader = `
+  #include <common>
+  #include <packing>
+  #include <lights_pars_begin>
+  #include <shadowmap_pars_fragment>
+  #include <shadowmask_pars_fragment>
+
   varying vec2 vUv;
-  
+
   void main() {
+    DirectionalLightShadow directionalShadow = directionalLightShadows[0];
+    float shadow = getShadowMask();
+    shadow = mix(0.5, 1.0, shadow);
+    
   	vec3 baseColor = vec3( 0.41, 1.0, 0.5 );
     float clarity = ( vUv.y * 0.5 ) + 0.5;
 
-    gl_FragColor = vec4( baseColor * clarity, 1);
+    gl_FragColor = vec4( baseColor * clarity * shadow, 1);
+
   }
 `;
 
 const uniforms = {
   time: {
   	value: 0
-  }
+  },
+  receiveShadow: {
+    value: 1
+  },
+  ...THREE.UniformsLib.lights,
 };
 
-export const leavesMaterial = new THREE.ShaderMaterial({
+export const grassMaterial = new THREE.ShaderMaterial({
+  lights: true,
   vertexShader,
   fragmentShader,
   uniforms,
@@ -90,12 +117,12 @@ export function createGrassBladeGeometry(width, height) {
 
 export function createGrass(editor: Editor, instanceNumber: number, width: number, height: number) {
 
-    const geometry = createGrassBladeGeometry(0.02, 0.08)
+    const geometry = createGrassBladeGeometry(0.02, 0.16)
     const dummy = new THREE.Object3D();
     dummy.layers.set(LayerEnum.NoRaycast);
     dummy.receiveShadow = true;
 
-    const instancedMesh = new THREE.InstancedMesh( geometry, leavesMaterial, instanceNumber );
+    const instancedMesh = new THREE.InstancedMesh( geometry, grassMaterial, instanceNumber );
     instancedMesh.receiveShadow = true;
     
     editor.scene.add( instancedMesh );
@@ -123,8 +150,8 @@ export function createGrass(editor: Editor, instanceNumber: number, width: numbe
 // const animate = function () {
 
 //   // Hand a time variable to vertex shader for wind displacement.
-//   leavesMaterial.uniforms.time.value = clock.getElapsedTime();
-//   leavesMaterial.uniformsNeedUpdate = true;
+//   grassMaterial.uniforms.time.value = clock.getElapsedTime();
+//   grassMaterial.uniformsNeedUpdate = true;
 
 //   requestAnimationFrame( animate );
 

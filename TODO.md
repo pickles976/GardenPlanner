@@ -1,18 +1,16 @@
 #### Visual Improvements
-
 - [x] sky view
 - [x] grass
-
-
-- [ ] allow grass to receive shadows
-https://www.maya-ndljk.com/blog/threejs-basic-toon-shader
+- [x] allow grass to receive shadows
 
 - [ ] disable render-on-demand
+
 - [ ] show/hide grass
+    - [ ] Create a toggle
     - [ ] perform raycasts to figure out where to place grass
     - [ ] clean up grass each time
 
-- [ ] add FXAA pass to anti-alias grids
+- [ ] add FXAA pass to anti-alias grids??
 
 ```javascript
 import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';

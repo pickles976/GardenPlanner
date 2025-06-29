@@ -121,6 +121,8 @@ class Editor {
         this.renderer.toneMappingExposure = 1.0;
         newLocal.renderer.shadowMap.enabled = true;
         newLocal.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        // newLocal.renderer.physicallyCorrectLights = true
+
 
         // scene
         this.scene = new THREE.Scene();
