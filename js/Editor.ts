@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
-import { requestRenderIfNotRequested } from './Rendering';
 import { Command } from './commands/Command';
 import { Selector } from './Selector';
 import { FRUSTUM_SIZE, LayerEnum } from './Constants';
@@ -244,14 +243,9 @@ class Editor {
         this.scene.add(axesHelper);
 
         // this.scene.background = new THREE.Color(WHITE);
-
-        this.perspectiveCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
-        this.orthoCameraControls.addEventListener('change', () => requestRenderIfNotRequested(this))
-
         this.transformControls = new TransformControls(this.currentCamera, this.canvas);
         this.transformControls.addEventListener('change', () => {
             handleTransformControlsChange(this);
-            requestRenderIfNotRequested(this);
         });
         this.setSnapping(snapper.snapEnabled)
 
@@ -291,7 +285,7 @@ class Editor {
         this.perspectiveCameraControls.enabled = false
         this.orthoCameraControls.enabled = true
         this.transformControls.camera = this.currentCamera;
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     public setPerspectiveCamera() {
@@ -300,7 +294,7 @@ class Editor {
         this.perspectiveCameraControls.enabled = true
         this.orthoCameraControls.enabled = false
         this.transformControls.camera = this.currentCamera;
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     public add(object?: THREE.Object3D) {
@@ -340,10 +334,10 @@ class Editor {
     public focusByUUID(uuid: string) {
         if (this.objectMap.hasOwnProperty(uuid)) {
             const object = this.objectMap[uuid];
-            this.perspectiveCamera.position.set(...(object.position.clone().add(new THREE.Vector3(0, -2, 1))));
+            this.perspectiveCamera.position.set(...(object.position.clone().add(new THREE.Vector3(0, -1, 1))));
             this.perspectiveCameraControls.target.copy(object.position);
             this.perspectiveCameraControls.update();
-            eventBus.emit(EventEnums.REQUEST_RENDER)
+            
         }
     }
 

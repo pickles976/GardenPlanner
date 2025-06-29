@@ -132,7 +132,7 @@ class FenceEditor {
         eventBus.on(EventEnums.FENCE_CONFIG_UPDATED, (command) => {
             this.commandStack.execute(command)
             this.createPreviewMesh()
-            eventBus.emit(EventEnums.REQUEST_RENDER)
+            
         });
 
         eventBus.on(EventEnums.FENCE_VERTEX_EDITING_FINISHED, () => {
@@ -169,7 +169,7 @@ class FenceEditor {
         this.lineEditor.cleanUp()
         this.cleanUpBedConfigState()
 
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     private cleanUpBedConfigState() {
@@ -211,7 +211,7 @@ class FenceEditor {
         this.editor.currentCameraControls.target.copy(centroid)
 
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, false) // change UI
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     // Drawing
@@ -273,7 +273,7 @@ class FenceEditor {
         setDefaultCursor()
         this.cleanUp()
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, false)
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     public handleKeyDown(event) {
@@ -295,7 +295,7 @@ class FenceEditor {
     public undo() {
         this.commandStack.undo();
         this.createPreviewMesh();
-        eventBus.emit(EventEnums.REQUEST_RENDER);
+        ;
     }
 
     public handleMouseMove(intersections: THREE.Object3D[]) {

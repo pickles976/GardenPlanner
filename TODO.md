@@ -1,9 +1,6 @@
 #### Visual Improvements
-- [x] sky view
-- [x] grass
-- [x] allow grass to receive shadows
 
-- [ ] disable render-on-demand
+- [x] disable render-on-demand
 
 - [ ] show/hide grass
     - [ ] Create a toggle

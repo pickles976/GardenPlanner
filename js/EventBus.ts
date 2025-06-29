@@ -1,7 +1,6 @@
 import mitt from 'mitt'
 
 enum EventEnums {
-    REQUEST_RENDER = "requestRender",
     OBJECT_ADDED = "objectAdded",
     OBJECT_REMOVED = "objectRemoved",
 

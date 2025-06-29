@@ -1,7 +1,7 @@
 import { handleMouseMove, handleMouseClick, handleKeyDown, handleKeyUp } from './js/EventHandlers';
 import { SetPositionCommand } from './js/commands/SetPositionCommand';
 import { SetRotationCommand } from './js/commands/SetRotationCommand';
-import { requestRenderIfNotRequested, render } from './js/Rendering';
+import { render } from './js/Rendering';
 import { SetScaleCommand } from './js/commands/SetScaleCommand';
 import { createHumanCube, createGround } from './js/Creation';
 import { eventBus, EventEnums } from './js/EventBus';
@@ -27,13 +27,8 @@ document.body.appendChild( sidebar.container.dom );
 const menubar = new Menubar( editor );
 document.body.appendChild( menubar.container.dom );
 
-window.addEventListener('resize', () => requestRenderIfNotRequested(editor))
 window.addEventListener('keydown', (event) => handleKeyDown(event, editor, sidebar, menubar));
 window.addEventListener('keyup', (event) => handleKeyUp(event, editor, sidebar, menubar));
-
-editor.canvas.addEventListener('mousemove', () => requestRenderIfNotRequested(editor));
-editor.canvas.addEventListener('mouseout', () => requestRenderIfNotRequested(editor));
-editor.canvas.addEventListener('mouseleave', () => requestRenderIfNotRequested(editor));
 
 editor.canvas.addEventListener('mousemove', (event) => handleMouseMove(event, editor));
 editor.canvas.addEventListener('mouseout', (event) => handleMouseMove(event, editor));
@@ -93,13 +88,11 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
     editor.execute(command);
 });
 
-eventBus.on(EventEnums.REQUEST_RENDER, () => render(editor));
-eventBus.on(EventEnums.OBJECT_CHANGED, () => render(editor));
 eventBus.on(EventEnums.METRIC_CHANGED, (value) => gridManager.setMetric(value))
 eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(value))
 
 createGround(editor)
-// createGrass(editor, 5000000, WORLD_SIZE, WORLD_SIZE)
+createGrass(editor, 5000000, WORLD_SIZE, WORLD_SIZE)
 
 // let box = createCube(editor)
 let box = createHumanCube(editor)

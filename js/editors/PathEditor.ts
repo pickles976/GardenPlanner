@@ -124,7 +124,7 @@ class PathEditor {
         eventBus.on(EventEnums.PATH_CONFIG_UPDATED, (command) => {
             this.commandStack.execute(command)
             this.createPreviewMesh()
-            eventBus.emit(EventEnums.REQUEST_RENDER)
+            
         });
 
         eventBus.on(EventEnums.PATH_VERTEX_EDITING_FINISHED, () => {
@@ -165,7 +165,7 @@ class PathEditor {
         this.cleanUpBedConfigState()
         this.commandStack.clear()
 
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     private cleanUpBedConfigState() {
@@ -207,7 +207,7 @@ class PathEditor {
         this.editor.currentCameraControls.target.copy(centroid)
 
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, false) // change UI
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     // Drawing
@@ -272,7 +272,7 @@ class PathEditor {
         setDefaultCursor()
         this.cleanUp()
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, false)
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     public handleKeyDown(event) {
@@ -294,7 +294,7 @@ class PathEditor {
     public undo() {
         this.commandStack.undo();
         this.createPreviewMesh();
-        eventBus.emit(EventEnums.REQUEST_RENDER);
+        ;
     }
 
     public handleMouseMove(intersections: THREE.Object3D[]) {

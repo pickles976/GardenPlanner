@@ -65,7 +65,7 @@ class GridManager {
             this.footGrid.visible = true;
             this.inchGrid.visible = true;
         }
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     public showGrid(value: boolean) {
@@ -77,7 +77,7 @@ class GridManager {
         if (value) {
             this.setMetric(this.metric)
         }
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
 }

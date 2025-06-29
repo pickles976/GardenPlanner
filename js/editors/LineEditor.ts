@@ -223,7 +223,7 @@ class LineEditor {
         this.cleanUpVertexEditingState()
         this.commandStack.clear()
 
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     private cleanUpVertexPlacementState() {
@@ -277,7 +277,7 @@ class LineEditor {
         this.mode = LineEditorMode.PLACE_VERTEX_MODE;
 
         setCrossCursor()
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     private setVertexEditMode() {
@@ -360,7 +360,7 @@ class LineEditor {
             this.editor.add(this.polygon)
         } 
         this.drawEdges()
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
 
     }
 
@@ -397,7 +397,7 @@ class LineEditor {
         // If loop is closed, go to `VERTEX_EDIT_MODE`
         if (this.closedLoop) {
             if (this.tryCloseLoop(point)) {
-                eventBus.emit(EventEnums.REQUEST_RENDER)
+                
                 return
             }
         }
@@ -425,7 +425,7 @@ class LineEditor {
         this.angleText = undefined;
         this.distanceText = undefined;
 
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     private handleMouseClickEditVerticesMode(object: THREE.Object3D, point: THREE.Vector3) {
@@ -634,7 +634,7 @@ class LineEditor {
         }
 
         this.drawPreview()
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
 
     }
 
@@ -651,7 +651,7 @@ class LineEditor {
                 break;
         }
         this.handleMouseMove(this.editor, [{object: undefined, point: this.lastPoint}]);
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     public getPolygonArea(): number {

@@ -38,9 +38,9 @@ const vertexShader = `
     
     // here the displacement is made stronger on the blades tips.
     float dispPower = 1.0 - cos( uv.y * 3.1416 / 2.0 );
-    float dispMagnitude = 0.01;
+    float dispMagnitude = 0.02;
     
-    float speed = 0.2;
+    float speed = 0.4;
     float displacement = sin( tipPosition.z + time * speed ) * ( dispMagnitude * dispPower );
     tipPosition.y += displacement; // sway
     

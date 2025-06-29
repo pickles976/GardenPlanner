@@ -188,7 +188,7 @@ class BedEditor {
         eventBus.on(EventEnums.BED_CONFIG_UPDATED, (command) => {
             this.commandStack.execute(command)
             this.createPreviewMesh()
-            eventBus.emit(EventEnums.REQUEST_RENDER)
+            
         });
 
         eventBus.on(EventEnums.BED_VERTEX_EDITING_FINISHED, () => {
@@ -226,7 +226,7 @@ class BedEditor {
         this.cleanUpBedConfigState()
         this.commandStack.clear()
 
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     private cleanUpBedConfigState() {
@@ -270,7 +270,7 @@ class BedEditor {
         this.editor.currentCameraControls.target.copy(centroid)
 
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, false) // change UI
-        eventBus.emit(EventEnums.REQUEST_RENDER)
+        
     }
 
     // Drawing
@@ -364,7 +364,7 @@ class BedEditor {
     public undo() {
         this.commandStack.undo();
         this.createPreviewMesh();
-        eventBus.emit(EventEnums.REQUEST_RENDER);
+        ;
     }
 
     public getBedArea(): number {

@@ -3,8 +3,6 @@ import { FRUSTUM_SIZE } from './Constants';
 import { Editor } from './Editor';
 import { grassMaterial } from './Grass';
 
-let renderRequested = false;
-
 const clock = new THREE.Clock();
 
 function resizeRendererToDisplaySize(renderer) {
@@ -22,8 +20,6 @@ export async function render(editor: Editor) {
 
   grassMaterial.uniforms.time.value = clock.getElapsedTime();
   grassMaterial.uniformsNeedUpdate = true;
-
-  renderRequested = false;
 
   editor.currentCameraControls.update()
 
@@ -48,11 +44,7 @@ export async function render(editor: Editor) {
 
   editor.renderer.render(editor.scene, editor.currentCamera);
   editor.labelRenderer.render(editor.scene, editor.currentCamera);
-}
 
-export function requestRenderIfNotRequested(editor: Editor) {
-  if (!renderRequested) {
-    renderRequested = true;
-    requestAnimationFrame(() => render(editor));
-  }
+  requestAnimationFrame(() => render(editor));
+
 }
