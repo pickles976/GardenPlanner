@@ -75,7 +75,7 @@ class SidebarGlobals {
                     eventBus.emit(EventEnums.METRIC_CHANGED, this.metricCheck.getValue());
                     break;
             }
-
+            return;
         }
 
         if (e.code === "KeyG") {

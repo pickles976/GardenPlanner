@@ -12,6 +12,7 @@ import { Editor } from "../Editor";
 import { DARK_GRAY, VERTEX_COLOR, WHITE } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
 import { LineEditor } from "./LineEditor";
+import { mudMaterial, mulchMaterial, rockMaterial } from "../Materials";
 
 const INITIAL_BED_HEIGHT = 0.15;
 const INITIAL_BORDER_WIDTH = 0.10;
@@ -303,6 +304,7 @@ class BedEditor {
 
         // Set origin at the halfway point of the bed object
         let mergedMesh = mergeMeshes([border, bed]);
+        mergedMesh.geometry.setAttribute('uv2', new THREE.BufferAttribute(mergedMesh.geometry.attributes.uv.array, 2));
 
         const box = new THREE.Box3().setFromObject(mergedMesh);
         const size = new THREE.Vector3();

@@ -4,16 +4,27 @@ import { CreateObjectCommand } from './commands/CreateObjectCommand';
 import { LayerEnum, WORLD_SIZE } from './Constants';
 import { setCurrentTransformationAsDefault } from './ModelLoader';
 import { GROUND_COLOR } from './Colors';
-import { GrassMaterial, grassTexture } from './Materials';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { createPhongMaterial, getGeometrySize, getObjectsize, mergeMeshes } from './Utils';
 
-export function createHumanCube(editor: Editor): THREE.Mesh {
-    const mat = new THREE.MeshPhongMaterial({
-        color: 0xDDDDDD,
-    })
-    const geo = new THREE.BoxGeometry(0.6096, 0.3048, 1.8288);
-    const mesh = new THREE.Mesh(geo, mat)
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
+const loader = new GLTFLoader();
+
+export async function createHumanCube(editor: Editor): THREE.Mesh {
+    const gltf = await loader.loadAsync("/models/miyako.glb");
+
+    const len = gltf.scene.children.length;
+    let mesh = gltf.scene.children[len - 1].children[0];
+
+    // let meshes = [];
+    mesh.traverse(function (child) {
+        if (child.type === "Mesh") {
+            // child.material = new THREE.MeshPhongMaterial({map: child.material.map, color: 0xFFFFFF})
+            child.castShadow = true;
+            child.receiveShadow = true;
+        }
+    });
+
+    mesh.layers.set(LayerEnum.Objects)
     mesh.userData = {
         selectable: true,
         editableFields: {
@@ -23,9 +34,11 @@ export function createHumanCube(editor: Editor): THREE.Mesh {
             scale: true
         }
     }
-    mesh.layers.set(LayerEnum.Objects)
-    mesh.name = "Human-sized box";
 
+    const scale = 1
+    mesh.scale.set(scale,scale,scale)
+
+    mesh.name = "Human-sized object";
     editor.execute(new CreateObjectCommand(mesh, editor));
 
     return mesh
@@ -91,7 +104,7 @@ export function createSphere(editor: Editor): THREE.Mesh {
         color: 0xDDDDDD,
     })
     const geo = new THREE.SphereGeometry(0.3048, 32, 16);
-    const mesh = new THREE.Mesh(geo, mat)
+    const mesh = new THREE.Mesh(geo, mudMaterial)
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.userData = {

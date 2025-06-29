@@ -66,6 +66,7 @@ class Editor {
 
     transformControls: TransformControls
 
+    ambientLight: THREE.AmbientLight;
     directionalLight: THREE.DirectionalLight
 
     commandStack: CommandStack;
@@ -117,14 +118,12 @@ class Editor {
         this.labelRenderer.domElement.style.pointerEvents = 'none'; // don't want any events coming from the CSS renderer guy
         document.body.appendChild(this.labelRenderer.domElement);
 
-        // Why did we do this???
-        const newLocal = this;
-        // renderer.outputEncoding = THREE.sRGBEncoding;
-        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-        this.renderer.toneMappingExposure = 1.0;
-        newLocal.renderer.shadowMap.enabled = true;
-        newLocal.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        // newLocal.renderer.physicallyCorrectLights = true
+        // this.renderer.outputEncoding = THREE.sRGBEncoding;
+        // this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        // this.renderer.toneMappingExposure = 0.8;
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        // this.renderer.physicallyCorrectLights = true
 
 
         // scene
@@ -143,11 +142,11 @@ class Editor {
         const theta = THREE.MathUtils.degToRad( azimuth );
 
         // this.sky.material.uniforms.sunPosition.value =new THREE.Vector3().setFromSphericalCoords( 1, phi, theta );
-        this.sky.material.uniforms.sunPosition.value = new THREE.Vector3(-1, 1, 0.2);
-        // this.sky.material.uniforms.turbidity = 10;
-        // this.sky.material.uniforms.rayleigh = 3;
-        // this.sky.material.uniforms.mieCoefficient = 0.1;
-        this.sky.material.uniforms.mieDirectionalG.value = 0.5; // Sun diffusion amount
+        this.sky.material.uniforms.sunPosition.value = new THREE.Vector3(-1, 1, 0.0);
+        this.sky.material.uniforms.turbidity.value = 10;
+        this.sky.material.uniforms.rayleigh.value = 3;
+        this.sky.material.uniforms.mieCoefficient.value = 0.005;
+        this.sky.material.uniforms.mieDirectionalG.value = 0.7; // Sun diffusion amount
         this.sky.material.uniforms.exposure = 0.5;
 
         this.scene.add( this.sky );
@@ -206,9 +205,9 @@ class Editor {
 
         // TODO: split this out into a lighting object
         // lighting
-        const intensity = 1.5;
+        const intensity = 1.0;
         this.directionalLight = new THREE.DirectionalLight(WHITE, intensity);
-        this.directionalLight.position.set(-20, 20, 10);
+        this.directionalLight.position.set(-20, 20, 50);
         this.directionalLight.castShadow = true;
         this.scene.add(this.directionalLight);
         this.scene.name = "Scene"
@@ -236,9 +235,8 @@ class Editor {
 
         this.directionalLight.name = "Directional Light";
 
-        const ambient = new THREE.AmbientLight(WHITE, 0.25);
-        ambient.name = "Ambient Light"
-        this.scene.add(ambient);
+        this.ambientLight = new THREE.AmbientLight(WHITE, 0.25);
+        this.scene.add(this.ambientLight);
 
         const axesHelper = new THREE.AxesHelper(10);
         axesHelper.layers.set(LayerEnum.NoRaycast)

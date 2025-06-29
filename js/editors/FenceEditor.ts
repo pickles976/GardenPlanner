@@ -10,6 +10,7 @@ import { Editor } from "../Editor";
 import { WHITE } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
 import { LineEditor } from "./LineEditor";
+import { chainLinkMaterial, mudMaterial } from "../Materials";
 
 const INITIAL_FENCE_HEIGHT = 2.0;
 const CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, -2, 2);
@@ -20,7 +21,11 @@ enum FenceEditorMode {
     CONFIG_MODE = "CONFIG_MODE"
 }
 
-function createFence(vertices: THREE.Vector3[], height: number, material: THREE.Material) : THREE.Mesh {
+// TODO: do this properly so that we dont get these stupid fucking artifacts
+// TODO: 
+// 1. create planes
+// 2. merge meshes
+function createFence(vertices: THREE.Vector3[], height: number, material: THREE.Material): THREE.Mesh {
     /**
      * Take the vertices and extrude them vertically to create a fence
      */
@@ -30,11 +35,31 @@ function createFence(vertices: THREE.Vector3[], height: number, material: THREE.
     const top = bottom.map((v) => new THREE.Vector3(v.x, v.y, height));
 
     const positions = [];
+    const uvs = [];
+
+    // First, compute cumulative lengths along the bottom edge for horizontal UVs
+    const distances = [0];
+    let totalLength = 0;
+    for (let i = 1; i < bottom.length; i++) {
+        const d = bottom[i].distanceTo(bottom[i - 1]);
+        totalLength += d;
+        distances.push(totalLength);
+    }
+
+    // Normalize distances to [0, 1] for U coordinates
+    const us = distances.map((d) => d / totalLength);
+
     for (let i = 0; i < bottom.length; i++) {
         const b = bottom[i];
         const t = top[i];
-        positions.push(b.x, b.y, b.z);
+
+        // Bottom vertex
         positions.push(t.x, t.y, t.z);
+        uvs.push(us[i], 0);  // u = horizontal position, v = bottom
+
+        // Top vertex
+        positions.push(b.x, b.y, b.z);
+        uvs.push(us[i], 1);  // u = horizontal position, v = top
     }
 
     const indices = [];
@@ -44,18 +69,18 @@ function createFence(vertices: THREE.Vector3[], height: number, material: THREE.
         const i2 = i * 2 + 2;
         const i3 = i * 2 + 3;
 
-        indices.push(i0, i2, i1); // Triangle 1: i0, i2, i1
-        indices.push(i2, i3, i1); // Triangle 2: i2, i3, i1
-    } 
+        indices.push(i0, i2, i1); // Triangle 1
+        indices.push(i2, i3, i1); // Triangle 2
+    }
 
     const geometry = new THREE.BufferGeometry();
     geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
     geometry.setIndex(indices);
     geometry.computeVertexNormals();
-    geometry.translate(0,0, -height / 2);
+    geometry.translate(0, 0, -height / 2);
 
     return new THREE.Mesh(geometry, material);
-
 }
 
 class FenceProps extends Props {
@@ -234,10 +259,15 @@ class FenceEditor {
 
     private createMesh() {
         const props = this.props;
-        const fence = createFence(this.vertices, props.fenceHeight, createPhongMaterial(props.fenceColor));
+
+        const mat = chainLinkMaterial.clone();
+        mat.color.set(this.props.fenceColor);
+        mat.transparent = true;
+        
+        const fence = createFence(this.vertices, props.fenceHeight, mat);
 
         fence.castShadow = props.shadow;
-        fence.receiveShadow = true;
+        fence.receiveShadow = false;
         fence.userData = { // Give mesh the data used to create it, so it can be edited. Add selection callbacks
             selectable: true,
             onSelect: () => eventBus.emit(EventEnums.FENCE_SELECTED, true),

@@ -65,7 +65,7 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 - [x] 06/26/2025 -- fence and path creation
 - [x] 06/27/2025 -- UX improvements
 - [x] 06/28/2025 -- visual improvements
-- [ ] 06/29/2025 -- visual improvements (cont)
+- [x] 06/29/2025 -- visual improvements (cont)
 
 # Week 5
 - [ ] 06/30/2025 -- texture controls for objects
