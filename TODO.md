@@ -1,30 +1,5 @@
 #### Visual Improvements
 
-- [x] disable render-on-demand
-
-- [ ] show/hide grass
-    - [ ] Create a toggle
-    - [ ] perform raycasts to figure out where to place grass
-    - [ ] clean up grass each time
-
-- [ ] add FXAA pass to anti-alias grids??
-
-```javascript
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js';
-import { ShaderPass } from 'three/examples/jsm/postprocessing/ShaderPass.js';
-import { FXAAShader } from 'three/examples/jsm/shaders/FXAAShader.js';
-
-const composer = new EffectComposer(renderer);
-composer.addPass(new RenderPass(scene, camera));
-
-const fxaaPass = new ShaderPass(FXAAShader);
-fxaaPass.material.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
-composer.addPass(fxaaPass);
-
-// Then use composer.render() instead of renderer.render()
-```
-
 ##### Textures
 https://gamedevnexus.com/resources/assets/
 - [ ] pbr texture-loading
@@ -35,7 +10,6 @@ https://gamedevnexus.com/resources/assets/
 - [ ] chain link
 - [ ] add ability to set textures for 3D models from object panels
 https://freepbr.com/product/stylized-grass1/
-
 
 - [ ] add texture configuration
     - [ ] bed/bed border
@@ -57,6 +31,20 @@ https://freepbr.com/product/stylized-grass1/
 - [ ] ~~steal~~ copy shademap timeline widget
 - [ ] set north from angle
 
+# QOL
+- [ ] hide grass in top-down view (make grass its own layer!)
+- [ ] add show/hide grass to view menubar 
+- [ ] perform raycasts to figure out where to place grass
+
+- [ ] allow user to edit each vertex from the UI in vertex edit mode
+- [ ] ESC = cancel for line editor/object editor modes
+- [ ] show all objects when bed editing
+
+- [ ] let user hide objects from object panel
+
+- [ ] draw pointer to north as rotating UI element
+- [ ] fix issue with ctrl + d
+
 ## SAVING
 - [ ] saving configurations as json
     - [ ] autosave feature
@@ -76,24 +64,12 @@ https://freepbr.com/product/stylized-grass1/
 - [ ] set height and radius
 - [ ] enter height and radius at different time points
 - [ ] animate plant according to different time points
-    
-## DATA AND STUFF
-- [ ] in-browser sqlite engine for plants and stuff
-- [ ] allow users to create their own plants
 
 - [ ] complete web client
 
-# QOL
-- [ ] draw pointer to north as rotating UI element
-- [ ] let user hide objects from object panel
-- [ ] in line editor mode, draw all other objects as lines?
-- [ ] ESC = cancel for line editor/object editor modes
-- [ ] allow user to edit each vertex from the UI in vertex edit mode
-- [ ] fix issue with ctrl + d
-
-
 # BUGS
 - [ ] bed panel does not hide when bed is deselected from scene panel
+- [ ] fix bug where path props are not being populated properly
 
 # Fuzz Testing
 
@@ -111,18 +87,21 @@ MVP finished!
 - [ ] community gardens network in Austin
 - [ ] r/austingardens
 
-
 - [ ] user login backend
 - [ ] garden concept browser?
 - [ ] batch processing for sun location
 - [ ] payment system and stuff
 - [ ] texture ground with satellite view from google?
 
+## DATA AND STUFF
+- [ ] in-browser sqlite engine for plants and stuff
+- [ ] allow users to create their own plants
+
 ## Optimization
-- [ ] isntancing
-- [ ] ???
 
 # HELP FOR USERS
 - [ ] press "m" to move objects
 - [ ] shift + click to place down rulers
 - [ ] change transform modes (R, T, S)
+- [ ] g to show/hide grass
+

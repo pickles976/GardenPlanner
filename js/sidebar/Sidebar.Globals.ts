@@ -17,11 +17,11 @@ class SidebarGlobals {
 
     snapRow: UIRow;
     metricRow: UIRow;
-    transformRow: UIRow;
+    grassRow: UIRow;
 
     snapCheck: UICheckbox;
     metricCheck: UICheckbox;
-    transformCheck: UICheckbox;
+    grassCheck: UICheckbox;
 
 
     constructor ( editor: Editor ) {
@@ -46,15 +46,24 @@ class SidebarGlobals {
         this.metricRow.add(new UIText(" Metric System"));
         this.metricRow.add( new UIText( "SHIFT+M" ).setClass( 'key' ));
 
+        this.grassRow = new UIRow();
+        this.grassCheck = new UICheckbox();
+        this.grassCheck.setValue(snapper.metric);
+        this.grassRow.add(this.grassCheck);
+        this.grassRow.add(new UIText(" Show Grass"));
+        this.grassRow.add( new UIText( "G" ).setClass( 'key' ));
+
         this.container.add(this.snapRow)
         this.container.add(this.metricRow)
-        this.container.add(this.transformRow)
+        this.container.add(this.grassRow)
 
         this.snapCheck.onClick(() => eventBus.emit(EventEnums.SNAP_CHANGED, this.snapCheck.getValue()))
         this.metricCheck.onClick(() => eventBus.emit(EventEnums.METRIC_CHANGED, this.metricCheck.getValue()))
+        this.grassCheck.onClick(() => eventBus.emit(EventEnums.GRASS_CHANGED, this.grassCheck.getValue()))
     }
 
     public handleKeyDown(e) {
+
         if (e.shiftKey) {
             switch (e.code) {
                 case 'KeyS':
@@ -68,6 +77,12 @@ class SidebarGlobals {
             }
 
         }
+
+        if (e.code === "KeyG") {
+            this.grassCheck.setValue(!this.grassCheck.getValue())
+            eventBus.emit(EventEnums.GRASS_CHANGED, this.grassCheck.getValue());
+        } 
+
     }
 
 }

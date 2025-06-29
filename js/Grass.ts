@@ -115,34 +115,42 @@ export function createGrassBladeGeometry(width, height) {
     return geometry;
 }
 
-export function createGrass(editor: Editor, instanceNumber: number, width: number, height: number) {
+// TODO: perform raycast to check for stuff!
+// TODO: cache raycast for performance!
+export function createGrass(instanceNumber: number, width: number, height: number)  : THREE.InstancedMesh {
 
-    const geometry = createGrassBladeGeometry(0.02, 0.16)
-    const dummy = new THREE.Object3D();
-    dummy.layers.set(LayerEnum.NoRaycast);
-    dummy.receiveShadow = true;
+  const start = performance.now();
 
-    const instancedMesh = new THREE.InstancedMesh( geometry, grassMaterial, instanceNumber );
-    instancedMesh.receiveShadow = true;
+  const geometry = createGrassBladeGeometry(0.02, 0.16)
+  const dummy = new THREE.Object3D();
+  dummy.layers.set(LayerEnum.NoRaycast);
+  dummy.receiveShadow = true;
+
+  const instancedMesh = new THREE.InstancedMesh( geometry, grassMaterial, instanceNumber );
+  instancedMesh.receiveShadow = true;
+
+  // TODO: get a faster prng implementation
+  // Position and scale the grass blade instances randomly.
+  for ( let i=0 ; i<instanceNumber ; i++ ) {
+    dummy.position.set(
+      ( Math.random() - 0.5 ) * width,
+      ( Math.random() - 0.5 ) * height,
+      0
+    );
     
-    editor.scene.add( instancedMesh );
+    dummy.scale.setScalar( 0.5 + Math.random() * 0.5 );
+    
+    dummy.rotation.z = Math.random() * Math.PI;
+    
+    dummy.updateMatrix();
+    instancedMesh.setMatrixAt( i, dummy.matrix );
+  }
 
-    // Position and scale the grass blade instances randomly.
+  // 200 ms just for prng
+  // 600 ms total
+  console.log(`Created grass in: ${performance.now() - start}ms`)
 
-    for ( let i=0 ; i<instanceNumber ; i++ ) {
-      dummy.position.set(
-        ( Math.random() - 0.5 ) * width,
-        ( Math.random() - 0.5 ) * height,
-        0
-      );
-      
-      dummy.scale.setScalar( 0.5 + Math.random() * 0.5 );
-      
-      dummy.rotation.z = Math.random() * Math.PI;
-      
-      dummy.updateMatrix();
-      instancedMesh.setMatrixAt( i, dummy.matrix );
-    }
+  return instancedMesh;
 }
 
 // const clock = new THREE.Clock();

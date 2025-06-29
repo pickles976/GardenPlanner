@@ -92,7 +92,6 @@ eventBus.on(EventEnums.METRIC_CHANGED, (value) => gridManager.setMetric(value))
 eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(value))
 
 createGround(editor)
-createGrass(editor, 5000000, WORLD_SIZE, WORLD_SIZE)
 
 // let box = createCube(editor)
 let box = createHumanCube(editor)

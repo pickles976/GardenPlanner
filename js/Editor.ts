@@ -3,7 +3,7 @@ import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { Command } from './commands/Command';
 import { Selector } from './Selector';
-import { FRUSTUM_SIZE, LayerEnum } from './Constants';
+import { FRUSTUM_SIZE, LayerEnum, WORLD_SIZE } from './Constants';
 import { BedEditor } from './editors/BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
@@ -22,6 +22,7 @@ import { PathEditor } from './editors/PathEditor';
 import { SetPositionCommand } from './commands/SetPositionCommand';
 
 import { Sky } from 'three/addons/objects/Sky.js';
+import { createGrass } from './Grass';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -79,7 +80,10 @@ class Editor {
 
     mode: EditorMode;
 
+    // Pretty things
+    // TODO: pull this out into a grass manager??
     sky: Sky;
+    grass?: THREE.InstancedMesh;
 
 
 
@@ -266,6 +270,8 @@ class Editor {
 
         eventBus.on(EventEnums.SNAP_CHANGED, (value) => this.setSnapping(value))
         eventBus.on(EventEnums.CAMERA_CHANGED, (value) => value ? this.setOrthoCamera() : this.setPerspectiveCamera())
+
+        eventBus.on(EventEnums.GRASS_CHANGED, (value) => this.showGrass(value));
     }
 
     private setSnapping(value: boolean) {
@@ -410,7 +416,7 @@ class Editor {
                 if (event.shiftKey) {
                     break;
                 }
-                eventBus.emit(EventEnums.TRANSFORM_MODE_CHANGED, !this.selector.advancedTransformMode);
+                this.selector.setTransformMode(!this.selector.advancedTransformMode);
                 break;
             case 't':
                 this.transformControls.setMode('translate');
@@ -491,7 +497,6 @@ class Editor {
                     this.execute(new SetRotationCommand(object, object.quaternion, newQuaternion));
                 }
                 break;
-
         }
     }
 
@@ -586,6 +591,17 @@ class Editor {
         
         highlightMouseOverObject(this, intersections)
 
+    }
+
+    public showGrass(value: boolean) {
+        if (value) {
+            this.remove(this.grass)
+            this.grass = createGrass(5000000, WORLD_SIZE, WORLD_SIZE)
+            this.add(this.grass)
+        } else {
+            this.remove(this.grass)
+            this.grass = undefined;
+        }
     }
 
     public handleMouseMove(event) {

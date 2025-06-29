@@ -36,7 +36,6 @@ class Selector {
             if (!this.advancedTransformMode) return;
             if (this.editor.transformControls.mode !== "rotate") return;
         });
-        eventBus.on(EventEnums.TRANSFORM_MODE_CHANGED, (value) => this.setTransformMode(value));
     }
 
     private setTransformMode(value: boolean) {

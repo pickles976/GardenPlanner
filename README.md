@@ -64,14 +64,23 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 - [x] 06/25/2025 -- QOL improvements/Refactor
 - [x] 06/26/2025 -- fence and path creation
 - [x] 06/27/2025 -- UX improvements
-- [ ] 06/28/2025 -- visual improvements
-- [ ] 06/29/2025 -- object creation panel (like plant selector panel)
+- [x] 06/28/2025 -- visual improvements
+- [ ] 06/29/2025 -- visual improvements (cont)
 
 # Week 5
+- [ ] 06/30/2025 -- texture controls for objects
+- [ ] 06/31/2025 -- object creation panel (like plant selector panel)
+- [ ] 07/01/2025 -- vertex QOL improvements
+- [ ] 07/02/2025 -- 
+- [ ] 07/03/2025 -- 
+- [ ] 07/04/2025 -- drive to OK
+- [ ] 07/06/2025 -- back from OK
+
+# Week 6
 - [ ] sun calc feature
 - [ ] saving and loading json
 - [ ] sun timeline
-- [ ] optimization
+- [ ] optimizations
 
 # Milestones
 - [ ] Garden editor -- 06/30/2025

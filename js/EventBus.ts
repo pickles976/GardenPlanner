@@ -7,7 +7,7 @@ enum EventEnums {
     OBJECT_CHANGED = "objectChanged",
     OBJECT_SELECTED = "objectSelected",
 
-    TRANSFORM_MODE_CHANGED = "transformModeChanged",
+    GRASS_CHANGED = "grassChanged",
 
     // GLOBAL EVENTS
     SNAP_CHANGED = "snapChanged",
