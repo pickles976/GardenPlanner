@@ -226,8 +226,6 @@ class BedEditor {
         this.lineEditor.cleanUp()
         this.cleanUpBedConfigState()
         this.commandStack.clear()
-
-        
     }
 
     private cleanUpBedConfigState() {

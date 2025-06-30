@@ -3,7 +3,7 @@
  * https://discourse.threejs.org/t/simple-instanced-grass-example/26694
  */
 
-import { LayerEnum } from "./Constants";
+import { DEPTHMASK_RENDER_ORDER, LayerEnum } from "./Constants";
 import { Editor } from "./Editor";
 import * as THREE from "three";
 
@@ -14,6 +14,8 @@ const vertexShader = `
   #include <shadowmap_pars_vertex>
 
   varying vec2 vUv;
+  varying vec3 vNormal;
+
   uniform float time;
 
 	void main() {
@@ -32,6 +34,10 @@ const vertexShader = `
     vec4 tipPosition = vec4( position, 1.0 );
     #ifdef USE_INSTANCING
     	tipPosition = instanceMatrix * tipPosition;
+
+      // set vNormal for frag shader lighting
+      mat3 normalMatrixInstance = transpose(inverse(mat3(normalMatrix)));
+      vNormal = normalize(normalMatrix * normalMatrixInstance * normal);
     #endif
     
     // DISPLACEMENT
@@ -58,8 +64,16 @@ const fragmentShader = `
   #include <shadowmask_pars_fragment>
 
   varying vec2 vUv;
+  varying vec3 vNormal;
 
   void main() {
+
+    // Directional light
+    float NdotL = dot(vNormal, directionalLights[0].direction);
+    float lightIntensity = smoothstep(0.0, 0.01, NdotL);
+    vec3 directionalLight = directionalLights[0].color * lightIntensity;
+
+    // Directional shadow
     DirectionalLightShadow directionalShadow = directionalLightShadows[0];
     float shadow = getShadowMask();
     shadow = mix(0.5, 1.0, shadow);
@@ -67,7 +81,10 @@ const fragmentShader = `
   	vec3 baseColor = vec3( 0.41, 1.0, 0.5 );
     float clarity = ( vUv.y * 0.5 ) + 0.5;
 
-    gl_FragColor = vec4( baseColor * clarity * shadow, 1);
+    // ambientLightColor
+
+    gl_FragColor = vec4( baseColor * clarity * shadow, 1.0);
+    // gl_FragColor = vec4( directionalLight, 1.0);
 
   }
 `;
@@ -124,10 +141,9 @@ export function createGrass(instanceNumber: number, width: number, height: numbe
   const geometry = createGrassBladeGeometry(0.02, 0.16)
   const dummy = new THREE.Object3D();
   dummy.layers.set(LayerEnum.NoRaycast);
-  dummy.receiveShadow = true;
 
   const instancedMesh = new THREE.InstancedMesh( geometry, grassMaterial, instanceNumber );
-  instancedMesh.receiveShadow = true;
+  // instancedMesh.renderOrder = DEPTHMASK_RENDER_ORDER + 1;
 
   // TODO: get a faster prng implementation
   // Position and scale the grass blade instances randomly.

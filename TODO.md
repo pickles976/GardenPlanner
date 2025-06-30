@@ -1,17 +1,15 @@
-#### Visual Improvements
-
-- [ ] fence UVs causing texture issues
-- [ ] if shadows disabled, chain link fense. Shadows enabled, picket.
-- [ ] add axes helper to grid!
-
 ## SUN CONTROLS
 - [ ] add function to editor to set north
 - [ ] add function to editor to set azimuth/elevation relative to north
 - [ ] update render call to animate the sun
 
+- [ ] read about shaders, get grass shader working three js
+- [ ] depth masking for grass three js
+
 - [ ] set sun position sun based on time
 - [ ] set directional lighting based on time
 - [ ] set light intensity/color based on time
+- [ ] add directional and ambient lighting to the grass
 
 - [ ] configure params until this feels right
 
@@ -28,11 +26,14 @@
 - [ ] ~~steal~~ copy shademap timeline widget
 - [ ] set north from angle
 
-# QOL
+#### Visual Improvements
+- [ ] fence UVs causing texture issues
+- [ ] if shadows disabled, chain link fense. Shadows enabled, picket.
+- [ ] add axes helper to grid manager
 - [ ] hide grass in top-down view (make grass its own layer!)
 - [ ] add show/hide grass to view menubar 
-- [ ] perform raycasts to figure out where to place grass
 
+# QOL
 - [ ] draw angle between lines, not angle between north for line editor
 - [ ] allow user to edit each vertex from the UI in vertex edit mode
 - [ ] ESC = cancel for line editor/object editor modes

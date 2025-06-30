@@ -9,7 +9,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
 import { eventBus, EventEnums } from './EventBus';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { WHITE } from './Colors';
+import { RED, WHITE } from './Colors';
 import { filterCurrentlySelected, handleTransformControlsChange, highlightMouseOverObject, performRaycast, processIntersections } from './EventHandlers';
 import { snapper } from './Snapping';
 import { DeleteObjectCommand } from './commands/DeleteObjectCommand';
@@ -206,8 +206,8 @@ class Editor {
         // TODO: split this out into a lighting object
         // lighting
         const intensity = 1.0;
-        this.directionalLight = new THREE.DirectionalLight(WHITE, intensity);
-        this.directionalLight.position.set(-20, 20, 50);
+        this.directionalLight = new THREE.DirectionalLight(RED, intensity);
+        this.directionalLight.position.set(-20, 20, 20);
         this.directionalLight.castShadow = true;
         this.scene.add(this.directionalLight);
         this.scene.name = "Scene"

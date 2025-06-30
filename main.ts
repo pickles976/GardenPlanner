@@ -12,7 +12,8 @@ import { Sidebar } from './js/sidebar/Sidebar';
 import { loadPlant } from './js/ModelLoader';
 import { Editor } from './js/Editor';
 import { createGrass } from './js/Grass';
-import { WORLD_SIZE } from './js/Constants';
+import { DEPTHMASK_RENDER_ORDER, WORLD_SIZE } from './js/Constants';
+import * as THREE from "three"
 
 const editor = new Editor();
 editor.initThree();
@@ -95,6 +96,8 @@ createGround(editor)
 
 let box = await createHumanCube(editor)
 box.position.set(1, 1, 0)
+
+eventBus.emit(EventEnums.GRASS_CHANGED, true);
 
 render(editor);
 
