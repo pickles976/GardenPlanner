@@ -1,20 +1,20 @@
-- [ ] use stencilbuffer to occlude grass
-
 ## SUN CONTROLS
 - [x] add function to editor to set azimuth/elevation relative to north
 - [x] update render call to animate the sun
+- [x] set sun position sun based on time
+- [x] set directional lighting based on time
+- [x] set light intensity/color based on time
+- [x] add directional and ambient lighting to the grass
 
-- [ ] add function to editor to set north
-- [ ] import suncalc
-- [ ] set lat/lon
-- [ ] set timezone
+- [x] add function to editor to set north
+- [x] import suncalc
+- [ ] add sun control panel
+- [ ] set lat, lon
+- [ ] get timezone from lat/lon
 - [ ] set date and time
 
-- [ ] set sun position sun based on time
-- [ ] set directional lighting based on time
-- [ ] set light intensity/color based on time
-- [ ] add directional and ambient lighting to the grass
-
+- [ ] grass occlusion
+- [ ] add directional lighting to grass shader
 - [ ] read about shaders, get grass shader working three js
 - [ ] depth masking for grass three js
 - [ ] apply different colors to grass with perlin noise

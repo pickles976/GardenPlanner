@@ -56,6 +56,8 @@ class Editor {
      * "God" object
      */
 
+    north: THREE.Vector3;
+
     canvas: HTMLCanvasElement
     renderer: THREE.WebGLRenderer
     labelRenderer: CSS2DRenderer
@@ -94,6 +96,7 @@ class Editor {
 
 
     constructor() {
+        this.north = new THREE.Vector3(0,1,0);
         this.commandStack = new CommandStack();
         this.objectMap = {};
         this.selector = new Selector(this);
@@ -124,7 +127,7 @@ class Editor {
         document.body.appendChild(this.labelRenderer.domElement);
 
         // this.renderer.outputEncoding = THREE.sRGBEncoding;
-        // this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         // this.renderer.toneMappingExposure = 0.8;
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -238,12 +241,6 @@ class Editor {
         this.ambientLight = new THREE.AmbientLight(WHITE, 1.0);
         this.scene.add(this.ambientLight);
 
-        const axesHelper = new THREE.AxesHelper(10);
-        axesHelper.layers.set(LayerEnum.NoRaycast)
-        axesHelper.position.set(0, 0, 0.003)
-        axesHelper.name = "Axes Helper"
-        this.scene.add(axesHelper);
-
         // this.scene.background = new THREE.Color(WHITE);
         this.transformControls = new TransformControls(this.currentCamera, this.canvas);
         this.transformControls.addEventListener('change', () => {
@@ -273,6 +270,8 @@ class Editor {
     }
 
     public setSunPosition(azimuth: number, elevation: number) {
+        
+        // TODO: account for north
 
         elevation = degToRad(elevation);
         azimuth = degToRad(azimuth);

@@ -1,5 +1,8 @@
 # Stuff
 
+https://thebookofshaders.com/01/
+https://learnopengl.com/Getting-started/Shaders
+
 JavaScript: suncalc
 
 https://pictogrammers.com/library/mdi/

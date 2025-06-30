@@ -18,6 +18,8 @@ class GridManager {
     size: number;
     metric: boolean;
 
+    axesHelper: THREE.AxesHelper;
+
     constructor(editor) {
 
         this.metric = snapper.metric;
@@ -50,6 +52,12 @@ class GridManager {
         editor.scene.add(this.inchGrid);
 
         this.setMetric(this.metric)
+
+        this.axesHelper = new THREE.AxesHelper(10);
+        this.axesHelper.layers.set(LayerEnum.NoRaycast)
+        this.axesHelper.position.set(0, 0, 0.003)
+        this.axesHelper.name = "Axes Helper"
+        editor.scene.add(this.axesHelper);
     }
 
     public setMetric(value: boolean) {
@@ -73,6 +81,7 @@ class GridManager {
         this.decimeterGrid.visible = value;
         this.footGrid.visible = value;
         this.inchGrid.visible = value;
+        this.axesHelper.visible = value;
 
         if (value) {
             this.setMetric(this.metric)

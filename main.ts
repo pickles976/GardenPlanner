@@ -14,6 +14,8 @@ import { Editor } from './js/Editor';
 import { createGrass } from './js/Grass';
 import { DEPTHMASK_RENDER_ORDER, WORLD_SIZE } from './js/Constants';
 import * as THREE from "three"
+import SunCalc from "suncalc";
+import { rad2deg } from './js/Utils';
 
 const editor = new Editor();
 editor.initThree();
@@ -98,6 +100,14 @@ let box = await createHumanCube(editor)
 box.position.set(1, 1, 0)
 
 eventBus.emit(EventEnums.GRASS_CHANGED, true);
+
+const lat = 30.354156;
+const lon = -97.757466;
+
+console.log(new Date())
+const pos = SunCalc.getPosition(new Date(), lat, lon, 0)
+console.log(rad2deg(pos.azimuth), rad2deg(pos.altitude))
+editor.setSunPosition(rad2deg(pos.azimuth), rad2deg(pos.altitude));
 
 render(editor);
 

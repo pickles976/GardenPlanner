@@ -138,7 +138,7 @@ export function createGrass(instanceNumber: number, width: number, height: numbe
 
   const start = performance.now();
 
-  const geometry = createGrassBladeGeometry(0.02, 0.16)
+  const geometry = createGrassBladeGeometry(0.04, 0.32)
   const dummy = new THREE.Object3D();
   dummy.layers.set(LayerEnum.Grass);
 
