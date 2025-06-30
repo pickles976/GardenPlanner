@@ -1,9 +1,9 @@
 # Stuff
 
+https://www.suncalc.org/#/30.3402,-97.7628,3/2025.06.30/18:31/1/3
+
 https://thebookofshaders.com/01/
 https://learnopengl.com/Getting-started/Shaders
-
-JavaScript: suncalc
 
 https://pictogrammers.com/library/mdi/
 
@@ -71,10 +71,10 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 - [x] 06/29/2025 -- visual improvements (cont)
 
 # Week 5
-- [ ] 06/30/2025 -- texture controls for objects
-- [ ] 06/31/2025 -- object creation panel (like plant selector panel)
+- [ ] 06/30/2025 -- sun calc
+- [ ] 06/31/2025 -- 
 - [ ] 07/01/2025 -- vertex QOL improvements
-- [ ] 07/02/2025 -- 
+- [ ] 07/02/2025 -- object creation panel (like plant selector panel)
 - [ ] 07/03/2025 -- 
 - [ ] 07/04/2025 -- drive to OK
 - [ ] 07/06/2025 -- back from OK

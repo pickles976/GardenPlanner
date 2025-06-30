@@ -24,10 +24,12 @@
 
 - [x] need to redo the entire coordinate system
 
-- [ ] set north from angle
+- [ ] set north from UI
 - [ ] draw pointer to north UI object
 
-- [ ] ~~steal~~ copy shademap timeline widget
+- [ ] create play button (go from sun up to sun down)
+- [ ] create basic timeline based off the one at the suncalc website
+- [ ] make the sun widgets showable/hideable
 
 ### Grass Shader Improvements
 - [ ] grass occlusion
@@ -102,7 +104,10 @@ MVP finished!
 - [ ] enter height and radius at different time points
 - [ ] animate plant according to different time points
 
+- [ ] ~~steal~~ copy shademap timeline widget??
+
 - [ ] complete web client
+
 
 # Further features
 - [ ] user login backend
