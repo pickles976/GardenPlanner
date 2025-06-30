@@ -3,6 +3,7 @@ import { UITabbedPanel, UISpan, UIPanel } from '../libs/ui.js';
 import { SidebarScene } from './Sidebar.Scene.js';
 import { SidebarProperties } from './Sidebar.Properties.js';
 import { SidebarGlobals } from './Sidebar.Globals.ts';
+import { SidebarSun } from './Sidebar.Sun.ts';
 
 import { Strings } from './Strings.js';
 import { Editor } from '../Editor.ts';
@@ -13,6 +14,7 @@ class Sidebar {
 	editor: Editor;
 	container: UIPanel;
 	sidebarGlobals: SidebarGlobals;
+	sidebarSun: SidebarSun;
 	sidebarScene: UIPanel;
 	sidebarProperties: UITabbedPanel;
 	scene: UISpan;
@@ -24,10 +26,12 @@ class Sidebar {
 		this.container.setId( 'sidebar' );
 
 		this.sidebarGlobals = new SidebarGlobals( editor );
+		this.sidebarSun = new SidebarSun(editor);
 		this.sidebarScene = SidebarScene( editor );
 		this.sidebarProperties = SidebarProperties( editor );
 
 		this.scene = new UISpan().add(
+			this.sidebarSun.container,
 			this.sidebarGlobals.container,
 			this.sidebarScene,
 			this.sidebarProperties

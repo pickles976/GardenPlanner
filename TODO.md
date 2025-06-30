@@ -8,7 +8,7 @@
 
 - [x] add function to editor to set north
 - [x] import suncalc
-- [ ] add sun control panel
+- [x] add sun control panel
 - [ ] set lat, lon
 - [ ] get timezone from lat/lon
 - [ ] set date and time

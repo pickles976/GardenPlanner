@@ -48,9 +48,9 @@ export async function render(editor: Editor) {
   editor.renderer.render(editor.scene, editor.currentCamera);
   editor.labelRenderer.render(editor.scene, editor.currentCamera);
 
-//   elevation += 0.2;
-//   azimuth += 0.1
-  // editor.setSunPosition(-135, 10);
+  // elevation += 0.2;
+  // azimuth += 0.1
+  // editor.setSunPosition(azimuth, elevation);
 
   requestAnimationFrame(() => render(editor));
 
