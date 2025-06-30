@@ -97,7 +97,7 @@ eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(
 createGround(editor)
 
 let box = await createHumanCube(editor)
-box.position.set(1, 1, 0)
+box.position.set(1, 0, 1)
 
 // eventBus.emit(EventEnums.GRASS_CHANGED, true);
 

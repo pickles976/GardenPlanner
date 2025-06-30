@@ -1,3 +1,11 @@
+# Coordinate bullshit
+- [x] fix bed
+- [x] fix path
+- [x] fix fence
+- [x] sun angle
+- [x] fix rotation bug
+- [x] fix issue with top-down camera not rotating
+
 ## SUN CONTROLS
 - [x] add function to editor to set azimuth/elevation relative to north
 - [x] update render call to animate the sun
@@ -14,7 +22,7 @@
 - [x] set date and time
 - [x] update sun position from widget
 
-- [ ] need to redo the entire coordinate system
+- [x] need to redo the entire coordinate system
 
 - [ ] set north from angle
 - [ ] draw pointer to north UI object

@@ -48,7 +48,7 @@ const vertexShader = `
     
     float speed = 0.4;
     float displacement = sin( tipPosition.z + time * speed ) * ( dispMagnitude * dispPower );
-    tipPosition.y += displacement; // sway
+    tipPosition.z += displacement; // sway
     
     vec4 modelViewPosition = modelViewMatrix * tipPosition;
     gl_Position = projectionMatrix * modelViewPosition;
@@ -83,7 +83,7 @@ const fragmentShader = `
 
     // ambientLightColor
 
-    gl_FragColor = vec4( ambientLightColor * baseColor * clarity * shadow, 1.0);
+    gl_FragColor = vec4( ambientLightColor * (baseColor * clarity * shadow), 1.0);
     // gl_FragColor = vec4( directionalLight, 1.0);
 
   }
@@ -115,7 +115,7 @@ export function createGrassBladeGeometry(width, height) {
 
     // Vertices of the triangle
     const vertices = new Float32Array([
-    0, 0, height,              // top vertex
+    0, height, 0,              // top vertex
     -width / 2, 0, 0,          // bottom left
     width / 2, 0, 0            // bottom right
     ]);
@@ -149,13 +149,13 @@ export function createGrass(instanceNumber: number, width: number, height: numbe
   for ( let i=0 ; i<instanceNumber ; i++ ) {
     dummy.position.set(
       ( Math.random() - 0.5 ) * width,
-      ( Math.random() - 0.5 ) * height,
-      0
+      0,
+      ( Math.random() - 0.5 ) * height
     );
     
     dummy.scale.setScalar( 0.5 + Math.random() * 0.5 );
     
-    dummy.rotation.z = Math.random() * Math.PI;
+    dummy.rotation.y = Math.random() * Math.PI;
     
     dummy.updateMatrix();
     instancedMesh.setMatrixAt( i, dummy.matrix );

@@ -32,7 +32,7 @@ function createFence(vertices: THREE.Vector3[], height: number, material: THREE.
 
     const centroid = getCentroid(vertices);
     const bottom = vertices.map((v) => v.clone().sub(centroid));
-    const top = bottom.map((v) => new THREE.Vector3(v.x, v.y, height));
+    const top = bottom.map((v) => new THREE.Vector3(v.x, height, v.z));
 
     const positions = [];
     const uvs = [];
@@ -78,7 +78,7 @@ function createFence(vertices: THREE.Vector3[], height: number, material: THREE.
     geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
     geometry.setIndex(indices);
     geometry.computeVertexNormals();
-    geometry.translate(0, 0, -height / 2);
+    geometry.translate(0, -height / 2, 0);
 
     return new THREE.Mesh(geometry, material);
 }
@@ -254,7 +254,7 @@ class FenceEditor {
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices)
-        this.fencePreviewMesh.position.set(...centroid.add(new THREE.Vector3(0, 0, props.fenceHeight / 2)));
+        this.fencePreviewMesh.position.set(...centroid.add(new THREE.Vector3(0, props.fenceHeight / 2, 0)));
     }
 
     private createMesh() {
@@ -288,7 +288,7 @@ class FenceEditor {
         const size = new THREE.Vector3();
         box.getSize(size);
         const centroid = getCentroid(this.vertices);
-        fence.position.set(...centroid.add(new THREE.Vector3(0,0,size.z / 2)))
+        fence.position.set(...centroid.add(new THREE.Vector3(0,size.y / 2,0)))
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
         if (this.oldObject) {

@@ -37,6 +37,7 @@ export async function createHumanCube(editor: Editor): THREE.Mesh {
 
     const scale = 1
     mesh.scale.set(scale,scale,scale)
+    mesh.rotation.x = mesh.rotation.x - Math.PI / 2;
 
     mesh.name = "Human-sized object";
     editor.execute(new CreateObjectCommand(mesh, editor));
@@ -76,7 +77,6 @@ export function createCylinder(editor: Editor): THREE.Mesh {
     const geo = new THREE.CylinderGeometry(0.3048, 0.3048, 1, 32);
     let mesh = new THREE.Mesh(geo, mat)
 
-    mesh.rotation.x = mesh.rotation.x + (Math.PI / 2);
     mesh = setCurrentTransformationAsDefault(mesh);    
 
     mesh.castShadow = true;
@@ -156,16 +156,17 @@ export function createPlane(editor: Editor): THREE.Mesh {
 
 export function createGround(editor: Editor): THREE.Mesh {
 
-    const groundMat = new THREE.MeshPhongMaterial({
+    const mat = new THREE.MeshPhongMaterial({
         color: GROUND_COLOR,    // red (can also use a CSS color string here)
     });
 
-    const groundGeo = new THREE.PlaneGeometry(WORLD_SIZE, WORLD_SIZE, 4, 4)
-    const groundMesh = new THREE.Mesh(groundGeo, groundMat)
-    groundMesh.layers.set(LayerEnum.World)
-    groundMesh.castShadow = false;
-    groundMesh.receiveShadow = true;
-    groundMesh.name = "Ground";
-    editor.scene.add(groundMesh)
-    return groundMesh
+    const geometry = new THREE.PlaneGeometry(WORLD_SIZE, WORLD_SIZE, 4, 4)
+    const mesh = new THREE.Mesh(geometry, mat)
+    mesh.layers.set(LayerEnum.World)
+    mesh.castShadow = false;
+    mesh.receiveShadow = true;
+    mesh.name = "Ground";
+    mesh.rotation.x = mesh.rotation.x - Math.PI / 2;
+    editor.scene.add(mesh)
+    return mesh
 }

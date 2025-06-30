@@ -14,7 +14,7 @@ import { filterCurrentlySelected, handleTransformControlsChange, highlightMouseO
 import { snapper } from './Snapping';
 import { DeleteObjectCommand } from './commands/DeleteObjectCommand';
 import { CreateObjectCommand } from './commands/CreateObjectCommand';
-import { blendColors, deepClone, sphericalToZUpVector3 } from './Utils';
+import { blendColors, deepClone } from './Utils';
 import { SetRotationCommand } from './commands/SetRotationCommand';
 import { RulerEditor } from './editors/RulerEditor';
 import { FenceEditor } from './editors/FenceEditor';
@@ -96,7 +96,7 @@ class Editor {
 
 
     constructor() {
-        this.north = new THREE.Vector3(0,1,0);
+        this.north = new THREE.Vector3(0,0,1);
         this.commandStack = new CommandStack();
         this.objectMap = {};
         this.selector = new Selector(this);
@@ -140,11 +140,9 @@ class Editor {
 
         // Sky
         this.sky = new Sky();
-        this.sky.material.uniforms.up.value.set( 0, 0, 1 ); // set z as up
         this.sky.scale.setScalar(4500000);
         this.sky.layers.set(LayerEnum.NoRaycast)
 
-        // this.sky.material.uniforms.sunPosition.value =new THREE.Vector3().setFromSphericalCoords( 1, phi, theta );
         this.sky.material.uniforms.sunPosition.value = new THREE.Vector3(-1, 1, 0.0);
         this.sky.material.uniforms.turbidity.value = 10;
         this.sky.material.uniforms.rayleigh.value = 3;
@@ -160,8 +158,8 @@ class Editor {
 
         this.perspectiveCamera = new THREE.PerspectiveCamera(60, aspect, 0.01, 2000000);
         this.perspectiveCamera.name = "Perspective Camera"
-        this.perspectiveCamera.position.set(0, -1, 1);
-        this.perspectiveCamera.up.set(0, 0, 1);
+        this.perspectiveCamera.position.set(0, 2, -2);
+        this.perspectiveCamera.up.set(0, 1, 0);
         this.perspectiveCamera.lookAt(0, 0, 0);
         this.perspectiveCamera.layers.enableAll();
 
@@ -172,24 +170,26 @@ class Editor {
         this.perspectiveCameraControls.screenSpacePanning = false;
         this.perspectiveCameraControls.minDistance = 0.1;
         this.perspectiveCameraControls.maxDistance = 16384;
-        this.perspectiveCameraControls.maxPolarAngle = (Math.PI / 2) - (Math.PI / 360)
+        this.perspectiveCameraControls.maxPolarAngle = (Math.PI / 2) - (Math.PI / 180)
 
         // Orthographic Camera https://threejs.org/docs/#api/en/cameras/OrthographicCamera
-        this.orthoCamera = new THREE.OrthographicCamera(FRUSTUM_SIZE * aspect / - 2, FRUSTUM_SIZE * aspect / 2, FRUSTUM_SIZE / 2, FRUSTUM_SIZE / - 2, 0.01, 1000);
+        this.orthoCamera = new THREE.OrthographicCamera(
+            -FRUSTUM_SIZE * aspect / 2, // L
+            FRUSTUM_SIZE * aspect / 2,  // R
+            FRUSTUM_SIZE / 2, // TOP
+            -FRUSTUM_SIZE / 2, // Bottom
+            0.01, // Near
+            1000); // Far
         this.orthoCamera.name = "Ortho Camera"
-        this.orthoCamera.position.set(0, 0, 1);
+        this.orthoCamera.position.set(0, 100, 0);
         this.orthoCamera.up.set(0, 0, 1);
         this.orthoCamera.lookAt(0, 0, 0);
-        this.orthoCamera.rotateZ(-Math.PI / 2)
         this.orthoCamera.layers.enableAll();
-
-        // // TODO: CAMERA LAYERS CONFIG
-        // this.orthoCamera.layers.disable(LayerEnum.Plants)
 
         // Orbit Controls https://threejs.org/docs/#examples/en/controls/OrbitControls.keys
         this.orthoCameraControls = new OrbitControls(this.orthoCamera, this.canvas);
         this.orthoCameraControls.enableDamping = false; // an animation loop is required when either damping or auto-rotation are enabled
-        this.orthoCameraControls.screenSpacePanning = false;
+        this.orthoCameraControls.screenSpacePanning = true;
         this.orthoCameraControls.minDistance = 0.1;
         this.orthoCameraControls.maxDistance = 16384;
         this.orthoCameraControls.enableRotate = false
@@ -271,16 +271,21 @@ class Editor {
 
     public setSunPosition(azimuth: number, elevation: number) {
         
-        // TODO: account for north
+        console.log(elevation, azimuth)
 
         elevation = degToRad(elevation);
-        azimuth = degToRad(azimuth - 90);
+        azimuth = degToRad(azimuth);
 
-        const dist = 100.0;
-        let sunPos = sphericalToZUpVector3(dist, elevation, azimuth);
+        console.log(elevation)
 
-        // let sunPos = new Vector3(Math.cos(azimuth) , Math.sin(azimuth), Math.sin(elevation));
-        // sunPos = sunPos.multiplyScalar(dist);
+
+        // TODO: account for dynamic north
+
+
+        // convert from SunCalc convention to THREE.js convention
+        // https://github.com/mourner/suncalc
+        // https://threejs.org/docs/#api/en/math/Spherical.theta
+        let sunPos = new Vector3().setFromSphericalCoords(100.0, (Math.PI / 2) - elevation, Math.PI - azimuth);
 
         this.ambientLight.intensity = BASE_AMBIENT_LIGHT_INTENSITY + Math.sin(elevation) * (1 - BASE_AMBIENT_LIGHT_INTENSITY);
         this.ambientLight.color = blendColors(ORANGE, WHITE, Math.sqrt(Math.sin(elevation)))
@@ -327,6 +332,7 @@ class Editor {
             return
         }
         this.objectMap[object.uuid] = object;
+        object.rotation.reorder ( 'XZY' ); // Fix rotation order
         this.scene.add(object)
         // TODO: properly update the rest of the application
     }
@@ -549,7 +555,6 @@ class Editor {
 
         if (this.selector.currentSelectedObject === undefined) {
             const [object, point] = processIntersections(intersections);
-            console.log(point)
             (object.userData.selectable === true) ? this.selector.select(object) : this.selector.deselect();
         } else {
             this.selector.deselect()
@@ -602,7 +607,7 @@ class Editor {
                 const size = new THREE.Vector3();
                 box.getSize(size);
 
-                let newPos = point.add(new THREE.Vector3(0,0,size.z / 2))
+                let newPos = point.add(new THREE.Vector3(0,size.y / 2,0))
                 newPos = snapper.snap(newPos);
                 this.execute(new SetPositionCommand(selector.currentSelectedObject, selector.currentSelectedObject.position, newPos))
             }

@@ -226,7 +226,7 @@ function SidebarObject( editor ) {
 			const size = getObjectsize(object);
 			if ( Math.abs(radius - (size.x / 2)) >= 0.01 ) {
 				const ratio = 2 * (radius / size.x);
-				const newRadius = new THREE.Vector3(object.scale.x * ratio, object.scale.x * ratio, object.scale.z)
+				const newRadius = new THREE.Vector3(object.scale.x * ratio, object.scale.y, object.scale.x * ratio)
 				editor.execute( new SetScaleCommand( object, object.scale, newRadius ) );
 			}
 		}
@@ -235,9 +235,9 @@ function SidebarObject( editor ) {
 		if (editableFields.height) {
 			const height = snapper.metric ? objectHeight.getValue() : snapper.inchesToMeters(objectHeight.getValue())
 			const size = getObjectsize(object);
-			if ( Math.abs(height - size.z) >= 0.01 ) {
-				const ratio = (height / size.z);
-				const newHeight = new THREE.Vector3(object.scale.x, object.scale.y, object.scale.z * ratio)
+			if ( Math.abs(height - size.y) >= 0.01 ) {
+				const ratio = (height / size.y);
+				const newHeight = new THREE.Vector3(object.scale.x, object.scale.y * ratio, object.scale.z)
 				editor.execute( new SetScaleCommand( object, object.scale, newHeight ) );
 			}
 		}
@@ -423,14 +423,14 @@ function SidebarObject( editor ) {
 		if (editableFields.radius)
 		{
 			const size = getObjectsize(object);
-			object.scale.y = object.scale.x;
+			object.scale.z = object.scale.x;
 			objectRadius.setValue(snapper.metersToInches(size.x / 2.0));
 		}
 
 		if (editableFields.height)
 		{
 			const size = getObjectsize(object);
-			objectHeight.setValue(snapper.metersToInches(size.z));
+			objectHeight.setValue(snapper.metersToInches(size.y));
 		}
 
 	}

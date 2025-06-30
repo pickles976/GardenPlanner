@@ -69,8 +69,8 @@ function createLineSegment(point: THREE.Vector3, lastPoint: THREE.Vector3): THRE
     const geometry = new LineGeometry();
     const p1 = point.clone();
     const p2 = lastPoint.clone();
-    p1.z = 0.01;
-    p2.z = 0.01;
+    p1.y = 0.01;
+    p2.y = 0.01;
     geometry.setPositions(destructureVector3Array([p1, p2]));
     const material = new LineMaterial({ color: GREEN, linewidth: 5, depthWrite: false, depthTest: false });
     const line = new Line2(geometry, material);
@@ -118,7 +118,7 @@ function createButton(position: THREE.Vector3, icon: string, color: string): CSS
 
 export function createPolygon(points: THREE.Vector3[]): THREE.Mesh {
     /** Create a Polygon from an array of points */
-    let polyShape = new THREE.Shape(points.map((coord) => new THREE.Vector2(coord.x, coord.y)))
+    let polyShape = new THREE.Shape(points.map((coord) => new THREE.Vector2(coord.x, coord.z)))
     const polyGeometry = new THREE.ShapeGeometry(polyShape);
     polyGeometry.setAttribute("position", new THREE.Float32BufferAttribute(points.map(coord => [coord.x, coord.y, coord.z]).flat(), 3))
     const polygon = new THREE.Mesh(polyGeometry, new THREE.MeshBasicMaterial({ color: GREEN, side: THREE.DoubleSide, transparent: true, opacity: POLYGON_OPACITY, depthWrite: false, depthTest: false }))
@@ -538,7 +538,7 @@ class LineEditor {
 
         // This is here because the raycast intersects the vertex continuously, causing it to "climb"
         // TODO: figure out a way to do this without hardcoding the location to z=0
-        point.z = 0.0
+        point.y = 0.0
 
         if (this.selectedHandle === undefined) { // No vertex selected
 

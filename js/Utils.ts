@@ -3,17 +3,17 @@ import * as THREE from "three";
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 import { FONT_SIZE } from "./Constants";
 
-export function sphericalToZUpVector3(radius, elevation, azimuth) {
-    const phi = elevation - Math.PI / 2; 
-    const theta = azimuth;
+// export function sphericalToZUpVector3(radius, elevation, azimuth) {
+//     const phi = elevation - Math.PI / 2; 
+//     const theta = azimuth;
 
-    const sinPhi = Math.sin(phi);
-    const x = radius * sinPhi * Math.cos(theta);
-    const y = radius * sinPhi * Math.sin(theta);
-    const z = radius * Math.cos(phi);
+//     const sinPhi = Math.sin(phi);
+//     const x = radius * sinPhi * Math.cos(theta);
+//     const z = radius * sinPhi * Math.sin(theta);
+//     const y = radius * Math.cos(phi);
 
-    return new THREE.Vector3(x, y, z);
-}
+//     return new THREE.Vector3(x, y, z);
+// }
 
 export function blendColors(color1: THREE.Color, color2: THREE.Color, f: number) {
     // Clamp t to [0, 1]
@@ -75,10 +75,10 @@ export function polygonArea(vertices: THREE.Vector3[]): number {
   for (let i = 0; i < vertices.length; i++) {
     const v1 = vertices[i];
     const v2 = vertices[(i + 1) % vertices.length];
-    const x1 = v1.x, y1 = v1.y;
-    const x2 = v2.x, y2 = v2.y;
+    const x1 = v1.x, z1 = v1.z;
+    const x2 = v2.x, z2 = v2.z;
 
-    area += (x1 * y2) - (x2 * y1);
+    area += (x1 * z2) - (x2 * z1);
   }
   return Math.abs(area) / 2.0;
 }

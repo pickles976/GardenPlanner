@@ -13,12 +13,13 @@ import { DARK_GRAY, VERTEX_COLOR, WHITE } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
 import { LineEditor } from "./LineEditor";
 import { mudMaterial, mulchMaterial, rockMaterial } from "../Materials";
+import { setCurrentTransformationAsDefault } from "../ModelLoader";
 
 const INITIAL_BED_HEIGHT = 0.15;
 const INITIAL_BORDER_WIDTH = 0.10;
 
 const NUM_ARC_SEGMENTS = 1;
-const BED_CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, -2, 2);
+const BED_CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, 2, -2);
 
 
 function createBedBorder(vertices: THREE.Vector3[], width: number, height: number, material: THREE.Material): THREE.Mesh {
@@ -28,14 +29,14 @@ function createBedBorder(vertices: THREE.Vector3[], width: number, height: numbe
      * a similar shape, but expanded in all directions by the specified `width`
      */
 
-    const verts = vertices.map((v) => ({ "x": v.x, "y": v.y }));
+    const verts = vertices.map((v) => ({ "x": v.x, "y": v.z }));
 
     // Grow the border polygon by `width`
     // Depending on if the vertices were placed CW or CCW, the polygon will shrink or grow. If the border area is smaller than the bed area, 
     // then we need to re-calculate the offset with a flipped sign
-    let border = offsetPolygon(verts, width, 1).map((v) => new THREE.Vector3(v.x, v.y, 0.0));
-    if (polygonArea(border.map((v) => new THREE.Vector3(v["x"], v["y"], 0.0))) < polygonArea(vertices)) {
-        border = offsetPolygon(verts, -width, NUM_ARC_SEGMENTS).map((v) => new THREE.Vector3(v.x, v.y, 0.0));
+    let border = offsetPolygon(verts, width, 1).map((v) => new THREE.Vector3(v.x, 0.0, v.y));
+    if (polygonArea(border.map((v) => new THREE.Vector3(v["x"], 0.0, v["z"]))) < polygonArea(vertices)) {
+        border = offsetPolygon(verts, -width, NUM_ARC_SEGMENTS).map((v) => new THREE.Vector3(v.x, 0.0, v.y));
     }
     border.push(border[0]); // close loop
 
@@ -43,12 +44,12 @@ function createBedBorder(vertices: THREE.Vector3[], width: number, height: numbe
 
     const points = border.map((p) => {
         const temp = p.clone().sub(centroid);
-        return new THREE.Vector2(temp.x, temp.y);
+        return new THREE.Vector2(temp.x, temp.z);
     });
 
     const holes = vertices.map((p) => {
         const temp = p.clone().sub(centroid);
-        return new THREE.Vector2(temp.x, temp.y);
+        return new THREE.Vector2(temp.x, temp.z);
     });
 
     // Create a "donut" polygon
@@ -64,8 +65,12 @@ function createBedBorder(vertices: THREE.Vector3[], width: number, height: numbe
         bevelThickness: 1
     };
 
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    geometry.rotateX(Math.PI / 2);
+    geometry.center();
+
     // Extrude 2D polygon to 3D mesh
-    return new THREE.Mesh(new THREE.ExtrudeGeometry(shape, extrudeSettings), material);
+    return new THREE.Mesh(geometry, material);;
 }
 
 function createBed(vertices: THREE.Vector3[], height: number, material: THREE.Material) : THREE.Mesh {
@@ -79,7 +84,7 @@ function createBed(vertices: THREE.Vector3[], height: number, material: THREE.Ma
     verts.push(vertices[0]);
     const points = verts.map((p) => {
         const temp = p.clone().sub(centroid);
-        return new THREE.Vector2(temp.x, temp.y);
+        return new THREE.Vector3(temp.x, temp.z);
     });
 
     const shape = new THREE.Shape(points);
@@ -93,7 +98,11 @@ function createBed(vertices: THREE.Vector3[], height: number, material: THREE.Ma
         bevelThickness: 1
     };
 
-    return new THREE.Mesh(new THREE.ExtrudeGeometry(shape, extrudeSettings), material);
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    geometry.rotateX(Math.PI / 2);
+    geometry.center();
+
+    return new THREE.Mesh(geometry, material);;
 }
 
 
@@ -308,7 +317,7 @@ class BedEditor {
         const size = new THREE.Vector3();
         box.getSize(size);
 
-        mergedMesh.geometry.translate(0,0,-size.z / 2)
+        mergedMesh.geometry.translate(0,-size.y / 2,0)
 
         mergedMesh.castShadow = true;
         mergedMesh.receiveShadow = true;
@@ -328,7 +337,7 @@ class BedEditor {
         mergedMesh.name = this.props.name;
 
         // Move to position
-        mergedMesh.position.set(...centroid.clone().add(new THREE.Vector3(0,0,size.z / 2)))
+        mergedMesh.position.set(...centroid.clone().add(new THREE.Vector3(0,size.y / 2,0)))
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
         if (this.oldBed) {

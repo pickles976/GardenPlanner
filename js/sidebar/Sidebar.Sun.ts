@@ -86,7 +86,7 @@ class SidebarSun {
         const lon = this.longitude.value;
         const lat = this.latitude.value;
 
-        const pos = SunCalc.getPosition(date, lat, lon, 130)
+        const pos = SunCalc.getPosition(date, lat, lon, 0)
         this.editor.setSunPosition(rad2deg(pos.azimuth), rad2deg(pos.altitude));
 
     }

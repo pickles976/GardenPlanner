@@ -26,28 +26,24 @@ class GridManager {
 
         this.meterGrid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE, WHITE, WHITE);
         this.meterGrid.layers.set(LayerEnum.NoRaycast)
-        this.meterGrid.rotateX(Math.PI / 2)
-        this.meterGrid.position.set(0, 0, 0.002)
+        this.meterGrid.position.set(0, 0.002, 0)
         editor.scene.add(this.meterGrid);
 
         this.decimeterGrid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE * 10, 0x555555, 0xBBBBBB);
         this.decimeterGrid.layers.set(LayerEnum.NoRaycast)
-        this.decimeterGrid.rotateX(Math.PI / 2)
-        this.decimeterGrid.position.set(0, 0, 0.001)
+        this.decimeterGrid.position.set(0, 0.001, 0)
         this.decimeterGrid.material.linewidth = 0.1;
         editor.scene.add(this.decimeterGrid);
 
         let footDivisions = FEET_PER_METER * GRID_SIZE;
         this.footGrid = new THREE.GridHelper(GRID_SIZE, footDivisions, WHITE, WHITE);
         this.footGrid.layers.set(LayerEnum.NoRaycast)
-        this.footGrid.rotateX(Math.PI / 2)
-        this.footGrid.position.set(0, 0, 0.002)
+        this.footGrid.position.set(0, 0.002, 0)
         editor.scene.add(this.footGrid);
 
         this.inchGrid = new THREE.GridHelper(GRID_SIZE, footDivisions * 12, 0x555555, 0xBBBBBB);
         this.inchGrid.layers.set(LayerEnum.NoRaycast)
-        this.inchGrid.rotateX(Math.PI / 2)
-        this.inchGrid.position.set(0, 0, 0.001)
+        this.inchGrid.position.set(0, 0.001, 0)
         this.inchGrid.material.linewidth = 0.1;
         editor.scene.add(this.inchGrid);
 
@@ -55,7 +51,7 @@ class GridManager {
 
         this.axesHelper = new THREE.AxesHelper(10);
         this.axesHelper.layers.set(LayerEnum.NoRaycast)
-        this.axesHelper.position.set(0, 0, 0.003)
+        this.axesHelper.position.set(0, 0.003, 0)
         this.axesHelper.name = "Axes Helper"
         editor.scene.add(this.axesHelper);
     }

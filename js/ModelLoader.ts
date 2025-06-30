@@ -41,7 +41,7 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
 
     // Bake in rotation and scale
     mesh.scale.set(...plant.scale)
-    mesh.rotation.x = mesh.rotation.x + (Math.PI / 2);
+    // mesh.rotation.x = mesh.rotation.x + (Math.PI / 2);
     mesh = setCurrentTransformationAsDefault(mesh);    
 
     mesh.layers.set(LayerEnum.Plants);
@@ -64,7 +64,7 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
     const size = new THREE.Vector3();
     box.getSize(size);
 
-    let newPos = mesh.position.add(new THREE.Vector3(0,0,size.z / 2))
+    let newPos = mesh.position.add(new THREE.Vector3(0,size.y / 2,0))
     mesh.position.set(...newPos)
 
     editor.execute(new CreateObjectCommand(mesh, editor))

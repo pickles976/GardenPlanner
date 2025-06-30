@@ -14,7 +14,7 @@ import offsetPolygon from "offset-polygon";
 
 const INITIAL_PATH_HEIGHT = 0.03;
 const INITIAL_PATH_WIDTH = 0.3;
-const CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, -2, 2);
+const CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, 2, -2);
 
 enum PathEditorMode {
     INACTIVE = "INACTIVE",
@@ -30,7 +30,7 @@ function createPath(vertices: THREE.Vector3[], width: number, height: number, nu
     const centroid = getCentroid(vertices);
     vertices = vertices.map((v) => v.clone().sub(centroid));
 
-    const verts = vertices.map((v) => ({ "x": v.x, "y": v.y }));
+    const verts = vertices.map((v) => ({ "x": v.x, "y": v.z }));
     verts.push(...verts.slice(1, verts.length - 1).reverse())
 
     let border = offsetPolygon(verts, width / 2, numArcSegments).map((v) => new THREE.Vector2(v.x, v.y));
@@ -46,7 +46,11 @@ function createPath(vertices: THREE.Vector3[], width: number, height: number, nu
         bevelThickness: 1
     };
 
-    return new THREE.Mesh(new THREE.ExtrudeGeometry(shape, extrudeSettings), material);
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    geometry.rotateX(Math.PI / 2);
+    geometry.center();
+
+    return new THREE.Mesh(geometry, material);
 
 }
 
@@ -224,7 +228,7 @@ class PathEditor {
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices);
-        centroid.add(new THREE.Vector3(0, 0, 0.01)) // prevent z-fighting
+        centroid.add(new THREE.Vector3(0, 0.01, 0)) // prevent z-fighting
         this.previewMesh.position.set(...centroid);
     }
 
@@ -257,7 +261,7 @@ class PathEditor {
 
         // Create and merge border + bed meshes
         const centroid = getCentroid(this.vertices);
-        path.position.set(...centroid.clone().add(new THREE.Vector3(0,0,size.z / 2)))
+        path.position.set(...centroid.clone().add(new THREE.Vector3(0,size.y / 2,0)))
 
         // update mesh position, rotation, and scale if editing a pre-existing bed
         if (this.oldObject) {
