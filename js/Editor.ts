@@ -9,12 +9,12 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
 import { eventBus, EventEnums } from './EventBus';
 import { CSS2DRenderer, CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-import { RED, WHITE } from './Colors';
+import { ORANGE, RED, WHITE, YELLOW } from './Colors';
 import { filterCurrentlySelected, handleTransformControlsChange, highlightMouseOverObject, performRaycast, processIntersections } from './EventHandlers';
 import { snapper } from './Snapping';
 import { DeleteObjectCommand } from './commands/DeleteObjectCommand';
 import { CreateObjectCommand } from './commands/CreateObjectCommand';
-import { deepClone } from './Utils';
+import { blendColors, deepClone, sphericalToZUpVector3 } from './Utils';
 import { SetRotationCommand } from './commands/SetRotationCommand';
 import { RulerEditor } from './editors/RulerEditor';
 import { FenceEditor } from './editors/FenceEditor';
@@ -23,6 +23,8 @@ import { SetPositionCommand } from './commands/SetPositionCommand';
 
 import { Sky } from 'three/addons/objects/Sky.js';
 import { createGrass } from './Grass';
+import { Vector3 } from 'three';
+import { degToRad } from 'three/src/math/MathUtils.js';
 
 
 const SHADOWMAP_WIDTH = 32;
@@ -34,6 +36,9 @@ const SCREEN_HEIGHT = window.innerHeight;
 
 const ROTATION_DEGREES = 0.008726639;
 const ORBIT_CONTROLS_PAN_SPEED = 20.0;
+
+const BASE_AMBIENT_LIGHT_INTENSITY = 0.5;
+const BASE_DIRECTIONAL_LIGHT_INTENSITY = 0.3;
 
 enum EditorMode {
     NONE = "NONE",
@@ -136,11 +141,6 @@ class Editor {
         this.sky.scale.setScalar(4500000);
         this.sky.layers.set(LayerEnum.NoRaycast)
 
-        const elevation = 15;
-        const azimuth = 90;
-        const phi = THREE.MathUtils.degToRad( 180 - elevation );
-        const theta = THREE.MathUtils.degToRad( azimuth );
-
         // this.sky.material.uniforms.sunPosition.value =new THREE.Vector3().setFromSphericalCoords( 1, phi, theta );
         this.sky.material.uniforms.sunPosition.value = new THREE.Vector3(-1, 1, 0.0);
         this.sky.material.uniforms.turbidity.value = 10;
@@ -235,7 +235,7 @@ class Editor {
 
         this.directionalLight.name = "Directional Light";
 
-        this.ambientLight = new THREE.AmbientLight(WHITE, 0.25);
+        this.ambientLight = new THREE.AmbientLight(WHITE, 1.0);
         this.scene.add(this.ambientLight);
 
         const axesHelper = new THREE.AxesHelper(10);
@@ -270,6 +270,28 @@ class Editor {
         eventBus.on(EventEnums.CAMERA_CHANGED, (value) => value ? this.setOrthoCamera() : this.setPerspectiveCamera())
 
         eventBus.on(EventEnums.GRASS_CHANGED, (value) => this.showGrass(value));
+    }
+
+    public setSunPosition(azimuth: number, elevation: number) {
+
+        elevation = degToRad(elevation);
+        azimuth = degToRad(azimuth);
+
+        const dist = 100.0;
+        let sunPos = sphericalToZUpVector3(dist, elevation, azimuth);
+
+        // let sunPos = new Vector3(Math.cos(azimuth) , Math.sin(azimuth), Math.sin(elevation));
+        // sunPos = sunPos.multiplyScalar(dist);
+
+        this.ambientLight.intensity = BASE_AMBIENT_LIGHT_INTENSITY + Math.sin(elevation) * (1 - BASE_AMBIENT_LIGHT_INTENSITY);
+        this.ambientLight.color = blendColors(ORANGE, WHITE, Math.sqrt(Math.sin(elevation)))
+
+        this.directionalLight.intensity = BASE_DIRECTIONAL_LIGHT_INTENSITY + Math.sin(elevation) * (1 - BASE_DIRECTIONAL_LIGHT_INTENSITY);
+        this.directionalLight.position.set(...sunPos);
+        this.directionalLight.color = blendColors(ORANGE, WHITE, Math.sqrt(Math.sin(elevation)))
+
+        this.sky.material.uniforms.sunPosition.value = sunPos;
+
     }
 
     private setSnapping(value: boolean) {

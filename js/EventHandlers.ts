@@ -50,6 +50,7 @@ export function performRaycast(event: Event, editor: Editor, layers: LayerEnum[]
     } else {
         raycaster.layers.enableAll();
         raycaster.layers.disable(LayerEnum.NoRaycast);
+        raycaster.layers.disable(LayerEnum.Grass);
     }
 
     // Get mouse position

@@ -18,7 +18,7 @@ export async function createHumanCube(editor: Editor): THREE.Mesh {
     // let meshes = [];
     mesh.traverse(function (child) {
         if (child.type === "Mesh") {
-            // child.material = new THREE.MeshPhongMaterial({map: child.material.map, color: 0xFFFFFF})
+            child.material = new THREE.MeshPhongMaterial({map: child.material.map, color: 0xFFFFFF})
             child.castShadow = true;
             child.receiveShadow = true;
         }
@@ -104,7 +104,7 @@ export function createSphere(editor: Editor): THREE.Mesh {
         color: 0xDDDDDD,
     })
     const geo = new THREE.SphereGeometry(0.3048, 32, 16);
-    const mesh = new THREE.Mesh(geo, mudMaterial)
+    const mesh = new THREE.Mesh(geo, mat)
     mesh.castShadow = true;
     mesh.receiveShadow = true;
     mesh.userData = {

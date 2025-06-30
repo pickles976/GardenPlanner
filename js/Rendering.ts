@@ -5,6 +5,9 @@ import { grassMaterial } from './Grass';
 
 const clock = new THREE.Clock();
 
+let elevation = 0;
+let azimuth = 0;
+
 function resizeRendererToDisplaySize(renderer) {
     const canvas = renderer.domElement;
     const width = canvas.clientWidth;
@@ -44,6 +47,10 @@ export async function render(editor: Editor) {
 
   editor.renderer.render(editor.scene, editor.currentCamera);
   editor.labelRenderer.render(editor.scene, editor.currentCamera);
+
+//   elevation += 0.2;
+//   azimuth += 0.1
+  editor.setSunPosition(135, 10);
 
   requestAnimationFrame(() => render(editor));
 

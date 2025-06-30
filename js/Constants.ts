@@ -12,6 +12,7 @@ enum LayerEnum {
     Objects = 2, // raycast + selectable 
     Plants = 3, // like object but with different properties 
     LineVertices = 4, // raycastable only in line editor mode
+    Grass = 5,
 }
 
 export class Props {

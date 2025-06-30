@@ -1,15 +1,24 @@
-## SUN CONTROLS
-- [ ] add function to editor to set north
-- [ ] add function to editor to set azimuth/elevation relative to north
-- [ ] update render call to animate the sun
+- [ ] use stencilbuffer to occlude grass
 
-- [ ] read about shaders, get grass shader working three js
-- [ ] depth masking for grass three js
+## SUN CONTROLS
+- [x] add function to editor to set azimuth/elevation relative to north
+- [x] update render call to animate the sun
+
+- [ ] add function to editor to set north
+- [ ] import suncalc
+- [ ] set lat/lon
+- [ ] set timezone
+- [ ] set date and time
 
 - [ ] set sun position sun based on time
 - [ ] set directional lighting based on time
 - [ ] set light intensity/color based on time
 - [ ] add directional and ambient lighting to the grass
+
+- [ ] read about shaders, get grass shader working three js
+- [ ] depth masking for grass three js
+- [ ] apply different colors to grass with perlin noise
+- [ ] add perlin noise to grass displacement
 
 - [ ] configure params until this feels right
 
@@ -32,6 +41,8 @@
 - [ ] add axes helper to grid manager
 - [ ] hide grass in top-down view (make grass its own layer!)
 - [ ] add show/hide grass to view menubar 
+- [ ] switch to a textured grid
+https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 
 # QOL
 - [ ] draw angle between lines, not angle between north for line editor

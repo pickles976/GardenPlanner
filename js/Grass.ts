@@ -83,7 +83,7 @@ const fragmentShader = `
 
     // ambientLightColor
 
-    gl_FragColor = vec4( baseColor * clarity * shadow, 1.0);
+    gl_FragColor = vec4( ambientLightColor * baseColor * clarity * shadow, 1.0);
     // gl_FragColor = vec4( directionalLight, 1.0);
 
   }
@@ -105,8 +105,8 @@ export const grassMaterial = new THREE.ShaderMaterial({
   fragmentShader,
   uniforms,
   side: THREE.DoubleSide,
+  depthWrite: true,
   depthTest: true,
-  depthWrite: true
 });
 
 export function createGrassBladeGeometry(width, height) {
@@ -140,10 +140,9 @@ export function createGrass(instanceNumber: number, width: number, height: numbe
 
   const geometry = createGrassBladeGeometry(0.02, 0.16)
   const dummy = new THREE.Object3D();
-  dummy.layers.set(LayerEnum.NoRaycast);
+  dummy.layers.set(LayerEnum.Grass);
 
   const instancedMesh = new THREE.InstancedMesh( geometry, grassMaterial, instanceNumber );
-  // instancedMesh.renderOrder = DEPTHMASK_RENDER_ORDER + 1;
 
   // TODO: get a faster prng implementation
   // Position and scale the grass blade instances randomly.

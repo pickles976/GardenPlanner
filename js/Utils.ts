@@ -3,6 +3,27 @@ import * as THREE from "three";
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 import { FONT_SIZE } from "./Constants";
 
+export function sphericalToZUpVector3(radius, elevation, azimuth) {
+    const phi = elevation - Math.PI / 2; 
+    const theta = azimuth;
+
+    const sinPhi = Math.sin(phi);
+    const x = radius * sinPhi * Math.cos(theta);
+    const y = radius * sinPhi * Math.sin(theta);
+    const z = radius * Math.cos(phi);
+
+    return new THREE.Vector3(x, y, z);
+}
+
+export function blendColors(color1: THREE.Color, color2: THREE.Color, f: number) {
+    // Clamp t to [0, 1]
+    f = Math.max(0, Math.min(1, f));
+
+    const c1 = new THREE.Color(color1);
+    const c2 = new THREE.Color(color2);
+    return c1.clone().lerp(c2, f);
+}
+
 export function rad2deg(radians: number) : number {
   return radians * 180 / Math.PI;
 }
