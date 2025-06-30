@@ -6,18 +6,34 @@ import { Strings } from './Strings.js';
 import {eventBus, EventEnums} from '../EventBus.js';
 import { snapper } from '../Snapping.js';
 import { Editor } from '../Editor.js';
+import SunCalc from "suncalc";
+import { rad2deg } from '../Utils.js';
 
 const strings = Strings({'language': 'en'});
 
+function getTimeString(date: Date) {
+    const month = String(date.getMonth()).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const year = String(date.getFullYear()).padStart(2, '0')
+
+    const hours = String(date.getHours()).padStart(2, '0')
+    const minutes = String(date.getMinutes()).padStart(2, '0')
+    return `${year}-${month}-${day}T${hours}:${minutes}`
+}
 
 class SidebarSun {
 
     editor: Editor;
     container: UIPanel;
 
-    coordsRow: UIRow;
+    latitudeRow: UIRow;
     latitude: UINumber;
+
+    longitudeRow: UIRow;
     longitude: UINumber;
+
+    timeRow: UIRow;
+    time: object;
 
     constructor ( editor: Editor ) {
         this.editor = editor;
@@ -27,17 +43,51 @@ class SidebarSun {
         this.container.setPaddingTop( '20px' );
         this.container.setDisplay("Block")
 
-        this.coordsRow = new UIRow();
-        this.latitude = new UINumber().setPrecision( 3 ).setWidth( '50px' ).onChange( this.update ).setUnit('°');
-        this.longitude = new UINumber().setPrecision( 3 ).setWidth( '50px' ).onChange( this.update ).setUnit('°');
-    
-        this.coordsRow.add( new UIText( "Coordinates" ).setClass( 'Label' ) );
-        this.coordsRow.add( this.latitude, this.longitude );
+        // Lat/Lon
+        this.latitudeRow = new UIRow();
+        this.latitude = new UINumber().setPrecision( 6 ).setWidth( '70px' ).onChange( this.update ).setUnit('°');
+        this.latitudeRow.add( new UIText( "Latitude" ).setClass( 'Label' ).setWidth('70px') );
+        this.latitudeRow.add(this.latitude)
 
-        this.container.add(this.coordsRow)
+        this.longitudeRow = new UIRow();
+        this.longitude = new UINumber().setPrecision( 6 ).setWidth( '70px' ).onChange( this.update ).setUnit('°');
+        this.longitudeRow.add( new UIText( "Longitude" ).setClass( 'Label' ).setWidth('70px') );
+        this.longitudeRow.add( this.longitude );
+
+        this.latitude.setValue(30.354156) 
+        this.longitude.setValue(-97.757466) 
+
+        const date = new Date();
+
+        // Time
+        this.timeRow = new UIRow();
+        this.time = document.createElement('input');
+        this.time.addEventListener('change', () => { this.update() });
+
+        this.time.type = 'datetime-local';
+        this.time.id = 'meeting-time';
+        this.time.name = 'meeting-time';
+        this.time.value = getTimeString(date);
+        this.time.min = '2025-01-01T00:00';
+        this.time.max = '2080-01-01T00:00';
+
+        this.timeRow.add( new UIText( "Time" ).setClass( 'Label' ).setWidth('70px') );
+        this.timeRow.dom.appendChild(this.time)
+
+        this.container.add(this.latitudeRow)
+        this.container.add(this.longitudeRow)
+        this.container.add(this.timeRow)
+
     }
 
     private update() {
+
+        const date = new Date(this.time.value);
+        const lon = this.longitude.value;
+        const lat = this.latitude.value;
+
+        const pos = SunCalc.getPosition(date, lat, lon, 130)
+        this.editor.setSunPosition(rad2deg(pos.azimuth), rad2deg(pos.altitude));
 
     }
 

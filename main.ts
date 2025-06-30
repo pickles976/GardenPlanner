@@ -99,7 +99,7 @@ createGround(editor)
 let box = await createHumanCube(editor)
 box.position.set(1, 1, 0)
 
-eventBus.emit(EventEnums.GRASS_CHANGED, true);
+// eventBus.emit(EventEnums.GRASS_CHANGED, true);
 
 const lat = 30.354156;
 const lon = -97.757466;

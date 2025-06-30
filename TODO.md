@@ -9,10 +9,19 @@
 - [x] add function to editor to set north
 - [x] import suncalc
 - [x] add sun control panel
-- [ ] set lat, lon
-- [ ] get timezone from lat/lon
-- [ ] set date and time
+- [x] set lat, lon
+- [x] get timezone from lat/lon
+- [x] set date and time
+- [x] update sun position from widget
 
+- [ ] need to redo the entire coordinate system
+
+- [ ] set north from angle
+- [ ] draw pointer to north UI object
+
+- [ ] ~~steal~~ copy shademap timeline widget
+
+### Grass Shader Improvements
 - [ ] grass occlusion
 - [ ] add directional lighting to grass shader
 - [ ] read about shaders, get grass shader working three js
@@ -22,25 +31,9 @@
 
 - [ ] configure params until this feels right
 
-- [ ] lat/lon entry
-- [ ] absolute time entry
-    - [ ] year
-    - [ ] month
-    - [ ] date
-    - [ ] time
-- [ ] convert to UTC time
-
-- [ ] suncalc
-
-- [ ] ~~steal~~ copy shademap timeline widget
-- [ ] set north from angle
-
 #### Visual Improvements
 - [ ] fence UVs causing texture issues
 - [ ] if shadows disabled, chain link fense. Shadows enabled, picket.
-- [ ] add axes helper to grid manager
-- [ ] hide grass in top-down view (make grass its own layer!)
-- [ ] add show/hide grass to view menubar 
 - [ ] switch to a textured grid
 https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 
@@ -53,7 +46,6 @@ https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 - [ ] let user hide objects from object panel
 
 - [ ] draw pointer to north as rotating UI element
-- [ ] fix issue with ctrl + d
 
 ## SAVING
 - [ ] saving configurations as json

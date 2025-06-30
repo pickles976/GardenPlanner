@@ -274,7 +274,7 @@ class Editor {
         // TODO: account for north
 
         elevation = degToRad(elevation);
-        azimuth = degToRad(azimuth);
+        azimuth = degToRad(azimuth - 90);
 
         const dist = 100.0;
         let sunPos = sphericalToZUpVector3(dist, elevation, azimuth);
@@ -549,6 +549,7 @@ class Editor {
 
         if (this.selector.currentSelectedObject === undefined) {
             const [object, point] = processIntersections(intersections);
+            console.log(point)
             (object.userData.selectable === true) ? this.selector.select(object) : this.selector.deselect();
         } else {
             this.selector.deselect()

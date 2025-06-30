@@ -20,10 +20,10 @@ import { processIntersections } from "../EventHandlers";
 
 const LINE_WIDTH = 5;
 
-function createAngleText(startPoint: THREE.Vector3, endPoint: THREE.Vector3) : CSS2DObject {
+function createAngleText(startPoint: THREE.Vector3, endPoint: THREE.Vector3, angleVector: THREE.Vector3) : CSS2DObject {
 
-    const segment = startPoint.clone().sub(endPoint)
-    let angle = rad2deg(segment.angleTo(new THREE.Vector3(0, -1, 0)));
+    const segment = endPoint.clone().sub(startPoint)
+    let angle = rad2deg(segment.angleTo(angleVector));
     let textPos = startPoint.clone().add(endPoint.clone()).divideScalar(2);
 
     const angleText = getCSS2DText(`${angle.toFixed(2)}°`, fontSizeString(FONT_SIZE))
@@ -93,7 +93,7 @@ class RulerEditor {
         this.editor.remove(this.angleText)
 
         this.linePreview = createLinePreview(this.rulerStart, point);
-        this.angleText = createAngleText(this.rulerStart, point);
+        this.angleText = createAngleText(this.rulerStart, point, this.editor.north);
 
         this.editor.add(this.linePreview)
         this.editor.add(this.angleText)
