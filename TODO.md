@@ -1,10 +1,8 @@
-- [ ] improve show/hide for grass
-
-- [ ] add perlin noise to grass displacement
-
+# Improvements
 - [ ] create shader for grid
 https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 
+# Sun Utilities
 - [ ] set north from UI
 - [ ] draw pointer to north UI object
 
@@ -28,6 +26,11 @@ https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 
 ## SAVING
 - [ ] saving configurations as json
+    - [ ] config object
+        - [ ] grass visibility
+        - [ ] metric system
+        - [ ] lat/lon
+        - [ ] time
     - [ ] autosave feature
     - [ ] load from web storage
     - [ ] export to json

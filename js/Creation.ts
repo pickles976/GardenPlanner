@@ -22,6 +22,7 @@ export async function createHumanCube(editor: Editor): THREE.Mesh {
             child.material = new THREE.MeshPhongMaterial({map: child.material.map, color: 0xFFFFFF})
             child.castShadow = true;
             child.receiveShadow = true;
+            child.layers.set(LayerEnum.Objects)
         }
     });
 

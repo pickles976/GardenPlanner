@@ -258,6 +258,9 @@ class Editor {
         this.ambientLight = new THREE.AmbientLight(WHITE, 1.0);
         this.scene.add(this.ambientLight);
 
+        this.grass = createGrass(NUM_GRASS_BLADES, WORLD_SIZE, WORLD_SIZE)
+        this.grass.visible = false;
+        this.add(this.grass)
 
         this.transformControls = new TransformControls(this.currentCamera, this.canvas);
         this.transformControls.addEventListener('change', () => {
@@ -398,7 +401,7 @@ class Editor {
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true) // change UI
         this.bedEditor.beginEditing(bed);
         this.selector.deselect();
-        this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Objects])
+        // this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Objects])
     }
 
     public setFenceMode(fence?: THREE.Object3D) {
@@ -632,14 +635,7 @@ class Editor {
     }
 
     public showGrass(value: boolean) {
-        if (value) {
-            this.remove(this.grass)
-            this.grass = createGrass(NUM_GRASS_BLADES, WORLD_SIZE, WORLD_SIZE)
-            this.add(this.grass)
-        } else {
-            this.remove(this.grass)
-            this.grass = undefined;
-        }
+        this.grass.visible = value;
     }
 
     public handleMouseMove(event) {

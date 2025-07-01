@@ -95,7 +95,7 @@ createGround(editor)
 let box = await createHumanCube(editor)
 box.position.set(1, 0, 1)
 
-eventBus.emit(EventEnums.GRASS_CHANGED, true);
+// eventBus.emit(EventEnums.GRASS_CHANGED, true);
 
 render(editor);
 

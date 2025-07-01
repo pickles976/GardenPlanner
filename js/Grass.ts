@@ -21,6 +21,37 @@ const vertexShader = `
   uniform sampler2D depthTexture;
   uniform vec2 worldSize;
 
+  // 2D Random
+  float random (in vec2 st) {
+      return fract(sin(dot(st.xy,
+                          vec2(12.9898,78.233)))
+                  * 43758.5453123);
+  }
+
+  // 2D Noise based on Morgan McGuire @morgan3d
+  // https://www.shadertoy.com/view/4dS3Wd
+  float noise (in vec2 st) {
+      vec2 i = floor(st);
+      vec2 f = fract(st);
+
+      // Four corners in 2D of a tile
+      float a = random(i);
+      float b = random(i + vec2(1.0, 0.0));
+      float c = random(i + vec2(0.0, 1.0));
+      float d = random(i + vec2(1.0, 1.0));
+
+      // Smooth Interpolation
+
+      // Cubic Hermine Curve.  Same as SmoothStep()
+      vec2 u = f*f*(3.0-2.0*f);
+      // u = smoothstep(0.,1.,f);
+
+      // Mix 4 coorners percentages
+      return mix(a, b, u.x) +
+              (c - a)* u.y * (1.0 - u.x) +
+              (d - b) * u.x * u.y;
+  }
+
 	void main() {
     #include <beginnormal_vertex>
     #include <defaultnormal_vertex>
@@ -43,8 +74,9 @@ const vertexShader = `
       vNormal = normalize(normalMatrix * normalMatrixInstance * normal);
     #endif
 
-      float stepSize = 1.0 / float(worldSize);
-    float maxDisplacement = 0.04;
+    float stepSize = 2.0 / float(worldSize);
+    float maxDisplacement = 0.05;
+    float maxNoiseDisplacement = 0.03;
 
     // Blade tips only
     if (vertPosition.y > 0.01) {
@@ -52,31 +84,38 @@ const vertexShader = `
       // VERTICAL DISPLACEMENT
       float rawDepth = texture2D(depthTexture, (vertPosition.xz / worldSize) + vec2(0.5)).r;
       float depth = abs(rawDepth - 1.0); // 1.0 comes from the camera position
-      vertPosition.y = grassHeight - depth;
+      vertPosition.y = grassHeight - depth - (random(vertPosition.xz) * grassHeight * 0.3);
+
+      // Perlin noise
+      vertPosition.x += (noise(vertPosition.xz) - 0.5) * maxNoiseDisplacement;
+
+      // Random noise
+      vertPosition.x += (random(vertPosition.xz) - 0.5) * maxNoiseDisplacement;
+      vertPosition.z += (random(vertPosition.xz * 2.0) - 0.5) * maxNoiseDisplacement;
 
       // NORTH
       float northDepth = texture2D(depthTexture, ((vertPosition.xz + vec2(0, stepSize)) / worldSize) + vec2(0.5)).r;
       float north = abs(northDepth - 1.0); // 1.0 comes from the camera position
 
-      vertPosition.z -= min(north / 2.0, maxDisplacement);
+      vertPosition.z -= min(north / 3.0, maxDisplacement);
 
       // SOUTH
       float southDepth = texture2D(depthTexture, ((vertPosition.xz + vec2(0, -stepSize)) / worldSize) + vec2(0.5)).r;
       float south = abs(southDepth - 1.0); // 1.0 comes from the camera position
 
-      vertPosition.z += min(south / 2.0, maxDisplacement);
+      vertPosition.z += min(south / 3.0, maxDisplacement);
 
       // EAST
       float eastDepth = texture2D(depthTexture, ((vertPosition.xz + vec2(stepSize, 0)) / worldSize) + vec2(0.5)).r;
       float east = abs(eastDepth - 1.0); // 1.0 comes from the camera position
 
-      vertPosition.x -= min(east / 2.0, maxDisplacement);
+      vertPosition.x -= min(east / 3.0, maxDisplacement);
 
       // WEST
       float westDepth = texture2D(depthTexture, ((vertPosition.xz + vec2(-stepSize, 0)) / worldSize) + vec2(0.5)).r;
       float west = abs(westDepth - 1.0); // 1.0 comes from the camera position
 
-      vertPosition.x += min(west / 2.0, maxDisplacement);
+      vertPosition.x += min(west / 3.0, maxDisplacement);
 
     }
     
@@ -190,7 +229,6 @@ export function createGrass(instanceNumber: number, width: number, height: numbe
 
   const instancedMesh = new THREE.InstancedMesh( geometry, grassMaterial, instanceNumber );
   instancedMesh.layers.set(LayerEnum.Grass); // hides from render
-  // instancedMesh.visible = false; USE THIS TO HIDE OBJECT
 
   // TODO: get a faster prng implementation
   // Position and scale the grass blade instances randomly.
