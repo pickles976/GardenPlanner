@@ -3,7 +3,7 @@
  * https://discourse.threejs.org/t/simple-instanced-grass-example/26694
  */
 
-import { DEPTHMASK_RENDER_ORDER, GRASS_HEIGHT, LayerEnum, WORLD_SIZE } from "./Constants";
+import { DEPTHMASK_RENDER_ORDER, GRASS_HEIGHT, GRASS_WIDTH, LayerEnum, WORLD_SIZE } from "./Constants";
 import { Editor } from "./Editor";
 import * as THREE from "three";
 
@@ -42,31 +42,52 @@ const vertexShader = `
       mat3 normalMatrixInstance = transpose(inverse(mat3(normalMatrix)));
       vNormal = normalize(normalMatrix * normalMatrixInstance * normal);
     #endif
-    
-    // DISPLACEMENT
-    float rawDepth = texture2D(depthTexture, (vertPosition.xz / worldSize) + vec2(0.5)).r;
-    float depth = abs(rawDepth - 1.0) / grassHeight; // 1.0 comes from the camera position
 
-    // if (depth < grassHeight) {
-    //   // only apply to tips
-    //   if (vertPosition.y > 0.01) {
-    //     vertPosition.y = depth;
-    //   }
-    // }
+      float stepSize = 1.0 / float(worldSize);
+    float maxDisplacement = 0.04;
 
+    // Blade tips only
     if (vertPosition.y > 0.01) {
+
+      // VERTICAL DISPLACEMENT
+      float rawDepth = texture2D(depthTexture, (vertPosition.xz / worldSize) + vec2(0.5)).r;
+      float depth = abs(rawDepth - 1.0); // 1.0 comes from the camera position
       vertPosition.y = grassHeight - depth;
+
+      // NORTH
+      float northDepth = texture2D(depthTexture, ((vertPosition.xz + vec2(0, stepSize)) / worldSize) + vec2(0.5)).r;
+      float north = abs(northDepth - 1.0); // 1.0 comes from the camera position
+
+      vertPosition.z -= min(north / 2.0, maxDisplacement);
+
+      // SOUTH
+      float southDepth = texture2D(depthTexture, ((vertPosition.xz + vec2(0, -stepSize)) / worldSize) + vec2(0.5)).r;
+      float south = abs(southDepth - 1.0); // 1.0 comes from the camera position
+
+      vertPosition.z += min(south / 2.0, maxDisplacement);
+
+      // EAST
+      float eastDepth = texture2D(depthTexture, ((vertPosition.xz + vec2(stepSize, 0)) / worldSize) + vec2(0.5)).r;
+      float east = abs(eastDepth - 1.0); // 1.0 comes from the camera position
+
+      vertPosition.x -= min(east / 2.0, maxDisplacement);
+
+      // WEST
+      float westDepth = texture2D(depthTexture, ((vertPosition.xz + vec2(-stepSize, 0)) / worldSize) + vec2(0.5)).r;
+      float west = abs(westDepth - 1.0); // 1.0 comes from the camera position
+
+      vertPosition.x += min(west / 2.0, maxDisplacement);
+
     }
     
-    // // here the displacement is made stronger on the blades tips.
-    // float dispPower = 1.0 - cos( uv.y * 3.1416 / 2.0 );
-    // float dispMagnitude = 0.02;
+    // here the displacement is made stronger on the blades tips.
+    float dispPower = 1.0 - cos( uv.y * 3.1416 / 2.0 );
+    float dispMagnitude = 0.02;
     
-    // float speed = 0.4;
-    // float displacement = sin( vertPosition.z + time * speed ) * ( dispMagnitude * dispPower );
-    // vertPosition.z += displacement; // sway
+    float speed = 0.4;
+    float displacement = sin( vertPosition.z + time * speed ) * ( dispMagnitude * dispPower );
+    vertPosition.z += displacement; // sway
     
-    // vec4 modelViewPosition = modelViewMatrix * vertPosition;
     gl_Position = projectionMatrix * modelViewMatrix * vertPosition;
 
 	}
@@ -163,7 +184,7 @@ export function createGrass(instanceNumber: number, width: number, height: numbe
 
   const start = performance.now();
 
-  const geometry = createGrassBladeGeometry(0.04, GRASS_HEIGHT)
+  const geometry = createGrassBladeGeometry(GRASS_WIDTH, GRASS_HEIGHT)
   const dummy = new THREE.Object3D();
   dummy.layers.set(LayerEnum.Grass); // hides from raycast
 

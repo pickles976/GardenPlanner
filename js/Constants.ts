@@ -5,7 +5,9 @@ export const METRIC = false;
 export const FONT_SIZE = 30;
 
 export const WORLD_SIZE = 32;
-export const GRASS_HEIGHT = 0.16;
+export const GRASS_HEIGHT = 0.15;
+export const GRASS_WIDTH = 0.04;
+export const NUM_GRASS_BLADES = 5000000;
 
 export const DEPTH_MAP_SIZE = 1024;
 

@@ -1,24 +1,4 @@
-- [x] Add ortho camera that spans the entire area
-- [x] make it the height of the grass
-- [x] render to a texture
-- [x] Pass texture to vertex shader as uniform
-- [x] Check texture for depth info (need to convert world space into texture space)
-
-- [x] apply step to grass using the depth info
-- [x] grass displacement
-
-- [ ] do X-Z grass displacement
-
-### Grass Shader Improvements
-- [ ] grass occlusion
-- [ ] add directional lighting to grass shader
-- [ ] read about shaders, get grass shader working three js
-- [ ] depth masking for grass three js
-
-- [ ] apply different colors to grass with perlin noise
-- [ ] add perlin noise to grass displacement
-
-- [ ] configure params until this feels right
+- [ ] improve show/hide for grass
 
 - [ ] create shader for grid
 https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
@@ -56,6 +36,15 @@ https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 - [ ] bed panel does not hide when bed is deselected from scene panel
 - [ ] fix bug where path props are not being populated properly
 - [ ] bug when editing fence
+
+### Grass Shader Improvements
+- [x] grass occlusion
+- [ ] add directional lighting to grass shader
+- [ ] read about shaders, get grass shader working three js
+- [ ] apply different colors to grass with perlin noise
+- [ ] add perlin noise to grass displacement
+
+- [ ] configure params until this feels right
 
 # Fuzz Testing
 

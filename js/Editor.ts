@@ -3,7 +3,7 @@ import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { Command } from './commands/Command';
 import { Selector } from './Selector';
-import { FRUSTUM_SIZE, GRASS_HEIGHT, LayerEnum, WORLD_SIZE } from './Constants';
+import { FRUSTUM_SIZE, GRASS_HEIGHT, LayerEnum, NUM_GRASS_BLADES, WORLD_SIZE } from './Constants';
 import { BedEditor } from './editors/BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
@@ -322,7 +322,7 @@ class Editor {
     }
 
     public setOrthoCamera() {
-        this.currentCamera = this.depthCamera;
+        this.currentCamera = this.orthoCamera;
         this.currentCameraControls = this.orthoCameraControls
         this.perspectiveCameraControls.enabled = false
         this.orthoCameraControls.enabled = true
@@ -634,7 +634,7 @@ class Editor {
     public showGrass(value: boolean) {
         if (value) {
             this.remove(this.grass)
-            this.grass = createGrass(5000000, WORLD_SIZE, WORLD_SIZE)
+            this.grass = createGrass(NUM_GRASS_BLADES, WORLD_SIZE, WORLD_SIZE)
             this.add(this.grass)
         } else {
             this.remove(this.grass)
