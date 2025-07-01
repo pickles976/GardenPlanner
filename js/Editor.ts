@@ -270,14 +270,9 @@ class Editor {
     }
 
     public setSunPosition(azimuth: number, elevation: number) {
-        
-        console.log(elevation, azimuth)
 
         elevation = degToRad(elevation);
         azimuth = degToRad(azimuth);
-
-        console.log(elevation)
-
 
         // TODO: account for dynamic north
 

@@ -11,11 +11,13 @@ import { rad2deg } from '../Utils.js';
 
 const strings = Strings({'language': 'en'});
 
-function getTimeString(date: Date) {
-    const month = String(date.getMonth()).padStart(2, '0')
-    const day = String(date.getDate()).padStart(2, '0')
-    const year = String(date.getFullYear()).padStart(2, '0')
+const LAT = 30.354156;
+const LON = -97.757466;
 
+function getTimeString(date: Date) {
+    const day = String(date.getDate()).padStart(2, '0')
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const year = String(date.getFullYear()).padStart(2, '0')
     const hours = String(date.getHours()).padStart(2, '0')
     const minutes = String(date.getMinutes()).padStart(2, '0')
     return `${year}-${month}-${day}T${hours}:${minutes}`
@@ -54,8 +56,8 @@ class SidebarSun {
         this.longitudeRow.add( new UIText( "Longitude" ).setClass( 'Label' ).setWidth('70px') );
         this.longitudeRow.add( this.longitude );
 
-        this.latitude.setValue(30.354156) 
-        this.longitude.setValue(-97.757466) 
+        this.latitude.setValue(LAT) 
+        this.longitude.setValue(LON) 
 
         const date = new Date();
 
@@ -77,6 +79,9 @@ class SidebarSun {
         this.container.add(this.latitudeRow)
         this.container.add(this.longitudeRow)
         this.container.add(this.timeRow)
+
+        const pos = SunCalc.getPosition(new Date(), LAT, LON, 0)
+        editor.setSunPosition(rad2deg(pos.azimuth), rad2deg(pos.altitude));
 
     }
 

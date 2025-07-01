@@ -101,13 +101,13 @@ box.position.set(1, 0, 1)
 
 // eventBus.emit(EventEnums.GRASS_CHANGED, true);
 
-const lat = 30.354156;
-const lon = -97.757466;
+// const lat = 30.354156;
+// const lon = -97.757466;
 
-console.log(new Date())
-const pos = SunCalc.getPosition(new Date(), lat, lon, 0)
-console.log(rad2deg(pos.azimuth), rad2deg(pos.altitude))
-editor.setSunPosition(rad2deg(pos.azimuth), rad2deg(pos.altitude));
+// console.log(new Date())
+// const pos = SunCalc.getPosition(new Date(), lat, lon, 0)
+// console.log(rad2deg(pos.azimuth), rad2deg(pos.altitude))
+// editor.setSunPosition(rad2deg(pos.azimuth), rad2deg(pos.altitude));
 
 render(editor);
 
