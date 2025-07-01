@@ -3,7 +3,7 @@ import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { Command } from './commands/Command';
 import { Selector } from './Selector';
-import { FRUSTUM_SIZE, LayerEnum, WORLD_SIZE } from './Constants';
+import { FRUSTUM_SIZE, GRASS_HEIGHT, LayerEnum, WORLD_SIZE } from './Constants';
 import { BedEditor } from './editors/BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
@@ -68,6 +68,8 @@ class Editor {
     orthoCamera: THREE.OrthographicCamera
     perspectiveCameraControls: MapControls
     orthoCameraControls: OrbitControls
+
+    depthCamera: THREE.OrthographicCamera;
 
     currentCameraControls: Object
 
@@ -185,6 +187,7 @@ class Editor {
         this.orthoCamera.up.set(0, 0, 1);
         this.orthoCamera.lookAt(0, 0, 0);
         this.orthoCamera.layers.enableAll();
+        this.orthoCamera.layers.disable(LayerEnum.Grass)
 
         // Orbit Controls https://threejs.org/docs/#examples/en/controls/OrbitControls.keys
         this.orthoCameraControls = new OrbitControls(this.orthoCamera, this.canvas);
@@ -205,6 +208,20 @@ class Editor {
 
         this.currentCamera = this.perspectiveCamera
         this.currentCameraControls = this.perspectiveCameraControls
+
+        // DEPTH CAMERA
+        this.depthCamera = new THREE.OrthographicCamera(
+            -WORLD_SIZE / 2, // L
+            WORLD_SIZE / 2,  // R
+            WORLD_SIZE / 2, // T
+            -WORLD_SIZE / 2, // B
+            0.0, // Near
+            GRASS_HEIGHT + 1); // Far
+        this.depthCamera.name = "Depth Camera"
+        this.depthCamera.position.set(0, -1, 0);
+        this.depthCamera.rotation.x += Math.PI / 2;
+        this.depthCamera.layers.disableAll();
+        this.depthCamera.layers.enable(LayerEnum.Objects);
 
         // TODO: split this out into a lighting object
         // lighting
@@ -241,7 +258,7 @@ class Editor {
         this.ambientLight = new THREE.AmbientLight(WHITE, 1.0);
         this.scene.add(this.ambientLight);
 
-        // this.scene.background = new THREE.Color(WHITE);
+
         this.transformControls = new TransformControls(this.currentCamera, this.canvas);
         this.transformControls.addEventListener('change', () => {
             handleTransformControlsChange(this);
@@ -305,7 +322,7 @@ class Editor {
     }
 
     public setOrthoCamera() {
-        this.currentCamera = this.orthoCamera;
+        this.currentCamera = this.depthCamera;
         this.currentCameraControls = this.orthoCameraControls
         this.perspectiveCameraControls.enabled = false
         this.orthoCameraControls.enabled = true
@@ -410,6 +427,7 @@ class Editor {
     public hideCameraLayers(layers: LayerEnum[]) {
         this.perspectiveCamera.layers.enableAll()
         this.orthoCamera.layers.enableAll()
+        this.orthoCamera.layers.disable(LayerEnum.Grass)
 
         layers.forEach((layer) => {
             this.perspectiveCamera.layers.disable(layer);

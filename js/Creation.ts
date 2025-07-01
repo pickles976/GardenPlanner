@@ -6,6 +6,7 @@ import { setCurrentTransformationAsDefault } from './ModelLoader';
 import { GROUND_COLOR } from './Colors';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createPhongMaterial, getGeometrySize, getObjectsize, mergeMeshes } from './Utils';
+import { depthTexturePreviewMaterial } from './DepthTextureHelper';
 
 const loader = new GLTFLoader();
 
@@ -47,7 +48,7 @@ export async function createHumanCube(editor: Editor): THREE.Mesh {
 
 export function createCube(editor: Editor): THREE.Mesh {
     const mat = new THREE.MeshPhongMaterial({
-        color: 0xDDDDDD,
+        color: 0xDDDDDD
     })
     const geo = new THREE.BoxGeometry(0.3048, 0.3048, 0.3048);
     const mesh = new THREE.Mesh(geo, mat)

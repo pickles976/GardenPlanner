@@ -1,12 +1,35 @@
 import * as THREE from "three"
-import { FRUSTUM_SIZE } from './Constants';
+import { DEPTH_MAP_SIZE, FRUSTUM_SIZE, GRASS_HEIGHT } from './Constants';
 import { Editor } from './Editor';
 import { grassMaterial } from './Grass';
+import { depthTexturePreviewMaterial } from "./DepthTextureHelper";
 
 const clock = new THREE.Clock();
 
-let elevation = 0;
-let azimuth = 0;
+// Render target for depth texture
+const depthRenderTarget = new THREE.WebGLRenderTarget(
+  DEPTH_MAP_SIZE,
+  DEPTH_MAP_SIZE,
+  {
+    minFilter: THREE.NearestFilter,
+    magFilter: THREE.NearestFilter,
+    format: THREE.RGBAFormat, // Color texture format
+    type: THREE.UnsignedByteType // Color texture type
+  }
+);
+
+depthRenderTarget.depthTexture = new THREE.DepthTexture(
+    DEPTH_MAP_SIZE,
+    DEPTH_MAP_SIZE,
+    THREE.UnsignedIntType, // Type for depth values (e.g., UnsignedIntType or UnsignedShortType)
+    THREE.UVMapping, // Mapping
+    3, // Wrap S
+    3, // Wrap T
+    THREE.NearestFilter, // Mag filter
+    THREE.NearestFilter, // Min filter
+    1, // Anisotropy
+    THREE.DepthFormat // Format for depth texture
+);
 
 function resizeRendererToDisplaySize(renderer) {
     const canvas = renderer.domElement;
@@ -21,7 +44,22 @@ function resizeRendererToDisplaySize(renderer) {
 
 export async function render(editor: Editor) {
 
+  // TODO: only render the depth buffer if stuff is moved/changed
+
+  // Render to depth texture
+  editor.renderer.setRenderTarget( depthRenderTarget );
+  editor.renderer.render(editor.scene, editor.depthCamera);
+  editor.renderer.setRenderTarget(null);
+
+  // Render the Scene
   grassMaterial.uniforms.time.value = clock.getElapsedTime();
+  grassMaterial.uniforms.depthTexture.value = depthRenderTarget.depthTexture;
+
+  // depthTexturePreviewMaterial.map = depthRenderTarget.depthTexture;
+  depthTexturePreviewMaterial.uniforms.depthTexture.value = depthRenderTarget.depthTexture;
+  depthTexturePreviewMaterial.uniformsNeedUpdate = true;
+
+  // console.log(depthRenderTarget.depthTexture)
   grassMaterial.uniformsNeedUpdate = true;
 
   editor.currentCameraControls.update()

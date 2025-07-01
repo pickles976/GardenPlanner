@@ -3,7 +3,7 @@
  * https://discourse.threejs.org/t/simple-instanced-grass-example/26694
  */
 
-import { DEPTHMASK_RENDER_ORDER, LayerEnum } from "./Constants";
+import { DEPTHMASK_RENDER_ORDER, GRASS_HEIGHT, LayerEnum, WORLD_SIZE } from "./Constants";
 import { Editor } from "./Editor";
 import * as THREE from "three";
 
@@ -17,6 +17,9 @@ const vertexShader = `
   varying vec3 vNormal;
 
   uniform float time;
+  uniform float grassHeight;
+  uniform sampler2D depthTexture;
+  uniform vec2 worldSize;
 
 	void main() {
     #include <beginnormal_vertex>
@@ -28,12 +31,12 @@ const vertexShader = `
     #include <shadowmap_vertex>
 
     vUv = uv;
-    
+
     // VERTEX POSITION
     
-    vec4 tipPosition = vec4( position, 1.0 );
+    vec4 vertPosition = vec4( position, 1.0 );
     #ifdef USE_INSTANCING
-    	tipPosition = instanceMatrix * tipPosition;
+    	vertPosition = instanceMatrix * vertPosition;
 
       // set vNormal for frag shader lighting
       mat3 normalMatrixInstance = transpose(inverse(mat3(normalMatrix)));
@@ -41,17 +44,30 @@ const vertexShader = `
     #endif
     
     // DISPLACEMENT
+    float rawDepth = texture2D(depthTexture, (vertPosition.xz / worldSize) + vec2(0.5)).r;
+    float depth = abs(rawDepth - 1.0) / grassHeight; // 1.0 comes from the camera position
+
+    // if (depth < grassHeight) {
+    //   // only apply to tips
+    //   if (vertPosition.y > 0.01) {
+    //     vertPosition.y = depth;
+    //   }
+    // }
+
+    if (vertPosition.y > 0.01) {
+      vertPosition.y = grassHeight - depth;
+    }
     
-    // here the displacement is made stronger on the blades tips.
-    float dispPower = 1.0 - cos( uv.y * 3.1416 / 2.0 );
-    float dispMagnitude = 0.02;
+    // // here the displacement is made stronger on the blades tips.
+    // float dispPower = 1.0 - cos( uv.y * 3.1416 / 2.0 );
+    // float dispMagnitude = 0.02;
     
-    float speed = 0.4;
-    float displacement = sin( tipPosition.z + time * speed ) * ( dispMagnitude * dispPower );
-    tipPosition.z += displacement; // sway
+    // float speed = 0.4;
+    // float displacement = sin( vertPosition.z + time * speed ) * ( dispMagnitude * dispPower );
+    // vertPosition.z += displacement; // sway
     
-    vec4 modelViewPosition = modelViewMatrix * tipPosition;
-    gl_Position = projectionMatrix * modelViewPosition;
+    // vec4 modelViewPosition = modelViewMatrix * vertPosition;
+    gl_Position = projectionMatrix * modelViewMatrix * vertPosition;
 
 	}
 `;
@@ -96,6 +112,15 @@ const uniforms = {
   receiveShadow: {
     value: 1
   },
+  grassHeight: {
+    value: GRASS_HEIGHT
+  },
+  depthTexture: {
+    value: null
+  },
+  worldSize: {
+    value: new THREE.Vector3(WORLD_SIZE, WORLD_SIZE)
+  },
   ...THREE.UniformsLib.lights,
 };
 
@@ -138,11 +163,13 @@ export function createGrass(instanceNumber: number, width: number, height: numbe
 
   const start = performance.now();
 
-  const geometry = createGrassBladeGeometry(0.04, 0.32)
+  const geometry = createGrassBladeGeometry(0.04, GRASS_HEIGHT)
   const dummy = new THREE.Object3D();
-  dummy.layers.set(LayerEnum.Grass);
+  dummy.layers.set(LayerEnum.Grass); // hides from raycast
 
   const instancedMesh = new THREE.InstancedMesh( geometry, grassMaterial, instanceNumber );
+  instancedMesh.layers.set(LayerEnum.Grass); // hides from render
+  // instancedMesh.visible = false; USE THIS TO HIDE OBJECT
 
   // TODO: get a faster prng implementation
   // Position and scale the grass blade instances randomly.

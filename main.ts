@@ -11,11 +11,7 @@ import { Menubar } from './js/menubar/Menubar';
 import { Sidebar } from './js/sidebar/Sidebar';
 import { loadPlant } from './js/ModelLoader';
 import { Editor } from './js/Editor';
-import { createGrass } from './js/Grass';
-import { DEPTHMASK_RENDER_ORDER, WORLD_SIZE } from './js/Constants';
-import * as THREE from "three"
-import SunCalc from "suncalc";
-import { rad2deg } from './js/Utils';
+import { getTexturePlane } from './js/DepthTextureHelper';
 
 const editor = new Editor();
 editor.initThree();
@@ -99,7 +95,10 @@ createGround(editor)
 let box = await createHumanCube(editor)
 box.position.set(1, 0, 1)
 
-// eventBus.emit(EventEnums.GRASS_CHANGED, true);
+// let texPlane = getTexturePlane()
+// editor.add(texPlane)
+
+eventBus.emit(EventEnums.GRASS_CHANGED, true);
 
 // const lat = 30.354156;
 // const lon = -97.757466;

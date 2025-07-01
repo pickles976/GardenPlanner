@@ -5,6 +5,9 @@ export const METRIC = false;
 export const FONT_SIZE = 30;
 
 export const WORLD_SIZE = 32;
+export const GRASS_HEIGHT = 0.16;
+
+export const DEPTH_MAP_SIZE = 1024;
 
 enum LayerEnum {
     NoRaycast = 0, // not raycastable

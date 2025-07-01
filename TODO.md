@@ -1,28 +1,27 @@
-# Coordinate bullshit
-- [x] fix bed
-- [x] fix path
-- [x] fix fence
-- [x] sun angle
-- [x] fix rotation bug
-- [x] fix issue with top-down camera not rotating
+- [x] Add ortho camera that spans the entire area
+- [x] make it the height of the grass
+- [x] render to a texture
+- [x] Pass texture to vertex shader as uniform
+- [x] Check texture for depth info (need to convert world space into texture space)
 
-## SUN CONTROLS
-- [x] add function to editor to set azimuth/elevation relative to north
-- [x] update render call to animate the sun
-- [x] set sun position sun based on time
-- [x] set directional lighting based on time
-- [x] set light intensity/color based on time
-- [x] add directional and ambient lighting to the grass
+- [x] apply step to grass using the depth info
+- [x] grass displacement
 
-- [x] add function to editor to set north
-- [x] import suncalc
-- [x] add sun control panel
-- [x] set lat, lon
-- [x] get timezone from lat/lon
-- [x] set date and time
-- [x] update sun position from widget
+- [ ] do X-Z grass displacement
 
-- [x] need to redo the entire coordinate system
+### Grass Shader Improvements
+- [ ] grass occlusion
+- [ ] add directional lighting to grass shader
+- [ ] read about shaders, get grass shader working three js
+- [ ] depth masking for grass three js
+
+- [ ] apply different colors to grass with perlin noise
+- [ ] add perlin noise to grass displacement
+
+- [ ] configure params until this feels right
+
+- [ ] create shader for grid
+https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 
 - [ ] set north from UI
 - [ ] draw pointer to north UI object
@@ -31,21 +30,9 @@
 - [ ] create basic timeline based off the one at the suncalc website
 - [ ] make the sun widgets showable/hideable
 
-### Grass Shader Improvements
-- [ ] grass occlusion
-- [ ] add directional lighting to grass shader
-- [ ] read about shaders, get grass shader working three js
-- [ ] depth masking for grass three js
-- [ ] apply different colors to grass with perlin noise
-- [ ] add perlin noise to grass displacement
-
-- [ ] configure params until this feels right
-
 #### Visual Improvements
 - [ ] fence UVs causing texture issues
 - [ ] if shadows disabled, chain link fense. Shadows enabled, picket.
-- [ ] switch to a textured grid
-https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 
 # QOL
 - [ ] draw angle between lines, not angle between north for line editor
