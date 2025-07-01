@@ -289,9 +289,11 @@ class BedEditor {
         this.editor.remove(this.bedPreviewMesh)
 
         this.bedPreviewBorder = createBedBorder(this.vertices, this.props.borderWidth, this.props.borderHeight, createPreviewMaterial(this.props.borderColor));
+        this.bedPreviewBorder.layers.set(LayerEnum.Objects)
         this.editor.add(this.bedPreviewBorder)
 
         this.bedPreviewMesh = createBed(this.vertices, this.props.bedHeight, createPreviewMaterial(this.props.bedColor))
+        this.bedPreviewMesh.layers.set(LayerEnum.Objects)
         this.editor.add(this.bedPreviewMesh)
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin

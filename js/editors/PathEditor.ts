@@ -223,7 +223,7 @@ class PathEditor {
         this.editor.remove(this.previewMesh)
 
         this.previewMesh = createPath(this.vertices, props.pathWidth, props.pathHeight, props.numArcSegments, createPreviewMaterial(props.pathColor))
-
+        this.previewMesh.layers.set(LayerEnum.Objects)
         this.editor.add(this.previewMesh)
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin

@@ -325,7 +325,6 @@ class FenceEditor {
     public undo() {
         this.commandStack.undo();
         this.createPreviewMesh();
-        ;
     }
 
     public handleMouseMove(intersections: THREE.Object3D[]) {

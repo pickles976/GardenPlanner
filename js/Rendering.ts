@@ -55,13 +55,12 @@ export async function render(editor: Editor) {
   grassMaterial.uniforms.time.value = clock.getElapsedTime();
   grassMaterial.uniforms.depthTexture.value = depthRenderTarget.depthTexture;
 
-  // depthTexturePreviewMaterial.map = depthRenderTarget.depthTexture;
   depthTexturePreviewMaterial.uniforms.depthTexture.value = depthRenderTarget.depthTexture;
   depthTexturePreviewMaterial.uniformsNeedUpdate = true;
 
-  // console.log(depthRenderTarget.depthTexture)
   grassMaterial.uniformsNeedUpdate = true;
 
+  // NORMAL RENDER
   editor.currentCameraControls.update()
 
   // fix buffer size

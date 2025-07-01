@@ -209,7 +209,7 @@ class Editor {
         this.currentCamera = this.perspectiveCamera
         this.currentCameraControls = this.perspectiveCameraControls
 
-        // DEPTH CAMERA
+        // DEPTH CAMERA USED FOR GRASS DISPLACEMENT
         this.depthCamera = new THREE.OrthographicCamera(
             -WORLD_SIZE / 2, // L
             WORLD_SIZE / 2,  // R
@@ -218,8 +218,8 @@ class Editor {
             0.0, // Near
             GRASS_HEIGHT + 1); // Far
         this.depthCamera.name = "Depth Camera"
-        this.depthCamera.position.set(0, -1, 0);
-        this.depthCamera.rotation.x += Math.PI / 2;
+        this.depthCamera.position.set(0, -1, 0); // Sit below ground
+        this.depthCamera.rotation.x += Math.PI / 2; // Look up
         this.depthCamera.layers.disableAll();
         this.depthCamera.layers.enable(LayerEnum.Objects);
 

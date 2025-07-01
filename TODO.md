@@ -1,5 +1,7 @@
 - [ ] improve show/hide for grass
 
+- [ ] add perlin noise to grass displacement
+
 - [ ] create shader for grid
 https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 
@@ -42,7 +44,6 @@ https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 - [ ] add directional lighting to grass shader
 - [ ] read about shaders, get grass shader working three js
 - [ ] apply different colors to grass with perlin noise
-- [ ] add perlin noise to grass displacement
 
 - [ ] configure params until this feels right
 
