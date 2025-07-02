@@ -9,7 +9,7 @@ export const GRASS_HEIGHT = 0.20;
 export const GRASS_WIDTH = 0.04;
 export const NUM_GRASS_BLADES = 5000000;
 
-export const DEPTH_MAP_SIZE = 1024;
+export const DEPTH_MAP_SIZE = 1024; // Depth map for grass displacement
 
 export const SHADOWMAP_RESOLUTION = 4096;
 

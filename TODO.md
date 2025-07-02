@@ -1,10 +1,7 @@
-#### Visual Improvements
-- [x] fence UVs causing texture issues
-- [x] toggle between chain link fence vs opaque
-
 # Sun Utilities
-- [ ] set north from UI
-- [ ] draw pointer to north UI object
+- [x] set north from UI
+- [x] draw pointer to north UI object
+- [ ] get this working!!!
 
 - [ ] create play button (go from sun up to sun down)
 - [ ] create basic timeline based off the one at the suncalc website

@@ -240,7 +240,7 @@ class FenceEditor {
             mat = chainLinkMaterial.clone();
             mat.color.set(WHITE);
             mat.transparent = true;
-            mat.alphaTest = 0.1;
+            mat.alphaTest = 0.005;
         }
         
         const fence = createFence(this.vertices, props.fenceHeight, mat);

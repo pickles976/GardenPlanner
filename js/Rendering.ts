@@ -3,6 +3,7 @@ import { DEPTH_MAP_SIZE, FRUSTUM_SIZE, GRASS_HEIGHT } from './Constants';
 import { Editor } from './Editor';
 import { grassMaterial } from './Grass';
 import { depthTexturePreviewMaterial } from "./DepthTextureHelper";
+import { eventBus, EventEnums } from "./EventBus";
 
 const clock = new THREE.Clock();
 
@@ -88,6 +89,8 @@ export async function render(editor: Editor) {
   // elevation += 0.2;
   // azimuth += 0.1
 //   editor.setSunPosition(0, 5);
+
+  eventBus.emit(EventEnums.FRAME_UPDATED)
 
   requestAnimationFrame(() => render(editor));
 

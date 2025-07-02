@@ -12,6 +12,7 @@ import { Sidebar } from './js/sidebar/Sidebar';
 import { loadPlant } from './js/ModelLoader';
 import { Editor } from './js/Editor';
 import { getTexturePlane } from './js/DepthTextureHelper';
+import { createCompassWidget } from './js/CompassWidget';
 
 const editor = new Editor();
 editor.initThree();
@@ -96,6 +97,7 @@ let box = await createHumanCube(editor)
 box.position.set(1, 0, 1)
 
 // eventBus.emit(EventEnums.GRASS_CHANGED, true);
+createCompassWidget(editor)
 
 render(editor);
 

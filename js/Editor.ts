@@ -54,7 +54,7 @@ class Editor {
      * "God" object
      */
 
-    north: THREE.Vector3;
+    north: number;
 
     canvas: HTMLCanvasElement
     renderer: THREE.WebGLRenderer
@@ -96,7 +96,7 @@ class Editor {
 
 
     constructor() {
-        this.north = new THREE.Vector3(0,0,1);
+        this.north = 0.0;
         this.commandStack = new CommandStack();
         this.objectMap = {};
         this.selector = new Selector(this);
@@ -287,10 +287,18 @@ class Editor {
         eventBus.on(EventEnums.GRASS_CHANGED, (value) => this.showGrass(value));
     }
 
+    public setNorth(angle: number) {
+        this.north = angle;
+
+        // new THREE.Vector3(Math.sin(angle),0,Math.cos(angle))
+
+        // TODO: redraw north pointer
+    }
+
     public setSunPosition(azimuth: number, elevation: number) {
 
         elevation = degToRad(elevation);
-        azimuth = degToRad(azimuth);
+        azimuth = degToRad(azimuth - this.north);
 
         // TODO: account for dynamic north
 

@@ -1,6 +1,9 @@
 import mitt from 'mitt'
 
 enum EventEnums {
+
+    FRAME_UPDATED = "frameUpdated",
+
     OBJECT_ADDED = "objectAdded",
     OBJECT_REMOVED = "objectRemoved",
 
