@@ -1,6 +1,6 @@
-# Improvements
-- [ ] create shader for grid
-https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
+#### Visual Improvements
+- [x] fence UVs causing texture issues
+- [x] toggle between chain link fence vs opaque
 
 # Sun Utilities
 - [ ] set north from UI
@@ -9,10 +9,6 @@ https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 - [ ] create play button (go from sun up to sun down)
 - [ ] create basic timeline based off the one at the suncalc website
 - [ ] make the sun widgets showable/hideable
-
-#### Visual Improvements
-- [ ] fence UVs causing texture issues
-- [ ] if shadows disabled, chain link fense. Shadows enabled, picket.
 
 # QOL
 - [ ] draw angle between lines, not angle between north for line editor
@@ -41,13 +37,14 @@ https://bgolus.medium.com/the-best-darn-grid-shader-yet-727f9278b9d8
 - [ ] bed panel does not hide when bed is deselected from scene panel
 - [ ] fix bug where path props are not being populated properly
 - [ ] bug when editing fence
+- [ ] issue with bed creation origin not being at the right point (too short)
+- [ ] issue with grass sticking out of bed
 
 ### Grass Shader Improvements
 - [x] grass occlusion
 - [ ] add directional lighting to grass shader
 - [ ] read about shaders, get grass shader working three js
 - [ ] apply different colors to grass with perlin noise
-
 - [ ] configure params until this feels right
 
 # Fuzz Testing

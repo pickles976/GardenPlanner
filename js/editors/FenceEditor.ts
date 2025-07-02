@@ -11,6 +11,7 @@ import { WHITE } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
 import { LineEditor } from "./LineEditor";
 import { chainLinkMaterial, mudMaterial } from "../Materials";
+import offsetPolygon from "offset-polygon";
 
 const INITIAL_FENCE_HEIGHT = 2.0;
 const CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, -2, 2);
@@ -31,54 +32,29 @@ function createFence(vertices: THREE.Vector3[], height: number, material: THREE.
      */
 
     const centroid = getCentroid(vertices);
-    const bottom = vertices.map((v) => v.clone().sub(centroid));
-    const top = bottom.map((v) => new THREE.Vector3(v.x, height, v.z));
+    vertices = vertices.map((v) => v.clone().sub(centroid));
 
-    const positions = [];
-    const uvs = [];
+    // Wrap around
+    const verts = vertices.map((v) => ({ "x": v.x, "y": v.z }));
+    verts.push(...verts.slice(1, verts.length - 1).reverse())
 
-    // First, compute cumulative lengths along the bottom edge for horizontal UVs
-    const distances = [0];
-    let totalLength = 0;
-    for (let i = 1; i < bottom.length; i++) {
-        const d = bottom[i].distanceTo(bottom[i - 1]);
-        totalLength += d;
-        distances.push(totalLength);
-    }
+    let border = offsetPolygon(verts, 0.0001, 1.0).map((v) => new THREE.Vector2(v.x, v.y));
 
-    // Normalize distances to [0, 1] for U coordinates
-    const us = distances.map((d) => d / totalLength);
+    // border.push(border[0])
+    const shape = new THREE.Shape(border);
 
-    for (let i = 0; i < bottom.length; i++) {
-        const b = bottom[i];
-        const t = top[i];
+    const extrudeSettings = {
+        depth: height,
+        bevelEnabled: false,
+        bevelSegments: 2,
+        steps: 2,
+        bevelSize: 1,
+        bevelThickness: 1
+    };
 
-        // Bottom vertex
-        positions.push(t.x, t.y, t.z);
-        uvs.push(us[i], 0);  // u = horizontal position, v = bottom
-
-        // Top vertex
-        positions.push(b.x, b.y, b.z);
-        uvs.push(us[i], 1);  // u = horizontal position, v = top
-    }
-
-    const indices = [];
-    for (let i = 0; i < bottom.length - 1; i++) {
-        const i0 = i * 2;
-        const i1 = i * 2 + 1;
-        const i2 = i * 2 + 2;
-        const i3 = i * 2 + 3;
-
-        indices.push(i0, i2, i1); // Triangle 1
-        indices.push(i2, i3, i1); // Triangle 2
-    }
-
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-    geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2));
-    geometry.setIndex(indices);
-    geometry.computeVertexNormals();
-    geometry.translate(0, -height / 2, 0);
+    const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+    geometry.rotateX(Math.PI / 2);
+    geometry.center();
 
     return new THREE.Mesh(geometry, material);
 }
@@ -88,14 +64,14 @@ class FenceProps extends Props {
     fenceHeight: number;
     fenceColor: string;
     name: string;
-    shadow: boolean;
+    chainLink: boolean;
 
-    constructor (fenceHeight, fenceColor, name, shadow) {
-        super(["fenceColor", "name", "shadow"])
+    constructor (fenceHeight, fenceColor, name, chainLink) {
+        super(["fenceColor", "name", "chainLink"])
         this.fenceHeight = fenceHeight;
         this.fenceColor = fenceColor;
         this.name = name;
-        this.shadow = shadow;
+        this.chainLink = chainLink;
     }
 
     public clone() {
@@ -103,7 +79,7 @@ class FenceProps extends Props {
             this.fenceHeight,
             this.fenceColor,
             this.name, 
-            this.shadow
+            this.chainLink
         )
     }
 }
@@ -248,7 +224,6 @@ class FenceEditor {
         this.editor.remove(this.fencePreviewMesh)
 
         this.fencePreviewMesh = createFence(this.vertices, props.fenceHeight, createPreviewMaterial(props.fenceColor))
-        this.fencePreviewMesh.castShadow = props.shadow;
 
         this.editor.add(this.fencePreviewMesh)
 
@@ -260,13 +235,17 @@ class FenceEditor {
     private createMesh() {
         const props = this.props;
 
-        const mat = chainLinkMaterial.clone();
-        mat.color.set(this.props.fenceColor);
-        mat.transparent = true;
+        let mat = createPhongMaterial(props.fenceColor);
+        if (props.chainLink) {
+            mat = chainLinkMaterial.clone();
+            mat.color.set(WHITE);
+            mat.transparent = true;
+            mat.alphaTest = 0.1;
+        }
         
         const fence = createFence(this.vertices, props.fenceHeight, mat);
 
-        fence.castShadow = props.shadow;
+        fence.castShadow = true;
         fence.receiveShadow = false;
         fence.userData = { // Give mesh the data used to create it, so it can be edited. Add selection callbacks
             selectable: true,

@@ -29,10 +29,10 @@ class GridManager {
         this.meterGrid.position.set(0, 0.002, 0)
         editor.scene.add(this.meterGrid);
 
-        this.decimeterGrid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE * 10, 0x555555, 0xBBBBBB);
+        this.decimeterGrid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE * 10, WHITE, 0xDDDDDD);
         this.decimeterGrid.layers.set(LayerEnum.NoRaycast)
         this.decimeterGrid.position.set(0, 0.001, 0)
-        this.decimeterGrid.material.linewidth = 0.1;
+        this.decimeterGrid.material.linewidth = 0.05;
         editor.scene.add(this.decimeterGrid);
 
         let footDivisions = FEET_PER_METER * GRID_SIZE;
@@ -41,10 +41,10 @@ class GridManager {
         this.footGrid.position.set(0, 0.002, 0)
         editor.scene.add(this.footGrid);
 
-        this.inchGrid = new THREE.GridHelper(GRID_SIZE, footDivisions * 12, 0x555555, 0xBBBBBB);
+        this.inchGrid = new THREE.GridHelper(GRID_SIZE, footDivisions * 12, WHITE, 0xDDDDDD);
         this.inchGrid.layers.set(LayerEnum.NoRaycast)
         this.inchGrid.position.set(0, 0.001, 0)
-        this.inchGrid.material.linewidth = 0.1;
+        this.inchGrid.material.linewidth = 0.05;
         editor.scene.add(this.inchGrid);
 
         this.setMetric(this.metric)

@@ -3,7 +3,7 @@ import { MapControls } from 'three/addons/controls/MapControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
 import { Command } from './commands/Command';
 import { Selector } from './Selector';
-import { FRUSTUM_SIZE, GRASS_HEIGHT, LayerEnum, NUM_GRASS_BLADES, WORLD_SIZE } from './Constants';
+import { FRUSTUM_SIZE, GRASS_HEIGHT, LayerEnum, NUM_GRASS_BLADES, SHADOWMAP_RESOLUTION, WORLD_SIZE } from './Constants';
 import { BedEditor } from './editors/BedEditor';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { CommandStack } from './CommandStack';
@@ -27,8 +27,6 @@ import { Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils.js';
 
 
-const SHADOWMAP_WIDTH = 32;
-const SHADOWMAP_RESOLUTION = 2048;
 const ANTI_ALIASING = true;
 
 const SCREEN_WIDTH = window.innerWidth;
@@ -241,10 +239,10 @@ class Editor {
         this.directionalLight.shadow.normalBias = 0.1;
 
         // size of the map
-        this.directionalLight.shadow.camera.left = -SHADOWMAP_WIDTH;
-        this.directionalLight.shadow.camera.right = SHADOWMAP_WIDTH;
-        this.directionalLight.shadow.camera.top = -SHADOWMAP_WIDTH;
-        this.directionalLight.shadow.camera.bottom = SHADOWMAP_WIDTH;
+        this.directionalLight.shadow.camera.left = -WORLD_SIZE;
+        this.directionalLight.shadow.camera.right = WORLD_SIZE;
+        this.directionalLight.shadow.camera.top = -WORLD_SIZE;
+        this.directionalLight.shadow.camera.bottom = WORLD_SIZE;
 
         // map resolution
         this.directionalLight.shadow.mapSize.width = SHADOWMAP_RESOLUTION;

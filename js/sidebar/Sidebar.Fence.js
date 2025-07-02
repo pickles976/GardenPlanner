@@ -67,11 +67,11 @@ function SidebarFence( editor ) {
 	fenceColorRow.add( new UIText( "Fence Color" ).setClass( "Label" ) );
 	fenceColorRow.add(fenceColor)
 
-	const shadowRow = new UIRow();
-	const shadowCheck = new UICheckbox().onInput(update);
-	shadowCheck.setValue(true);
-	shadowRow.add(new UIText("Cast Shadow").setClass("Label"));
-	shadowRow.add(shadowCheck);
+	const chainLinkRow = new UIRow();
+	const chainLinkCheck = new UICheckbox().onInput(update);
+	chainLinkCheck.setValue(true);
+	chainLinkRow.add(new UIText("Chain Link").setClass("Label"));
+	chainLinkRow.add(chainLinkCheck);
 
 	const buttonContainer = new UIPanel();
 	buttonContainer.setBorderTop( '1' );
@@ -88,7 +88,7 @@ function SidebarFence( editor ) {
 	configContainer.add( objectNameRow );
 	configContainer.add( fenceHeightRow );
 	configContainer.add(fenceColorRow);
-	configContainer.add(shadowRow);
+	configContainer.add(chainLinkRow);
 	configContainer.setDisplay("none");
 
 	// Add sub-panels
@@ -165,14 +165,14 @@ function SidebarFence( editor ) {
 				fenceHeight.value, 
 				fenceColor.value, 
 				objectName.value,
-				shadowCheck.getValue()
+				chainLinkCheck.getValue()
 			)
 		} else {
 			props = new FenceProps(
 				snapper.inchesToMeters(fenceHeight.value),
 				fenceColor.dom.value,
 				objectName.value,
-				shadowCheck.getValue()
+				chainLinkCheck.getValue()
 			)
 		}
 
@@ -197,7 +197,7 @@ function SidebarFence( editor ) {
 		}
 		
 		fenceColor.setValue(props.fenceColor)
-		shadowCheck.setValue(props.shadow)
+		chainLinkCheck.setValue(props.chainLink)
 		objectName.setValue(props.name)
 
 	}

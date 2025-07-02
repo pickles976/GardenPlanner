@@ -11,6 +11,8 @@ export const NUM_GRASS_BLADES = 5000000;
 
 export const DEPTH_MAP_SIZE = 1024;
 
+export const SHADOWMAP_RESOLUTION = 4096;
+
 enum LayerEnum {
     NoRaycast = 0, // not raycastable
     World = 1, // raycastable but not selectable (ground)

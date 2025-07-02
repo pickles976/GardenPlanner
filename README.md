@@ -35,6 +35,10 @@ https://github.com/wjakob/instant-meshes
 Removing anti-aliasing
 https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 
+WebGL
+https://threejs.org/docs/index.html#api/en/renderers/webgl/WebGLProgram
+
+
 - timeline?
 - ECS?
 - animations?
@@ -71,22 +75,24 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 - [x] 06/29/2025 -- visual improvements (cont)
 
 # Week 5
-- [ ] 06/30/2025 -- sun calc
-- [ ] 06/31/2025 -- 
-- [ ] 07/01/2025 -- vertex QOL improvements
-- [ ] 07/02/2025 -- object creation panel (like plant selector panel)
-- [ ] 07/03/2025 -- 
-- [ ] 07/04/2025 -- drive to OK
-- [ ] 07/06/2025 -- back from OK
+- [x] 06/30/2025 -- sun calc
+- [x] 06/31/2025 -- refactor to deal with rotation
+- [x] 07/01/2025 -- grass shader displacement
+- [ ] 07/02/2025 -- graphics improvements
+- [ ] 07/03/2025 -- sun stuff
+- [ ] 07/04/2025 -- vertex qol improvements
+- [ ] 07/05/2025 -- object creation panel (like plant selector panel)
+- [ ] 07/06/2025 -- drive to OK
 
 # Week 6
+- [ ] 07/07/2025 -- back from OK
 - [ ] sun calc feature
 - [ ] saving and loading json
 - [ ] sun timeline
 - [ ] optimizations
 
 # Milestones
-- [ ] Garden editor -- 06/30/2025
+- [x] Garden editor -- 06/30/2025
 - [ ] Sun calculator -- 07/14/2025
 - [ ] first deploy -- 07/21/2025
 
@@ -95,3 +101,11 @@ https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
 - [ ] second deploy
 
 - [ ] batch sun jobs -- ???
+
+
+### Grass Displacement Shader
+
+1. Ortho camera looking up from under the ground
+2. Render to depth texture
+3. Load depth texture into grass vertexShader
+4. Use depth to set grass height
