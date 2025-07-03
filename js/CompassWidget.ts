@@ -1,8 +1,10 @@
+import { createCube } from "./Creation";
 import { Editor } from "./Editor";
 import { eventBus, EventEnums } from "./EventBus";
 import * as THREE from "three"
 
 const SVG_SIZE = "128px";
+const raycaster = new THREE.Raycaster();
 
 export function createCompassWidget(editor: Editor) {
 
@@ -17,28 +19,24 @@ export function createCompassWidget(editor: Editor) {
     div.appendChild(svgEl)
     document.body.appendChild(div)
 
+    const rect = svgEl.getBoundingClientRect();
+
+    const cube = createCube(editor);
+
     function redraw() {
-        let matrix = editor.currentCamera.matrix.invert();
 
-        // matrix = matrix.makeRotationAxis(new THREE.Vector3(1,0,0), Math.PI / 2);
-        const e = matrix.elements
+        if (editor.currentCamera.type !== "PerspectiveCamera") {
+            svgEl.style.transform = "";
+            return;
+        }
 
-        const rotationOnly = new THREE.Matrix4();
-        rotationOnly.set(
-            e[0], e[1], e[2], 0,
-            e[4], e[5], e[6], 0,
-            e[8], e[9], e[10], 0,
-               0,    0,     0, 1);
+        const az = editor.perspectiveCameraControls.getAzimuthalAngle() * 180 / Math.PI;
+        const el = editor.perspectiveCameraControls.getPolarAngle() * 180 / Math.PI;
 
-        // const rotation = editor.currentCamera.rotation.y * 180 / Math.PI;
+        svgEl.style.transform = `rotateX(${el}deg) rotateZ(${180 + az}deg)`
 
-        // svgEl.style.transform = `rotateX(90deg)`;
-
-        // console.log(rotationOnly.elements.join(","))
-
-        svgEl.style.transform = `matrix3d(${rotationOnly.elements.join(",")})`;
+  
     }
 
     eventBus.on(EventEnums.FRAME_UPDATED, () => redraw());
 }
-

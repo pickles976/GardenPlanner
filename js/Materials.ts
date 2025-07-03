@@ -23,6 +23,8 @@ function getPBRTexture(path: string, scale: THREE.Vector2 = new THREE.Vector2(1,
     }
 }
 
+export const compassTexture = loadTexture("/textures/compass.png", THREE.sRGBEncoding, new THREE.Vector2(1,1))
+
 const blockTexture = getPBRTexture("/materials/blocks-bl/", new THREE.Vector2(0.5,0.5));
 const mudTexture = getPBRTexture("/materials/mud-with-vegetation-bl/", new THREE.Vector2(0.5, 0.5))
 const mulchTexture = getPBRTexture("/materials/mulch-bl/", new THREE.Vector2(0.4, 0.4))

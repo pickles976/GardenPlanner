@@ -3,10 +3,11 @@ import { Editor } from './Editor';
 import { CreateObjectCommand } from './commands/CreateObjectCommand';
 import { LayerEnum, WORLD_SIZE } from './Constants';
 import { setCurrentTransformationAsDefault } from './ModelLoader';
-import { GROUND_COLOR } from './Colors';
+import { GROUND_COLOR, WHITE } from './Colors';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { createPhongMaterial, getGeometrySize, getObjectsize, mergeMeshes } from './Utils';
 import { depthTexturePreviewMaterial } from './DepthTextureHelper';
+import { compassTexture } from './Materials';
 
 const loader = new GLTFLoader();
 
@@ -171,4 +172,31 @@ export function createGround(editor: Editor): THREE.Mesh {
     mesh.rotation.x = mesh.rotation.x - Math.PI / 2;
     editor.scene.add(mesh)
     return mesh
+}
+
+
+export function createCompass(): THREE.Mesh {
+
+    const mat = new THREE.MeshPhongMaterial({
+        color: 0xDDDDDD,
+    })
+    const geo = new THREE.SphereGeometry(0.1, 32, 16);
+    const mesh = new THREE.Mesh(geo, mat)
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.userData = {
+        selectable: true,
+        editableFields: {
+                name: true,
+                position: true,
+                rotation: true,
+                radius: true,
+                height: true
+        }
+    }
+    mesh.layers.set(LayerEnum.Objects)
+    mesh.name = "Sphere";
+
+    return mesh;
+
 }

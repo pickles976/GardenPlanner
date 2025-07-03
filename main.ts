@@ -3,7 +3,7 @@ import { SetPositionCommand } from './js/commands/SetPositionCommand';
 import { SetRotationCommand } from './js/commands/SetRotationCommand';
 import { render } from './js/Rendering';
 import { SetScaleCommand } from './js/commands/SetScaleCommand';
-import { createHumanCube, createGround } from './js/Creation';
+import { createHumanCube, createGround, createCompass } from './js/Creation';
 import { eventBus, EventEnums } from './js/EventBus';
 import { Command } from './js/commands/Command';
 import { GridManager } from './js/GridManager';
@@ -11,7 +11,6 @@ import { Menubar } from './js/menubar/Menubar';
 import { Sidebar } from './js/sidebar/Sidebar';
 import { loadPlant } from './js/ModelLoader';
 import { Editor } from './js/Editor';
-import { getTexturePlane } from './js/DepthTextureHelper';
 import { createCompassWidget } from './js/CompassWidget';
 
 const editor = new Editor();
@@ -96,7 +95,6 @@ createGround(editor)
 let box = await createHumanCube(editor)
 box.position.set(1, 0, 1)
 
-// eventBus.emit(EventEnums.GRASS_CHANGED, true);
 createCompassWidget(editor)
 
 render(editor);

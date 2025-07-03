@@ -25,6 +25,7 @@ import { Sky } from 'three/addons/objects/Sky.js';
 import { createGrass } from './Grass';
 import { Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils.js';
+import { createCompass } from './Creation';
 
 
 const ANTI_ALIASING = true;
