@@ -5,25 +5,49 @@ import { LayerEnum, WORLD_SIZE } from './Constants';
 import { setCurrentTransformationAsDefault } from './ModelLoader';
 import { GROUND_COLOR, WHITE } from './Colors';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
+import { getGeometrySize, getObjectsize } from './Utils';
 
 const loader = new GLTFLoader();
 
-export async function createHumanCube(editor: Editor): THREE.Mesh {
+export async function createAnimeGirl(editor: Editor): THREE.Mesh {
+    /**
+     * Load an anime girl gltf and merge all meshes
+     */
     const gltf = await loader.loadAsync("/models/miyako.glb");
 
     const len = gltf.scene.children.length;
-    let mesh = gltf.scene.children[len - 1].children[0];
+    let scene = gltf.scene.children[len - 1].children[0];
 
-    // let meshes = [];
-    mesh.traverse(function (child) {
+    let meshes = [];
+    scene.traverse(function (child) {
         if (child.type === "Mesh") {
-            child.material = new THREE.MeshPhongMaterial({map: child.material.map, color: 0xFFFFFF})
-            child.castShadow = true;
-            child.receiveShadow = true;
-            child.layers.set(LayerEnum.Objects)
+            meshes.push(child);
         }
     });
 
+    let geometries = []
+    let materials = []
+
+    meshes.forEach(function(mesh, index) {
+        mesh.updateMatrix();
+        // mesh.geometry.computeTangents();
+        mesh.geometry.deleteAttribute('tangent');
+        geometries.push(mesh.geometry);
+        materials.push(new THREE.MeshPhongMaterial({map: mesh.material.map}));
+    });
+
+    let mergedGeometry = BufferGeometryUtils.mergeGeometries(geometries, true);
+    mergedGeometry.groupsNeedUpdate = true;
+
+    mergedGeometry.computeBoundingBox(); // Ensure bounding box is up-to-date
+
+    const box = mergedGeometry.boundingBox; // Local-space AABB
+    const size = new THREE.Vector3();
+    box.getSize(size);
+    mergedGeometry.translate(0, 0, -size.z / 2)
+
+    let mesh = new THREE.Mesh(mergedGeometry, materials)
     mesh.layers.set(LayerEnum.Objects)
     mesh.userData = {
         selectable: true,
@@ -38,6 +62,7 @@ export async function createHumanCube(editor: Editor): THREE.Mesh {
     const scale = 1
     mesh.scale.set(scale,scale,scale)
     mesh.rotation.x = mesh.rotation.x - Math.PI / 2;
+    mesh.position.y = size.z / 2;
 
     mesh.name = "Human-sized object";
     editor.execute(new CreateObjectCommand(mesh, editor));

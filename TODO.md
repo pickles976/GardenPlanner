@@ -1,7 +1,5 @@
 
 # QOL
-- [ ] merge all meshes in glb files
-
 - [ ] draw angle between lines, not angle between north for line editor
 - [ ] allow user to edit each vertex from the UI in vertex edit mode
 
@@ -34,7 +32,7 @@
 - [ ] apply different colors to grass with perlin noise
 - [ ] configure params until this feels right
 
-# Fuzz Testing
+- [ ] get a more performant anime girl model
 
 # REFACTOR
 

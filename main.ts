@@ -3,7 +3,7 @@ import { SetPositionCommand } from './js/commands/SetPositionCommand';
 import { SetRotationCommand } from './js/commands/SetRotationCommand';
 import { render } from './js/Rendering';
 import { SetScaleCommand } from './js/commands/SetScaleCommand';
-import { createHumanCube, createGround } from './js/Creation';
+import { createAnimeGirl, createGround } from './js/Creation';
 import { eventBus, EventEnums } from './js/EventBus';
 import { Command } from './js/commands/Command';
 import { GridManager } from './js/GridManager';
@@ -92,8 +92,8 @@ eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(
 
 createGround(editor)
 
-let box = await createHumanCube(editor)
-box.position.set(1, 0, 1)
+let box = await createAnimeGirl(editor)
+box.position.set(1, box.position.y, 1)
 
 createCompassWidget(editor)
 
