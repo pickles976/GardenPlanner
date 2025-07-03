@@ -854,12 +854,7 @@ select {
   border: 1px solid #ccc;
   cursor: pointer; /* changes the cursor */
 }
-/* 
-.item:hover {
-  background-color: #2980b9;
-  transform: scale(1.02); /* subtle "pop" effect */
-}  
-*/
+
 
 .plant-image {
 	width: 100%;
@@ -883,4 +878,26 @@ model-viewer {
 	width: 15vh;
 	height: 15vh;
 	color: white;
+}
+
+.debug-div-1 {
+	position: absolute;
+	pointer-events: none;
+	transform: translate(-50%, -50%);
+	left: 5%;
+	bottom: 5%;
+	width: 8px;
+	height: 8px;
+	background-color: black;
+}
+
+.debug-div-2 {
+	position: absolute;
+	pointer-events: none;
+	transform: translate(-50%, -50%);
+	left: 5%;
+	bottom: 5%;
+	width: 8px;
+	height: 8px;
+	background-color: black;
 }

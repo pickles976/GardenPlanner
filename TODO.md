@@ -1,8 +1,6 @@
-# Sun Utilities
-- [x] set north from UI
-- [x] draw pointer to north UI object
-- [ ] get this working!!!
+- [ ] how the fuck can I get the compass working?
 
+# Sun Utilities
 - [ ] create play button (go from sun up to sun down)
 - [ ] create basic timeline based off the one at the suncalc website
 - [ ] make the sun widgets showable/hideable
@@ -12,6 +10,8 @@
 - [ ] allow user to edit each vertex from the UI in vertex edit mode
 - [ ] ESC = cancel for line editor/object editor modes
 - [ ] show all objects when bed editing
+
+- [ ] spawn new objects at camera target position
 
 - [ ] let user hide objects from object panel
 

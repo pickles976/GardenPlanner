@@ -173,30 +173,3 @@ export function createGround(editor: Editor): THREE.Mesh {
     editor.scene.add(mesh)
     return mesh
 }
-
-
-export function createCompass(): THREE.Mesh {
-
-    const mat = new THREE.MeshPhongMaterial({
-        color: 0xDDDDDD,
-    })
-    const geo = new THREE.SphereGeometry(0.1, 32, 16);
-    const mesh = new THREE.Mesh(geo, mat)
-    mesh.castShadow = true;
-    mesh.receiveShadow = true;
-    mesh.userData = {
-        selectable: true,
-        editableFields: {
-                name: true,
-                position: true,
-                rotation: true,
-                radius: true,
-                height: true
-        }
-    }
-    mesh.layers.set(LayerEnum.Objects)
-    mesh.name = "Sphere";
-
-    return mesh;
-
-}

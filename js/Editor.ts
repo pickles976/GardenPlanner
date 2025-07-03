@@ -287,7 +287,7 @@ class Editor {
 
         eventBus.on(EventEnums.GRASS_CHANGED, (value) => this.showGrass(value));
     }
-
+    
     public setNorth(angle: number) {
         this.north = angle;
 
@@ -578,7 +578,7 @@ class Editor {
 
         if (this.selector.currentSelectedObject === undefined) {
             const [object, point] = processIntersections(intersections);
-            (object.userData.selectable === true) ? this.selector.select(object) : this.selector.deselect();
+            (object?.userData?.selectable === true) ? this.selector.select(object) : this.selector.deselect();
         } else {
             this.selector.deselect()
         }

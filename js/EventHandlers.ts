@@ -91,7 +91,7 @@ export function highlightMouseOverObject(editor: Editor, intersections: THREE.Ob
     }
 
     // If object is selectable
-    if (object.userData.selectable === true) {
+    if (object.userData?.selectable === true) {
 
         // Un-highlight old mouseOverObject
         if (selector.currentMousedOverObject !== undefined) {

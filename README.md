@@ -78,8 +78,8 @@ https://threejs.org/docs/index.html#api/en/renderers/webgl/WebGLProgram
 - [x] 06/30/2025 -- sun calc
 - [x] 06/31/2025 -- refactor to deal with rotation
 - [x] 07/01/2025 -- grass shader displacement
-- [ ] 07/02/2025 -- graphics improvements
-- [ ] 07/03/2025 -- sun stuff
+- [x] 07/02/2025 -- graphics improvements
+- [ ] 07/03/2025 -- sun UI stuff
 - [ ] 07/04/2025 -- vertex qol improvements
 - [ ] 07/05/2025 -- object creation panel (like plant selector panel)
 - [ ] 07/06/2025 -- drive to OK
