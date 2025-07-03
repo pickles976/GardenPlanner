@@ -14,6 +14,9 @@ class MenubarView {
 	gridHelper: UIRow;
 	cameraHelper: UIRow;
 
+	compassState: boolean;
+	compassHelper: UIRow;
+
 	constructor (editor: Editor) {
 		this.editor = editor;
 		this.container = new UIPanel();
@@ -31,7 +34,8 @@ class MenubarView {
 		// Helpers
 		this.states = {
 			gridHelper: true,
-			cameraHelper: false
+			cameraHelper: false,
+			compassHelper: true,
 		};
 
 		// Grid Helper
@@ -47,8 +51,15 @@ class MenubarView {
 		this.cameraHelper.onClick(() => this.toggleCamera());
 		this.cameraHelper.toggleClass('toggle-on', false)
 
+		// Compass Helper
+		this.compassHelper = new UIRow().addClass( 'option' ).addClass( 'toggle' ).setTextContent( "Compass" )
+		// this.compassHelper.add( new UIText( "SHIFT+C" ).setClass( 'key' ));
+		this.compassHelper.onClick(() => this.toggleCompass());
+		this.compassHelper.toggleClass('toggle-on', true)
+
 		options.add( this.gridHelper );
 		options.add(this.cameraHelper)
+		options.add(this.compassHelper)
 
 		eventBus.on(EventEnums.CHANGE_CAMERA_UI, (value) => this.setCamera(value))
 
@@ -57,6 +68,12 @@ class MenubarView {
 	public setCamera(value) {
 		this.states.cameraHelper = value;
 		this.cameraHelper.toggleClass('toggle-on', value)
+	}
+
+	public toggleCompass() {
+		this.states.compassHelper = !this.states.compassHelper;
+		eventBus.emit(EventEnums.TOGGLE_COMPASS, this.states.compassHelper);
+		this.compassHelper.toggleClass( 'toggle-on', this.states.compassHelper );
 	}
 
 	public toggleGrid() {

@@ -1,5 +1,4 @@
 import { WHITE } from "./Colors";
-import { createCube } from "./Creation";
 import { Editor } from "./Editor";
 import { eventBus, EventEnums } from "./EventBus";
 import * as THREE from "three"
@@ -11,7 +10,6 @@ export function createCompassWidget(editor: Editor) {
 
     const div = document.createElement('div');
     div.className = "compass"
-    // const svgEl = document.createElement('img')
     const svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
 
     svgEl.setAttribute('data-src', '/icons/compass.svg');
@@ -24,16 +22,24 @@ export function createCompassWidget(editor: Editor) {
 
     const debugP1 = document.createElement('div');
     debugP1.className = "debug-div-1"
-    document.body.appendChild(debugP1)
+    // document.body.appendChild(debugP1)
 
     const debugP2 = document.createElement('div');
     debugP2.className = "debug-div-2"
-    document.body.appendChild(debugP2)
+    // document.body.appendChild(debugP2)
 
     const rect = div.getBoundingClientRect();
     const center = new THREE.Vector2((rect.left + rect.right) / 2, (rect.top + rect.bottom) / 2);
 
     function redraw() {
+        /** 
+         * 1. Find the origin in screen-space of the SVG element
+         * 2. Find the X,Y,Z coordinate (P1) of the pixel (use an infinite plane at 0,0,0)
+         * 3. Add a vector facing north to P1 to obtain P2
+         * 4. Convert P2 to screen-space coordinates
+         * 5. Find angle in screen space between P1 and P2
+         * 6. Apply rotation to compass widget
+         */
 
         if (editor.currentCamera.type !== "PerspectiveCamera") {
             svgEl.style.transform = `rotateX(0deg) rotateZ(${-editor.north}deg)`;
@@ -55,7 +61,9 @@ export function createCompassWidget(editor: Editor) {
         raycaster.ray.intersectPlane(plane, p1);
 
         // TODO: dynamically scale this based on camera zoom
-        const p2 = p1.clone().add(new THREE.Vector3(0,0,1));
+        const dist = 1;
+        const northVector = new THREE.Vector3(dist * Math.sin(editor.north),0,dist * Math.cos(editor.north));
+        const p2 = p1.clone().add(northVector);
         
         const ndc2 = p2.project(editor.perspectiveCamera);
 
@@ -85,5 +93,10 @@ export function createCompassWidget(editor: Editor) {
   
     }
 
+    function toggleVisibility(value) {
+        div.style.visibility = value ? "visible" : "hidden";
+    }
+
     eventBus.on(EventEnums.FRAME_UPDATED, () => redraw());
+    eventBus.on(EventEnums.TOGGLE_COMPASS, (value) => toggleVisibility(value));
 }

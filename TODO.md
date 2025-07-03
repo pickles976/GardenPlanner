@@ -1,21 +1,23 @@
-- [ ] how the fuck can I get the compass working?
-
-# Sun Utilities
-- [ ] create play button (go from sun up to sun down)
-- [ ] create basic timeline based off the one at the suncalc website
-- [ ] make the sun widgets showable/hideable
 
 # QOL
+- [x] show/hide compass from view menubar
+
+- [ ] ESC = cancel for line editor/object editor modes
+
+- [ ] issue with bed creation origin not being at the right point (too short)
+- [ ] issue with grass sticking out of bed
+
 - [ ] draw angle between lines, not angle between north for line editor
 - [ ] allow user to edit each vertex from the UI in vertex edit mode
-- [ ] ESC = cancel for line editor/object editor modes
-- [ ] show all objects when bed editing
 
 - [ ] spawn new objects at camera target position
 
 - [ ] let user hide objects from object panel
 
-- [ ] draw pointer to north as rotating UI element
+# Sun Utilities
+- [ ] create play button (go from sun up to sun down)
+- [ ] create basic timeline based off the one at the suncalc website
+- [ ] make the sun widgets showable/hideable
 
 ## SAVING
 - [ ] saving configurations as json
@@ -34,8 +36,6 @@
 - [ ] bed panel does not hide when bed is deselected from scene panel
 - [ ] fix bug where path props are not being populated properly
 - [ ] bug when editing fence
-- [ ] issue with bed creation origin not being at the right point (too short)
-- [ ] issue with grass sticking out of bed
 
 ### Grass Shader Improvements
 - [x] grass occlusion

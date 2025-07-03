@@ -4,6 +4,8 @@ enum EventEnums {
 
     FRAME_UPDATED = "frameUpdated",
 
+    TOGGLE_COMPASS = "toggleCompass",
+
     OBJECT_ADDED = "objectAdded",
     OBJECT_REMOVED = "objectRemoved",
 
