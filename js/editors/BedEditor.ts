@@ -357,6 +357,12 @@ class BedEditor {
     }
 
     public handleKeyDown(event) {
+
+        if (event.key === 'Escape') {
+            eventBus.emit(EventEnums.BED_EDITING_CANCELLED)
+            return;
+        }
+
         switch (this.mode) {
             case BedEditorMode.LINE_EDITOR_MODE:
                 this.lineEditor.handleKeyDown(event)

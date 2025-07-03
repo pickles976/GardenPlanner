@@ -1,8 +1,5 @@
 
 # QOL
-- [x] show/hide compass from view menubar
-
-- [ ] ESC = cancel for line editor/object editor modes
 
 - [ ] issue with bed creation origin not being at the right point (too short)
 - [ ] issue with grass sticking out of bed
@@ -100,4 +97,5 @@ MVP finished!
 - [ ] shift + click to place down rulers
 - [ ] change transform modes (R, T, S)
 - [ ] g to show/hide grass
+- [ ] esc to cancel editor
 

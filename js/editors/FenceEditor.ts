@@ -286,6 +286,12 @@ class FenceEditor {
     }
 
     public handleKeyDown(event) {
+
+        if (event.key === 'Escape') {
+            eventBus.emit(EventEnums.FENCE_EDITING_CANCELLED)
+            return;
+        }
+
         switch (this.mode) {
             case FenceEditorMode.LINE_EDITOR_MODE:
                 this.lineEditor.handleKeyDown(event)

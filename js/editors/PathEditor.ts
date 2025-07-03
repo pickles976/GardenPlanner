@@ -280,6 +280,12 @@ class PathEditor {
     }
 
     public handleKeyDown(event) {
+
+        if (event.key === 'Escape') {
+            eventBus.emit(EventEnums.PATH_EDITING_CANCELLED)
+            return;
+        }
+
         switch (this.mode) {
             case PathEditorMode.LINE_EDITOR_MODE:
                 this.lineEditor.handleKeyDown(event)
