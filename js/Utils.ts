@@ -3,18 +3,6 @@ import * as THREE from "three";
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 import { FONT_SIZE } from "./Constants";
 
-// export function sphericalToZUpVector3(radius, elevation, azimuth) {
-//     const phi = elevation - Math.PI / 2; 
-//     const theta = azimuth;
-
-//     const sinPhi = Math.sin(phi);
-//     const x = radius * sinPhi * Math.cos(theta);
-//     const z = radius * sinPhi * Math.sin(theta);
-//     const y = radius * Math.cos(phi);
-
-//     return new THREE.Vector3(x, y, z);
-// }
-
 export function blendColors(color1: THREE.Color, color2: THREE.Color, f: number) {
     // Clamp t to [0, 1]
     f = Math.max(0, Math.min(1, f));
@@ -169,4 +157,8 @@ export function getObjectsize(object: THREE.Mesh) : THREE.Vector3 {
   const scale = object.scale.clone();
   const geoSize = getGeometrySize(object);
   return new THREE.Vector3(geoSize.x * scale.x, geoSize.y * scale.y, geoSize.z * scale.z);
+}
+
+export function northAngleToVec(angle: number) : THREE.Vector3 {
+  return new THREE.Vector3(Math.sin(angle),0,Math.cos(angle));
 }

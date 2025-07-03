@@ -1,5 +1,5 @@
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { Plant } from './Plants';
+import { Plant } from './widgets/Plants';
 import { Editor } from './Editor';
 import * as THREE from 'three';
 import { LayerEnum } from './Constants';

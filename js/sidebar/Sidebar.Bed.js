@@ -62,38 +62,32 @@ function SidebarBed( editor ) {
 	// Bed Config
 	const objectNameRow = new UIRow();
 	const objectName = new UIInput().setWidth( '150px' ).setFontSize( '12px' ).onChange(update);
-	objectName.setValue("New Bed")
 	objectNameRow.add( new UIText( "Bed Name" ).setClass( 'Label' ) );
 	objectNameRow.add( objectName );
 
 
 	const bedHeightRow = new UIRow();
 	const bedHeight = new UINumber().setStep( 0.1 ).setNudge( 0.01 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
-	bedHeight.setValue(editor.bedEditor.bedHeight);
 	bedHeightRow.add( new UIText( "Bed Height" ).setClass( 'Label' ) );
 	bedHeightRow.add( bedHeight );
 
 	const borderHeightRow = new UIRow();
 	const borderHeight = new UINumber().setStep( 0.1 ).setNudge( 0.01 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
-	borderHeight.setValue(editor.bedEditor.borderHeight);
 	borderHeightRow.add( new UIText( "Border Height" ).setClass( 'Label' ) );
 	borderHeightRow.add( borderHeight );
 
 	const borderWidthRow = new UIRow();
 	const borderWidth = new UINumber().setStep( 0.1 ).setNudge( 0.01 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
-	borderWidth.setValue(editor.bedEditor.borderWidth);
 	borderWidthRow.add( new UIText( "Border Width" ).setClass( 'Label' ) );
 	borderWidthRow.add( borderWidth );
 
 	const bedColorRow = new UIRow();
 	const bedColor = new UIColor().onInput( update );
-	bedColor.setValue(editor.bedEditor.bedColor)
 	bedColorRow.add( new UIText( "Bed Color" ).setClass( 'Border Color' ) );
 	bedColorRow.add(bedColor)
 
 	const borderColorRow = new UIRow();
 	const borderColor = new UIColor().onInput( update );
-	borderColor.setValue(editor.bedEditor.borderColor)
 	borderColorRow.add( new UIText( "Border Color" ).setClass( 'Border Color' ) );
 	borderColorRow.add(borderColor)
 
@@ -162,6 +156,7 @@ function SidebarBed( editor ) {
 		saveBedButton.setDisplay("Block");
 		dimensionContainer.setDisplay("Block")
 		configContainer.setDisplay("Block")
+		updateFromEditor()
 	})
 
 	eventBus.on(EventEnums.BED_EDITING_FINISHED, () => {
@@ -199,7 +194,7 @@ function SidebarBed( editor ) {
 				borderWidth.value,
 				bedColor.dom.value,
 				borderColor.dom.value,
-				objectName.value
+				objectName.getValue()
 			)
 		} else {
 			props = new BedProps(
@@ -208,7 +203,7 @@ function SidebarBed( editor ) {
 				snapper.inchesToMeters(borderWidth.value),
 				bedColor.dom.value,
 				borderColor.dom.value,
-				objectName.value
+				objectName.getValue()
 			)
 		}
 
@@ -255,6 +250,7 @@ function SidebarBed( editor ) {
 
 		bedColor.setValue(props.bedColor)
 		borderColor.setValue(props.borderColor)
+		objectName.setValue(props.name)
 
 
 	}

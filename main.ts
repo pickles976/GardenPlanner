@@ -3,7 +3,7 @@ import { SetPositionCommand } from './js/commands/SetPositionCommand';
 import { SetRotationCommand } from './js/commands/SetRotationCommand';
 import { render } from './js/Rendering';
 import { SetScaleCommand } from './js/commands/SetScaleCommand';
-import { createHumanCube, createGround, createCompass } from './js/Creation';
+import { createHumanCube, createGround } from './js/Creation';
 import { eventBus, EventEnums } from './js/EventBus';
 import { Command } from './js/commands/Command';
 import { GridManager } from './js/GridManager';
@@ -11,7 +11,7 @@ import { Menubar } from './js/menubar/Menubar';
 import { Sidebar } from './js/sidebar/Sidebar';
 import { loadPlant } from './js/ModelLoader';
 import { Editor } from './js/Editor';
-import { createCompassWidget } from './js/CompassWidget';
+import { createCompassWidget } from './js/widgets/CompassWidget';
 
 const editor = new Editor();
 editor.initThree();

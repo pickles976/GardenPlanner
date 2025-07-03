@@ -20,7 +20,7 @@ import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
 import "external-svg-loader";
 
-import { destructureVector3Array, getCentroid, polygonArea, rad2deg, fontSizeString, getCSS2DText } from "../Utils";
+import { destructureVector3Array, getCentroid, polygonArea, rad2deg, fontSizeString, getCSS2DText, northAngleToVec } from "../Utils";
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { SetPositionCommand } from "../commands/SetPositionCommand";
 import { eventBus, EventEnums } from "../EventBus";
@@ -501,7 +501,7 @@ class LineEditor {
 
         // Angle text
         const segment = point.clone().sub(lastPoint)
-        let angle = rad2deg(segment.angleTo(this.editor.north));
+        let angle = rad2deg(segment.angleTo(northAngleToVec(this.editor.north)));
         let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
 
         if (this.angleText === undefined) {

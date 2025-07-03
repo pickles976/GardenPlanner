@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 import { Command } from './Command';
 import { Editor } from '../Editor';
-import { eventBus, EventEnums } from '../EventBus';
 
 class DeleteObjectCommand extends Command {
 
@@ -24,12 +23,10 @@ class DeleteObjectCommand extends Command {
         // Deselect object before deleting
         this.editor.selector.deselect()
         this.editor.remove(this.object)
-        eventBus.emit(EventEnums.REQUEST_RENDER, this.object);
     }
 
     public undo() {
         this.editor.add(this.object);
-        eventBus.emit(EventEnums.REQUEST_RENDER, this.object);
     }
 
 }

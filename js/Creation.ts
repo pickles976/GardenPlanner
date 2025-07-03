@@ -5,9 +5,6 @@ import { LayerEnum, WORLD_SIZE } from './Constants';
 import { setCurrentTransformationAsDefault } from './ModelLoader';
 import { GROUND_COLOR, WHITE } from './Colors';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { createPhongMaterial, getGeometrySize, getObjectsize, mergeMeshes } from './Utils';
-import { depthTexturePreviewMaterial } from './DepthTextureHelper';
-import { compassTexture } from './Materials';
 
 const loader = new GLTFLoader();
 

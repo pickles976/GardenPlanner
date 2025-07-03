@@ -1,8 +1,7 @@
 import * as THREE from "three"
-import { DEPTH_MAP_SIZE, FRUSTUM_SIZE, GRASS_HEIGHT } from './Constants';
+import { DEPTH_MAP_SIZE } from './Constants';
 import { Editor } from './Editor';
 import { grassMaterial } from './Grass';
-import { depthTexturePreviewMaterial } from "./DepthTextureHelper";
 import { eventBus, EventEnums } from "./EventBus";
 
 const clock = new THREE.Clock();
@@ -55,10 +54,6 @@ export async function render(editor: Editor) {
   // Render the Scene
   grassMaterial.uniforms.time.value = clock.getElapsedTime();
   grassMaterial.uniforms.depthTexture.value = depthRenderTarget.depthTexture;
-
-  depthTexturePreviewMaterial.uniforms.depthTexture.value = depthRenderTarget.depthTexture;
-  depthTexturePreviewMaterial.uniformsNeedUpdate = true;
-
   grassMaterial.uniformsNeedUpdate = true;
 
   // NORMAL RENDER

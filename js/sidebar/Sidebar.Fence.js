@@ -51,25 +51,21 @@ function SidebarFence( editor ) {
 	// Config
 	const objectNameRow = new UIRow();
 	const objectName = new UIInput().setWidth( '150px' ).setFontSize( '12px' ).onChange(update);
-	objectName.setValue("New Fence")
 	objectNameRow.add( new UIText( "Fence Name" ).setClass( 'Label' ) );
 	objectNameRow.add( objectName );
 
 	const fenceHeightRow = new UIRow();
 	const fenceHeight = new UINumber().setStep( 0.1 ).setNudge( 0.01 ).setUnit( 'm' ).setWidth( '50px' ).onChange( update );
-	fenceHeight.setValue(editor.fenceEditor.fenceHeight);
 	fenceHeightRow.add( new UIText( "Fence Height" ).setClass( 'Label' ) );
 	fenceHeightRow.add( fenceHeight );
 
 	const fenceColorRow = new UIRow();
 	const fenceColor = new UIColor().onInput( update );
-	fenceColor.setValue(editor.fenceEditor.fenceColor)
 	fenceColorRow.add( new UIText( "Fence Color" ).setClass( "Label" ) );
 	fenceColorRow.add(fenceColor)
 
 	const chainLinkRow = new UIRow();
 	const chainLinkCheck = new UICheckbox().onInput(update);
-	chainLinkCheck.setValue(true);
 	chainLinkRow.add(new UIText("Chain Link").setClass("Label"));
 	chainLinkRow.add(chainLinkCheck);
 
@@ -130,6 +126,7 @@ function SidebarFence( editor ) {
 		savePolygonButton.setDisplay("none");
 		saveObjectButton.setDisplay("Block");
 		configContainer.setDisplay("Block")
+		updateFromEditor()
 	})
 
 	eventBus.on(EventEnums.FENCE_EDITING_FINISHED, () => {
@@ -159,19 +156,20 @@ function SidebarFence( editor ) {
 	})
 
 	function update() {
+
 		let props;
 		if (snapper.metric) {
 			props = new FenceProps(
 				fenceHeight.value, 
 				fenceColor.value, 
-				objectName.value,
+				objectName.getValue(),
 				chainLinkCheck.getValue()
 			)
 		} else {
 			props = new FenceProps(
 				snapper.inchesToMeters(fenceHeight.value),
 				fenceColor.dom.value,
-				objectName.value,
+				objectName.getValue(),
 				chainLinkCheck.getValue()
 			)
 		}

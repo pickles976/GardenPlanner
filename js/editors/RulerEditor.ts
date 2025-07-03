@@ -6,7 +6,7 @@ import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { Line2 } from 'three/addons/lines/Line2.js';
 
-import { destructureVector3Array, getCSS2DText, fontSizeString, rad2deg } from "../Utils";
+import { destructureVector3Array, getCSS2DText, fontSizeString, rad2deg, northAngleToVec } from "../Utils";
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { FONT_SIZE, LayerEnum } from "../Constants";
@@ -93,7 +93,7 @@ class RulerEditor {
         this.editor.remove(this.angleText)
 
         this.linePreview = createLinePreview(this.rulerStart, point);
-        this.angleText = createAngleText(this.rulerStart, point, this.editor.north);
+        this.angleText = createAngleText(this.rulerStart, point, northAngleToVec(this.editor.north));
 
         this.editor.add(this.linePreview)
         this.editor.add(this.angleText)

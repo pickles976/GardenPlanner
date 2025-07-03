@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { eventBus, EventEnums } from "./EventBus";
+import { eventBus, EventEnums } from "../EventBus";
 
 export class Plant {
 

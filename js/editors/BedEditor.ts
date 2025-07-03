@@ -21,6 +21,15 @@ const INITIAL_BORDER_WIDTH = 0.10;
 const NUM_ARC_SEGMENTS = 1;
 const BED_CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, 2, -2);
 
+function shiftOriginUp(geometry: THREE.ExtrudeGeometry) {
+    geometry.computeBoundingBox(); // Ensure bounding box is up-to-date
+
+    const box = geometry.boundingBox; // Local-space AABB
+    const size = new THREE.Vector3();
+    box.getSize(size);
+
+    geometry.translate(0, size.y, 0)
+}
 
 function createBedBorder(vertices: THREE.Vector3[], width: number, height: number, material: THREE.Material): THREE.Mesh {
     /**
@@ -67,7 +76,7 @@ function createBedBorder(vertices: THREE.Vector3[], width: number, height: numbe
 
     const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
     geometry.rotateX(Math.PI / 2);
-    geometry.center();
+    shiftOriginUp(geometry)
 
     // Extrude 2D polygon to 3D mesh
     return new THREE.Mesh(geometry, material);;
@@ -100,7 +109,7 @@ function createBed(vertices: THREE.Vector3[], height: number, material: THREE.Ma
 
     const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
     geometry.rotateX(Math.PI / 2);
-    geometry.center();
+    shiftOriginUp(geometry)
 
     return new THREE.Mesh(geometry, material);;
 }

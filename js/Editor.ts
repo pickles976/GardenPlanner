@@ -25,8 +25,6 @@ import { Sky } from 'three/addons/objects/Sky.js';
 import { createGrass } from './Grass';
 import { Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils.js';
-import { createCompass } from './Creation';
-
 
 const ANTI_ALIASING = true;
 
@@ -250,7 +248,7 @@ class Editor {
         this.directionalLight.shadow.mapSize.height = SHADOWMAP_RESOLUTION;
         this.directionalLight.shadow.camera.near = 0.5; // default
         this.directionalLight.shadow.camera.far = 500; // default
-        this.directionalLight.shadow.radius = 1.5; // blur shadows
+        this.directionalLight.shadow.radius = 1.0; // blur shadows
 
         this.directionalLight.name = "Directional Light";
 
@@ -357,6 +355,7 @@ class Editor {
         object.rotation.reorder ( 'XZY' ); // Fix rotation order
         this.scene.add(object)
         // TODO: properly update the rest of the application
+        eventBus.emit(EventEnums.OBJECT_ADDED)
     }
 
     public remove(object?: THREE.Object3D) {
@@ -376,9 +375,11 @@ class Editor {
 
         this.scene.remove(object);
         delete this.objectMap[object.uuid];
+        eventBus.emit(EventEnums.OBJECT_REMOVED)
     }
 
     public selectByUUID(uuid: string) {
+		this.selector.deselect();
         if (this.objectMap.hasOwnProperty(uuid)) {
             this.selector.select(this.objectMap[uuid]);
         }
@@ -452,11 +453,9 @@ class Editor {
         switch (event.key) {
 
             // Duplicate object
-            case 'd':
-                if (event.ctrlKey) {
-                    if (this.selector.currentSelectedObject) {
+            case 'D': 
+                if (this.selector.currentSelectedObject) {
                         this.execute(new CreateObjectCommand(deepClone(this.selector.currentSelectedObject), this))
-                    }
                 }
                 break;
             // Transform

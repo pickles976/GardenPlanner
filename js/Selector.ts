@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { Editor } from "./Editor";
 import { eventBus, EventEnums } from './EventBus';
 import { FONT_SIZE, LayerEnum } from './Constants';
-import { destructureVector3Array, fontSizeString, getCSS2DText, rad2deg } from './Utils';
+import { destructureVector3Array, fontSizeString, getCSS2DText, northAngleToVec, rad2deg } from './Utils';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { GREEN, WHITE } from './Colors';
 import { Line2 } from 'three/addons/lines/Line2.js';
@@ -161,7 +161,7 @@ class Selector {
         origin.y = 0;
 
         // Get North line
-        const northEnd = origin.clone().add(this.editor.north);
+        const northEnd = origin.clone().add(northAngleToVec(this.editor.north));
         let material = new LineMaterial({ color: WHITE, linewidth: 3, depthWrite: false, depthTest: false });
         let geometry = new LineGeometry();
         geometry.setPositions(destructureVector3Array([origin, northEnd]));

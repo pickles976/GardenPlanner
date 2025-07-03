@@ -1,8 +1,6 @@
 
 # QOL
-
-- [ ] issue with bed creation origin not being at the right point (too short)
-- [ ] issue with grass sticking out of bed
+- [ ] merge all meshes in glb files
 
 - [ ] draw angle between lines, not angle between north for line editor
 - [ ] allow user to edit each vertex from the UI in vertex edit mode
@@ -28,11 +26,6 @@
     - [ ] export to json
     - [ ] load from json
     - [ ] save a preview image from the canvas
-
-# BUGS
-- [ ] bed panel does not hide when bed is deselected from scene panel
-- [ ] fix bug where path props are not being populated properly
-- [ ] bug when editing fence
 
 ### Grass Shader Improvements
 - [x] grass occlusion

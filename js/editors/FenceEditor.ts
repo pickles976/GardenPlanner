@@ -14,7 +14,7 @@ import { chainLinkMaterial, mudMaterial } from "../Materials";
 import offsetPolygon from "offset-polygon";
 
 const INITIAL_FENCE_HEIGHT = 2.0;
-const CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, -2, 2);
+const CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, 3, -6);
 
 enum FenceEditorMode {
     INACTIVE = "INACTIVE",

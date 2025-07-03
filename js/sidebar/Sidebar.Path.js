@@ -50,25 +50,22 @@ function SidebarPath(editor) {
 
 	const pathWidthRow = new UIRow();
 	const pathWidth = new UINumber().setStep(0.1).setNudge(0.01).setUnit('m').setWidth('50px').onChange(update);
-	pathWidth.setValue(editor.pathEditor.pathWidth);
 	pathWidthRow.add(new UIText("Path Width").setClass('Label'));
 	pathWidthRow.add(pathWidth);
 
 	const pathHeightRow = new UIRow();
 	const pathHeight = new UINumber().setStep(0.1).setNudge(0.01).setUnit('m').setWidth('50px').onChange(update);
-	pathHeight.setValue(editor.pathEditor.pathHeight);
 	pathHeightRow.add(new UIText("Path Height").setClass('Label'));
 	pathHeightRow.add(pathHeight);
 
 	const pathColorRow = new UIRow();
 	const pathColor = new UIColor().onInput(update);
-	pathColor.setValue(editor.pathEditor.pathColor)
 	pathColorRow.add(new UIText("Path Color").setClass("Label"));
 	pathColorRow.add(pathColor)
 
 	const numArcSegmentsRow = new UIRow();
 	const numArcSegments = new UINumber().setStep(1).setWidth('50px').onChange(update).setPrecision(0);
-	numArcSegments.setValue(editor.pathEditor.numArcSegments);
+	numArcSegments.setValue(1);
 	numArcSegmentsRow.add(new UIText("Bend Segments").setClass('Label'));
 	numArcSegmentsRow.add(numArcSegments);
 
@@ -130,6 +127,7 @@ function SidebarPath(editor) {
 		savePolygonButton.setDisplay("none");
 		saveObjectButton.setDisplay("Block");
 		configContainer.setDisplay("Block")
+		updateFromEditor()
 	})
 
 	eventBus.on(EventEnums.PATH_EDITING_FINISHED, () => {
@@ -166,7 +164,7 @@ function SidebarPath(editor) {
 				pathWidth.value,
 				pathHeight.value,
 				pathColor.value,
-				objectName.value
+				objectName.getValue()
 			);
 		} else {
 			props = new PathProps(
@@ -174,7 +172,7 @@ function SidebarPath(editor) {
 				snapper.inchesToMeters(pathWidth.value),
 				snapper.inchesToMeters(pathHeight.value),
 				pathColor.dom.value,
-				objectName.value
+				objectName.getValue()
 			);
 		}
 
@@ -210,6 +208,7 @@ function SidebarPath(editor) {
 
 		numArcSegments.setValue(props.numArcSegments)
 		pathColor.setValue(props.pathColor)
+		objectName.setValue(props.name)
 
 	}
 

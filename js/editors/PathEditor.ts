@@ -14,7 +14,9 @@ import offsetPolygon from "offset-polygon";
 
 const INITIAL_PATH_HEIGHT = 0.03;
 const INITIAL_PATH_WIDTH = 0.3;
-const CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, 2, -2);
+const INITIAL_PATH_COLOR = WHITE;
+const INITIAL_PATH_NAME = "New Path";
+const CONFIG_CAMERA_OFFSET = new THREE.Vector3(0, 4, -4);
 
 enum PathEditorMode {
     INACTIVE = "INACTIVE",
@@ -121,8 +123,8 @@ class PathEditor {
             1,
             INITIAL_PATH_WIDTH,
             INITIAL_PATH_HEIGHT,
-            WHITE,
-            "New Path"
+            INITIAL_PATH_COLOR,
+            INITIAL_PATH_NAME
         )
 
         eventBus.on(EventEnums.PATH_CONFIG_UPDATED, (command) => {

@@ -1,6 +1,6 @@
 import * as THREE from "three"; 
-import { GRASS_HEIGHT, LayerEnum, WORLD_SIZE } from "./Constants";
-import { WHITE } from "./Colors";
+import { GRASS_HEIGHT, LayerEnum, WORLD_SIZE } from "../Constants";
+import { WHITE } from "../Colors";
 
 
 export const depthTexturePreviewMaterial = new THREE.ShaderMaterial({

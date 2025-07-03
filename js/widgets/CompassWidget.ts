@@ -1,6 +1,6 @@
-import { WHITE } from "./Colors";
-import { Editor } from "./Editor";
-import { eventBus, EventEnums } from "./EventBus";
+import { WHITE } from "../Colors";
+import { Editor } from "../Editor";
+import { eventBus, EventEnums } from "../EventBus";
 import * as THREE from "three"
 
 const SVG_SIZE = "128px";
