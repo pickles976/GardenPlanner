@@ -89,6 +89,7 @@ export function createCube(editor: Editor): THREE.Mesh {
     }
     mesh.layers.set(LayerEnum.Objects)
     mesh.name = "Box";
+    mesh.position.set(...editor.currentCameraControls.target.clone())
 
     editor.execute(new CreateObjectCommand(mesh, editor));
 
@@ -118,6 +119,7 @@ export function createCylinder(editor: Editor): THREE.Mesh {
     }
     mesh.layers.set(LayerEnum.Objects)
     mesh.name = "Cylinder";
+    mesh.position.set(...editor.currentCameraControls.target.clone())
 
     editor.execute(new CreateObjectCommand(mesh, editor));
 
@@ -144,6 +146,7 @@ export function createSphere(editor: Editor): THREE.Mesh {
     }
     mesh.layers.set(LayerEnum.Objects)
     mesh.name = "Sphere";
+    mesh.position.set(...editor.currentCameraControls.target.clone())
 
     editor.execute(new CreateObjectCommand(mesh, editor));
 
@@ -173,6 +176,7 @@ export function createPlane(editor: Editor): THREE.Mesh {
     mesh.layers.set(LayerEnum.Objects)
     mesh.name = "Plane";
     mesh.position.set(0,0,0.3)
+    mesh.position.set(...editor.currentCameraControls.target.clone())
 
     editor.execute(new CreateObjectCommand(mesh, editor));
 }

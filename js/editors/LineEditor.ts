@@ -501,8 +501,17 @@ class LineEditor {
 
         // Angle text
         const segment = point.clone().sub(lastPoint)
-        let angle = rad2deg(segment.angleTo(northAngleToVec(this.editor.north)));
-        let textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
+        let angle, textPos;
+        if (this.vertices.length < 2) { // If only 2 points or less, calculate angle to north
+            angle = rad2deg(segment.angleTo(northAngleToVec(this.editor.north)));
+            textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
+        } else { // Otherwise calculate angle between last line segment
+            const prevPrevPoint = this.vertices[this.vertices.length - 2];
+            const previousSegment = lastPoint.clone().sub(prevPrevPoint);
+            angle = rad2deg(segment.angleTo(previousSegment));
+            textPos = lastPoint.clone().add(point.clone()).divideScalar(2);
+        }
+
 
         if (this.angleText === undefined) {
             this.angleText = getCSS2DText(`${angle.toFixed(2)}°`, fontSizeString(FONT_SIZE))

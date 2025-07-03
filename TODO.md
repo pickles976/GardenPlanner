@@ -1,11 +1,8 @@
 
 # QOL
-- [ ] draw angle between lines, not angle between north for line editor
-- [ ] allow user to edit each vertex from the UI in vertex edit mode
-
-- [ ] spawn new objects at camera target position
 
 - [ ] let user hide objects from object panel
+- [ ] allow user to edit each vertex from the UI in vertex edit mode
 
 # Sun Utilities
 - [ ] create play button (go from sun up to sun down)
