@@ -2,6 +2,10 @@ import * as THREE from 'three';
 import { Command } from './Command';
 import { eventBus, EventEnums } from '../EventBus';
 
+/**
+ * Set the value of an object
+ */
+
 class SetValueCommand extends Command {
 
     object: THREE.Object3D

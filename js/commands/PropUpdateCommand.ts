@@ -1,6 +1,10 @@
 import { Command } from './Command';
 import { Props } from '../Constants';
 
+/**
+ * Update the props for drawable objects
+ */
+
 class PropUpdateCommand extends Command {
 
     newProps: Props;
