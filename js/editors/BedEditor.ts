@@ -12,8 +12,6 @@ import { Editor } from "../Editor";
 import { DARK_GRAY, VERTEX_COLOR, WHITE } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
 import { LineEditor } from "./LineEditor";
-import { mudMaterial, mulchMaterial, rockMaterial } from "../Materials";
-import { setCurrentTransformationAsDefault } from "../ModelLoader";
 
 const INITIAL_BED_HEIGHT = 0.15;
 const INITIAL_BORDER_WIDTH = 0.10;

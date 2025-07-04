@@ -2,6 +2,7 @@
 # QOL
 - [x] generalize "SetNameCommand" to "SetValueCommand" (see Sidebar.Object.js line 60)
 - [ ] allow user to edit each vertex from the UI in vertex edit mode
+- [ ] fix bug where you can click "save vertices" from bed editor
 
 # Sun Utilities
 - [ ] create play button (go from sun up to sun down)

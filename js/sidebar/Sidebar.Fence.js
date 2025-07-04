@@ -108,6 +108,7 @@ function SidebarFence( editor ) {
 	})
 
 	eventBus.on(EventEnums.FENCE_VERTEX_EDITING_UPDATED, () => {
+		lineEditorPanel.updateFromEditor()
 		updateFromEditor()
 	})
 

@@ -21,7 +21,7 @@ function SidebarBed( editor ) {
 	container.setDisplay("Block")
 
 	const lineEditorPanel = new LineEditorPanel(
-		editor.fenceEditor.lineEditor, 
+		editor.bedEditor.lineEditor, 
 		EventEnums.BED_VERTEX_EDITING_STARTED,
 		EventEnums.BED_VERTEX_EDITING_FINISHED);
 
@@ -147,6 +147,7 @@ function SidebarBed( editor ) {
 	})
 
 	eventBus.on(EventEnums.BED_VERTEX_EDITING_UPDATED, () => {
+		lineEditorPanel.updateFromEditor()
 		updateFromEditor()
 	})
 

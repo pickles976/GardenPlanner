@@ -112,6 +112,7 @@ function SidebarPath(editor) {
 	})
 
 	eventBus.on(EventEnums.PATH_VERTEX_EDITING_UPDATED, () => {
+		lineEditorPanel.updateFromEditor()
 		updateFromEditor()
 	})
 
