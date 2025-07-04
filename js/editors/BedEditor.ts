@@ -342,6 +342,7 @@ class BedEditor {
                 name: true,
                 position: true,
                 rotation: true,
+                visible: true
             }
         }
         mergedMesh.layers.set(LayerEnum.Objects)

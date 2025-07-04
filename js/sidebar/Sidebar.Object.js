@@ -9,6 +9,7 @@ import { Strings } from './Strings';
 import {eventBus, EventEnums} from '../EventBus.js';
 import { snapper } from '../Snapping.js'
 import { getObjectsize } from '../Utils.js';
+import { SetVisibilityCommand } from '../commands/SetVisibilityCommand.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -101,6 +102,17 @@ function SidebarObject( editor ) {
 
 	container.add( objectScaleRow );
 
+	// visibility
+
+	const objectVisibleRow = new UIRow();
+	const objectVisible = new UICheckbox()
+	objectVisible.setValue(true)
+	objectVisible.onChange(update);
+
+	objectVisibleRow.add(new UIText("Visible").setClass( 'Label' ))
+	objectVisibleRow.add(objectVisible);
+	container.add(objectVisibleRow)
+
 	// user data
 
 	const objectUserDataRow = new UIRow();
@@ -188,7 +200,7 @@ function SidebarObject( editor ) {
 			return
 		}
 
-		// Handle Inches
+		// Position
 		let newPosition = new THREE.Vector3( objectPositionX.getValue(), objectPositionY.getValue(), objectPositionZ.getValue() );
 		if (!snapper.metric) {
 			newPosition = new THREE.Vector3(
@@ -202,7 +214,7 @@ function SidebarObject( editor ) {
 			editor.execute( new SetPositionCommand( object, object.position, newPosition ) );
 		}
 
-		// rotation
+		// Rotation
 		const newRotation = new THREE.Euler( objectRotationX.getValue() * THREE.MathUtils.DEG2RAD, objectRotationY.getValue() * THREE.MathUtils.DEG2RAD, objectRotationZ.getValue() * THREE.MathUtils.DEG2RAD );
 		if ( new THREE.Vector3().setFromEuler( object.rotation ).distanceTo( new THREE.Vector3().setFromEuler( newRotation ) ) >= 0.01 ) {
 			editor.execute( new SetRotationCommand( object, object.quaternion.clone(), new THREE.Quaternion().setFromEuler(newRotation)));
@@ -214,12 +226,16 @@ function SidebarObject( editor ) {
 			editor.execute( new SetScaleCommand( object, object.scale, newScale ) );
 		}
 
+		// Visibility
+		if (objectVisible.getValue() !== object.visible) {
+			editor.execute(new SetVisibilityCommand(object, objectVisible.getValue()))
+		}
+
 		// // Custom fields
 		const editableFields = object.userData.editableFields;
 		if (editableFields === undefined) return;
 
 		// TODO: explain why this works!!!
-
 		// Set Radius
 		if (editableFields.radius) {
 			const radius = snapper.metric ? objectRadius.getValue() : snapper.inchesToMeters(objectRadius.getValue())
@@ -274,6 +290,7 @@ function SidebarObject( editor ) {
 			radius: objectRadiusRow,
 			height: objectHeightRow,
 			userData: objectUserDataRow,
+			visible: objectVisibleRow,
 			exportJson: exportJson
 		}
 
@@ -393,6 +410,8 @@ function SidebarObject( editor ) {
 		objectScaleX.setValue( object.scale.x );
 		objectScaleY.setValue( object.scale.y );
 		objectScaleZ.setValue( object.scale.z );
+
+		objectVisible.setValue(object.visible);
 
 		try {
 

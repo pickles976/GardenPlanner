@@ -114,7 +114,8 @@ class RulerEditor {
                 editableFields: {
                     name: true,
                     position: true,
-                    rotation: true
+                    rotation: true,
+                    visible: true
                 }
             }
             ruler.name = "Ruler"

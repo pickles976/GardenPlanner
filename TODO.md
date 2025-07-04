@@ -1,7 +1,6 @@
 
 # QOL
-
-- [ ] let user hide objects from object panel
+- [x] let user hide objects from object panel
 - [ ] allow user to edit each vertex from the UI in vertex edit mode
 
 # Sun Utilities
@@ -12,10 +11,10 @@
 ## SAVING
 - [ ] saving configurations as json
     - [ ] config object
-        - [ ] grass visibility
         - [ ] metric system
         - [ ] lat/lon
         - [ ] time
+    - [ ] try to serialize and de-serialize a scene
     - [ ] autosave feature
     - [ ] load from web storage
     - [ ] export to json

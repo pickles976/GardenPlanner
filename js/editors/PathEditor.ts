@@ -251,6 +251,7 @@ class PathEditor {
                 name: true,
                 position: true,
                 rotation: true,
+                visible: true
             }
         }
         path.layers.set(LayerEnum.Objects)

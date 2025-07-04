@@ -55,7 +55,8 @@ export async function createAnimeGirl(editor: Editor): THREE.Mesh {
             name: true,
             position: true,
             rotation: true,
-            scale: true
+            scale: true,
+            visible: true
         }
     }
 
@@ -84,7 +85,8 @@ export function createCube(editor: Editor): THREE.Mesh {
             name: true,
             position: true,
             rotation: true,
-            scale: true
+            scale: true,
+            visible: true
         }
     }
     mesh.layers.set(LayerEnum.Objects)
@@ -110,11 +112,12 @@ export function createCylinder(editor: Editor): THREE.Mesh {
     mesh.userData = {
         selectable: true,
         editableFields: {
-                name: true,
-                position: true,
-                rotation: true,
-                radius: true,
-                height: true
+            name: true,
+            position: true,
+            rotation: true,
+            radius: true,
+            height: true,
+            visible: true
         }
     }
     mesh.layers.set(LayerEnum.Objects)
@@ -137,11 +140,12 @@ export function createSphere(editor: Editor): THREE.Mesh {
     mesh.userData = {
         selectable: true,
         editableFields: {
-                name: true,
-                position: true,
-                rotation: true,
-                radius: true,
-                height: true
+            name: true,
+            position: true,
+            rotation: true,
+            radius: true,
+            height: true,
+            visible: true
         }
     }
     mesh.layers.set(LayerEnum.Objects)
@@ -167,10 +171,11 @@ export function createPlane(editor: Editor): THREE.Mesh {
     mesh.userData = {
         selectable: true,
         editableFields: {
-                name: true,
-                position: true,
-                rotation: true,
-                scale: true
+            name: true,
+            position: true,
+            rotation: true,
+            scale: true,
+            visible: true
         }
     }
     mesh.layers.set(LayerEnum.Objects)

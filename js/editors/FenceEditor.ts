@@ -257,6 +257,7 @@ class FenceEditor {
                 name: true,
                 position: true,
                 rotation: true,
+                visible: true
             }
         }
         fence.layers.set(LayerEnum.Objects)
