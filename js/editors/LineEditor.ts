@@ -352,7 +352,7 @@ class LineEditor {
 
 
     // Drawing
-    private drawPreview() {
+    public drawPreview() {
         if (this.closedLoop) {
             // Redraw Polygon
             this.editor.remove(this.polygon)

@@ -1,22 +1,25 @@
 import * as THREE from "three"
 import { UIPanel, UIButton, UIDiv, UIRow, UIText, UINumber } from '../libs/ui.js';
 
-import { Strings } from './Strings.js';
 import { eventBus, EventEnums } from '../EventBus.js';
 import { LineEditor } from '../editors/LineEditor.js';
 import { northAngleToVec, rad2deg } from "../Utils.js";
 import { snapper } from "../Snapping.js";
+import { degToRad } from 'three/src/math/MathUtils.js';
+import { SetPositionCommand } from "../commands/SetPositionCommand.js";
 
 class Segment {
 
 	p1: number;
 	p2: number;
 	segment: THREE.Vector3;
+	prevSegment: THREE.Vector3;
 
-	constructor(p1: number, p2: number, segment: THREE.Vector3) {
+	constructor(p1: number, p2: number, segment: THREE.Vector3, prevSegment: THREE.Vector3) {
 		this.p1 = p1;
 		this.p2 = p2;
 		this.segment = segment;
+		this.prevSegment = prevSegment;
 	}
 }
 
@@ -73,10 +76,7 @@ class LineEditorPanel {
 
 	public updateFromEditor() {
 
-		// TODO: handle metric
-		// TODO: add callbacks
-		// TODO: handle loop vs non-loop vertex angles
-
+		// TODO: CLEAN THIS UP!!!
 
 		// Clear state
 		this.segmentRows.forEach((item) => this.segmentContainer.remove(item))
@@ -85,7 +85,8 @@ class LineEditorPanel {
 		
 		// Turn vertices into segments
 		const vertices = this.lineEditor.vertexHandles.map((item) => item.position.clone());
-		for (let i = 0; i < vertices.length; i++) {
+		const loopLength = this.lineEditor.closedLoop ? vertices.length : vertices.length - 1;
+		for (let i = 0; i < loopLength; i++) {
 
 			let p1 = i;
 			let p2 = (i + 1)% vertices.length;
@@ -93,31 +94,42 @@ class LineEditorPanel {
 			let v1 = vertices[p1];
 			let v2 = vertices[p2];
 
-			const segment = v2.clone().sub(v1);
-			this.segments.push(new Segment(p1, p2, segment));
+			// Get angle to north for the first segment, get all others with respect to the previous segment
+			// Get the previous segment
+			let prevSegment;
+			if (i == 0) {
+				if (this.lineEditor.closedLoop) {
+					prevSegment = vertices[vertices.length - 1].clone().sub(vertices[i]); // get last segment
+				} else {
+					prevSegment = northAngleToVec(this.lineEditor.editor.north); // get north vector
+				}
+			} else {
+				prevSegment = vertices[i - 1].clone().sub(vertices[i])
+			}
+
+			const segment = v2.clone().sub(v1)
+			this.segments.push(new Segment(p1, p2, segment, prevSegment));
 		}
 
 		// Draw segments UI
 		for (let i = 0; i < this.segments.length; i++) {
 
 			const segment = this.segments[i].segment;
+			const prevSegment = this.segments[i].prevSegment;
 
 			const distance = snapper.metersToInches(segment.length());
 
-			// TODO: change this based on if we have a loop or not
-			// Get angle to north for the first segment, get all others with respect to the previous segment
-			let angle = (i == 0) ? segment.angleTo(northAngleToVec(this.lineEditor.editor.north)) : segment.angleTo(this.segments[i - 1].segment);
-			angle = rad2deg(angle);
+			let angle = rad2deg(segment.angleTo(prevSegment));
 	
 			const lengthLabel = new UIText(`Length`)
 			const lengthField = new UINumber().setStep( 1.0 ).setNudge( 0.01 ).setUnit( snapper.metric ? 'm' : '"' ).setWidth( '50px' )
 			lengthField.setValue(distance.toFixed(2))
-			lengthField.onChange(() => this.updateVertexHandles(lengthField.value, angle, i))
+			lengthField.onChange(() => this.updateVertexHandle(lengthField.value, angle, i, prevSegment))
 
 			const angleLabel = new UIText( `Angle`)
 			const angleField = new UINumber().setStep( 1.0 ).setNudge( 0.01 ).setUnit( '°' ).setWidth( '50px' )
 			angleField.setValue(angle.toFixed(2))
-			angleField.onChange(() => this.updateVertexHandles(distance, angleField.value, i))
+			angleField.onChange(() => this.updateVertexHandle(distance, angleField.value, i, prevSegment))
 
 			const row = new UIRow()
 			row.add(lengthLabel)
@@ -131,16 +143,26 @@ class LineEditorPanel {
 
 	}
 
-	private updateVertexHandles(distance: number, angle: number, segmentIndex: number) {
+	private updateVertexHandle(distance: number, angle: number, segmentIndex: number, prevSegment: THREE.Vector3) {
+		/**
+		 * Update handle when UI changes
+		 */
+
+		const length = snapper.metric ? distance : snapper.inchesToMeters(distance);
+
 		const segment = this.segments[segmentIndex];
 		const h1 = this.lineEditor.vertexHandles[segment.p1];
 		const h2 = this.lineEditor.vertexHandles[segment.p2];
 
-		// TODO: what do we need?
 		// previous segment
+		const rotated = prevSegment.clone().applyEuler(new THREE.Euler(0, degToRad(angle), 0));
+		const scaled = rotated.normalize().multiplyScalar(length);
 
+		const newPos = h1.position.clone().add(scaled);
 
-
+		this.lineEditor.commandStack.execute(new SetPositionCommand(h2, h2.position, newPos))
+		this.lineEditor.drawPreview()
+		this.updateFromEditor()
 	}
 
 	public setDisplay(value: string) {
@@ -150,11 +172,14 @@ class LineEditorPanel {
 	public startVertexPlacement() {
 		this.saveLinesButton.setDisplay(this.lineEditor.closedLoop ? "none" : "Block")
 		this.savePolygonButton.setDisplay("none");
+		this.segmentContainer.setDisplay("none");
 	}
 
 	public startVertexEditing() {
 		this.saveLinesButton.setDisplay("none")
 		this.savePolygonButton.setDisplay("Block");
+		this.segmentContainer.setDisplay("Block");
+		this.updateFromEditor()
 	}
 
 

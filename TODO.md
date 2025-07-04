@@ -1,8 +1,10 @@
 
 # QOL
-- [ ] allow user to edit each vertex from the UI in vertex edit mode
-    - [ ] display line segments
-    - [ ] edit line segments via callback
+- [x] allow user to edit each vertex from the UI in vertex edit mode
+    - [x] display line segments
+    - [x] edit line segments via callback
+
+- [ ] spawn plants at camera target
 
 # Sun Utilities
 - [ ] create play button (go from sun up to sun down)
