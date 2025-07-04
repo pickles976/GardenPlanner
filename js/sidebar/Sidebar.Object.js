@@ -9,7 +9,7 @@ import { Strings } from './Strings';
 import {eventBus, EventEnums} from '../EventBus.js';
 import { snapper } from '../Snapping.js'
 import { getObjectsize } from '../Utils.js';
-import { SetVisibilityCommand } from '../commands/SetVisibilityCommand.js';
+import { SetValueCommand } from '../commands/SetValueCommand.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -228,7 +228,7 @@ function SidebarObject( editor ) {
 
 		// Visibility
 		if (objectVisible.getValue() !== object.visible) {
-			editor.execute(new SetVisibilityCommand(object, objectVisible.getValue()))
+			editor.execute(new SetValueCommand(object, "visible", objectVisible.getValue(), object.visible))
 		}
 
 		// // Custom fields

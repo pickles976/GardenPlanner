@@ -1,6 +1,6 @@
 
 # QOL
-- [ ] generalize "SetNameCommand" to "SetValueCommand" (see Sidebar.Object.js line 60)
+- [x] generalize "SetNameCommand" to "SetValueCommand" (see Sidebar.Object.js line 60)
 - [ ] allow user to edit each vertex from the UI in vertex edit mode
 
 # Sun Utilities
