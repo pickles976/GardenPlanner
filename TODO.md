@@ -1,7 +1,9 @@
 
 # QOL
 - [x] let user hide objects from object panel
+- [ ] create sub-object for vertex editing in UI
 - [ ] allow user to edit each vertex from the UI in vertex edit mode
+- [ ] generalize "SetNameCommand" to "SetValueCommand" (see Sidebar.Object.js line 60)
 
 # Sun Utilities
 - [ ] create play button (go from sun up to sun down)

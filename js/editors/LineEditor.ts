@@ -280,7 +280,7 @@ class LineEditor {
         
     }
 
-    private setVertexEditMode() {
+    public setVertexEditMode() {
         // Reset cursor
         setDefaultCursor()
         this.createVertexHandles();

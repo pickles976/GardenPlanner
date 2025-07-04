@@ -5,6 +5,7 @@ import { eventBus, EventEnums } from '../EventBus.js';
 import { snapper } from '../Snapping.js';
 import { PropUpdateCommand } from '../commands/PropUpdateCommand.js';
 import { PathProps } from '../editors/PathEditor.js';
+import { LineEditorPanel } from './LineEditorPanel.js';
 
 const strings = Strings({ 'language': 'en' });
 
@@ -18,15 +19,10 @@ function SidebarPath(editor) {
 	const label = new UIText("PATH")
 	container.add(label)
 
-	// Save Lines
-	const saveLinesButton = new UIButton("✓ Save Lines")
-	saveLinesButton.dom.style.color = "#AAFFAA"
-	saveLinesButton.setDisplay("none")
-
-	// Save Polygon
-	const savePolygonButton = new UIButton("✓ Save Vertices")
-	savePolygonButton.dom.style.color = "#AAFFAA"
-	savePolygonButton.setDisplay("none")
+	const lineEditorPanel = new LineEditorPanel(
+		editor.pathEditor.lineEditor, 
+		EventEnums.PATH_VERTEX_EDITING_STARTED,
+		EventEnums.PATH_VERTEX_EDITING_FINISHED);
 
 	// Save Object
 	const saveObjectButton = new UIButton("✓ Save Path")
@@ -72,8 +68,6 @@ function SidebarPath(editor) {
 	const buttonContainer = new UIPanel();
 	buttonContainer.setBorderTop('1');
 	buttonContainer.setPaddingTop('20px');
-	buttonContainer.add(saveLinesButton)
-	buttonContainer.add(savePolygonButton)
 	buttonContainer.add(saveObjectButton)
 	buttonContainer.add(cancelButton)
 	buttonContainer.add(editButton)
@@ -89,29 +83,32 @@ function SidebarPath(editor) {
 	configContainer.setDisplay("none");
 
 	// Add sub-panels
+	container.add(lineEditorPanel.container)
 	container.add(configContainer)
 	container.add(buttonContainer)
 
-	saveLinesButton.onClick(() => editor.pathEditor.lineEditor.setVertexEditMode())
-	savePolygonButton.onClick(() => eventBus.emit(EventEnums.PATH_VERTEX_EDITING_FINISHED))
+	// saveLinesButton.onClick(() => editor.pathEditor.lineEditor.setVertexEditMode())
+	// savePolygonButton.onClick(() => eventBus.emit(EventEnums.PATH_VERTEX_EDITING_FINISHED))
 	saveObjectButton.onClick(() => eventBus.emit(EventEnums.PATH_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.PATH_EDITING_CANCELLED))
 	editButton.onClick(() => eventBus.emit(EventEnums.PATH_EDITING_STARTED, editor.selector.currentSelectedObject))
 
 	eventBus.on(EventEnums.PATH_CREATION_STARTED, () => {
-		saveLinesButton.setDisplay("Block")
+		lineEditorPanel.setDisplay("Block");
+		lineEditorPanel.startVertexPlacement();
+
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
-		savePolygonButton.setDisplay("none");
 		saveObjectButton.setDisplay("none");
 		configContainer.setDisplay("none")
 	})
 
 	eventBus.on(EventEnums.PATH_VERTEX_EDITING_STARTED, () => {
-		saveLinesButton.setDisplay("none")
+		lineEditorPanel.setDisplay("Block")
+		lineEditorPanel.startVertexEditing()
+
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
-		savePolygonButton.setDisplay("Block");
 		saveObjectButton.setDisplay("none");
 		configContainer.setDisplay("none")
 	})
@@ -121,29 +118,24 @@ function SidebarPath(editor) {
 	})
 
 	eventBus.on(EventEnums.PATH_VERTEX_EDITING_FINISHED, () => {
-		saveLinesButton.setDisplay("none")
+		lineEditorPanel.setDisplay("none")
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
-		savePolygonButton.setDisplay("none");
 		saveObjectButton.setDisplay("Block");
 		configContainer.setDisplay("Block")
 		updateFromEditor()
 	})
 
 	eventBus.on(EventEnums.PATH_EDITING_FINISHED, () => {
-		saveLinesButton.setDisplay("none")
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("none");
-		savePolygonButton.setDisplay("none");
 		saveObjectButton.setDisplay("none");
 		configContainer.setDisplay("none")
 	})
 
 	eventBus.on(EventEnums.PATH_EDITING_CANCELLED, () => {
-		saveLinesButton.setDisplay("none")
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("none");
-		savePolygonButton.setDisplay("none");
 		saveObjectButton.setDisplay("none");
 		configContainer.setDisplay("none")
 	})
