@@ -87,8 +87,6 @@ function SidebarPath(editor) {
 	container.add(configContainer)
 	container.add(buttonContainer)
 
-	// saveLinesButton.onClick(() => editor.pathEditor.lineEditor.setVertexEditMode())
-	// savePolygonButton.onClick(() => eventBus.emit(EventEnums.PATH_VERTEX_EDITING_FINISHED))
 	saveObjectButton.onClick(() => eventBus.emit(EventEnums.PATH_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.PATH_EDITING_CANCELLED))
 	editButton.onClick(() => eventBus.emit(EventEnums.PATH_EDITING_STARTED, editor.selector.currentSelectedObject))

@@ -1,15 +1,13 @@
 import * as THREE from 'three';
 
 import { UIPanel, UIRow, UIInput, UIButton, UIColor, UICheckbox, UIInteger, UITextArea, UIText, UINumber, UISpan } from '../libs/ui.js';
-import { UIBoolean } from '../libs/ui.three.js';
 
-import { SetPositionCommand } from '../commands/SetPositionCommand.js';
 import { Strings } from './Strings.js';
 import {eventBus, EventEnums} from '../EventBus.js';
-import { contain } from 'three/src/extras/TextureUtils.js';
 import { PropUpdateCommand } from '../commands/PropUpdateCommand.js';
 import { snapper } from '../Snapping.js';
 import { BedProps } from '../editors/BedEditor.js';
+import { LineEditorPanel } from './LineEditorPanel.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -22,13 +20,13 @@ function SidebarBed( editor ) {
 	container.setPaddingTop( '20px' );
 	container.setDisplay("Block")
 
+	const lineEditorPanel = new LineEditorPanel(
+		editor.fenceEditor.lineEditor, 
+		EventEnums.BED_VERTEX_EDITING_STARTED,
+		EventEnums.BED_VERTEX_EDITING_FINISHED);
+
 	const label = new UIText("BED")
 	container.add(label)
-
-	// Save Polygon
-	const savePolygonButton = new UIButton("✓ Save Polygon")
-	savePolygonButton.dom.style.color = "#AAFFAA"
-	savePolygonButton.setDisplay("none")
 
 	// Save Bed
 	const saveBedButton = new UIButton("✓ Save Bed")
@@ -94,7 +92,6 @@ function SidebarBed( editor ) {
 	const buttonContainer = new UIPanel();
 	buttonContainer.setBorderTop( '1' );
 	buttonContainer.setPaddingTop( '20px' );
-	buttonContainer.add(savePolygonButton)
 	buttonContainer.add(saveBedButton)
 	buttonContainer.add(cancelButton)
 	buttonContainer.add(editButton)
@@ -118,28 +115,32 @@ function SidebarBed( editor ) {
 	dimensionContainer.setDisplay("none");
 
 	// Add sub-panels
+	container.add(lineEditorPanel.container)
 	container.add(configContainer)
 	container.add(dimensionContainer)
 	container.add(buttonContainer)
 
-	savePolygonButton.onClick(() => eventBus.emit(EventEnums.BED_VERTEX_EDITING_FINISHED))
 	saveBedButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_FINISHED))
 	cancelButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_CANCELLED))
 	editButton.onClick(() => eventBus.emit(EventEnums.BED_EDITING_STARTED, editor.selector.currentSelectedObject))
 
 	eventBus.on(EventEnums.BED_CREATION_STARTED, () => {
+		lineEditorPanel.setDisplay("Block");
+		lineEditorPanel.startVertexPlacement();
+		
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
-		savePolygonButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
 		dimensionContainer.setDisplay("none")
 		configContainer.setDisplay("none")
 	})
 
 	eventBus.on(EventEnums.BED_VERTEX_EDITING_STARTED, () => {
+		lineEditorPanel.setDisplay("Block")
+		lineEditorPanel.startVertexEditing()
+
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
-		savePolygonButton.setDisplay("Block");
 		saveBedButton.setDisplay("none");
 		dimensionContainer.setDisplay("Block")
 		configContainer.setDisplay("none")
@@ -150,9 +151,10 @@ function SidebarBed( editor ) {
 	})
 
 	eventBus.on(EventEnums.BED_VERTEX_EDITING_FINISHED, () => {
+		lineEditorPanel.setDisplay("none")
+
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("Block");
-		savePolygonButton.setDisplay("none");
 		saveBedButton.setDisplay("Block");
 		dimensionContainer.setDisplay("Block")
 		configContainer.setDisplay("Block")
@@ -162,7 +164,6 @@ function SidebarBed( editor ) {
 	eventBus.on(EventEnums.BED_EDITING_FINISHED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("none");
-		savePolygonButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
 		dimensionContainer.setDisplay("none")
 		configContainer.setDisplay("none")
@@ -171,7 +172,6 @@ function SidebarBed( editor ) {
 	eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => {
 		editButton.setDisplay("none");
 		cancelButton.setDisplay("none");
-		savePolygonButton.setDisplay("none");
 		saveBedButton.setDisplay("none");
 		dimensionContainer.setDisplay("none")
 		configContainer.setDisplay("none")
