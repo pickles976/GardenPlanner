@@ -55,11 +55,7 @@ function SidebarObject( editor ) {
 	// name
 
 	const objectNameRow = new UIRow();
-	const objectName = new UIInput().setWidth( '150px' ).setFontSize( '12px' ).onChange( function () {
-
-		editor.execute( new SetValueCommand( editor, editor.selected, 'name', objectName.getValue() ) );
-
-	} );
+	const objectName = new UIInput().setWidth( '150px' ).setFontSize( '12px' ).onChange(update);
 
 	objectNameRow.add( new UIText( strings.getKey( 'sidebar/object/name' ) ).setClass( 'Label' ) );
 	objectNameRow.add( objectName );
@@ -199,6 +195,11 @@ function SidebarObject( editor ) {
 		if (object === null || object === undefined) {
 			return
 		}
+
+		// Name
+		if (objectName.getValue() != object.name) {
+			editor.execute( new SetValueCommand( object, 'name', objectName.getValue(), object.name ) );
+		} 
 
 		// Position
 		let newPosition = new THREE.Vector3( objectPositionX.getValue(), objectPositionY.getValue(), objectPositionZ.getValue() );
