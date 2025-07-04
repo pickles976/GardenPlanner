@@ -1,8 +1,8 @@
 
 # QOL
-- [x] generalize "SetNameCommand" to "SetValueCommand" (see Sidebar.Object.js line 60)
 - [ ] allow user to edit each vertex from the UI in vertex edit mode
-- [ ] fix bug where you can click "save vertices" from bed editor
+    - [ ] display line segments
+    - [ ] edit line segments via callback
 
 # Sun Utilities
 - [ ] create play button (go from sun up to sun down)
@@ -31,14 +31,8 @@
 
 - [ ] get a more performant anime girl model
 
-# REFACTOR
-
-Write up about 
-- [x] event flow/propagation
-- [ ] design philosophy
-- [ ] modularity
-
 MVP finished!
+- [ ] deploy
 
 ## USER FEEDBACK
 - [ ] friends and family
@@ -46,6 +40,17 @@ MVP finished!
 - [ ] r/austingardens
 
 ## MORE UTILITIES
+
+# REFACTOR
+Write up about 
+- [x] event flow/propagation
+- [ ] design philosophy
+- [ ] modularity
+
+# More Plants
+- [ ] revisit plant model pipeline
+- [ ] create more plants
+
 
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
