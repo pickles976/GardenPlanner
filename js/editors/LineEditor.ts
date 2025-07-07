@@ -32,6 +32,8 @@ import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW }
 import { setCrossCursor, setDefaultCursor } from "../Cursors";
 import { processIntersections } from "../EventHandlers";
 import { snapper } from "../Snapping";
+import { DeleteObjectCommand } from "../commands/DeleteObjectCommand";
+import { createCube } from "../Creation";
 
 const VERTEX_SIZE = 0.05;
 const POLYGON_CLOSE_THRESH = VERTEX_SIZE;
@@ -259,6 +261,10 @@ class LineEditor {
         this.lineSegments = []
         this.vertexHandles = []
 
+        while (this.commandStack.stack.length > 0) {
+            this.commandStack.undo()
+        }
+
         setDefaultCursor()
     }
 
@@ -281,10 +287,10 @@ class LineEditor {
     }
 
     public setVertexEditMode() {
-        // Reset cursor
         setDefaultCursor()
-        this.createVertexHandles();
-        this.cleanUpVertexPlacementState()
+        const vertices = this.vertices.map((v) => v.clone());
+        this.cleanUpVertexPlacementState();
+        this.createVertexHandles(vertices);
         this.drawPreview();
         this.mode = LineEditorMode.EDIT_VERTEX_MODE;
         eventBus.emit(this.vertex_editing_started_enum) // TODO: change
@@ -364,15 +370,15 @@ class LineEditor {
 
     }
 
-    private createVertexHandles() {
+    private createVertexHandles(vertices: THREE.Vector3[]) {
         /**
          * Create interactable vertex objects from 3D points
          */
 
-        for (const point of this.vertices) {
+        for (const point of vertices) {
             const vertex = createVertexHandle();
-            this.editor.add(vertex);
             vertex.position.set(...point)
+            this.commandStack.execute(new CreateObjectCommand(vertex, this.editor))
             this.vertexHandles.push(vertex)
         }
 
@@ -436,8 +442,9 @@ class LineEditor {
             if (object.userData.isLineSegment) {
                 // TODO: make this undoable (would need to make a custom command that stores the old and new arrays of VertexHandle objects?)
                 const vertex = createVertexHandle()
-                this.editor.add(vertex)
+                // this.editor.add(vertex)
                 vertex.position.set(...point)
+                this.commandStack.execute( new CreateObjectCommand(vertex, this.editor))
                 this.vertexHandles.splice(object.userData.p1 + 1, 0, vertex)
                 this.drawPreview()
                 return
@@ -634,7 +641,8 @@ class LineEditor {
             return
         }
 
-        this.editor.remove(this.selectedHandle)
+        // this.editor.remove(this.selectedHandle)
+        this.commandStack.execute(new DeleteObjectCommand(this.selectedHandle, this.editor))
 
         for (let i = 0; i < this.vertexHandles.length; i++) {
             if (this.vertexHandles[i] === this.selectedHandle) {
@@ -654,6 +662,8 @@ class LineEditor {
                 this.vertices.pop();
                 break;
             case LineEditorMode.EDIT_VERTEX_MODE:
+                this.vertexHandles = this.vertexHandles.filter((v) => this.editor.objectMap.hasOwnProperty(v.uuid))
+                console.log(this.vertexHandles)
                 this.drawPreview();
                 break;
             default:

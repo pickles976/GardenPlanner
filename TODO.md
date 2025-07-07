@@ -3,8 +3,11 @@
 - [x] allow user to edit each vertex from the UI in vertex edit mode
     - [x] display line segments
     - [x] edit line segments via callback
+- [x] enable ctrl + z in vertex edit mode
+- [ ] add delete button to line segment editing rows
 
 - [ ] spawn plants at camera target
+- [ ] fence spawn issue
 
 # Sun Utilities
 - [ ] create play button (go from sun up to sun down)
