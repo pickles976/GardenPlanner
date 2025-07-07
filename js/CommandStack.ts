@@ -34,6 +34,10 @@ class CommandStack {
     public clear() {
         this.stack = [];
     }
+
+    public peek() {
+        return this.stack[this.stack.length - 1];
+    }
 }
 
 export { CommandStack };

@@ -375,9 +375,11 @@ class LineEditor {
          * Create interactable vertex objects from 3D points
          */
 
-        for (const point of vertices) {
+        for (let i = 0; i < vertices.length; i++) {
+            const point = vertices[i];
             const vertex = createVertexHandle();
             vertex.position.set(...point)
+            vertex.userData["index"] = i;
             this.commandStack.execute(new CreateObjectCommand(vertex, this.editor))
             this.vertexHandles.push(vertex)
         }
@@ -442,8 +444,8 @@ class LineEditor {
             if (object.userData.isLineSegment) {
                 // TODO: make this undoable (would need to make a custom command that stores the old and new arrays of VertexHandle objects?)
                 const vertex = createVertexHandle()
-                // this.editor.add(vertex)
                 vertex.position.set(...point)
+                vertex.userData["index"] = object.userData.p1 + 1;
                 this.commandStack.execute( new CreateObjectCommand(vertex, this.editor))
                 this.vertexHandles.splice(object.userData.p1 + 1, 0, vertex)
                 this.drawPreview()
@@ -655,18 +657,38 @@ class LineEditor {
 
     }
 
+    public refereshVertexHandles() {
+        this.vertexHandles = this.vertexHandles.filter((v) => this.editor.objectMap.hasOwnProperty(v.uuid))
+    }
+
     public undo() {
-        this.commandStack.undo();
         switch (this.mode) {
             case LineEditorMode.PLACE_VERTEX_MODE:
                 this.vertices.pop();
+                this.commandStack.undo();
                 break;
             case LineEditorMode.EDIT_VERTEX_MODE:
-                this.vertexHandles = this.vertexHandles.filter((v) => this.editor.objectMap.hasOwnProperty(v.uuid))
-                console.log(this.vertexHandles)
+                const command = this.commandStack.peek();
+
+                // CONVOLUTED SHIT
+                // TODO: handle splicing in a special function
+                // 1. insert handle
+                // 2. remove handle
+                // handle this in a custom command?
+                if (command.name === "CreateObjectCommand") {
+                    this.vertexHandles.splice(command.object.userData.index, 1);
+                } 
+
+                if (command.name === "DeleteObjectCommand") {
+                    this.vertexHandles.splice(command.object.userData.index, 0, command.object);
+                }
+
+                this.commandStack.undo();
+                this.refereshVertexHandles()
                 this.drawPreview();
                 break;
             default:
+                this.commandStack.undo();
                 break;
         }
         this.handleMouseMove(this.editor, [{object: undefined, point: this.lastPoint}]);

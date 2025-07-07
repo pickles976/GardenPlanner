@@ -1,12 +1,7 @@
 
 # QOL
-- [x] allow user to edit each vertex from the UI in vertex edit mode
-    - [x] display line segments
-    - [x] edit line segments via callback
-- [x] enable ctrl + z in vertex edit mode
-- [ ] add delete button to line segment editing rows
 
-- [ ] spawn plants at camera target
+- [x] spawn plants at camera target
 - [ ] fence spawn issue
 
 # Sun Utilities
@@ -51,6 +46,7 @@ Write up about
 - [x] event flow/propagation
 - [ ] design philosophy
 - [ ] modularity
+- [ ] improve the logic for CTRL + Z command pattern in the vertex editing mode of the line editor
 
 # More Plants
 - [ ] revisit plant model pipeline

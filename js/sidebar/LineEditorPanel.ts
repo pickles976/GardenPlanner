@@ -7,6 +7,7 @@ import { northAngleToVec, rad2deg } from "../Utils.js";
 import { snapper } from "../Snapping.js";
 import { degToRad } from 'three/src/math/MathUtils.js';
 import { SetPositionCommand } from "../commands/SetPositionCommand.js";
+import { DeleteObjectCommand } from "../commands/DeleteObjectCommand.js";
 
 class Segment {
 
@@ -131,16 +132,28 @@ class LineEditorPanel {
 			angleField.setValue(angle.toFixed(2))
 			angleField.onChange(() => this.updateVertexHandle(distance, angleField.value, i, prevSegment))
 
+			const deleteButton = new UIButton().setClass( 'trash-btn' );
+			deleteButton.onClick(() => this.deleteVertexHandle(i))
+
 			const row = new UIRow()
 			row.add(lengthLabel)
 			row.add(lengthField)
 			row.add(angleLabel)
 			row.add(angleField)
+			row.add(deleteButton)
 
 			this.segmentRows.push(row)
 			this.segmentContainer.add(row)
 		}
 
+	}
+
+	private deleteVertexHandle(index: number) {
+		const v = this.lineEditor.vertexHandles[index];
+		this.lineEditor.commandStack.execute( new DeleteObjectCommand(v, this.lineEditor.editor))
+		this.lineEditor.refereshVertexHandles()
+		this.lineEditor.drawPreview()
+		this.updateFromEditor()
 	}
 
 	private updateVertexHandle(distance: number, angle: number, segmentIndex: number, prevSegment: THREE.Vector3) {

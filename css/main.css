@@ -901,3 +901,10 @@ model-viewer {
 	height: 8px;
 	background-color: black;
 }
+
+.trash-btn {
+	background: url(/public/icons/trash-can.svg) no-repeat;
+	height: 2vh;
+	width: 1vw;
+	fill: white;
+}

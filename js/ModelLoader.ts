@@ -65,7 +65,8 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
     const size = new THREE.Vector3();
     box.getSize(size);
 
-    let newPos = mesh.position.add(new THREE.Vector3(0,size.y / 2,0))
+    let newPos = editor.currentCameraControls.target.clone();
+    newPos.add(new THREE.Vector3(0,size.y / 2,0))
     mesh.position.set(...newPos)
 
     editor.execute(new CreateObjectCommand(mesh, editor))
