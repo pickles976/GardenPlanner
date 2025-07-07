@@ -670,6 +670,8 @@ class LineEditor {
                 break;
         }
         this.handleMouseMove(this.editor, [{object: undefined, point: this.lastPoint}]);
+
+        eventBus.emit(this.vertex_editing_updated_enum)
         
     }
 
