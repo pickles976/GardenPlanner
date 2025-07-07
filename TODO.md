@@ -1,14 +1,3 @@
-
-# QOL
-
-- [x] spawn plants at camera target
-- [ ] fence spawn issue
-
-# Sun Utilities
-- [ ] create play button (go from sun up to sun down)
-- [ ] create basic timeline based off the one at the suncalc website
-- [ ] make the sun widgets showable/hideable
-
 ## SAVING
 - [ ] saving configurations as json
     - [ ] config object
@@ -22,14 +11,8 @@
     - [ ] load from json
     - [ ] save a preview image from the canvas
 
-### Grass Shader Improvements
-- [x] grass occlusion
-- [ ] add directional lighting to grass shader
-- [ ] read about shaders, get grass shader working three js
-- [ ] apply different colors to grass with perlin noise
-- [ ] configure params until this feels right
-
-- [ ] get a more performant anime girl model
+# Sun Utilities
+- [ ] get source code from suncalc website
 
 MVP finished!
 - [ ] deploy
@@ -41,6 +24,10 @@ MVP finished!
 
 ## MORE UTILITIES
 
+# Performance
+- [x] get a more performant anime girl model
+- [ ] downscale plant textures
+
 # REFACTOR
 Write up about 
 - [x] event flow/propagation
@@ -48,8 +35,17 @@ Write up about
 - [ ] modularity
 - [ ] improve the logic for CTRL + Z command pattern in the vertex editing mode of the line editor
 
+### Grass Shader Improvements
+- [x] grass occlusion
+- [ ] add directional lighting to grass shader
+- [ ] read about shaders, get grass shader working three js
+- [ ] apply different colors to grass with perlin noise
+- [ ] configure params until this feels right
+
 # More Plants
 - [ ] revisit plant model pipeline
+    - [ ] find photographers locally
+
 - [ ] create more plants
 
 

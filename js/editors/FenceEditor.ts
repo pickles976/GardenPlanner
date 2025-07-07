@@ -40,7 +40,6 @@ function createFence(vertices: THREE.Vector3[], height: number, material: THREE.
 
     let border = offsetPolygon(verts, 0.0001, 1.0).map((v) => new THREE.Vector2(v.x, v.y));
 
-    // border.push(border[0])
     const shape = new THREE.Shape(border);
 
     const extrudeSettings = {
@@ -54,7 +53,7 @@ function createFence(vertices: THREE.Vector3[], height: number, material: THREE.
 
     const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
     geometry.rotateX(Math.PI / 2);
-    geometry.center();
+    geometry.translate(0, height / 2, 0);
 
     return new THREE.Mesh(geometry, material);
 }
@@ -229,7 +228,7 @@ class FenceEditor {
 
         // Move the mesh to the centroid so that it doesn't spawn at the origin
         const centroid = getCentroid(this.vertices)
-        this.fencePreviewMesh.position.set(...centroid.add(new THREE.Vector3(0, props.fenceHeight / 2, 0)));
+        this.fencePreviewMesh.position.set(...centroid.clone().add(new THREE.Vector3(0, props.fenceHeight / 2, 0)));
     }
 
     private createMesh() {
@@ -267,6 +266,7 @@ class FenceEditor {
         const box = new THREE.Box3().setFromObject(fence);
         const size = new THREE.Vector3();
         box.getSize(size);
+        
         const centroid = getCentroid(this.vertices);
         fence.position.set(...centroid.add(new THREE.Vector3(0,size.y / 2,0)))
 
