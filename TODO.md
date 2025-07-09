@@ -1,36 +1,18 @@
 ## SAVING
-- [ ] saving configurations as json
-    - [ ] try to serialize and de-serialize a scene
-        - [x] ignore grass
-        - [x] export to json
-        - [x] load from json
-        - [x] get this working
-    - [x] config object
-        - [x] metric system
-        - [x] lat/lon
-        - [x] time
-    - [x] update grid helper
-    - [x] update sun ui
+- [ ] save to web storage
+- [ ] load from web storage
+    - [ ] create web storage browser widget
+    - [ ] save a preview image from the canvas
 
-    - [x] rotation is broken
-    - [x] get `onSelect` and `onDeselect` working with serialization 
-        - [x] vertices not saving properly
-    - [ ] panel UI broken
+- [ ] get "new" button working
+- [ ] hide "import" button
+- [ ] get "clone" and "delete" menu buttons working
+- [ ] hide "center" and "redo" buttons
 
-    - [ ] save to web storage
-    - [ ] load from web storage
-        - [ ] create web storage browser widget
-        - [ ] save a preview image from the canvas
+- [ ] enable autosave
+    - [ ] save the scene by default to storage
 
-    - [ ] get "new" button working
-    - [ ] hide "import" button
-    - [ ] get "clone" and "delete" menu buttons working
-    - [ ] hide "center" and "redo" buttons
-
-    - [ ] enable autosave
-        - [ ] save the scene by default to storage
-    
-    - [ ] clean up help bar
+- [ ] clean up help bar
 
 # Plants
 - [ ] get plant generation from text working

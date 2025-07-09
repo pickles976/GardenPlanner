@@ -49,10 +49,12 @@ class LineEditorPanel {
 		// Save Lines
 		this.saveLinesButton = new UIButton("✓ Save Lines")
 		this.saveLinesButton.dom.style.color = "#AAFFAA"
+		this.saveLinesButton.setDisplay("none")
 
 		// Save Polygon
 		this.savePolygonButton = new UIButton("✓ Save Vertices")
 		this.savePolygonButton.dom.style.color = "#AAFFAA"
+		this.savePolygonButton.setDisplay("none")
 
 		this.buttonContainer = new UIPanel();
 		this.buttonContainer.add(this.saveLinesButton)
@@ -179,6 +181,9 @@ class LineEditorPanel {
 	}
 
 	public setDisplay(value: string) {
+		this.saveLinesButton.setDisplay("none")
+		this.saveLinesButton.setDisplay("none")
+		this.saveLinesButton.setDisplay("none")
 		this.container.setDisplay(value)
 	}
 
@@ -194,7 +199,6 @@ class LineEditorPanel {
 		this.segmentContainer.setDisplay("Block");
 		this.updateFromEditor()
 	}
-
 
 }
 
