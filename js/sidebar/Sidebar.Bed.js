@@ -23,7 +23,8 @@ function SidebarBed( editor ) {
 	const lineEditorPanel = new LineEditorPanel(
 		editor.bedEditor.lineEditor, 
 		EventEnums.BED_VERTEX_EDITING_STARTED,
-		EventEnums.BED_VERTEX_EDITING_FINISHED);
+		EventEnums.BED_VERTEX_EDITING_FINISHED,
+		EventEnums.BED_EDITING_CANCELLED);
 
 	const label = new UIText("BED")
 	container.add(label)

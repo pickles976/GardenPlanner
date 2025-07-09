@@ -22,7 +22,8 @@ function SidebarPath(editor) {
 	const lineEditorPanel = new LineEditorPanel(
 		editor.pathEditor.lineEditor, 
 		EventEnums.PATH_VERTEX_EDITING_STARTED,
-		EventEnums.PATH_VERTEX_EDITING_FINISHED);
+		EventEnums.PATH_VERTEX_EDITING_FINISHED,
+		EventEnums.PATH_EDITING_CANCELLED);
 
 	// Save Object
 	const saveObjectButton = new UIButton("✓ Save Path")

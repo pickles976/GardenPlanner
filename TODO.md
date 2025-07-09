@@ -13,6 +13,7 @@
     - [ ] save the scene by default to storage
 
 - [ ] clean up help bar
+- [ ] fix issue with "top-down" checkbox 
 
 # Plants
 - [ ] get plant generation from text working

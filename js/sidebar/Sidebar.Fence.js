@@ -22,7 +22,8 @@ function SidebarFence( editor ) {
 	const lineEditorPanel = new LineEditorPanel(
 		editor.fenceEditor.lineEditor, 
 		EventEnums.FENCE_VERTEX_EDITING_STARTED,
-		EventEnums.FENCE_VERTEX_EDITING_FINISHED);
+		EventEnums.FENCE_VERTEX_EDITING_FINISHED,
+		EventEnums.FENCE_EDITING_CANCELLED);
 
 
 	const label = new UIText("FENCE")

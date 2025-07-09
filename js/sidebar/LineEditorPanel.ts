@@ -39,7 +39,7 @@ class LineEditorPanel {
 	segments: THREE.Vector3[];
 	segmentRows: UIRow[];
 
-	constructor(lineEditor, onVertexEditingStarted, onVertexEditingFinished) {
+	constructor(lineEditor, onVertexEditingStarted, onVertexEditingFinished, onCancel) {
 
 		this.lineEditor = lineEditor;
 
@@ -72,6 +72,7 @@ class LineEditorPanel {
 			this.lineEditor.setVertexEditMode();
 		})
 		this.savePolygonButton.onClick(() => eventBus.emit(onVertexEditingFinished))
+		eventBus.on(onCancel, () => this.cancel())
 
 		this.segmentRows = [];
 
@@ -181,9 +182,6 @@ class LineEditorPanel {
 	}
 
 	public setDisplay(value: string) {
-		this.saveLinesButton.setDisplay("none")
-		this.saveLinesButton.setDisplay("none")
-		this.saveLinesButton.setDisplay("none")
 		this.container.setDisplay(value)
 	}
 
@@ -198,6 +196,12 @@ class LineEditorPanel {
 		this.savePolygonButton.setDisplay("Block");
 		this.segmentContainer.setDisplay("Block");
 		this.updateFromEditor()
+	}
+
+	public cancel() {
+		this.saveLinesButton.setDisplay("none")
+		this.savePolygonButton.setDisplay("none")
+		this.segmentContainer.setDisplay("none")
 	}
 
 }
