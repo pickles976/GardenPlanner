@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { getCentroid, createPhongMaterial, createPreviewMaterial } from "../Utils";
+import { getCentroid, createPhongMaterial, createPreviewMaterial, mergeMeshes, jsonToVector3Array, vector3ArrayToJson } from "../Utils";
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { eventBus, EventEnums } from "../EventBus";
 import { CommandStack } from "../CommandStack";
@@ -52,7 +52,8 @@ function createPath(vertices: THREE.Vector3[], width: number, height: number, nu
     geometry.rotateX(Math.PI / 2);
     geometry.center();
 
-    return new THREE.Mesh(geometry, material);
+    // Hack to fix serialization of mesh
+    return mergeMeshes([new THREE.Mesh(geometry, material)]);
 
 }
 
@@ -187,7 +188,7 @@ class PathEditor {
         if (path === undefined) { // Create new bed
             this.lineEditor.beginEditing()
         } else { // Edit existing bed
-            this.lineEditor.beginEditing(path.userData.vertices);
+            this.lineEditor.beginEditing(jsonToVector3Array(path.userData.vertices));
             this.updateFromProps(path.userData.props)
             this.oldObject = path;
             this.editor.remove(path);
@@ -243,9 +244,8 @@ class PathEditor {
         path.receiveShadow = true;
         path.userData = { // Give mesh the data used to create it, so it can be edited. Add selection callbacks
             selectable: true,
-            onSelect: () => eventBus.emit(EventEnums.PATH_SELECTED, true),
-            onDeselect: () => eventBus.emit(EventEnums.PATH_SELECTED, false),
-            vertices: this.vertices,
+            selectionEnum: EventEnums.PATH_SELECTED,
+            vertices: vector3ArrayToJson(this.vertices),
             props: this.props.clone(),
             editableFields: {
                 name: true,

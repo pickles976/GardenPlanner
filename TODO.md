@@ -11,13 +11,26 @@
         - [x] time
     - [x] update grid helper
     - [x] update sun ui
-    
-    - [ ] get `onSelect` and `onDeselect` working with serialization 
+
+    - [x] rotation is broken
+    - [x] get `onSelect` and `onDeselect` working with serialization 
+        - [x] vertices not saving properly
+    - [ ] panel UI broken
 
     - [ ] save to web storage
     - [ ] load from web storage
         - [ ] create web storage browser widget
         - [ ] save a preview image from the canvas
+
+    - [ ] get "new" button working
+    - [ ] hide "import" button
+    - [ ] get "clone" and "delete" menu buttons working
+    - [ ] hide "center" and "redo" buttons
+
+    - [ ] enable autosave
+        - [ ] save the scene by default to storage
+    
+    - [ ] clean up help bar
 
 # Plants
 - [ ] get plant generation from text working

@@ -2,7 +2,7 @@ import * as THREE from "three";
 
 import offsetPolygon from "offset-polygon";
 
-import { getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial } from "../Utils";
+import { getCentroid, polygonArea, mergeMeshes, createPhongMaterial, createPreviewMaterial, vector3ArrayToJson, jsonToVector3Array } from "../Utils";
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { eventBus, EventEnums } from "../EventBus";
 import { CommandStack } from "../CommandStack";
@@ -259,7 +259,7 @@ class BedEditor {
         if (bed === undefined) { // Create new bed
             this.lineEditor.beginEditing()
         } else { // Edit existing bed
-            this.lineEditor.beginEditing(bed.userData.vertices);
+            this.lineEditor.beginEditing(jsonToVector3Array(bed.userData.vertices));
             this.updateFromProps(bed.userData.props)
             this.oldBed = bed;
             this.editor.remove(bed);
@@ -332,9 +332,8 @@ class BedEditor {
         mergedMesh.receiveShadow = true;
         mergedMesh.userData = { // Give mesh the data used to create it, so it can be edited. Add selection callbacks
             selectable: true,
-            onSelect: () => eventBus.emit(EventEnums.BED_SELECTED, true),
-            onDeselect: () => eventBus.emit(EventEnums.BED_SELECTED, false),
-            vertices: this.vertices,
+            selectionEnum: EventEnums.BED_SELECTED,
+            vertices: vector3ArrayToJson(this.vertices),
             props: this.props,
             editableFields: {
                 name: true,

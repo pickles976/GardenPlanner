@@ -75,8 +75,8 @@ class Selector {
             this.attachTransformControls(object);
 
             // Call object callback if exists
-            if (object.userData?.onSelect) {
-                object.userData.onSelect()
+            if (object.userData?.selectionEnum) {
+                eventBus.emit(object.userData.selectionEnum, true);
             }
 
             this.drawRotationVisualizer()
@@ -92,8 +92,8 @@ class Selector {
             this.currentSelectedObject = object;
 
             // Call object callback if exists
-            if (object.userData?.onSelect) {
-                object.userData.onSelect()
+            if (object.userData?.selectionEnum) {
+                eventBus.emit(object.userData.selectionEnum, true);
             }
 
         }
@@ -138,8 +138,8 @@ class Selector {
         }
 
         // Call callback if exists
-        if (this.currentSelectedObject.userData.onDeselect) {
-            this.currentSelectedObject.userData?.onDeselect()
+        if (this.currentSelectedObject.userData.selectionEnum) {
+            eventBus.emit(this.currentSelectedObject.userData.selectionEnum, false)
         }
 
         // Clear selection

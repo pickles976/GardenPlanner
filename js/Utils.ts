@@ -178,3 +178,11 @@ export function saveJSON( blob, filename ) {
 	link.dispatchEvent( new MouseEvent( 'click' ) );
 
 }
+
+export function vector3ArrayToJson(array: THREE.Vector3[]) : object {
+  return array.map((v) => { return {"x": v.x, "y": v.y, "z": v.z}});
+}
+
+export function jsonToVector3Array(json: Object[]) : THREE.Vector3[] {
+  return json.map((obj) => new THREE.Vector3(obj.x, obj.y, obj.z));
+}

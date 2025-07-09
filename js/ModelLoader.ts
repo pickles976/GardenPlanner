@@ -49,8 +49,7 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
     mesh.receiveShadow = true;
     mesh.userData = {
         selectable: true,
-        onSelect: () => eventBus.emit(EventEnums.PLANT_SELECTED, true),
-        onDeselect: () => eventBus.emit(EventEnums.PLANT_SELECTED, false),
+        selectionEnum: EventEnums.PLANT_SELECTED,
         editableFields: {
 			name: true,
 			position: true,

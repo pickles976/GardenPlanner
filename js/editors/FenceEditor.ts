@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-import { getCentroid, createPhongMaterial, createPreviewMaterial } from "../Utils";
+import { getCentroid, createPhongMaterial, createPreviewMaterial, mergeMeshes, vector3ArrayToJson, jsonToVector3Array } from "../Utils";
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { eventBus, EventEnums } from "../EventBus";
 import { CommandStack } from "../CommandStack";
@@ -10,7 +10,7 @@ import { Editor } from "../Editor";
 import { WHITE } from "../Colors";
 import { setDefaultCursor } from "../Cursors";
 import { LineEditor } from "./LineEditor";
-import { chainLinkMaterial, mudMaterial } from "../Materials";
+import { chainLinkMaterial } from "../Materials";
 import offsetPolygon from "offset-polygon";
 
 const INITIAL_FENCE_HEIGHT = 2.0;
@@ -22,10 +22,6 @@ enum FenceEditorMode {
     CONFIG_MODE = "CONFIG_MODE"
 }
 
-// TODO: do this properly so that we dont get these stupid fucking artifacts
-// TODO: 
-// 1. create planes
-// 2. merge meshes
 function createFence(vertices: THREE.Vector3[], height: number, material: THREE.Material): THREE.Mesh {
     /**
      * Take the vertices and extrude them vertically to create a fence
@@ -55,7 +51,8 @@ function createFence(vertices: THREE.Vector3[], height: number, material: THREE.
     geometry.rotateX(Math.PI / 2);
     geometry.translate(0, height / 2, 0);
 
-    return new THREE.Mesh(geometry, material);
+    // Hack to fix serialization of mesh
+    return mergeMeshes([new THREE.Mesh(geometry, material)]);
 }
 
 class FenceProps extends Props {
@@ -185,7 +182,7 @@ class FenceEditor {
         if (fence === undefined) { // Create new bed
             this.lineEditor.beginEditing();
         } else { // Edit existing bed
-            this.lineEditor.beginEditing(fence.userData.vertices);
+            this.lineEditor.beginEditing(jsonToVector3Array(fence.userData.vertices));
             this.updateFromProps(fence.userData.props);
             this.oldObject = fence;
             this.editor.remove(fence);
@@ -248,9 +245,8 @@ class FenceEditor {
         fence.receiveShadow = false;
         fence.userData = { // Give mesh the data used to create it, so it can be edited. Add selection callbacks
             selectable: true,
-            onSelect: () => eventBus.emit(EventEnums.FENCE_SELECTED, true),
-            onDeselect: () => eventBus.emit(EventEnums.FENCE_SELECTED, false),
-            vertices: this.vertices,
+            selectionEnum: EventEnums.FENCE_SELECTED,
+            vertices: vector3ArrayToJson(this.vertices),
             props: this.props,
             editableFields: {
                 name: true,
