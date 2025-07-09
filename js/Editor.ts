@@ -374,11 +374,7 @@ class Editor {
         this.initScene()
 
         const config = json.config;
-        console.log(config)
-        this.latitude = config.latitude;
-        this.longitude = config.longitude;
-        this.north = config.north;
-        this.time = new Date(config.time);
+        this.setSun(config.north, config.latitude, config.longitude, new Date(config.time))
         snapper.setMetric(config.metric);
 
         const scene = json.scene;
@@ -418,21 +414,14 @@ class Editor {
 
         eventBus.emit(EventEnums.EDITOR_CLEARED)
     }
-    
-    public setNorth(angle: number) {
 
-        // new THREE.Vector3(Math.sin(angle),0,Math.cos(angle))
-
-        // TODO: redraw north pointer
-    }
-
-    public setSun(north, lat, lon, date) {
+    public setSun(north, latitude, longitude, time) {
         this.north = north;
-        this.lat = lat;
-        this.lon = lon;
-        this.date = date;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.time = time;
 
-        const pos = SunCalc.getPosition(date, lat, lon, 0)
+        const pos = SunCalc.getPosition(time, latitude, longitude, 0)
         this.setSunPosition(rad2deg(pos.azimuth), rad2deg(pos.altitude));
     }
 
