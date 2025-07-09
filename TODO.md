@@ -1,21 +1,33 @@
 ## SAVING
 - [ ] saving configurations as json
-    - [ ] config object
-        - [ ] metric system
-        - [ ] lat/lon
-        - [ ] time
     - [ ] try to serialize and de-serialize a scene
-    - [ ] autosave feature
-    - [ ] load from web storage
-    - [ ] export to json
-    - [ ] load from json
-    - [ ] save a preview image from the canvas
+        - [x] ignore grass
+        - [x] export to json
+        - [x] load from json
+        - [x] get this working
+    - [x] config object
+        - [x] metric system
+        - [x] lat/lon
+        - [x] time
+    - [x] update grid helper
+    - [x] update sun ui
+    
+    - [ ] get `onSelect` and `onDeselect` working with serialization 
 
-# Sun Utilities
+    - [ ] save to web storage
+    - [ ] load from web storage
+        - [ ] create web storage browser widget
+        - [ ] save a preview image from the canvas
+
+# Plants
+- [ ] get plant generation from text working
+
+# Sun Timeline
 - [ ] get source code from suncalc website
 
 MVP finished!
 - [ ] deploy
+- [ ] digitalocean
 
 ## USER FEEDBACK
 - [ ] friends and family
@@ -34,6 +46,8 @@ Write up about
 - [ ] design philosophy
 - [ ] modularity
 - [ ] improve the logic for CTRL + Z command pattern in the vertex editing mode of the line editor
+- [ ] serialize commands? https://github.com/mrdoob/three.js/blob/dev/editor/js/commands/SetPositionCommand.js#L72
+
 
 ### Grass Shader Improvements
 - [x] grass occlusion
@@ -45,9 +59,7 @@ Write up about
 # More Plants
 - [ ] revisit plant model pipeline
     - [ ] find photographers locally
-
 - [ ] create more plants
-
 
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
@@ -55,10 +67,10 @@ Write up about
 
 #### GROUPS
 - [ ] create group-editing workflow?
-    - [ ] create a group
+    - [ ] select multiple
     - [ ] add multiple objects to the group
     - [ ] move the entire group
-    - [ ] remove objects from the group
+    - [ ] remove objects from the group when done
 
 ## PLANT EDITOR KEYFRAMING
 - [ ] set height and radius
@@ -68,7 +80,6 @@ Write up about
 - [ ] ~~steal~~ copy shademap timeline widget??
 
 - [ ] complete web client
-
 
 # Further features
 - [ ] user login backend

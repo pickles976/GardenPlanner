@@ -81,14 +81,15 @@ https://threejs.org/docs/index.html#api/en/renderers/webgl/WebGLProgram
 - [x] 07/02/2025 -- graphics improvements
 - [x] 07/03/2025 -- refactor
 - [x] 07/04/2025 -- vertex qol improvements
-- [ ] 07/05/2025 -- drive to OK
-- [ ] 07/06/2025 -- back from OK
+- [x] 07/05/2025 -- drive to OK
+- [x] 07/06/2025 -- back from OK
 
 # Week 6
-- [ ] 07/07/2025 -- sun UI stuff
-- [ ] 07/08/2025 -- saving and loading json
-- [ ] 07/09/2025 -- improve grass shader
-- [ ] 07/10/2025 -- bug finding, fuzz testing, deploy
+- [x] 07/07/2025 -- improvements
+- [x] 07/08/2025 -- nothing
+- [ ] 07/09/2025 -- saving and loading json 
+- [ ] 07/10/2025 -- sun UI stuff
+- [ ] 07/11/2025 -- bug finding, fuzz testing, deploy
 
 # Milestones
 - [x] Garden editor -- 06/30/2025

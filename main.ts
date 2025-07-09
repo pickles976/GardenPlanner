@@ -15,8 +15,7 @@ import { createCompassWidget } from './js/widgets/CompassWidget';
 
 const editor = new Editor();
 editor.initThree();
-
-const gridManager = new GridManager(editor);
+editor.initScene();
 
 // Sidebar
 const sidebar = new Sidebar( editor );
@@ -87,9 +86,6 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
     editor.execute(command);
 });
 
-eventBus.on(EventEnums.METRIC_CHANGED, (value) => gridManager.setMetric(value))
-eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => gridManager.showGrid(value))
-
 createGround(editor)
 
 let box = await createAnimeGirl(editor)
@@ -100,4 +96,3 @@ createCompassWidget(editor)
 render(editor);
 
 eventBus.on(EventEnums.LOAD_PLANT, (plant) => loadPlant(plant, editor))
-

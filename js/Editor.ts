@@ -14,17 +14,19 @@ import { filterCurrentlySelected, handleTransformControlsChange, highlightMouseO
 import { snapper } from './Snapping';
 import { DeleteObjectCommand } from './commands/DeleteObjectCommand';
 import { CreateObjectCommand } from './commands/CreateObjectCommand';
-import { blendColors, deepClone } from './Utils';
+import { blendColors, deepClone, rad2deg } from './Utils';
 import { SetRotationCommand } from './commands/SetRotationCommand';
 import { RulerEditor } from './editors/RulerEditor';
 import { FenceEditor } from './editors/FenceEditor';
 import { PathEditor } from './editors/PathEditor';
 import { SetPositionCommand } from './commands/SetPositionCommand';
+import SunCalc from "suncalc";
 
 import { Sky } from 'three/addons/objects/Sky.js';
 import { createGrass } from './Grass';
 import { Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils.js';
+import { GridManager } from './GridManager';
 
 const ANTI_ALIASING = true;
 
@@ -46,6 +48,33 @@ enum EditorMode {
     PLANT = "PLANT"
 }
 
+class EditorConfig {
+    metric: boolean;
+    north: number;
+    latitude: number;
+    longitude: number;
+    time: Date;
+
+    constructor (metric, north, latitude, longitude, time) {
+        this.metric = metric;
+        this.north = north;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.time = time
+    }
+
+    public toJSON() {
+        return {
+            "metric": this.metric,
+            "north": this.north,
+            "latitude": this.latitude,
+            "longitude": this.longitude,
+            "time": this.time
+        }
+    }
+
+}
+
 
 class Editor {
     /**
@@ -53,7 +82,11 @@ class Editor {
      * "God" object
      */
 
+    // TODO: put this in some kind of object\
     north: number;
+    latitude: number;
+    longitude: number;
+    time: Date;
 
     canvas: HTMLCanvasElement
     renderer: THREE.WebGLRenderer
@@ -78,6 +111,8 @@ class Editor {
     commandStack: CommandStack;
 
     objectMap: { [key: string]: THREE.Object3D };
+
+    gridManager: GridManager;
 
     selector: Selector;
     bedEditor: BedEditor;
@@ -104,9 +139,32 @@ class Editor {
         this.pathEditor = new PathEditor(this);
         this.rulerEditor = new RulerEditor(this);
         this.mode = EditorMode.OBJECT;
+
+        eventBus.on(EventEnums.BED_CREATION_STARTED, () => this.setBedMode())
+        eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())
+        eventBus.on(EventEnums.BED_EDITING_FINISHED, () => this.setObjectMode())
+        eventBus.on(EventEnums.BED_EDITING_STARTED, (bed) => this.setBedMode(bed))
+
+        eventBus.on(EventEnums.FENCE_CREATION_STARTED, () => this.setFenceMode())
+        eventBus.on(EventEnums.FENCE_EDITING_CANCELLED, () => this.setObjectMode())
+        eventBus.on(EventEnums.FENCE_EDITING_FINISHED, () => this.setObjectMode())
+        eventBus.on(EventEnums.FENCE_EDITING_STARTED, (fence) => this.setFenceMode(fence))
+
+        eventBus.on(EventEnums.PATH_CREATION_STARTED, () => this.setPathMode())
+        eventBus.on(EventEnums.PATH_EDITING_CANCELLED, () => this.setObjectMode())
+        eventBus.on(EventEnums.PATH_EDITING_FINISHED, () => this.setObjectMode())
+        eventBus.on(EventEnums.PATH_EDITING_STARTED, (path) => this.setPathMode(path))
+
+        eventBus.on(EventEnums.SNAP_CHANGED, (value) => this.setSnapping(value))
+        eventBus.on(EventEnums.CAMERA_CHANGED, (value) => value ? this.setOrthoCamera() : this.setPerspectiveCamera())
+
+        eventBus.on(EventEnums.GRASS_CHANGED, (value) => this.showGrass(value));
     }
 
     public initThree() {
+        /**
+         * Create all of the things like camera, renderer, etc.
+         */
 
         // renderer
         this.renderer = new THREE.WebGLRenderer({
@@ -115,7 +173,6 @@ class Editor {
         });
         this.renderer.setSize(window.innerWidth, window.innerHeight);
 
-        // TODO: only one canvas?
         this.canvas = document.body.appendChild(this.renderer.domElement);
 
         this.labelRenderer = new CSS2DRenderer();
@@ -131,26 +188,6 @@ class Editor {
         this.renderer.shadowMap.enabled = true;
         this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         // this.renderer.physicallyCorrectLights = true
-
-
-        // scene
-        this.scene = new THREE.Scene();
-        this.scene.fog = new THREE.FogExp2(0xEBE2DB, 0.00003);
-
-        // Sky
-        this.sky = new Sky();
-        this.sky.scale.setScalar(4500000);
-        this.sky.layers.set(LayerEnum.NoRaycast)
-
-        this.sky.material.uniforms.sunPosition.value = new THREE.Vector3(-1, 1, 0.0);
-        this.sky.material.uniforms.turbidity.value = 10;
-        this.sky.material.uniforms.rayleigh.value = 3;
-        this.sky.material.uniforms.mieCoefficient.value = 0.005;
-        this.sky.material.uniforms.mieDirectionalG.value = 0.7; // Sun diffusion amount
-        this.sky.material.uniforms.exposure = 0.5;
-
-        this.scene.add( this.sky );
-
 
         // Perspective Camera
         const aspect = SCREEN_WIDTH / SCREEN_HEIGHT;
@@ -220,6 +257,40 @@ class Editor {
         this.depthCamera.layers.disableAll();
         this.depthCamera.layers.enable(LayerEnum.Objects);
 
+        this.transformControls = new TransformControls(this.currentCamera, this.canvas);
+        this.transformControls.addEventListener('change', () => {
+            handleTransformControlsChange(this);
+        });
+        this.setSnapping(snapper.snapEnabled)
+    }
+
+    public initScene() {
+        /**
+         * Create an empty scene this all the tools we need
+         */
+
+        // scene
+        this.scene = new THREE.Scene();
+        this.scene.fog = new THREE.FogExp2(0xEBE2DB, 0.00003);
+
+        // Grids
+        this.gridManager = new GridManager(this);
+
+        // Sky
+        this.sky = new Sky();
+        this.sky.scale.setScalar(4500000);
+        this.sky.layers.set(LayerEnum.NoRaycast)
+
+        this.sky.material.uniforms.sunPosition.value = new THREE.Vector3(-1, 1, 0.0);
+        this.sky.material.uniforms.turbidity.value = 10;
+        this.sky.material.uniforms.rayleigh.value = 3;
+        this.sky.material.uniforms.mieCoefficient.value = 0.005;
+        this.sky.material.uniforms.mieDirectionalG.value = 0.7; // Sun diffusion amount
+        this.sky.material.uniforms.exposure = 0.5;
+        this.sky.name = "Sky"
+
+        this.scene.add( this.sky );
+
         // TODO: split this out into a lighting object
         // lighting
         const intensity = 1.0;
@@ -227,7 +298,6 @@ class Editor {
         this.directionalLight.position.set(-20, 20, 20);
         this.directionalLight.castShadow = true;
         this.scene.add(this.directionalLight);
-        this.scene.name = "Scene"
 
         // Shadow properties
         // https://threejs.org/docs/index.html#api/en/lights/shadows/DirectionalLightShadow
@@ -249,52 +319,124 @@ class Editor {
         this.directionalLight.shadow.camera.near = 0.5; // default
         this.directionalLight.shadow.camera.far = 500; // default
         this.directionalLight.shadow.radius = 1.0; // blur shadows
-
         this.directionalLight.name = "Directional Light";
 
         this.ambientLight = new THREE.AmbientLight(WHITE, 1.0);
+        this.ambientLight.name = "Ambient Light";
         this.scene.add(this.ambientLight);
 
         this.grass = createGrass(NUM_GRASS_BLADES, WORLD_SIZE, WORLD_SIZE)
         this.grass.visible = false;
+        this.grass.name = "Grass"
         this.add(this.grass)
+    }
 
-        this.transformControls = new TransformControls(this.currentCamera, this.canvas);
-        this.transformControls.addEventListener('change', () => {
-            handleTransformControlsChange(this);
+    public exportToJson() : object {
+
+        const config = new EditorConfig(
+            snapper.metric,
+            this.north, 
+            this.lat,
+            this.lon,
+            this.date
+        )
+
+        const sceneCopy = this.scene.clone(true); // deep clone
+
+        // Remove objects
+        for (let i = sceneCopy.children.length; i >= 0; i--) {
+            const child = sceneCopy.children[i];
+
+            if (child === undefined) { 
+                continue;
+            }
+
+            if (child.name === "Grass" || 
+                child.name === "Directional Light" || 
+                child.name === "Ambient Light" || 
+                child.name === "Sky" ||
+                child.name === "Grid" ||
+                child.name === "Axes Helper") {
+
+                child.parent?.remove(child);
+            }
+        }
+
+        return {
+            "config": config.toJSON(),
+            "scene": sceneCopy.toJSON()
+        }
+    }
+
+    public loadFromJson(json: object) {
+
+        this.clear()
+        this.initScene()
+
+        const config = json.config;
+        console.log(config)
+        this.latitude = config.latitude;
+        this.longitude = config.longitude;
+        this.north = config.north;
+        this.time = new Date(config.time);
+        snapper.setMetric(config.metric);
+
+        const scene = json.scene;
+        while (scene.children.length > 0) {
+            this.add(scene.children[0]);
+        }
+
+        eventBus.emit(EventEnums.OBJECT_CHANGED)
+        eventBus.emit(EventEnums.SUN_CONFIG_CHANGED)
+
+    }
+
+    public clear() {
+        /** Remove everything from the scene */
+
+        while (this.scene.children.length > 0) {
+            this.scene.remove(this.scene.children[0]);
+        }
+
+        this.scene.traverse(object => {
+            if (object.isMesh) {
+                if (object.geometry) {
+                    object.geometry.dispose();
+                }
+                if (object.material) {
+                    if (Array.isArray(object.material)) {
+                        object.material.forEach(material => material.dispose());
+                    } else {
+                        object.material.dispose();
+                    }
+                }
+            }
         });
-        this.setSnapping(snapper.snapEnabled)
 
-        eventBus.on(EventEnums.BED_CREATION_STARTED, () => this.setBedMode())
-        eventBus.on(EventEnums.BED_EDITING_CANCELLED, () => this.setObjectMode())
-        eventBus.on(EventEnums.BED_EDITING_FINISHED, () => this.setObjectMode())
-        eventBus.on(EventEnums.BED_EDITING_STARTED, (bed) => this.setBedMode(bed))
+        this.objectMap = {}
+        this.commandStack.clear()
 
-        eventBus.on(EventEnums.FENCE_CREATION_STARTED, () => this.setFenceMode())
-        eventBus.on(EventEnums.FENCE_EDITING_CANCELLED, () => this.setObjectMode())
-        eventBus.on(EventEnums.FENCE_EDITING_FINISHED, () => this.setObjectMode())
-        eventBus.on(EventEnums.FENCE_EDITING_STARTED, (fence) => this.setFenceMode(fence))
-
-        eventBus.on(EventEnums.PATH_CREATION_STARTED, () => this.setPathMode())
-        eventBus.on(EventEnums.PATH_EDITING_CANCELLED, () => this.setObjectMode())
-        eventBus.on(EventEnums.PATH_EDITING_FINISHED, () => this.setObjectMode())
-        eventBus.on(EventEnums.PATH_EDITING_STARTED, (path) => this.setPathMode(path))
-
-        eventBus.on(EventEnums.SNAP_CHANGED, (value) => this.setSnapping(value))
-        eventBus.on(EventEnums.CAMERA_CHANGED, (value) => value ? this.setOrthoCamera() : this.setPerspectiveCamera())
-
-        eventBus.on(EventEnums.GRASS_CHANGED, (value) => this.showGrass(value));
+        eventBus.emit(EventEnums.EDITOR_CLEARED)
     }
     
     public setNorth(angle: number) {
-        this.north = angle;
 
         // new THREE.Vector3(Math.sin(angle),0,Math.cos(angle))
 
         // TODO: redraw north pointer
     }
 
-    public setSunPosition(azimuth: number, elevation: number) {
+    public setSun(north, lat, lon, date) {
+        this.north = north;
+        this.lat = lat;
+        this.lon = lon;
+        this.date = date;
+
+        const pos = SunCalc.getPosition(date, lat, lon, 0)
+        this.setSunPosition(rad2deg(pos.azimuth), rad2deg(pos.altitude));
+    }
+
+    private setSunPosition(azimuth: number, elevation: number) {
 
         elevation = degToRad(elevation);
         azimuth = degToRad(azimuth - this.north);

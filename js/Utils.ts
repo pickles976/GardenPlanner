@@ -162,3 +162,19 @@ export function getObjectsize(object: THREE.Mesh) : THREE.Vector3 {
 export function northAngleToVec(angle: number) : THREE.Vector3 {
   return new THREE.Vector3(Math.sin(angle),0,Math.cos(angle));
 }
+
+export function saveJSON( blob, filename ) {
+
+  const link = document.createElement( 'a' );
+
+	if ( link.href ) {
+
+		URL.revokeObjectURL( link.href );
+
+	}
+
+	link.href = URL.createObjectURL( blob );
+	link.download = filename || 'data.json';
+	link.dispatchEvent( new MouseEvent( 'click' ) );
+
+}

@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import { LayerEnum, WORLD_SIZE} from './Constants';
 import { WHITE } from './Colors';
-import { eventBus, EventEnums } from './EventBus';
 import { snapper } from './Snapping';
+import { eventBus, EventEnums } from './EventBus';
 
 const GRID_SIZE = WORLD_SIZE;
 const FEET_PER_METER = 3.280839895;
@@ -27,24 +27,28 @@ class GridManager {
         this.meterGrid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE, WHITE, WHITE);
         this.meterGrid.layers.set(LayerEnum.NoRaycast)
         this.meterGrid.position.set(0, 0.002, 0)
+        this.meterGrid.name = "Grid"
         editor.scene.add(this.meterGrid);
 
         this.decimeterGrid = new THREE.GridHelper(GRID_SIZE, GRID_SIZE * 10, WHITE, 0xDDDDDD);
         this.decimeterGrid.layers.set(LayerEnum.NoRaycast)
         this.decimeterGrid.position.set(0, 0.001, 0)
         this.decimeterGrid.material.linewidth = 0.05;
+        this.decimeterGrid.name = "Grid"
         editor.scene.add(this.decimeterGrid);
 
         let footDivisions = FEET_PER_METER * GRID_SIZE;
         this.footGrid = new THREE.GridHelper(GRID_SIZE, footDivisions, WHITE, WHITE);
         this.footGrid.layers.set(LayerEnum.NoRaycast)
         this.footGrid.position.set(0, 0.002, 0)
+        this.footGrid.name = "Grid"
         editor.scene.add(this.footGrid);
 
         this.inchGrid = new THREE.GridHelper(GRID_SIZE, footDivisions * 12, WHITE, 0xDDDDDD);
         this.inchGrid.layers.set(LayerEnum.NoRaycast)
         this.inchGrid.position.set(0, 0.001, 0)
         this.inchGrid.material.linewidth = 0.05;
+        this.inchGrid.name = "Grid"
         editor.scene.add(this.inchGrid);
 
         this.setMetric(this.metric)
@@ -54,6 +58,10 @@ class GridManager {
         this.axesHelper.position.set(0, 0.003, 0)
         this.axesHelper.name = "Axes Helper"
         editor.scene.add(this.axesHelper);
+
+        eventBus.on(EventEnums.METRIC_CHANGED, (value) => this.setMetric(value))
+        eventBus.on(EventEnums.GRID_VISIBILITY_CHANGED, (value) => this.showGrid(value))
+
     }
 
     public setMetric(value: boolean) {

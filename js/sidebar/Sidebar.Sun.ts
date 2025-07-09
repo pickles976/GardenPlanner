@@ -3,8 +3,8 @@ import * as THREE from 'three';
 import { UIPanel, UIRow, UIInput, UIButton, UIColor, UICheckbox, UIInteger, UITextArea, UIText, UINumber } from '../libs/ui.js';
 
 import { Editor } from '../Editor.js';
-import SunCalc from "suncalc";
 import { rad2deg } from '../Utils.js';
+import { eventBus, EventEnums } from '../EventBus.js';
 
 
 const LAT = 30.354156;
@@ -86,8 +86,9 @@ class SidebarSun {
         this.container.add(this.timeRow)
         this.container.add(this.northRow)
 
-        const pos = SunCalc.getPosition(new Date(), LAT, LON, 0)
-        editor.setSunPosition(rad2deg(pos.azimuth), rad2deg(pos.altitude));
+        editor.setSun(0, LAT, LON, new Date())
+
+        eventBus.on(EventEnums.SUN_CONFIG_CHANGED, () => this.updateFromEditor())
 
     }
 
@@ -97,11 +98,15 @@ class SidebarSun {
         const lon = this.longitude.value;
         const lat = this.latitude.value;
 
-        this.editor.setNorth(this.north.value);
+        this.editor.setSun(this.north.value, lat, lon, date);
 
-        const pos = SunCalc.getPosition(date, lat, lon, 0)
-        this.editor.setSunPosition(rad2deg(pos.azimuth), rad2deg(pos.altitude));
+    }
 
+    private updateFromEditor() {
+        this.north.setValue(this.editor.north) 
+        this.latitude.setValue(this.editor.latitude) 
+        this.longitude.setValue(this.editor.longitude) 
+        this.time.value = getTimeString(this.editor.time);
     }
 
     // public handleKeyDown(e) {

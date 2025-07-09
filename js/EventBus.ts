@@ -2,6 +2,9 @@ import mitt from 'mitt'
 
 enum EventEnums {
 
+    SUN_CONFIG_CHANGED = "sunConfigChanged",
+    EDITOR_CLEARED = "editorCleared",
+
     FRAME_UPDATED = "frameUpdated",
 
     TOGGLE_COMPASS = "toggleCompass",

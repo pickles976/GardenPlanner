@@ -64,6 +64,8 @@ export async function createAnimeGirl(editor: Editor): THREE.Mesh {
     mesh.scale.set(scale,scale,scale)
     mesh.rotation.x = mesh.rotation.x - Math.PI / 2;
     mesh.position.y = size.z / 2;
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
 
     mesh.name = "Human-sized object";
     editor.execute(new CreateObjectCommand(mesh, editor));
