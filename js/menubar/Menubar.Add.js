@@ -3,7 +3,7 @@ import { UIPanel, UIRow } from '../libs/ui.js';
 
 import { Strings } from '../sidebar/Strings.js';
 import { eventBus, EventEnums } from '../EventBus.js';
-import { createCube, createCylinder, createPlane, createSphere } from '../Creation.js';
+import { createAnimeGirl, createCube, createCylinder, createPlane, createSphere } from '../Creation.js';
 import { createSearchPanel } from '../widgets/Plants.js';
 
 const strings = Strings({'language': 'en'});
@@ -162,6 +162,13 @@ function MenubarAdd( editor ) {
 	option.setClass( 'option' );
 	option.setTextContent( "Sphere" );
 	option.onClick(() => createSphere(editor));
+	objectSubmenu.add( option );
+
+	// Anime
+	option = new UIRow();
+	option.setClass( 'option' );
+	option.setTextContent( "Person" );
+	option.onClick(() => createAnimeGirl(editor));
 	objectSubmenu.add( option );
 
 	return container;

@@ -27,6 +27,7 @@ import { createGrass } from './Grass';
 import { Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils.js';
 import { GridManager } from './GridManager';
+import { createGround } from './Creation';
 
 const ANTI_ALIASING = true;
 
@@ -125,6 +126,7 @@ class Editor {
     // Pretty things
     // TODO: pull this out into a grass manager??
     sky: Sky;
+    ground: THREE.Mesh;
     grass?: THREE.InstancedMesh;
 
 
@@ -273,6 +275,9 @@ class Editor {
         this.scene = new THREE.Scene();
         this.scene.fog = new THREE.FogExp2(0xEBE2DB, 0.00003);
 
+        this.ground = createGround()
+        this.scene.add(this.ground)
+
         // Grids
         this.gridManager = new GridManager(this);
 
@@ -356,7 +361,8 @@ class Editor {
                 child.name === "Ambient Light" || 
                 child.name === "Sky" ||
                 child.name === "Grid" ||
-                child.name === "Axes Helper") {
+                child.name === "Axes Helper" ||
+                child.name === "Ground") {
 
                 child.parent?.remove(child);
             }

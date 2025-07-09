@@ -190,7 +190,7 @@ export function createPlane(editor: Editor): THREE.Mesh {
 
 
 
-export function createGround(editor: Editor): THREE.Mesh {
+export function createGround(): THREE.Mesh {
 
     const mat = new THREE.MeshPhongMaterial({
         color: GROUND_COLOR,    // red (can also use a CSS color string here)
@@ -203,6 +203,5 @@ export function createGround(editor: Editor): THREE.Mesh {
     mesh.receiveShadow = true;
     mesh.name = "Ground";
     mesh.rotation.x = mesh.rotation.x - Math.PI / 2;
-    editor.scene.add(mesh)
     return mesh
 }

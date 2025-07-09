@@ -86,7 +86,6 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
     editor.execute(command);
 });
 
-createGround(editor)
 
 let box = await createAnimeGirl(editor)
 box.position.set(1, box.position.y, 1)

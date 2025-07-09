@@ -42,37 +42,37 @@ function MenubarEdit( editor ) {
 
 	// Redo
 
-	const redo = new UIRow();
-	redo.setClass( 'option' );
-	redo.setTextContent( strings.getKey( 'menubar/edit/redo' ) );
-	redo.add( new UIText( 'CTRL+SHIFT+Z' ).setClass( 'key' ) );
-	redo.onClick( function () {
+	// const redo = new UIRow();
+	// redo.setClass( 'option' );
+	// redo.setTextContent( strings.getKey( 'menubar/edit/redo' ) );
+	// redo.add( new UIText( 'CTRL+SHIFT+Z' ).setClass( 'key' ) );
+	// redo.onClick( function () {
 
-		editor.redo();
+	// 	editor.redo();
 
-	} );
-	options.add( redo );
+	// } );
+	// options.add( redo );
 
-	function onHistoryChanged() {
+	// function onHistoryChanged() {
 
-		const history = editor.history;
+	// 	const history = editor.history;
 
-		undo.setClass( 'option' );
-		redo.setClass( 'option' );
+	// 	undo.setClass( 'option' );
+	// 	redo.setClass( 'option' );
 
-		if ( history.undos.length == 0 ) {
+	// 	if ( history.undos.length == 0 ) {
 
-			undo.setClass( 'inactive' );
+	// 		undo.setClass( 'inactive' );
 
-		}
+	// 	}
 
-		if ( history.redos.length == 0 ) {
+	// 	if ( history.redos.length == 0 ) {
 
-			redo.setClass( 'inactive' );
+	// 		redo.setClass( 'inactive' );
 
-		}
+	// 	}
 
-	}
+	// }
 
 	// editor.signals.historyChanged.add( onHistoryChanged );
 	// onHistoryChanged();
@@ -81,44 +81,19 @@ function MenubarEdit( editor ) {
 
 	options.add( new UIHorizontalRule() );
 
-	// Center
+	// Clone
 
 	let option = new UIRow();
 	option.setClass( 'option' );
-	option.setTextContent( strings.getKey( 'menubar/edit/center' ) );
-	option.onClick( function () {
-
-		const object = editor.selected;
-
-		if ( object === null || object.parent === null ) return; // avoid centering the camera or scene
-
-		const aabb = new Box3().setFromObject( object );
-		const center = aabb.getCenter( new Vector3() );
-		const newPosition = new Vector3();
-
-		newPosition.x = object.position.x - center.x;
-		newPosition.y = object.position.y - center.y;
-		newPosition.z = object.position.z - center.z;
-
-		editor.execute( new SetPositionCommand( editor, object, newPosition ) );
-
-	} );
-	options.add( option );
-
-	// Clone
-
-	option = new UIRow();
-	option.setClass( 'option' );
 	option.setTextContent( strings.getKey( 'menubar/edit/clone' ) );
+	option.add( new UIText( 'SHIFT+D' ).setClass( 'key' ) );
 	option.onClick( function () {
 
-		let object = editor.selected;
+		let object = editor.selector.currentSelectedObject;
 
 		if ( object === null || object.parent === null ) return; // avoid cloning the camera or scene
 
-		object = deepClone( object );
-
-		editor.execute( new CreateObjectCommand( editor, object ) );
+		editor.execute(new CreateObjectCommand(deepClone(object), editor));
 
 	} );
 	options.add( option );
@@ -131,11 +106,11 @@ function MenubarEdit( editor ) {
 	option.add( new UIText( 'DEL' ).setClass( 'key' ) );
 	option.onClick( function () {
 
-		const object = editor.selected;
+		const object = editor.selector.currentSelectedObject;
 
 		if ( object !== null && object.parent !== null ) {
 
-			editor.execute( new DeleteObjectCommand( editor, object ) );
+			editor.execute( new DeleteObjectCommand( object, editor ) );
 
 		}
 

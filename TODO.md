@@ -1,22 +1,18 @@
 ## SAVING
 - [ ] save to web storage
+    - [ ] create an index
+    - [ ] save the scene at the specifid index
 - [ ] load from web storage
+    - [ ] load the index
     - [ ] create web storage browser widget
-    - [ ] save a preview image from the canvas
-
-- [ ] get "new" button working
-- [ ] hide "import" button
-- [ ] get "clone" and "delete" menu buttons working
-- [ ] hide "center" and "redo" buttons
+    - [ ] load scene from storagee
+- [ ] save a preview image from the canvas
 
 - [ ] enable autosave
     - [ ] save the scene by default to storage
 
 - [ ] clean up help bar
 - [ ] fix issue with "top-down" checkbox 
-
-# Plants
-- [ ] get plant generation from text working
 
 # Sun Timeline
 - [ ] get source code from suncalc website
@@ -32,21 +28,20 @@ MVP finished!
 
 ## MORE UTILITIES
 
+# Plants
+- [ ] get plant generation from text working
+
 # Performance
-- [x] get a more performant anime girl model
 - [ ] downscale plant textures
 
 # REFACTOR
 Write up about 
-- [x] event flow/propagation
 - [ ] design philosophy
 - [ ] modularity
 - [ ] improve the logic for CTRL + Z command pattern in the vertex editing mode of the line editor
 - [ ] serialize commands? https://github.com/mrdoob/three.js/blob/dev/editor/js/commands/SetPositionCommand.js#L72
 
-
 ### Grass Shader Improvements
-- [x] grass occlusion
 - [ ] add directional lighting to grass shader
 - [ ] read about shaders, get grass shader working three js
 - [ ] apply different colors to grass with perlin noise

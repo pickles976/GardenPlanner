@@ -87,9 +87,10 @@ https://threejs.org/docs/index.html#api/en/renderers/webgl/WebGLProgram
 # Week 6
 - [x] 07/07/2025 -- improvements
 - [x] 07/08/2025 -- nothing
-- [ ] 07/09/2025 -- saving and loading json, menubar cleanup
-- [ ] 07/10/2025 -- sun timeline
-- [ ] 07/11/2025 -- deploy
+- [x] 07/09/2025 -- saving and loading json, menubar cleanup
+- [ ] 07/10/2025 -- saving and loading to web storage
+- [ ] 07/11/2025 -- sun timeline
+- [ ] 07/12/2025 -- deploy
 
 # Milestones
 - [x] Garden editor -- 06/30/2025
