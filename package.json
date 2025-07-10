@@ -10,6 +10,7 @@
     "three-transform-controls": "^1.0.4"
   },
   "devDependencies": {
+    "svg-loader-js": "^1.0.7",
     "vite": "^6.3.5"
   },
   "scripts": {
