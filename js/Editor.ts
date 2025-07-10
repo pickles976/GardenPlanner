@@ -341,9 +341,9 @@ class Editor {
         const config = new EditorConfig(
             snapper.metric,
             this.north, 
-            this.lat,
-            this.lon,
-            this.date
+            this.latitude,
+            this.longitude,
+            this.time
         )
 
         const sceneCopy = this.scene.clone(true); // deep clone
@@ -380,6 +380,7 @@ class Editor {
         this.initScene()
 
         const config = json.config;
+        console.log(config.time)
         this.setSun(config.north, config.latitude, config.longitude, new Date(config.time))
         snapper.setMetric(config.metric);
 

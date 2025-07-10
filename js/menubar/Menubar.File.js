@@ -96,7 +96,7 @@ function MenubarFile( editor ) {
 
 		} finally {
 
-			form.reset();
+			openProjectForm.reset();
 
 		}
 

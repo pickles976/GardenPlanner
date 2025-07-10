@@ -12,6 +12,8 @@ import { Sidebar } from './js/sidebar/Sidebar';
 import { loadPlant } from './js/ModelLoader';
 import { Editor } from './js/Editor';
 import { createCompassWidget } from './js/widgets/CompassWidget';
+import * as THREE from "three"
+import { loadJsonFile } from './js/Utils';
 
 const editor = new Editor();
 editor.initThree();
@@ -86,11 +88,20 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
     editor.execute(command);
 });
 
+loadJsonFile("/example_garden.json").then((json) => {
+    const loader = new THREE.ObjectLoader();
+    const parsed = {
+        "scene": loader.parse(json.scene),
+        "config": json.config
+    }
 
-createAnimeGirl(editor).then((obj) => obj.position.set(1, obj.position.y, 1))
+    editor.loadFromJson(parsed)
+
+    createAnimeGirl(editor).then((obj) => obj.position.set(1, obj.position.y, 1))
+
+})
 
 createCompassWidget(editor)
-
 render(editor);
 
 eventBus.on(EventEnums.LOAD_PLANT, (plant) => loadPlant(plant, editor))
