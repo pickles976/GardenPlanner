@@ -4,7 +4,7 @@ import { UIPanel, UIRow } from '../libs/ui.js';
 import { Strings } from '../sidebar/Strings.js';
 import { eventBus, EventEnums } from '../EventBus.js';
 import { createAnimeGirl, createCube, createCylinder, createPlane, createSphere } from '../Creation.js';
-import { createSearchPanel } from '../widgets/Plants.js';
+import { createSearchPanel } from '../widgets/PlantBrowser.js';
 
 const strings = Strings({'language': 'en'});
 

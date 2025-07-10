@@ -105,20 +105,69 @@ function MenubarFile( editor ) {
 
 	openProjectForm.appendChild( openProjectInput );
 
+	// option = new UIRow()
+	// 	.addClass( 'option' )
+	// 	.setTextContent( strings.getKey( 'menubar/file/open' ) )
+	// 	.onClick( function () {
+
+	// 		if ( confirm( strings.getKey( 'prompt/file/open' ) ) ) {
+
+	// 			openProjectInput.click();
+
+	// 		}
+
+	// 	} );
+
+	// options.add( option );
+
+	const openProjectSubmenuTitle = new UIRow().setTextContent( "Open" ).addClass( 'option' ).addClass( 'submenu-title' );
+	openProjectSubmenuTitle.onMouseOver( function () {
+
+		const { top, right } = openProjectSubmenuTitle.dom.getBoundingClientRect();
+		const { paddingTop } = getComputedStyle( this.dom );
+
+		openProjectSubmenu.setLeft( right + 'px' );
+		openProjectSubmenu.setTop( top - parseFloat( paddingTop ) + 'px' );
+		openProjectSubmenu.setStyle( 'max-height', [ `calc( 100vh - ${top}px )` ] );
+		openProjectSubmenu.setDisplay( 'block' );
+
+	} );
+	openProjectSubmenuTitle.onMouseOut( function () {
+
+		openProjectSubmenu.setDisplay( 'none' );
+
+	} );
+	options.add( openProjectSubmenuTitle );
+
+	const openProjectSubmenu = new UIPanel().setPosition( 'fixed' ).addClass( 'options' ).setDisplay( 'none' );
+	openProjectSubmenuTitle.add( openProjectSubmenu );
+
+	// OPEN FROM JSON
 	option = new UIRow()
-		.addClass( 'option' )
-		.setTextContent( strings.getKey( 'menubar/file/open' ) )
-		.onClick( function () {
+	.addClass( 'option' )
+	.setTextContent( "From Local File" )
+	.onClick( function () {
 
-			if ( confirm( strings.getKey( 'prompt/file/open' ) ) ) {
+		if ( confirm( strings.getKey( 'prompt/file/open' ) ) ) {
 
-				openProjectInput.click();
+			openProjectInput.click();
 
-			}
+		}
 
-		} );
+	} );
 
-	options.add( option );
+	openProjectSubmenu.add( option );
+
+	// OPEN FROM LOCAL STORAGE
+	option = new UIRow()
+	.addClass( 'option' )
+	.setTextContent( "From Browser" )
+	.onClick( function () {
+		// TODO: open localstorage browser widget
+	} );
+
+	openProjectSubmenu.add( option );
+
 
 	// Save
 

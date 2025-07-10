@@ -1,4 +1,9 @@
-## SAVING
+# Saving
+- [ ] create options on menubar
+    - [x] open from file
+    - [x] open from localstorage button
+    - [ ] save to file
+    - [ ] save to local storage
 - [ ] save to web storage
     - [ ] create an index
     - [ ] save the scene at the specifid index
@@ -19,19 +24,17 @@
 
 MVP finished!
 - [ ] deploy
+- [ ] add site visit data tracking
 - [ ] digitalocean
 
-## USER FEEDBACK
+# User Feedback
 - [ ] friends and family
 - [ ] community gardens network in Austin
 - [ ] r/austingardens
 
-## MORE UTILITIES
-
-# Plants
+# Models and Performance
+- [ ] compass redux
 - [ ] get plant generation from text working
-
-# Performance
 - [ ] downscale plant textures
 
 # REFACTOR
@@ -40,6 +43,8 @@ Write up about
 - [ ] modularity
 - [ ] improve the logic for CTRL + Z command pattern in the vertex editing mode of the line editor
 - [ ] serialize commands? https://github.com/mrdoob/three.js/blob/dev/editor/js/commands/SetPositionCommand.js#L72
+- [ ] clean up serialization logic
+- [ ] look for patterns
 
 ### Grass Shader Improvements
 - [ ] add directional lighting to grass shader
@@ -51,32 +56,29 @@ Write up about
 - [ ] revisit plant model pipeline
     - [ ] find photographers locally
 - [ ] create more plants
+- [ ] searchable plants
 
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
     - [ ] create a panel for 3D models the same way we have for plants
 
-#### GROUPS
+# Multiple-Selection and Groups
 - [ ] create group-editing workflow?
     - [ ] select multiple
     - [ ] add multiple objects to the group
     - [ ] move the entire group
     - [ ] remove objects from the group when done
 
-## PLANT EDITOR KEYFRAMING
-- [ ] set height and radius
+# Plant Growth Timeline
+- [ ] select planting date
+- [ ] create a list with time, height, and radius entries
 - [ ] enter height and radius at different time points
 - [ ] animate plant according to different time points
-
-- [ ] ~~steal~~ copy shademap timeline widget??
-
-- [ ] complete web client
 
 # Further features
 - [ ] user login backend
 - [ ] garden concept browser?
 - [ ] batch processing for sun location
-- [ ] payment system and stuff
 
 ## DATA AND STUFF
 - [ ] in-browser sqlite engine for plants and stuff
