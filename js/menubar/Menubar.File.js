@@ -105,21 +105,6 @@ function MenubarFile( editor ) {
 
 	openProjectForm.appendChild( openProjectInput );
 
-	// option = new UIRow()
-	// 	.addClass( 'option' )
-	// 	.setTextContent( strings.getKey( 'menubar/file/open' ) )
-	// 	.onClick( function () {
-
-	// 		if ( confirm( strings.getKey( 'prompt/file/open' ) ) ) {
-
-	// 			openProjectInput.click();
-
-	// 		}
-
-	// 	} );
-
-	// options.add( option );
-
 	const openProjectSubmenuTitle = new UIRow().setTextContent( "Open" ).addClass( 'option' ).addClass( 'submenu-title' );
 	openProjectSubmenuTitle.onMouseOver( function () {
 
@@ -171,9 +156,31 @@ function MenubarFile( editor ) {
 
 	// Save
 
+	const saveProjectSubmenuTitle = new UIRow().setTextContent( "Save" ).addClass( 'option' ).addClass( 'submenu-title' );
+	saveProjectSubmenuTitle.onMouseOver( function () {
+
+		const { top, right } = saveProjectSubmenuTitle.dom.getBoundingClientRect();
+		const { paddingTop } = getComputedStyle( this.dom );
+
+		saveProjectSubmenu.setLeft( right + 'px' );
+		saveProjectSubmenu.setTop( top - parseFloat( paddingTop ) + 'px' );
+		saveProjectSubmenu.setStyle( 'max-height', [ `calc( 100vh - ${top}px )` ] );
+		saveProjectSubmenu.setDisplay( 'block' );
+
+	} );
+	saveProjectSubmenuTitle.onMouseOut( function () {
+
+		saveProjectSubmenu.setDisplay( 'none' );
+
+	} );
+	options.add( saveProjectSubmenuTitle );
+
+	const saveProjectSubmenu = new UIPanel().setPosition( 'fixed' ).addClass( 'options' ).setDisplay( 'none' );
+	saveProjectSubmenuTitle.add( saveProjectSubmenu );
+
 	option = new UIRow()
 		.addClass( 'option' )
-		.setTextContent( strings.getKey( 'menubar/file/save' ) )
+		.setTextContent( "Save to File" )
 		.onClick( function () {
 
 			const json = editor.exportToJson();
@@ -182,7 +189,17 @@ function MenubarFile( editor ) {
 
 		} );
 
-	options.add( option );
+	saveProjectSubmenu.add( option );
+
+	option = new UIRow()
+	.addClass( 'option' )
+	.setTextContent( "Save to Browser" )
+	.onClick( function () {
+		// TODO: save to localstorage
+	} );
+
+	saveProjectSubmenu.add( option );
+
 
 	//
 

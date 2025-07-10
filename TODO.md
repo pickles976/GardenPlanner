@@ -1,9 +1,4 @@
 # Saving
-- [ ] create options on menubar
-    - [x] open from file
-    - [x] open from localstorage button
-    - [ ] save to file
-    - [ ] save to local storage
 - [ ] save to web storage
     - [ ] create an index
     - [ ] save the scene at the specifid index
