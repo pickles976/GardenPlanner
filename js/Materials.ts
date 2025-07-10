@@ -1,24 +1,24 @@
 import * as THREE from "three"
 
 
-function loadTexture(filepath: string, encoding: any, scale: THREE.Vector2) : THREE.Texture {
+function loadTexture(filepath: string, encoding: THREE.ColorSpace, scale: THREE.Vector2) : THREE.Texture {
     const texture = new THREE.TextureLoader().load(filepath); 
     texture.wrapS = THREE.RepeatWrapping;
     texture.wrapT = THREE.RepeatWrapping;
-    texture.encoding = encoding;
+    texture.colorSpace = encoding;
     texture.repeat.set( ...scale );
     return texture;
 }
 
 function getPBRTexture(path: string, scale: THREE.Vector2 = new THREE.Vector2(1,1)) : Object {
     return {
-        map: loadTexture(path.concat("albedo.png"), THREE.sRGBEncoding, scale),
-        aoMap: loadTexture(path.concat("ao.png"), THREE.LinearEncoding, scale),
-        bumpMap:loadTexture(path.concat("height.png"), THREE.LinearEncoding, scale),
-        metalnessMap: loadTexture(path.concat("metalness.png"), THREE.LinearEncoding, scale),
-        normalMap: loadTexture(path.concat("normal.png"), THREE.LinearEncoding, scale),
-        roughnessMap: loadTexture(path.concat("roughness.png"), THREE.LinearEncoding, scale),
-        alphaMap: loadTexture(path.concat("opacity.png"), THREE.LinearEncoding, scale),
+        map: loadTexture(path.concat("albedo.png"), THREE.SRGBColorSpace, scale),
+        aoMap: loadTexture(path.concat("ao.png"), THREE.LinearSRGBColorSpace, scale),
+        bumpMap:loadTexture(path.concat("height.png"), THREE.LinearSRGBColorSpace, scale),
+        metalnessMap: loadTexture(path.concat("metalness.png"), THREE.LinearSRGBColorSpace, scale),
+        normalMap: loadTexture(path.concat("normal.png"), THREE.LinearSRGBColorSpace, scale),
+        roughnessMap: loadTexture(path.concat("roughness.png"), THREE.LinearSRGBColorSpace, scale),
+        alphaMap: loadTexture(path.concat("opacity.png"), THREE.LinearSRGBColorSpace, scale),
         side: THREE.DoubleSide,
     }
 }

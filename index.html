@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-L6CTVCN0G4"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-L6CTVCN0G4');
+    </script>
     <meta charset="utf-8">
     <title>My first three.js app</title>
     <style>
@@ -9,7 +18,7 @@
   </head>
   <body>
     <link rel="stylesheet" href="/css/main.css">
-    <script type="text/javascript" src="svg-loader.min.js" async></script>
+    <script type="module" src="/js/libs/svg-loader.js" async></script>
     <script type="module" src="/main.ts"></script>
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
   </body>

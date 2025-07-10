@@ -87,8 +87,7 @@ editor.transformControls.addEventListener('mouseUp', function (event) {
 });
 
 
-let box = await createAnimeGirl(editor)
-box.position.set(1, box.position.y, 1)
+createAnimeGirl(editor).then((obj) => obj.position.set(1, obj.position.y, 1))
 
 createCompassWidget(editor)
 

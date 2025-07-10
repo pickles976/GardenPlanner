@@ -54,21 +54,33 @@ function MenubarAdd( editor ) {
 	option = new UIRow();
 	option.setClass( 'option' );
 	option.setTextContent( "Bed" );
-	option.onClick(() => eventBus.emit(EventEnums.BED_CREATION_STARTED, undefined));
-	pathSubmenu.add( option );
-
-	// Fence
-	option = new UIRow();
-	option.setClass( 'option' );
-	option.setTextContent( "Fence" );
-	option.onClick(() => eventBus.emit(EventEnums.FENCE_CREATION_STARTED, undefined));
+	option.onClick(() => {
+		eventBus.emit(EventEnums.PATH_EDITING_CANCELLED, undefined);
+		eventBus.emit(EventEnums.FENCE_EDITING_CANCELLED, undefined);
+		eventBus.emit(EventEnums.BED_CREATION_STARTED, undefined);
+	});
 	pathSubmenu.add( option );
 
 	// Path
 	option = new UIRow();
 	option.setClass( 'option' );
 	option.setTextContent( "Path" );
-	option.onClick(() => eventBus.emit(EventEnums.PATH_CREATION_STARTED, undefined));
+	option.onClick(() => {
+		eventBus.emit(EventEnums.BED_EDITING_CANCELLED, undefined);
+		eventBus.emit(EventEnums.FENCE_EDITING_CANCELLED, undefined);
+		eventBus.emit(EventEnums.PATH_CREATION_STARTED, undefined);
+	});
+	pathSubmenu.add( option );
+
+	// Fence
+	option = new UIRow();
+	option.setClass( 'option' );
+	option.setTextContent( "Fence" );
+	option.onClick(() => {
+		eventBus.emit(EventEnums.BED_EDITING_CANCELLED, undefined);
+		eventBus.emit(EventEnums.PATH_EDITING_CANCELLED, undefined);
+		eventBus.emit(EventEnums.FENCE_CREATION_STARTED, undefined);
+	});
 	pathSubmenu.add( option );
 
 	// Plants
@@ -100,6 +112,10 @@ function MenubarAdd( editor ) {
 	option.setClass( 'option' );
 	option.setTextContent( "Use Existing" );
 	option.onClick(() => {
+		eventBus.emit(EventEnums.BED_EDITING_CANCELLED, undefined);
+		eventBus.emit(EventEnums.PATH_EDITING_CANCELLED, undefined);
+		eventBus.emit(EventEnums.FENCE_EDITING_CANCELLED, undefined);
+		
 		if (document.getElementById("search-panel") === null) {
 			document.body.appendChild(createSearchPanel());
 		}

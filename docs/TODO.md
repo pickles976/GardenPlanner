@@ -3,18 +3,17 @@
 
 MVP finished!
 - [ ] deploy
-- [ ] add site visit data tracking
-- [ ] digitalocean
+    - [x] buy domain
+    - [x] add site visit data tracking
+    - [ ] configure deployment
+    - [ ] put on digitalocean
+    - [ ] configure DNS
+    - [ ] configure cloudfront CDN
 
 # User Feedback
 - [ ] friends and family
 - [ ] community gardens network in Austin
 - [ ] r/austingardens
-
-# Models and Performance
-- [ ] compass redux
-- [ ] get plant generation from text working
-- [ ] downscale plant textures
 
 # REFACTOR
 Write up about 
@@ -24,6 +23,12 @@ Write up about
 - [ ] serialize commands? https://github.com/mrdoob/three.js/blob/dev/editor/js/commands/SetPositionCommand.js#L72
 - [ ] clean up serialization logic
 - [ ] look for patterns
+- [ ] add help bar
+
+# Models and Performance
+- [ ] compass redux
+- [ ] get plant generation from text working
+- [ ] downscale plant textures
 
 ### Grass Shader Improvements
 - [ ] add directional lighting to grass shader
