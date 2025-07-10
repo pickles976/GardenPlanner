@@ -62,6 +62,7 @@ export async function createAnimeGirl(editor: Editor): THREE.Mesh {
 
     const scale = 1
     mesh.scale.set(scale,scale,scale)
+    mesh.position.set(...editor.currentCameraControls.target.clone())
     mesh.rotation.x = mesh.rotation.x - Math.PI / 2;
     mesh.position.y = size.z / 2;
     mesh.castShadow = true;

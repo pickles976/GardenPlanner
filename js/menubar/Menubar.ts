@@ -24,7 +24,8 @@ class Menubar {
 		this.container.add( new MenubarEdit( editor ) );
 		this.container.add( new MenubarAdd( editor ) );
 		this.container.add( this.menuBar.container );
-		this.container.add( new MenubarHelp( editor ) );
+		
+		// this.container.add( new MenubarHelp( editor ) );
 
 		this.container.add( new MenubarStatus( editor ) );
 

@@ -1,19 +1,3 @@
-# Saving
-- [ ] save to web storage
-    - [ ] create an index
-    - [ ] save the scene at the specifid index
-- [ ] load from web storage
-    - [ ] load the index
-    - [ ] create web storage browser widget
-    - [ ] load scene from storagee
-- [ ] save a preview image from the canvas
-
-- [ ] enable autosave
-    - [ ] save the scene by default to storage
-
-- [ ] clean up help bar
-- [ ] fix issue with "top-down" checkbox 
-
 # Sun Timeline
 - [ ] get source code from suncalc website
 
@@ -74,6 +58,8 @@ Write up about
 - [ ] user login backend
 - [ ] garden concept browser?
 - [ ] batch processing for sun location
+- [ ] save and load from browser
+- [ ] save a preview image from the canvas
 
 ## DATA AND STUFF
 - [ ] in-browser sqlite engine for plants and stuff

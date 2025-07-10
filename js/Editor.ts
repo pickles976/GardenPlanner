@@ -569,6 +569,7 @@ class Editor {
         this.selector.deselect();
         this.mode = EditorMode.OBJECT;
         this.setPerspectiveCamera()
+        eventBus.emit(EventEnums.CHANGE_CAMERA_UI, false)
         this.hideCameraLayers([])
     }
 

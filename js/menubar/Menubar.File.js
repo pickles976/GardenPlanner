@@ -2,7 +2,6 @@ import { UIPanel, UIRow, UIHorizontalRule } from '../libs/ui.js';
 import { Strings } from '../sidebar/Strings.js';
 import * as THREE from 'three';
 import { saveJSON } from '../Utils.js';
-import { eventBus } from '../EventBus.js';
 
 const strings = Strings({'language': 'en'});
 
@@ -148,7 +147,7 @@ function MenubarFile( editor ) {
 	.addClass( 'option' )
 	.setTextContent( "From Browser" )
 	.onClick( function () {
-		// TODO: open localstorage browser widget
+		// TODO: open!
 	} );
 
 	openProjectSubmenu.add( option );
@@ -195,7 +194,7 @@ function MenubarFile( editor ) {
 	.addClass( 'option' )
 	.setTextContent( "Save to Browser" )
 	.onClick( function () {
-		// TODO: save to localstorage
+		// TODO: save!
 	} );
 
 	saveProjectSubmenu.add( option );
