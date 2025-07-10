@@ -1,34 +1,22 @@
-# Sun Timeline
-- [ ] get source code from suncalc website
-
-MVP finished!
-- [ ] deploy
-    - [x] buy domain
-    - [x] add site visit data tracking
-    - [ ] configure deployment
-    - [ ] put on digitalocean
-    - [ ] configure DNS
-    - [ ] configure cloudfront CDN
-
 # User Feedback
 - [ ] friends and family
 - [ ] community gardens network in Austin
 - [ ] r/austingardens
 
-# REFACTOR
-Write up about 
-- [ ] design philosophy
-- [ ] modularity
-- [ ] improve the logic for CTRL + Z command pattern in the vertex editing mode of the line editor
-- [ ] serialize commands? https://github.com/mrdoob/three.js/blob/dev/editor/js/commands/SetPositionCommand.js#L72
-- [ ] clean up serialization logic
-- [ ] look for patterns
-- [ ] add help bar
-
 # Models and Performance
 - [ ] compass redux
 - [ ] get plant generation from text working
 - [ ] downscale plant textures
+
+# Sun Timeline
+- [ ] get source code from suncalc website
+
+# REFACTOR
+- [ ] improve the logic for CTRL + Z command pattern in the vertex editing mode of the line editor
+- [ ] serialize commands? https://github.com/mrdoob/three.js/blob/dev/editor/js/commands/SetPositionCommand.js#L72
+- [ ] clean up serialization logic
+- [ ] look for patterns
+- [ ] add help bar back in
 
 ### Grass Shader Improvements
 - [ ] add directional lighting to grass shader

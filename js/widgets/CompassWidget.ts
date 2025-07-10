@@ -3,7 +3,6 @@ import { Editor } from "../Editor";
 import { eventBus, EventEnums } from "../EventBus";
 import * as THREE from "three"
 
-const SVG_SIZE = "128px";
 const raycaster = new THREE.Raycaster();
 
 export function createCompassWidget(editor: Editor) {

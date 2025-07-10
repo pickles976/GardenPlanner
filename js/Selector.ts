@@ -4,7 +4,7 @@ import { eventBus, EventEnums } from './EventBus';
 import { FONT_SIZE, LayerEnum } from './Constants';
 import { destructureVector3Array, fontSizeString, getCSS2DText, northAngleToVec, rad2deg } from './Utils';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
-import { GREEN, WHITE } from './Colors';
+import { WHITE } from './Colors';
 import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 
@@ -38,7 +38,7 @@ class Selector {
         });
     }
 
-    private setTransformMode(value: boolean) {
+    public setTransformMode(value: boolean) {
         this.advancedTransformMode = value
         if (value) {
             if (this.currentSelectedObject !== undefined) this.attachTransformControls(this.currentSelectedObject)
@@ -82,22 +82,6 @@ class Selector {
             this.drawRotationVisualizer()
 
         }
-    }
-
-    private simpleTransformSelect(object: THREE.Object3D) {
-        if (object === undefined) { // hide controls
-            this.currentSelectedObject = undefined
-        } else { // show controls
-
-            this.currentSelectedObject = object;
-
-            // Call object callback if exists
-            if (object.userData?.selectionEnum) {
-                eventBus.emit(object.userData.selectionEnum, true);
-            }
-
-        }
-
     }
 
     public select(object: THREE.Object3D) {

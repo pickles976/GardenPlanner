@@ -31,8 +31,6 @@ export function getCentroid(points: THREE.Vector3[]) {
 export function getTextGeometry(text: string): THREE.Mesh {
   const canvas = document.createElement('canvas');
   const context = canvas.getContext('2d');
-  // canvas.width = 512;
-  // canvas.height = 256;
 
   // Draw text
   context.fillStyle = 'white';
@@ -51,8 +49,6 @@ export function destructureVector3Array(array: THREE.Vector3[]): number[] {
   let newArray = [];
   for (const item of array) {
     newArray.push(...item)
-    // newArray.push(item.y)
-    // newArray.push(item.z)
   }
 
   return newArray
@@ -77,7 +73,8 @@ export function mergeMeshes(meshes: THREE.Mesh[]) : THREE.Mesh {
    */
 
   let meshArray = meshes.map((m) => m.clone());
-  // TODO: explain what this does
+
+  // TODO: explain what this does (yeah what does this do?)
   meshArray.forEach((m) => m.updateMatrixWorld())
 
   let geometries = meshArray.map((m) => m.geometry.clone());

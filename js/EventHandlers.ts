@@ -6,8 +6,6 @@ import { Sidebar } from './sidebar/Sidebar';
 
 const raycaster = new THREE.Raycaster();
 
-// Utility functions
-
 export function processIntersections(intersections: THREE.Object3D[]) {
     /**
      * Get the closest intersection

@@ -1,15 +1,4 @@
-/**
- * 1. Place Vertices
- *  a. insert and undo
- *  b. close loop by clicking on start vertex
- * 2. Edit Vertices
- * 
- * TODO: make this all command-based at some point
- * 1. create a mapping of vertex handle objects to vertices
- * 2. add a callback to the vertex handles to update the vertices based on index
- * 3. make everything command-based, use UUIDs to track
- */
-
+import "external-svg-loader";
 import * as THREE from "three";
 
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
@@ -17,8 +6,6 @@ import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { Line2 } from 'three/addons/lines/Line2.js';
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
-
-import "external-svg-loader";
 
 import { destructureVector3Array, getCentroid, polygonArea, rad2deg, fontSizeString, getCSS2DText, northAngleToVec } from "../Utils";
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
@@ -28,21 +15,17 @@ import { CommandStack } from "../CommandStack";
 import { FONT_SIZE, LayerEnum } from "../Constants";
 import { Editor } from "../Editor";
 
-import { DARK_GRAY, GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "../Colors";
+import { GREEN, UI_GRAY_COLOR, UI_GREEN_COLOR, VERTEX_COLOR, YELLOW } from "../Colors";
 import { setCrossCursor, setDefaultCursor } from "../Cursors";
 import { processIntersections } from "../EventHandlers";
 import { snapper } from "../Snapping";
 import { DeleteObjectCommand } from "../commands/DeleteObjectCommand";
-import { createCube } from "../Creation";
 
 const VERTEX_SIZE = 0.05;
 const POLYGON_CLOSE_THRESH = VERTEX_SIZE;
 const LINE_WIDTH = 5;
-
 const SVG_SIZE = '50px';
-
 const POLYGON_OPACITY = 0.2;
-
 
 function createVertexHandle(): THREE.Mesh {
     /**
@@ -129,6 +112,9 @@ export function createPolygon(points: THREE.Vector3[]): THREE.Mesh {
 }
 
 function createLinePreview(startPoint: THREE.Vector3, endPoint: THREE.Vector3) : Line2 {
+    /**
+     * Create a line between the previously-placed point, and the current mouse position.
+     */
     const geometry = new LineGeometry();
     geometry.setPositions(destructureVector3Array([startPoint, endPoint]))
     const material = new LineMaterial({ color: YELLOW, linewidth: LINE_WIDTH, depthWrite: false, depthTest: false });
@@ -143,6 +129,20 @@ enum LineEditorMode {
     EDIT_VERTEX_MODE = "EDIT_VERTEX_MODE"
 }
 
+/**
+ * LineEditor is a component object that is re-used between different object editors.
+ * There are three states for the line editor.
+ * INACTIVE -- Nothing happens
+ * PLACE_VERTEX_MODE -- User clicks to place vertices
+ * EDIT_VERTEX_MODE -- User moves, inserts, and deletes vertices
+ * 
+ * Depending on the value of the `closedLoop` variable, the editor will require you to close the loop by clicking on the starting vertex, 
+ * otherwise you can just draw a line segment.
+ * 
+ * Each LineEditor has its own command stack that is cleared during transitions between states. This is because the state is really not intended 
+ * to be persistent between modes.
+ */
+
 class LineEditor {
 
     vertex_editing_started_enum: EventEnums;
@@ -155,9 +155,8 @@ class LineEditor {
     commandStack: CommandStack;
     mode: LineEditorMode;
 
-    vertices: THREE.Vector3[]; // Used during vertex placement mode and bed config mode
-
     // Vertex Placement mode
+    vertices: THREE.Vector3[];
     lastPoint?: THREE.Vector3;
     linePreview?: THREE.Line;
     angleText?: TextGeometry;
@@ -214,12 +213,10 @@ class LineEditor {
 
     }
 
-
     public cancel() {
         this.cleanUp();
     }
 
-    // Cleanup
     public cleanUp() {
         this.cleanUpVertexPlacementState()
         this.cleanUpVertexEditingState()
@@ -268,7 +265,7 @@ class LineEditor {
         setDefaultCursor()
     }
 
-    // // Change modes
+    // Change modes
     public beginEditing(vertices?: THREE.Vector3[]) {
         if (vertices === undefined || vertices.length === 0) { // Create new bed
             this.setVertexPlacementMode()
@@ -281,9 +278,7 @@ class LineEditor {
     private setVertexPlacementMode() {
         this.cleanUp()
         this.mode = LineEditorMode.PLACE_VERTEX_MODE;
-
         setCrossCursor()
-        
     }
 
     public setVertexEditMode() {

@@ -1,5 +1,3 @@
-
-
 export const GROUND_COLOR ="#69FF7F";
 export const UI_GREEN_COLOR = "#82EE73";
 export const UI_GRAY_COLOR = "#CCCCCC";

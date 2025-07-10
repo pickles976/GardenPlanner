@@ -86,9 +86,6 @@ function createListItem(plant) {
     const title = document.createElement("div");
     title.innerText = plant.name;
     title.style.fontSize = "16px";
-
-    // const img = document.createElement("img");
-    // img.src = plant.icon_path;
     
     const img = document.createElement("model-viewer")
     img.src = plant.model_path;
@@ -107,7 +104,6 @@ function createListItem(plant) {
     });
 
     const button = document.createElement("button")
-    // button.innerText = plant.name;
     button.innerText = "ADD"
     button.style.fontSize = "16px";
 

@@ -4,7 +4,7 @@ import { Editor } from './Editor';
 import * as THREE from 'three';
 import { LayerEnum } from './Constants';
 import { CreateObjectCommand } from './commands/CreateObjectCommand';
-import { eventBus, EventEnums } from './EventBus';
+import { EventEnums } from './EventBus';
 
 const loader = new GLTFLoader();
 
@@ -41,7 +41,6 @@ function createPlantObject(editor, gltf, plant): THREE.Mesh {
 
     // Bake in rotation and scale
     mesh.scale.set(...plant.scale)
-    // mesh.rotation.x = mesh.rotation.x + (Math.PI / 2);
     mesh = setCurrentTransformationAsDefault(mesh);    
 
     mesh.layers.set(LayerEnum.Plants);

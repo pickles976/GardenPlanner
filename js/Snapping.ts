@@ -40,6 +40,7 @@ class Snapper {
         this.snapAmount = value ? 0.1 : 0.0254;
     }
 
+    // TODO: make it explicit that this is dependent on the state of the snapper
     metersToInches(value: number) {
         /**
          * Convert meters to inches

@@ -6,7 +6,6 @@ import { setCurrentTransformationAsDefault } from './ModelLoader';
 import { GROUND_COLOR, WHITE } from './Colors';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
-import { getGeometrySize, getObjectsize } from './Utils';
 
 const loader = new GLTFLoader();
 
@@ -31,7 +30,6 @@ export async function createAnimeGirl(editor: Editor): THREE.Mesh {
 
     meshes.forEach(function(mesh, index) {
         mesh.updateMatrix();
-        // mesh.geometry.computeTangents();
         mesh.geometry.deleteAttribute('tangent');
         geometries.push(mesh.geometry);
         materials.push(new THREE.MeshPhongMaterial({map: mesh.material.map}));

@@ -34,7 +34,7 @@ const ANTI_ALIASING = true;
 const SCREEN_WIDTH = window.innerWidth;
 const SCREEN_HEIGHT = window.innerHeight;
 
-const ROTATION_DEGREES = 0.008726639;
+const ROTATION_DEGREES = 0.008726639; // what is this number???
 const ORBIT_CONTROLS_PAN_SPEED = 20.0;
 
 const BASE_AMBIENT_LIGHT_INTENSITY = 0.5;
@@ -436,13 +436,12 @@ class Editor {
         elevation = degToRad(elevation);
         azimuth = degToRad(azimuth - this.north);
 
-        // TODO: account for dynamic north
-
-
         // convert from SunCalc convention to THREE.js convention
         // https://github.com/mourner/suncalc
         // https://threejs.org/docs/#api/en/math/Spherical.theta
         let sunPos = new Vector3().setFromSphericalCoords(100.0, (Math.PI / 2) - elevation, Math.PI - azimuth);
+
+        // Set intensity and color from elevation
 
         this.ambientLight.intensity = BASE_AMBIENT_LIGHT_INTENSITY + Math.sin(elevation) * (1 - BASE_AMBIENT_LIGHT_INTENSITY);
         this.ambientLight.color = blendColors(ORANGE, WHITE, Math.sqrt(Math.sin(elevation)))
@@ -491,7 +490,6 @@ class Editor {
         this.objectMap[object.uuid] = object;
         object.rotation.reorder ( 'XZY' ); // Fix rotation order
         this.scene.add(object)
-        // TODO: properly update the rest of the application
         eventBus.emit(EventEnums.OBJECT_ADDED)
     }
 
@@ -546,7 +544,6 @@ class Editor {
         eventBus.emit(EventEnums.CHANGE_CAMERA_UI, true) // change UI
         this.bedEditor.beginEditing(bed);
         this.selector.deselect();
-        // this.hideCameraLayers([LayerEnum.Plants, LayerEnum.Objects])
     }
 
     public setFenceMode(fence?: THREE.Object3D) {
@@ -583,8 +580,6 @@ class Editor {
             this.orthoCamera.layers.disable(layer);
         })
     }
-
-    // Input handling
 
     private handleKeyDownObjectMode(event) {
 

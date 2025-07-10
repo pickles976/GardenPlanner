@@ -3,8 +3,7 @@
  * https://discourse.threejs.org/t/simple-instanced-grass-example/26694
  */
 
-import { DEPTHMASK_RENDER_ORDER, GRASS_HEIGHT, GRASS_WIDTH, LayerEnum, WORLD_SIZE } from "./Constants";
-import { Editor } from "./Editor";
+import { GRASS_HEIGHT, GRASS_WIDTH, LayerEnum, WORLD_SIZE } from "./Constants";
 import * as THREE from "three";
 
 // https://www.maya-ndljk.com/blog/threejs-basic-toon-shader
@@ -217,8 +216,6 @@ export function createGrassBladeGeometry(width, height) {
     return geometry;
 }
 
-// TODO: perform raycast to check for stuff!
-// TODO: cache raycast for performance!
 export function createGrass(instanceNumber: number, width: number, height: number)  : THREE.InstancedMesh {
 
   const start = performance.now();
@@ -230,7 +227,6 @@ export function createGrass(instanceNumber: number, width: number, height: numbe
   const instancedMesh = new THREE.InstancedMesh( geometry, grassMaterial, instanceNumber );
   instancedMesh.layers.set(LayerEnum.Grass); // hides from render
 
-  // TODO: get a faster prng implementation
   // Position and scale the grass blade instances randomly.
   for ( let i=0 ; i<instanceNumber ; i++ ) {
     dummy.position.set(
@@ -253,18 +249,3 @@ export function createGrass(instanceNumber: number, width: number, height: numbe
 
   return instancedMesh;
 }
-
-// const clock = new THREE.Clock();
-
-// const animate = function () {
-
-//   // Hand a time variable to vertex shader for wind displacement.
-//   grassMaterial.uniforms.time.value = clock.getElapsedTime();
-//   grassMaterial.uniformsNeedUpdate = true;
-
-//   requestAnimationFrame( animate );
-
-
-// };
-
-// animate();

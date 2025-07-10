@@ -1,5 +1,6 @@
 import mitt from 'mitt'
 
+// TODO: clean up some of this shit
 enum EventEnums {
 
     SUN_CONFIG_CHANGED = "sunConfigChanged",
@@ -16,6 +17,12 @@ enum EventEnums {
     OBJECT_SELECTED = "objectSelected",
 
     GRASS_CHANGED = "grassChanged",
+
+    // PLANT CREATION
+    PLANT_CREATION_STARTED = "plantCreationStarted",
+
+    LOAD_PLANT = "loadPlant",
+    PLANT_SELECTED = "plantSelected",
 
     // GLOBAL EVENTS
     SNAP_CHANGED = "snapChanged",
@@ -61,15 +68,7 @@ enum EventEnums {
     PATH_VERTEX_EDITING_UPDATED = "pathVertexEditingUpdated",
     PATH_VERTEX_EDITING_FINISHED = "pathVertexEditingFinished",
 
-    PATH_CONFIG_UPDATED = "pathConfigUpdated",
-
-    // PLANT CREATION
-    PLANT_CREATION_STARTED = "plantCreationStarted",
-
-    LOAD_PLANT = "loadPlant",
-    PLANT_SELECTED = "plantSelected"
-
-
+    PATH_CONFIG_UPDATED = "pathConfigUpdated"
 
 }
 

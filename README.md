@@ -1,24 +1,24 @@
-# Stuff
+# 3D Garden Planning App
 
-https://www.suncalc.org/#/30.3402,-97.7628,3/2025.06.30/18:31/1/3
+This is a simple CAD-like garden planning application with an emphasis on being able to view the lighting conditions at different times.
+This was heavily inspired by the [Three.js editor](https://github.com/mrdoob/three.js/tree/master/editor), with a lot of code directly copied from there. The functionality of the app was inspired by [suncalc](https://www.suncalc.org), which is a great app, but was not granular enough for my use-case.
 
-https://thebookofshaders.com/01/
+### Learning Resources
+https://pictogrammers.com/library/mdi/
 https://learnopengl.com/Getting-started/Shaders
 
-https://pictogrammers.com/library/mdi/
-
-[Rust: sun or astro-rust](https://github.com/mourner/suncalc)
-[Three.js editor](https://github.com/mrdoob/three.js/tree/master/editor)
+### Library Docs
+[Three.js WebGL Config](https://threejs.org/docs/index.html#api/en/renderers/webgl/WebGLProgram)
 [Transform Controls](https://threejs.org/docs/#examples/en/controls/TransformControls)
+[Rust: sun or astro-rust](https://github.com/mourner/suncalc)
 [Mitt](https://www.npmjs.com/package/mitt)
 
-## Mesh Generation
-https://github.com/Tencent-Hunyuan/Hunyuan3D-2
+### Asset Generation
 
-For GPU with less than 16GB VRAM:
-https://github.com/cocktailpeanut/Hunyuan3D-2GP
-How to fix missing GLIBC bug
-https://askubuntu.com/questions/1418016/glibcxx-3-4-30-not-found-in-conda-environment
+[Mesh Generation](https://github.com/Tencent-Hunyuan/Hunyuan3D-2)
+[For GPU with less than 16GB VRAM](https://github.com/cocktailpeanut/Hunyuan3D-2GP)
+[How to fix missing GLIBC bug](https://askubuntu.com/questions/1418016/glibcxx-3-4-30-not-found-in-conda-environment)
+
 ```
 conda update libstdcxx-ng
 ln -sf /usr/lib/x86_64-linux-gnu/libstdc++.so.6 ${CONDA_PREFIX}/lib
@@ -29,30 +29,12 @@ conda activate Hunyuan3D-2GP
 python gradio_app.py --profile 5
 ```
 
-Blender decimate geometry
-https://github.com/wjakob/instant-meshes
-
-Removing anti-aliasing
-https://discourse.threejs.org/t/reducing-moire-effect-on-certain-angles/11037/7
-
-WebGL
-https://threejs.org/docs/index.html#api/en/renderers/webgl/WebGLProgram
-
-
-- timeline?
-- animations?
-
-### Grass Displacement Shader
+### Grass Displacement Shader Info
 
 1. Ortho camera looking up from under the ground
 2. Render to depth texture
 3. Load depth texture into grass vertexShader
 4. Use depth to set grass height
-
-# Deployment Steps
-
-1. Clone
-2. `npm run build`
 
 # Event Propagation
 
