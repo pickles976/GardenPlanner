@@ -2,6 +2,12 @@
 - [ ] friends and family
 - [ ] community gardens network in Austin
 - [ ] r/austingardens
+- [ ] get analytics working
+- [ ] get SSL working
+
+# Improvements
+- [ ] make the thing that says "line segmnents" look less ugly
+- [ ] instead of "object" say "properties"
 
 # Models and Performance
 - [ ] compass redux

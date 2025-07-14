@@ -1,5 +1,9 @@
 # 3D Garden Planning App
 
+## Contact
+
+Please email me with your feedback at `sebaslogo@gmail.com`
+
 This is a simple CAD-like garden planning application with an emphasis on being able to view the lighting conditions at different times.
 This was heavily inspired by the [Three.js editor](https://github.com/mrdoob/three.js/tree/master/editor), with a lot of code directly copied from there. The functionality of the app was inspired by [suncalc](https://www.suncalc.org), which is a great app, but was not granular enough for my use-case.
 

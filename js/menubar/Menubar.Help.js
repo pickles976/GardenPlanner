@@ -27,7 +27,7 @@ function MenubarHelp( editor ) {
 	option.setTextContent( strings.getKey( 'menubar/help/source_code' ) );
 	option.onClick( function () {
 
-		window.open( 'https://github.com/mrdoob/three.js/tree/master/editor', '_blank' );
+		window.open( 'https://github.com/pickles976/GardenPlanner', '_blank' );
 
 	} );
 	options.add( option );
@@ -46,29 +46,29 @@ function MenubarHelp( editor ) {
 	options.add( option );
 	*/
 
-	// About
+	// // About
 
-	option = new UIRow();
-	option.setClass( 'option' );
-	option.setTextContent( strings.getKey( 'menubar/help/about' ) );
-	option.onClick( function () {
+	// option = new UIRow();
+	// option.setClass( 'option' );
+	// option.setTextContent( strings.getKey( 'menubar/help/about' ) );
+	// option.onClick( function () {
 
-		window.open( 'https://threejs.org', '_blank' );
+	// 	window.open( 'https://threejs.org', '_blank' );
 
-	} );
-	options.add( option );
+	// } );
+	// options.add( option );
 
-	// Manual
+	// // Manual
 
-	option = new UIRow();
-	option.setClass( 'option' );
-	option.setTextContent( strings.getKey( 'menubar/help/manual' ) );
-	option.onClick( function () {
+	// option = new UIRow();
+	// option.setClass( 'option' );
+	// option.setTextContent( strings.getKey( 'menubar/help/manual' ) );
+	// option.onClick( function () {
 
-		window.open( 'https://github.com/mrdoob/three.js/wiki/Editor-Manual', '_blank' );
+	// 	window.open( 'https://github.com/mrdoob/three.js/wiki/Editor-Manual', '_blank' );
 
-	} );
-	options.add( option );
+	// } );
+	// options.add( option );
 
 	return container;
 
