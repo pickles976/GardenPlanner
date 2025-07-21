@@ -1,7 +1,3 @@
-# Models and Performance
-- [ ] get plant generation from text working
-- [ ] generate more plants
-
 # Sun Timeline
 - [ ] create sun slider
 
@@ -18,9 +14,6 @@
     - [ ] esc to cancel editor
     - [ ] CTRL + Z
     - [ ] SHIFT + D
-
-- [ ] metric switching bug
-- [ ] bug when cancelling
 
 - [ ] allow users to edit colors of existing objects
 

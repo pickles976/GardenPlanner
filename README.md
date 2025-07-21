@@ -33,6 +33,10 @@ conda activate Hunyuan3D-2GP
 python gradio_app.py --profile 5
 ```
 
+```
+python gradio_app.py --enable_t23d
+```
+
 ### Grass Displacement Shader Info
 
 1. Ortho camera looking up from under the ground

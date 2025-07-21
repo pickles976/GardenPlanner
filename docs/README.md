@@ -45,20 +45,9 @@
 - [x] 07/09/2025 -- saving and loading json, menubar cleanup
 - [x] 07/10/2025 -- deploy
 
-# Week 8 (took a week off)
-- [ ] 07/21/2025 -- compass widget
-- [ ] 07/22/2025 -- help UI, UI improvements
-- [ ] 07/23/2025 -- sun slider
-- [ ] 07/24/2025 -- more plants
-- [ ] 07/25/2025 -- pre-built models
-- [ ] 07/26/2025 -- plant generation pipeline
+- [ ] sun slider
+- [ ] pre-built models
 
 # Milestones
 - [x] sun calculator -- 06/30/2025
 - [x] first deploy -- 07/10/2025
-
-- [ ] User accounts -- 08/14/2025
-- [ ] creation browser -- 09/14/2025
-- [ ] second deploy
-
-- [ ] batch sun jobs -- ???
