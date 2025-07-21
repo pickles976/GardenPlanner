@@ -1,10 +1,14 @@
-# User Feedback
-- [x] add buttons to switch transform modes in object properties panel
+# Models and Performance
+- [ ] get plant generation from text working
+- [ ] generate more plants
 
-- [ ] should be able to click on the length and angle text to edit  it
-- [ ] line segment angle should be from north or Y+
-- [ ] edit vertices at the current location of the bed/fence/path object
+# Sun Timeline
+- [ ] create sun slider
 
+# Garden Design Utilities
+- [ ] panel UI with pre-built models for drag and drop
+    - [ ] create a panel for 3D models the same way we have for plants
+    
 # Improvements
 - [ ] create an instruction popup
     - [ ] press "m" to move objects
@@ -19,18 +23,6 @@
 - [ ] bug when cancelling
 
 - [ ] allow users to edit colors of existing objects
-
-# Models and Performance
-- [ ] compass redux
-- [ ] get plant generation from text working
-- [ ] generate more plants
-
-# Sun Timeline
-- [ ] create sun slider
-
-# Garden Design Utilities
-- [ ] panel UI with pre-built models for drag and drop
-    - [ ] create a panel for 3D models the same way we have for plants
 
 ## DONT WANNA KEEP WORKING ON THIS IF NOBODY FINDS IT USEFUL
 
