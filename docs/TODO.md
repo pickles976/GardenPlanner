@@ -1,21 +1,55 @@
 # User Feedback
-- [ ] friends and family
-- [ ] community gardens network in Austin
-- [ ] r/austingardens
-- [ ] get analytics working
-- [ ] get SSL working
+- [x] vertex handles are too small
+
+- [ ] should be able to click on the length and angle text to edit  it
+- [ ] line segment angle should be from north or Y+
+- [ ] duplicate object to the location of the camera
+- [ ] dont exit out of menubar tabs when the mouse leaves
+
+- [ ] edit vertices at the current location of the bed/fence/path object
+
+- [ ] scale the UI based on screen size
+- [ ] ruler interaction is not ideal
+- [ ] add buttons to switch transform modes in object properties panel
 
 # Improvements
+- [ ] create an instruction popup
+    - [ ] press "m" to move objects
+    - [ ] shift + click to place down rulers
+    - [ ] change transform modes (R, T, S)
+    - [ ] g to show/hide grass
+    - [ ] esc to cancel editor
+    - [ ] CTRL + Z
+    - [ ] SHIFT + D
+
+- [ ] snapping is bad, how should I snap
+- [ ] metric switching bug
+- [ ] bug when cancelling
+- [ ] UI is confusing
+
 - [ ] make the thing that says "line segmnents" look less ugly
 - [ ] instead of "object" say "properties"
+- [ ] allow users to edit colors of existing objects
 
 # Models and Performance
 - [ ] compass redux
+- [ ] improve alpha testing on fence
 - [ ] get plant generation from text working
-- [ ] downscale plant textures
+- [ ] generate more plants
 
 # Sun Timeline
-- [ ] get source code from suncalc website
+- [ ] create sun slider
+
+# Garden Design Utilities
+- [ ] panel UI with pre-built models for drag and drop
+    - [ ] create a panel for 3D models the same way we have for plants
+
+# Multiple-Selection and Groups
+- [ ] create group-editing workflow?
+    - [ ] select multiple
+    - [ ] add multiple objects to the group
+    - [ ] move the entire group
+    - [ ] remove objects from the group when done
 
 # REFACTOR
 - [ ] improve the logic for CTRL + Z command pattern in the vertex editing mode of the line editor
@@ -36,17 +70,6 @@
 - [ ] create more plants
 - [ ] searchable plants
 
-# Garden Design Utilities
-- [ ] panel UI with pre-built models for drag and drop
-    - [ ] create a panel for 3D models the same way we have for plants
-
-# Multiple-Selection and Groups
-- [ ] create group-editing workflow?
-    - [ ] select multiple
-    - [ ] add multiple objects to the group
-    - [ ] move the entire group
-    - [ ] remove objects from the group when done
-
 # Plant Growth Timeline
 - [ ] select planting date
 - [ ] create a list with time, height, and radius entries
@@ -65,11 +88,4 @@
 - [ ] allow users to create their own plants
 
 ## Optimization
-
-# HELP FOR USERS
-- [ ] press "m" to move objects
-- [ ] shift + click to place down rulers
-- [ ] change transform modes (R, T, S)
-- [ ] g to show/hide grass
-- [ ] esc to cancel editor
 

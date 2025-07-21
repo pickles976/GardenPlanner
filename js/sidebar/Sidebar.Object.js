@@ -21,7 +21,7 @@ function SidebarObject( editor ) {
 	container.setBorderTop( '0' );
 	container.setPaddingTop( '20px' );
 
-	const label = new UIText("OBJECT")
+	const label = new UIText("PROPERTIES")
 	container.add(label)
 
 	// type

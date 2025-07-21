@@ -7,7 +7,7 @@ import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
 import { Line2 } from 'three/addons/lines/Line2.js';
 import { CSS2DObject } from 'three/addons/renderers/CSS2DRenderer.js';
 
-import { destructureVector3Array, getCentroid, polygonArea, rad2deg, fontSizeString, getCSS2DText, northAngleToVec } from "../Utils";
+import { destructureVector3Array, getCentroid, polygonArea, rad2deg, fontSizeString, getCSS2DText, northAngleToVec, getObjectsize } from "../Utils";
 import { CreateObjectCommand } from "../commands/CreateObjectCommand";
 import { SetPositionCommand } from "../commands/SetPositionCommand";
 import { eventBus, EventEnums } from "../EventBus";
@@ -21,8 +21,7 @@ import { processIntersections } from "../EventHandlers";
 import { snapper } from "../Snapping";
 import { DeleteObjectCommand } from "../commands/DeleteObjectCommand";
 
-const VERTEX_SIZE = 0.05;
-const POLYGON_CLOSE_THRESH = VERTEX_SIZE;
+export const VERTEX_SIZE = 0.075;
 const LINE_WIDTH = 5;
 const SVG_SIZE = '50px';
 const POLYGON_OPACITY = 0.2;
@@ -32,7 +31,7 @@ function createVertexHandle(): THREE.Mesh {
      * Create a grabbable and moveable 3D vertex object
      */
     const vertex = new THREE.Mesh(
-        new THREE.BoxGeometry(VERTEX_SIZE, VERTEX_SIZE, VERTEX_SIZE),
+        new THREE.BoxGeometry(1, 1, 1),
         new THREE.MeshPhongMaterial({ color: VERTEX_COLOR }))
     vertex.layers.set(LayerEnum.LineVertices);
     vertex.userData = { selectable: true, isVertexHandle: true }
@@ -382,11 +381,12 @@ class LineEditor {
     }
 
     // Event Handling
-    private tryCloseLoop(point: THREE.Vector3): boolean {
+    private tryCloseLoop(object: THREE.Object3D): boolean {
 
-        if (this.vertices.length > 0) {
-            const startVertex = this.vertices[0];
-            if (startVertex.distanceTo(point) < POLYGON_CLOSE_THRESH) {
+        if (this.vertexHandles.length > 0) {
+            const startVertex = this.vertexHandles[0];
+            
+            if (startVertex === object) {
                 this.setVertexEditMode()
                 return true;
             }
@@ -399,7 +399,7 @@ class LineEditor {
 
         // If loop is closed, go to `VERTEX_EDIT_MODE`
         if (this.closedLoop) {
-            if (this.tryCloseLoop(point)) {
+            if (this.tryCloseLoop(object)) {
                 
                 return
             }
@@ -411,6 +411,7 @@ class LineEditor {
             const startPoint = createVertexHandle();
             startPoint.position.set(...point);
             this.commandStack.execute(new CreateObjectCommand(startPoint, this.editor))
+            this.vertexHandles.push(startPoint)
         }
 
         if (this.vertices.length < 2) {
@@ -702,6 +703,19 @@ class LineEditor {
                 return polygonArea(this.vertices);
 
         }
+    }
+
+    public updateVertexHandleSize(camera, desiredScreenSize) {
+        this.vertexHandles.forEach((object) => {
+            const distance = camera.position.distanceTo(object.position);
+            let scale;
+            if (isNaN(camera.fov)) {
+                scale = desiredScreenSize / camera.zoom ;
+            } else {
+                scale = distance * desiredScreenSize * Math.tan(Math.PI * 0.5 * camera.fov / 180);
+            }
+            object.scale.set(scale, scale, scale);
+        })
     }
 
 }

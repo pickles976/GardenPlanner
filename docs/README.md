@@ -43,13 +43,19 @@
 - [x] 07/07/2025 -- improvements
 - [x] 07/08/2025 -- nothing
 - [x] 07/09/2025 -- saving and loading json, menubar cleanup
-- [ ] 07/10/2025 -- deploy
-- [ ] 07/11/2025 -- sun timeline
+- [x] 07/10/2025 -- deploy
+
+# Week 8 (took a week off)
+- [ ] 07/21/2025 -- compass widget
+- [ ] 07/22/2025 -- help UI, UI improvements
+- [ ] 07/23/2025 -- sun slider
+- [ ] 07/24/2025 -- more plants
+- [ ] 07/25/2025 -- pre-built models
+- [ ] 07/26/2025 -- plant generation pipeline
 
 # Milestones
-- [x] Garden editor -- 06/30/2025
-- [ ] Sun calculator -- 07/14/2025
-- [ ] first deploy -- 07/21/2025
+- [x] sun calculator -- 06/30/2025
+- [x] first deploy -- 07/10/2025
 
 - [ ] User accounts -- 08/14/2025
 - [ ] creation browser -- 09/14/2025

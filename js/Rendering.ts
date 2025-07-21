@@ -56,6 +56,9 @@ export async function render(editor: Editor) {
   grassMaterial.uniforms.depthTexture.value = depthRenderTarget.depthTexture;
   grassMaterial.uniformsNeedUpdate = true;
 
+  // Update VertexHandle size
+  editor.updateVertexHandleSize();
+
   // NORMAL RENDER
   editor.currentCameraControls.update()
 

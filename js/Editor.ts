@@ -28,6 +28,7 @@ import { Vector3 } from 'three';
 import { degToRad } from 'three/src/math/MathUtils.js';
 import { GridManager } from './GridManager';
 import { createGround } from './Creation';
+import { VERTEX_SIZE } from './editors/LineEditor';
 
 const ANTI_ALIASING = true;
 
@@ -581,6 +582,13 @@ class Editor {
             this.orthoCamera.layers.disable(layer);
         })
     }
+    
+    public updateVertexHandleSize() {
+        this.bedEditor.lineEditor.updateVertexHandleSize(this.currentCamera, VERTEX_SIZE);
+        this.fenceEditor.lineEditor.updateVertexHandleSize(this.currentCamera, VERTEX_SIZE);
+        this.pathEditor.lineEditor.updateVertexHandleSize(this.currentCamera, VERTEX_SIZE);
+    }
+
 
     private handleKeyDownObjectMode(event) {
 

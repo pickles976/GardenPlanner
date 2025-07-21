@@ -6,6 +6,17 @@ import { Sidebar } from './sidebar/Sidebar';
 
 const raycaster = new THREE.Raycaster();
 
+function setEmissive(object, value) {
+
+    if (Array.isArray(object.material)) {
+        object.material.forEach((mat) => mat.emissive.setHex(value));
+    } else {
+        if (object.material.emissive === undefined) return; 
+        object.material.emissive.setHex(value);
+    }
+
+}
+
 export function processIntersections(intersections: THREE.Object3D[]) {
     /**
      * Get the closest intersection
@@ -76,11 +87,7 @@ export function highlightMouseOverObject(editor: Editor, intersections: THREE.Ob
     // Un-highlight currently select object
     if (selector.currentSelectedObject !== undefined &&
         selector.currentMousedOverObject !== undefined) {
-        if (Array.isArray(selector.currentMousedOverObject.material)) {
-            selector.currentMousedOverObject.material.forEach((mat) => mat.emissive.setHex(0x000000));
-        } else {
-            selector.currentMousedOverObject.material.emissive.setHex(0x000000);
-        }
+        setEmissive(selector.currentMousedOverObject, 0x000000);
         return
     }
 
@@ -93,29 +100,17 @@ export function highlightMouseOverObject(editor: Editor, intersections: THREE.Ob
 
         // Un-highlight old mouseOverObject
         if (selector.currentMousedOverObject !== undefined) {
-            if (Array.isArray(selector.currentMousedOverObject.material)) {
-                selector.currentMousedOverObject.material.forEach((mat) => mat.emissive.setHex(0x000000));
-            } else {
-                selector.currentMousedOverObject.material.emissive.setHex(0x000000);
-            }
+            setEmissive(selector.currentMousedOverObject, 0x000000);
         }
 
         // Highlight new mouseOverObject
         selector.currentMousedOverObject = object;
-        if (Array.isArray(selector.currentMousedOverObject.material)) {
-            selector.currentMousedOverObject.material.forEach((mat) => mat.emissive.setHex(0xFFFF00));
-        } else {
-            selector.currentMousedOverObject.material.emissive.setHex(0xFFFF00);
-        }
+        setEmissive(selector.currentMousedOverObject, 0xFFFF00);
 
     } else {
         // Un-highlight old mouseOverObject
         if (selector.currentMousedOverObject !== undefined) { 
-            if (Array.isArray(selector.currentMousedOverObject.material)) {
-                selector.currentMousedOverObject.material.forEach((mat) => mat.emissive.setHex(0x000000));
-            } else {
-                selector.currentMousedOverObject.material.emissive.setHex(0x000000);
-            }
+            setEmissive(selector.currentMousedOverObject, 0x000000);
         } 
         selector.currentMousedOverObject = undefined;
     }

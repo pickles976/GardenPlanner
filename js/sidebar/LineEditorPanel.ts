@@ -62,8 +62,8 @@ class LineEditorPanel {
 
 		// Segments
 		this.segmentContainer = new UIPanel();
+		this.segmentContainer.setDisplay("none")
 
-		this.container.add(new UIText( "Line Segments" ).setClass( 'Label' ));
 		this.container.add(this.segmentContainer);
 		this.container.add(this.buttonContainer);
 
