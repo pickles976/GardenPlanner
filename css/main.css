@@ -908,3 +908,24 @@ model-viewer {
 	width: 1vw;
 	fill: white;
 }
+
+.translate-btn {
+	background: url(/public/icons/arrow-all.svg) no-repeat;
+	height: 2.5vh;
+	width: 1.5vw;
+	fill: white !important;
+}
+
+.rotate-btn {
+	background: url(/public/icons/rotate-orbit.svg) no-repeat;
+	height: 2.5vh;
+	width: 1.5vw;
+	fill: white !important;
+}
+
+.scale-btn {
+	background: url(/public/icons/resize.svg) no-repeat;
+	height: 2.5vh;
+	width: 1.5vw;
+	fill: white;
+}

@@ -1,5 +1,5 @@
 # User Feedback
-- [ ] add buttons to switch transform modes in object properties panel
+- [x] add buttons to switch transform modes in object properties panel
 
 - [ ] should be able to click on the length and angle text to edit  it
 - [ ] line segment angle should be from north or Y+

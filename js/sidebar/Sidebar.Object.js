@@ -68,9 +68,11 @@ function SidebarObject( editor ) {
 	const objectPositionX = new UINumber().setPrecision( 3 ).setWidth( '50px' ).onChange( update ).setUnit('m');
 	const objectPositionY = new UINumber().setPrecision( 3 ).setWidth( '50px' ).onChange( update ).setUnit('m');
 	const objectPositionZ = new UINumber().setPrecision( 3 ).setWidth( '50px' ).onChange( update ).setUnit('m');
+	const positionButton = new UIButton().setClass( 'translate-btn' ).onClick(() => editor.transformControls.setMode('translate'));
 
 	objectPositionRow.add( new UIText( strings.getKey( 'sidebar/object/position' ) ).setClass( 'Label' ) );
 	objectPositionRow.add( objectPositionX, objectPositionY, objectPositionZ );
+	objectPositionRow.add(positionButton)
 
 	container.add( objectPositionRow );
 
@@ -80,9 +82,11 @@ function SidebarObject( editor ) {
 	const objectRotationX = new UINumber().setStep( 10 ).setNudge( 0.1 ).setUnit( '°' ).setWidth( '50px' ).onChange( update );
 	const objectRotationY = new UINumber().setStep( 10 ).setNudge( 0.1 ).setUnit( '°' ).setWidth( '50px' ).onChange( update );
 	const objectRotationZ = new UINumber().setStep( 10 ).setNudge( 0.1 ).setUnit( '°' ).setWidth( '50px' ).onChange( update );
+	const rotationButton = new UIButton().setClass( 'rotate-btn' ).onClick(() => editor.transformControls.setMode('rotate'));
 
 	objectRotationRow.add( new UIText( strings.getKey( 'sidebar/object/rotation' ) ).setClass( 'Label' ) );
 	objectRotationRow.add( objectRotationX, objectRotationY, objectRotationZ );
+	objectRotationRow.add(rotationButton);
 
 	container.add( objectRotationRow );
 
@@ -92,9 +96,11 @@ function SidebarObject( editor ) {
 	const objectScaleX = new UINumber( 1 ).setPrecision( 3 ).setWidth( '50px' ).onChange( update );
 	const objectScaleY = new UINumber( 1 ).setPrecision( 3 ).setWidth( '50px' ).onChange( update );
 	const objectScaleZ = new UINumber( 1 ).setPrecision( 3 ).setWidth( '50px' ).onChange( update );
+	const scaleButton = new UIButton().setClass( 'scale-btn' ).onClick(() => editor.transformControls.setMode('scale'));
 
 	objectScaleRow.add( new UIText( strings.getKey( 'sidebar/object/scale' ) ).setClass( 'Label' ) );
 	objectScaleRow.add( objectScaleX, objectScaleY, objectScaleZ );
+	objectScaleRow.add(scaleButton)
 
 	container.add( objectScaleRow );
 
