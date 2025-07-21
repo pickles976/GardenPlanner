@@ -1,12 +1,9 @@
 # User Feedback
-- [x] vertex handles are too small
-- [x] duplicate object to the location of the camera
+- [ ] add buttons to switch transform modes in object properties panel
 
 - [ ] should be able to click on the length and angle text to edit  it
 - [ ] line segment angle should be from north or Y+
 - [ ] edit vertices at the current location of the bed/fence/path object
-
-- [ ] add buttons to switch transform modes in object properties panel
 
 # Improvements
 - [ ] create an instruction popup
@@ -18,18 +15,13 @@
     - [ ] CTRL + Z
     - [ ] SHIFT + D
 
-- [ ] snapping is bad, how should I snap
 - [ ] metric switching bug
 - [ ] bug when cancelling
-
-- [ ] dont exit out of menubar tabs when the mouse leaves
-- [ ] scale the UI based on screen size
 
 - [ ] allow users to edit colors of existing objects
 
 # Models and Performance
 - [ ] compass redux
-- [ ] improve alpha testing on fence
 - [ ] get plant generation from text working
 - [ ] generate more plants
 
@@ -39,6 +31,13 @@
 # Garden Design Utilities
 - [ ] panel UI with pre-built models for drag and drop
     - [ ] create a panel for 3D models the same way we have for plants
+
+## DONT WANNA KEEP WORKING ON THIS IF NOBODY FINDS IT USEFUL
+
+# Annoying shit
+- [ ] snapping is bad, how should I snap (idk what to do about this)
+- [ ] dont exit out of menubar tabs when the mouse leaves
+- [ ] scale the UI based on screen size
 
 # Multiple-Selection and Groups
 - [ ] create group-editing workflow?
