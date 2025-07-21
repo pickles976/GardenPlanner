@@ -597,7 +597,9 @@ class Editor {
             // Duplicate object
             case 'D': 
                 if (this.selector.currentSelectedObject) {
-                        this.execute(new CreateObjectCommand(deepClone(this.selector.currentSelectedObject), this))
+                    const object = deepClone(this.selector.currentSelectedObject);
+                    object.position.set(...this.currentCameraControls.target.clone())
+                    this.execute(new CreateObjectCommand(object, this))
                 }
                 break;
             // Transform

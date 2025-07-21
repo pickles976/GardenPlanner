@@ -148,7 +148,7 @@ function SidebarBed( editor ) {
 	})
 
 	eventBus.on(EventEnums.BED_VERTEX_EDITING_UPDATED, () => {
-		lineEditorPanel.updateFromEditor()
+		// lineEditorPanel.updateFromEditor()
 		updateFromEditor()
 	})
 

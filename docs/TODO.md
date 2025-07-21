@@ -1,15 +1,11 @@
 # User Feedback
 - [x] vertex handles are too small
+- [x] duplicate object to the location of the camera
 
 - [ ] should be able to click on the length and angle text to edit  it
 - [ ] line segment angle should be from north or Y+
-- [ ] duplicate object to the location of the camera
-- [ ] dont exit out of menubar tabs when the mouse leaves
-
 - [ ] edit vertices at the current location of the bed/fence/path object
 
-- [ ] scale the UI based on screen size
-- [ ] ruler interaction is not ideal
 - [ ] add buttons to switch transform modes in object properties panel
 
 # Improvements
@@ -25,10 +21,10 @@
 - [ ] snapping is bad, how should I snap
 - [ ] metric switching bug
 - [ ] bug when cancelling
-- [ ] UI is confusing
 
-- [ ] make the thing that says "line segmnents" look less ugly
-- [ ] instead of "object" say "properties"
+- [ ] dont exit out of menubar tabs when the mouse leaves
+- [ ] scale the UI based on screen size
+
 - [ ] allow users to edit colors of existing objects
 
 # Models and Performance

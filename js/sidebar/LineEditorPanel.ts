@@ -61,10 +61,10 @@ class LineEditorPanel {
 		this.buttonContainer.add(this.savePolygonButton)
 
 		// Segments
-		this.segmentContainer = new UIPanel();
-		this.segmentContainer.setDisplay("none")
+		// this.segmentContainer = new UIPanel();
+		// this.segmentContainer.setDisplay("none")
 
-		this.container.add(this.segmentContainer);
+		// this.container.add(this.segmentContainer);
 		this.container.add(this.buttonContainer);
 
 		this.saveLinesButton.onClick(() => {
@@ -74,7 +74,7 @@ class LineEditorPanel {
 		this.savePolygonButton.onClick(() => eventBus.emit(onVertexEditingFinished))
 		eventBus.on(onCancel, () => this.cancel())
 
-		this.segmentRows = [];
+		// this.segmentRows = [];
 
 	}
 
@@ -188,20 +188,20 @@ class LineEditorPanel {
 	public startVertexPlacement() {
 		this.saveLinesButton.setDisplay(this.lineEditor.closedLoop ? "none" : "Block")
 		this.savePolygonButton.setDisplay("none");
-		this.segmentContainer.setDisplay("none");
+		// this.segmentContainer.setDisplay("none");
 	}
 
 	public startVertexEditing() {
 		this.saveLinesButton.setDisplay("none")
 		this.savePolygonButton.setDisplay("Block");
-		this.segmentContainer.setDisplay("Block");
-		this.updateFromEditor()
+		// this.segmentContainer.setDisplay("Block");
+		// this.updateFromEditor()
 	}
 
 	public cancel() {
 		this.saveLinesButton.setDisplay("none")
 		this.savePolygonButton.setDisplay("none")
-		this.segmentContainer.setDisplay("none")
+		// this.segmentContainer.setDisplay("none")
 	}
 
 }
